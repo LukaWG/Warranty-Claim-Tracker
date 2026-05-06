@@ -105,7 +105,7 @@ export default function Reporting() {
   const totalSubCon = claims.reduce((sum, c) => sum + (c.sub_con || 0), 0);
   const totalClaimCost = claims.reduce((sum, c) => sum + (c.total_claim_cost || 0), 0);
 
-  return (
+  return (`
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="mb-10">
@@ -152,5 +152,5 @@ export default function Reporting() {
         />
       </div>
     </div>
-  );
+  `);
 }
