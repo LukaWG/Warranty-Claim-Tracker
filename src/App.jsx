@@ -53,7 +53,7 @@ const AuthenticatedApp = () => {
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
-          path={`/${path}`}
+          path={`/Warranty-Claim-Tracker/${path}`}
           element={
             <LayoutWrapper currentPageName={path}>
               <Page />
