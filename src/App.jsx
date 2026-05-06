@@ -61,7 +61,7 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
-      <Route path="/Approvals" element={<LayoutWrapper currentPageName="Approvals"><Approvals /></LayoutWrapper>} />
+      <Route path="/Warranty-Claim-Tracker/Approvals" element={<LayoutWrapper currentPageName="Approvals"><Approvals /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
