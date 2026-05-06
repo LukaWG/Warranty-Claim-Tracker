@@ -1,3 +1,3 @@
 export function createPageUrl(pageName: string) {
-    return '/test' + pageName.replace(/ /g, '-');
+    return '/Warranty-Claim-Tracker/' + pageName.replace(/ /g, '-');
 }
