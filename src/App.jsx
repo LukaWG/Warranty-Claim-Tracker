@@ -45,7 +45,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/" element={
+      <Route path="/Warranty-Claim-Tracker" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
         </LayoutWrapper>
