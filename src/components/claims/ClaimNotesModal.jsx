@@ -1,0 +1,232 @@
+import React, { useState, useRef } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { MessageSquare, User, Paperclip, X, ImageIcon } from 'lucide-react';
+import { format } from 'date-fns';
+
+export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
+  const [newNote, setNewNote] = useState('');
+  const [attachedImage, setAttachedImage] = useState(null); // { file, previewUrl }
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+  const queryClient = useQueryClient();
+
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me()
+  });
+
+  const { data: notes = [], isLoading } = useQuery({
+    queryKey: ['claimNotes', claim?.id],
+    queryFn: () => claim?.id ? base44.entities.ClaimNote.filter({ claim_id: claim.id }, '-created_date') : [],
+    enabled: !!claim?.id
+  });
+
+
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setAttachedImage({ file, previewUrl });
+    e.target.value = '';
+  };
+
+  const removeAttachment = () => {
+    if (attachedImage?.previewUrl) URL.revokeObjectURL(attachedImage.previewUrl);
+    setAttachedImage(null);
+  };
+
+  const addNoteMutation = useMutation({
+    mutationFn: async ({ content, imageUrl }) => {
+      const note = await base44.entities.ClaimNote.create({
+        claim_id: claim.id,
+        content,
+        ...(imageUrl ? { image_url: imageUrl } : {})
+      });
+
+      // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
+      const userRole = currentUser?.custom_role || currentUser?.role;
+      if (claim.status === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+        await base44.entities.WarrantyClaim.update(claim.id, { status: 'awaiting_review' });
+        await base44.entities.ClaimAudit.create({
+          claim_id: claim.id,
+          wip_number: claim.wip_number,
+          field_changed: 'status',
+          old_value: 'rejected',
+          new_value: 'awaiting_review',
+          change_type: 'status_changed'
+        });
+      }
+
+      // Create audit log for note addition
+      await base44.entities.ClaimAudit.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        field_changed: 'note_added',
+        old_value: '',
+        new_value: content.substring(0, 100),
+        change_type: 'updated'
+      });
+
+      return note;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+      queryClient.invalidateQueries({ queryKey: ['claims'] });
+      setNewNote('');
+      removeAttachment();
+      if (onStatusUpdate) onStatusUpdate();
+    }
+  });
+
+  const handleAddNote = async (e) => {
+    e.preventDefault();
+    if (!newNote.trim() && !attachedImage) return;
+
+    let imageUrl = null;
+    if (attachedImage?.file) {
+      setIsUploading(true);
+      const result = await base44.integrations.Core.UploadFile({ file: attachedImage.file });
+      imageUrl = result.file_url;
+      setIsUploading(false);
+    }
+
+    addNoteMutation.mutate({ content: newNote || ' ', imageUrl });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            Claim Notes
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* Add Note Section */}
+          <div className="border-b pb-6">
+            <Label className="text-sm font-medium mb-2 block">Add Note</Label>
+            <form onSubmit={handleAddNote} className="space-y-3">
+              <Textarea
+                placeholder="Enter your note..."
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                className="min-h-24"
+              />
+
+              {/* Image attachment preview */}
+              {attachedImage && (
+                <div className="relative inline-block">
+                  <img
+                    src={attachedImage.previewUrl}
+                    alt="Attachment preview"
+                    className="max-h-32 rounded-lg border border-slate-200 object-contain"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeAttachment}
+                    className="absolute -top-2 -right-2 bg-white border border-slate-200 rounded-full p-0.5 text-slate-500 hover:text-red-500 shadow-sm"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-slate-500"
+                  >
+                    <Paperclip className="h-4 w-4 mr-1" />
+                    Attach Screenshot
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setNewNote('');
+                      removeAttachment();
+                      onClose();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={(!newNote.trim() && !attachedImage) || addNoteMutation.isPending || isUploading}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {isUploading ? 'Uploading...' : addNoteMutation.isPending ? 'Adding...' : 'Add Note'}
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Notes List */}
+          <div>
+            <Label className="text-sm font-medium mb-3 block">Notes History</Label>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="h-6 w-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                </div>
+              ) : notes.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <MessageSquare className="h-8 w-8 text-slate-300 mb-2" />
+                  <p className="text-sm text-slate-400">No notes yet</p>
+                </div>
+              ) : (
+                notes.map((note) => (
+                  <div key={note.id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2 text-xs">
+                        <User className="h-3 w-3 text-slate-400" />
+                        <span className="font-medium text-slate-700">{note.created_by}</span>
+                      </div>
+                      <span className="text-xs text-slate-400">
+                        {format(new Date(note.created_date), 'MMM d, yyyy HH:mm')}
+                      </span>
+                    </div>
+                    {note.content && note.content.trim() !== ' ' && (
+                      <p className="text-sm text-slate-600 whitespace-pre-wrap">{note.content}</p>
+                    )}
+                    {note.image_url && (
+                      <a href={note.image_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block">
+                        <img
+                          src={note.image_url}
+                          alt="Attached screenshot"
+                          className="max-h-48 rounded-lg border border-slate-200 object-contain hover:opacity-90 transition-opacity"
+                        />
+                      </a>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

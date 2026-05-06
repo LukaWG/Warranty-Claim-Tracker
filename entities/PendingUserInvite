@@ -1,0 +1,29 @@
+{
+  "name": "PendingUserInvite",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email of the invited user"
+    },
+    "custom_role": {
+      "type": "string",
+      "description": "The role assigned to this user"
+    },
+    "first_name": {
+      "type": "string",
+      "description": "First name of the user"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Last name of the user"
+    },
+    "default_site": {
+      "type": "string",
+      "description": "Default branch/site for this user"
+    }
+  },
+  "required": [
+    "email"
+  ]
+}

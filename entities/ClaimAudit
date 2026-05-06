@@ -1,0 +1,46 @@
+{
+  "name": "ClaimAudit",
+  "type": "object",
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "description": "ID of the warranty claim"
+    },
+    "wip_number": {
+      "type": "string",
+      "description": "WIP number for reference"
+    },
+    "field_changed": {
+      "type": "string",
+      "description": "Name of the field that was changed"
+    },
+    "old_value": {
+      "type": "string",
+      "description": "Previous value"
+    },
+    "new_value": {
+      "type": "string",
+      "description": "New value"
+    },
+    "changed_by": {
+      "type": "string",
+      "description": "User who made the change"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "created",
+        "updated",
+        "status_changed",
+        "deleted"
+      ],
+      "description": "Type of change made"
+    }
+  },
+  "required": [
+    "claim_id",
+    "wip_number",
+    "field_changed",
+    "change_type"
+  ]
+}

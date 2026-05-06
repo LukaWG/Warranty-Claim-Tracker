@@ -1,0 +1,135 @@
+{
+  "name": "WarrantyClaim",
+  "type": "object",
+  "properties": {
+    "wip_number": {
+      "type": "string",
+      "description": "Work In Progress number for the warranty claim"
+    },
+    "reg_number": {
+      "type": "string",
+      "description": "Vehicle registration number"
+    },
+    "expected_hours": {
+      "type": "number",
+      "description": "Expected resource hours required"
+    },
+    "actual_hours": {
+      "type": "number",
+      "description": "Actual hours calculated from labour cost and site hourly rate"
+    },
+    "last_clocking_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Last clocking date"
+    },
+    "scanned_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when claim was scanned"
+    },
+    "site": {
+      "type": "string",
+      "description": "Site location where the claim originated"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Vehicle brand"
+    },
+    "invoice_number": {
+      "type": "string",
+      "description": "Invoice number"
+    },
+    "claim_number": {
+      "type": "string",
+      "description": "Claim number"
+    },
+    "parts": {
+      "type": "number",
+      "description": "Parts cost"
+    },
+    "labour": {
+      "type": "number",
+      "description": "Labour cost"
+    },
+    "sub_con": {
+      "type": "number",
+      "description": "Sub contractor cost"
+    },
+    "total_claim_cost": {
+      "type": "number",
+      "description": "Total claim cost"
+    },
+    "credit": {
+      "type": "number",
+      "description": "Credit amount received"
+    },
+    "credit_note": {
+      "type": "string",
+      "description": "Mandatory justification note when credit is \u00a3100 or more"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "approved",
+        "rejected"
+      ],
+      "description": "Approval status for claims with credit >= \u00a3100"
+    },
+    "approval_note": {
+      "type": "string",
+      "description": "Note from approver when approving or rejecting"
+    },
+    "manufacturer_deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Manufacturer deadline"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "awaiting_review",
+        "awaiting_approval",
+        "approved",
+        "completed",
+        "rejected",
+        "credit_rejected"
+      ],
+      "default": "in_progress",
+      "description": "Current status of the warranty claim"
+    },
+    "claimed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the claim has been claimed"
+    },
+    "claimed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when the claim was marked as claimed"
+    },
+    "claimed_by": {
+      "type": "string",
+      "description": "Email of the user who marked the claim as claimed"
+    },
+    "alert": {
+      "type": "string",
+      "description": "Alert or note for this claim"
+    },
+    "alert_resolution": {
+      "type": "string",
+      "description": "Resolution for the alert"
+    },
+    "submitted_for": {
+      "type": "string",
+      "description": "Email of the user this claim was submitted for"
+    }
+  },
+  "required": [
+    "wip_number",
+    "expected_hours",
+    "site"
+  ]
+}

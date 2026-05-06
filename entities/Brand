@@ -1,0 +1,46 @@
+{
+  "name": "Brand",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Brand name"
+    },
+    "manufacturer_deadline_days": {
+      "type": "number",
+      "description": "Number of days for manufacturer deadline from last clocking date"
+    },
+    "green_min_days": {
+      "type": "number",
+      "description": "Minimum days remaining for green status"
+    },
+    "green_max_days": {
+      "type": "number",
+      "description": "Maximum days remaining for green status"
+    },
+    "amber_min_days": {
+      "type": "number",
+      "description": "Minimum days remaining for amber status"
+    },
+    "amber_max_days": {
+      "type": "number",
+      "description": "Maximum days remaining for amber status"
+    },
+    "red_min_days": {
+      "type": "number",
+      "description": "Minimum days remaining for red status"
+    },
+    "red_max_days": {
+      "type": "number",
+      "description": "Maximum days remaining for red status"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this brand is active"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
