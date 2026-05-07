@@ -1362,12 +1362,12 @@ export default function Configuration() {
 						brandRates[brand.name] = parseFloat(val);
 					}
 					});
-					updateSite(editingSite.id, {
+					updateSiteMutation.mutate({ id: editingSite.id, data: {
 					name: editingSite.name,
 					code: editingSite.code || null,
 					brands: editingSite.brands || [],
 					brand_hourly_rates: Object.keys(brandRates).length > 0 ? brandRates : null
-					});
+				}});
 					// updateSiteMutation.mutate({
 					//   id: editingSite.id,
 					//   data: {
