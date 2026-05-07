@@ -76,7 +76,7 @@ export default function Configuration() {
 	});
 
 	const updateSiteMutation = useMutation({
-	mutationFn: ({ siteID, data }) => updateSite(siteID, data),
+	mutationFn: ({ id, data }) => updateSite(id, data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setEditingSite(null);
