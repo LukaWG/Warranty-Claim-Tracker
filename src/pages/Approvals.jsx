@@ -35,6 +35,21 @@ export default function Approvals() {
   //   queryKey: ['pendingApprovals'],
   //   queryFn: () => base44.entities.WarrantyClaim.filter({ approval_status: 'pending_approval' }, '-created_date')
   // });
+  
+  
+    const [allUsers, setAllUsers] = useState([]);
+    React.useEffect(() => {
+      async function fetchPendingApprovals() {
+        try {
+          const data = await getData('User', '*');
+          setAllUsers(data);
+        } catch (error) {
+          console.error('Failed to fetch pending Approvals:', error);
+          alert('Failed to fetch pending Approvals. Please check the console for more details.');
+        }
+      }
+      fetchPendingApprovals();
+    }, []);
 
   // const { data: allUsers = [] } = useQuery({
   //   queryKey: ['allUsers'],
