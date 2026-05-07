@@ -6,11 +6,11 @@ export let siteData = [
     "brand_hourly_rates": {
       "DACIA": 85,
       "Lotus": 100,
-      "OMODO": 75
+      "OMODA": 75
     },
     "active": true,
     "code": null,
-    "brands": "[\"DACIA\",\"Lotus\",\"OMODO\"]",
+    "brands": "[\"DACIA\",\"Lotus\",\"OMODA\"]",
     "hourly_rate": 85.61,
     "id": "69de5590fc9e084001afb7ef",
     "created_date": "2026-04-14 14:56:16.866+00",
@@ -538,7 +538,7 @@ export let brandData = [
     "amber_min_days": 4,
     "green_min_days": 7,
     "red_max_days": 3,
-    "name": "OMODO",
+    "name": "OMODA",
     "active": true,
     "amber_max_days": 6,
     "red_min_days": 1,
