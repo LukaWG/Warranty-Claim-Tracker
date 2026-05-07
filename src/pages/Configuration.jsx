@@ -522,9 +522,10 @@ export default function Configuration() {
                             <TableCell className="text-slate-600">
                               {site.brands && site.brands.length > 0 ? (
                                 <div className="flex flex-wrap gap-1">
-                                  {site.brands.map(brand => (
+                                  {<span key="all-brands" className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{site.brands.length} brands</span>
+                                  /* {site.brands.map(brand => (
                                     <span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brand}</span>
-                                  ))}
+                                  ))} */}
                                 </div>
                               ) : '—'}
                             </TableCell>
