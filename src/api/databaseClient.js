@@ -52,7 +52,7 @@ function getJsonFilePath(fileName) {
     return path;
 }
 
-async function readJsonFile(fileName) {
+function readJsonFile(fileName) {
   if (fileName === 'Site') {
     return siteData[0];
   }
