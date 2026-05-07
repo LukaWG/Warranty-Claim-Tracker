@@ -1,0 +1,24 @@
+[
+  {
+    "pid": 1,
+    "name": "Resolved",
+    "active": true,
+    "id": "69ddebb5b1c443d4688a0e61",
+    "created_date": "2026-04-14 07:24:37.967+00",
+    "updated_date": "2026-04-14 07:24:37.967+00",
+    "created_by_id": "69dcb7f71c8b4dbf14d4ffff",
+    "created_by": "wsmith@hendy-group.com",
+    "is_sample": false
+  },
+  {
+    "pid": 2,
+    "name": "Non-actionable",
+    "active": true,
+    "id": "69ddebace48b6ed97747240a",
+    "created_date": "2026-04-14 07:24:28.733+00",
+    "updated_date": "2026-04-14 07:24:28.733+00",
+    "created_by_id": "69dcb7f71c8b4dbf14d4ffff",
+    "created_by": "wsmith@hendy-group.com",
+    "is_sample": false
+  }
+]

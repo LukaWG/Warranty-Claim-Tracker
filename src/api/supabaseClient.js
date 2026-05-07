@@ -1,6 +1,19 @@
-import postgres from 'postgres'
+import { createClient } from '@supabase/supabase-js';
 
-const connectionString = "postgresql://postgres.wrstttfxbyewsycdbekm:[YOUR-PASSWORD]@aws-0-eu-west-1.pooler.supabase.com:6543/postgres"
-const sql = postgres(connectionString)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-export default sql
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export async function getData(tableName, selectQuery = '*') {
+  const { data, error } = await supabase
+    .from(tableName)
+    .select(selectQuery);
+
+  if (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+
+  return data;
+}
