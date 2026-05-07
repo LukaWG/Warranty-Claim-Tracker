@@ -1,4 +1,44 @@
+// TODO
+// [ ] Change implementation to be class based with create, update, delete, and get functions.
+// [ ] Instantiate for each json file and export instance. For example, export const siteClient = new DatabaseClient('Site');
+
+
+
 import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, warrantyClaimData } from '/data/data.js';
+
+
+class DatabaseClient {
+    constructor(fileName) {
+        this.fileName = fileName;
+    }
+
+    async create(data) {
+        // Implementation for creating data
+    }
+
+    async get(id) {
+        // Implementation for getting data
+    }
+
+    async update(id, data) {
+        // Implementation for updating data
+    }
+
+    async delete(id) {
+        // Implementation for deleting data
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 const dataFolder = '/data';
 
