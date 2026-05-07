@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, warrantyClaimData } from '/data/data.js';
 
 const dataFolder = '/data';
@@ -40,15 +39,49 @@ async function readJsonFile(fileName) {
   else {
     throw new Error(`Unknown file name: ${fileName}`);
   }
-  const filePath = getJsonFilePath(fileName);
-  const fileContents = await fs.promises.readFile(filePath, 'utf8');
-  return JSON.parse(fileContents);
 }
 
-async function writeJsonFile(fileName, data) {
-  const filePath = getJsonFilePath(fileName);
-  const jsonString = JSON.stringify(data, null, 2);
-  await fs.promises.writeFile(filePath, jsonString, 'utf8');
+async function addData(fileName, data) {
+    // Get current data
+    const currentData = await readJsonFile(fileName);
+    // Append new data
+    const updatedData = [...currentData, ...data];
+}
+
+/**
+ * 
+ * @param {string} fileName 
+ * @param {string} where - format: "key=value"
+ * @param {Array<string>} data - format: [{key: value}, ...]
+ */
+async function updateData(fileName, where, data) {
+    const currentData = await readJsonFile(fileName);
+    // split where clause
+    const [key, value] = where.split('=');
+    if (!key || typeof value === 'undefined') {
+        throw new Error(`Invalid where clause: ${where}`);
+    }
+    // Get data that matches where clause but do not update yet
+    const matchingData = currentData.filter((item) => {
+        const itemValue = item[key.trim()];
+        if (itemValue === undefined || itemValue === null) {
+            return false;
+        }
+        return String(itemValue) === value.trim();
+    });
+    // Update data in matching data with data in fomat [{key: value}, ...]
+    const updatedData = matchingData.map((item) => {
+        const updatedItem = { ...item };
+        data.forEach((field) => {
+            updatedItem[field.key] = field.value;
+        });
+        return updatedItem;
+    });
+
+}
+
+function updateSite(siteId, data) {
+    return updateData('Site', `id=${siteId}`, data);
 }
 
 /**
