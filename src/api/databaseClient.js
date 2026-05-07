@@ -34,6 +34,9 @@ async function readJsonFile(fileName) {
   else if (fileName === 'WarrantyClaim') {
     return warrantyClaimData[0];
   }
+  else {
+    throw new Error(`Unknown file name: ${fileName}`);
+  }
   const filePath = getJsonFilePath(fileName);
   const fileContents = await fs.promises.readFile(filePath, 'utf8');
   return JSON.parse(fileContents);
