@@ -37,6 +37,7 @@ export default function Configuration() {
       try {
         const data = await getData('sites', '*');
         setSites(data);
+        alert(data);
       } catch (error) {
         console.error('Failed to fetch sites:', error);
         alert('Failed to fetch sites. Please check the console for more details.');
