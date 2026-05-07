@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInvitationData, warrantyClaimData } from '/data/data.js';
+import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, warrantyClaimData } from '/data/data.js';
 
 const dataFolder = '/data';
 
@@ -29,7 +29,7 @@ async function readJsonFile(fileName) {
     return claimNoteData[0];
   }
   else if (fileName === 'PendingUserInvitation') {
-    return pendingUserInvitationData[0];
+    return pendingUserInviteData[0];
   }
   else if (fileName === 'WarrantyClaim') {
     return warrantyClaimData[0];
