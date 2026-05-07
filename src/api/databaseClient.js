@@ -10,7 +10,7 @@ import { siteData, alertData, alertResolutionData, brandData, claimAuditData, cl
 class DatabaseClient {
     constructor(fileName) {
         this.fileName = fileName;
-        this.data = await readJsonFile(this.fileName);
+        this.data = readJsonFile(this.fileName);
     }
 
     async create(data) {
