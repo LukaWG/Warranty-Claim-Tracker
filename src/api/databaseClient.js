@@ -125,8 +125,6 @@ async function updateData(fileName, where, data) {
 }
 
 export async function updateSite(siteId, data) {
-    alert(siteId);
-    alert(JSON.stringify(data));
     // For now, just update the variable in this file. In the future, we can write to the JSON file or use a real database.
     const siteIndex = siteData[0].findIndex(site => site.id === siteId);
     if (siteIndex === -1) {
