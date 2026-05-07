@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import EditBrandModal from '@/components/configuration/EditBrandModal';
-import { getData, updateSite } from '@/api/databaseClient';
+import { getData, updateSite, databaseClients } from '@/api/databaseClient';
 
 export default function Configuration() {
 	const queryClient = useQueryClient();
@@ -31,38 +31,38 @@ export default function Configuration() {
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
-	  queryFn: () => getData('Site', '*')
+	  queryFn: () => databaseClients.clients[Site].get()
 	});
 
 	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
 	  queryKey: ['alerts'],
-	  queryFn: () => getData('Alert', '*')
+	  queryFn: () => databaseClients.clients[Alert].get()
 	});
 
 	const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
 	  queryKey: ['resolutions'],
-	  queryFn: () => getData('AlertResolution', '*')
+	  queryFn: () => databaseClients.clients[AlertResolution].get()
 	});
 
 
 	const { data: brands = [], isLoading: brandsLoading } = useQuery({
 	  queryKey: ['brands'],
-	  queryFn: () => getData('Brand', '*')
+	  queryFn: () => databaseClients.clients[Brand].get()
 	});
 
 	const { data: users = [], isLoading: usersLoading } = useQuery({
 		queryKey: ['users'],
-		queryFn: () => getData('User', '*')
+		queryFn: () => databaseClients.clients[User].get()
 	});
 
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
-	  queryFn: () => getData('PendingUserInvite', '*')
+	  queryFn: () => databaseClients.clients[PendingUserInvite].get()
 	});
 
 	// [ ]: update deletion functions to not use base44
 	const deletePendingInviteMutation = useMutation({
-	mutationFn: (id) => base44.entities.PendingUserInvite.delete(id),
+	mutationFn: (id) => databaseClients.clients[PendingUserInvite].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
 	});
 

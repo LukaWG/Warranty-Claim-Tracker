@@ -10,14 +10,16 @@ import { siteData, alertData, alertResolutionData, brandData, claimAuditData, cl
 class DatabaseClient {
     constructor(fileName) {
         this.fileName = fileName;
+        this.data = await readJsonFile(this.fileName);
     }
 
     async create(data) {
-        // Implementation for creating data
+        // Create a new entry
     }
 
-    async get(id) {
-        // Implementation for getting data
+    async get() {
+        // Get all entries or a specific entry by id
+        return this.data
     }
 
     async update(id, data) {
@@ -30,15 +32,17 @@ class DatabaseClient {
 }
 
 
+class DatabaseClients {
+    constructor() {
+        this.clients = {};
+        const fileNames = ['Site', 'Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'WarrantyClaim'];
+        fileNames.forEach(fileName => {
+            this.clients[fileName] = new DatabaseClient(fileName);
+        });
+    }
+}
 
-
-
-
-
-
-
-
-
+export const databaseClients = new DatabaseClients();
 
 const dataFolder = '/data';
 
