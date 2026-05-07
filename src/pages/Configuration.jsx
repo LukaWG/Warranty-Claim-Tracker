@@ -12,7 +12,6 @@ import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import EditBrandModal from '@/components/configuration/EditBrandModal';
-import sql from '@/api/supabaseClient';
 
 export default function Configuration() {
   const queryClient = useQueryClient();
@@ -30,7 +29,7 @@ export default function Configuration() {
 
   const { data: sites = [], isLoading: sitesLoading } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => sql`SELECT * FROM public."Site" ORDER BY created_date DESC`
+    queryFn: () => base44.entities.Site.list('-created_date')
   });
 
   const { data: alerts = [], isLoading: alertsLoading } = useQuery({
