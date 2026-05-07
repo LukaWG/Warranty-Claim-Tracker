@@ -25,7 +25,7 @@ async function writeJsonFile(fileName, data) {
  * @param {string} select
  * @param {string} where - format: "key=value"
  */
-async function getData(fileName, select='*', where="") {
+export async function getData(fileName, select='*', where="") {
   let data = await readJsonFile(fileName);
 
   if (where) {
@@ -53,9 +53,3 @@ async function getData(fileName, select='*', where="") {
     return selected;
   });
 }
-
-module.exports = {
-  readJsonFile,
-  writeJsonFile,
-  getData
-};
