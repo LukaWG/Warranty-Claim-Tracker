@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { siteData } from '/data/data.js';
+import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInvitationData, warrantyClaimData } from '/data/data.js';
 
 const dataFolder = '/data';
 
@@ -12,6 +12,27 @@ function getJsonFilePath(fileName) {
 async function readJsonFile(fileName) {
   if (fileName === 'Site') {
     return siteData[0];
+  }
+  else if (fileName === 'Alert') {
+    return alertData[0];
+  }
+  else if (fileName === 'AlertResolution') {
+    return alertResolutionData[0];
+  }
+  else if (fileName === 'Brand') {
+    return brandData[0];
+  }
+  else if (fileName === 'ClaimAudit') {
+    return claimAuditData[0];
+  }
+  else if (fileName === 'ClaimNote') {
+    return claimNoteData[0];
+  }
+  else if (fileName === 'PendingUserInvitation') {
+    return pendingUserInvitationData[0];
+  }
+  else if (fileName === 'WarrantyClaim') {
+    return warrantyClaimData[0];
   }
   const filePath = getJsonFilePath(fileName);
   const fileContents = await fs.promises.readFile(filePath, 'utf8');
