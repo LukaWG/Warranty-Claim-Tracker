@@ -81,6 +81,8 @@ async function updateData(fileName, where, data) {
 }
 
 export async function updateSite(siteId, data) {
+    alert(siteId);
+    alert(JSON.stringify(data));
     return updateData('Site', `id=${siteId}`, data);
 }
 
