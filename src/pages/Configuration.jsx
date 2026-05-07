@@ -12,6 +12,7 @@ import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import EditBrandModal from '@/components/configuration/EditBrandModal';
+import { getData } from '@/api/databaseClient';
 
 export default function Configuration() {
   const queryClient = useQueryClient();
@@ -29,7 +30,7 @@ export default function Configuration() {
 
   const { data: sites = [], isLoading: sitesLoading } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => base44.entities.Site.list('-created_date')
+    queryFn: () => getData('sites', '*')
   });
 
   const { data: alerts = [], isLoading: alertsLoading } = useQuery({
