@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const dataFolder = path.resolve(__dirname, '..', 'data');
+const dataFolder = '@/data';
 
 function getJsonFilePath(fileName) {
   return path.join(dataFolder, `${fileName}.json`);
