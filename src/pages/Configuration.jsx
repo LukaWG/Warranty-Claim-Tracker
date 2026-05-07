@@ -35,7 +35,7 @@ export default function Configuration() {
     async function fetchSites() {
       setSitesLoading(true);
       try {
-        const data = await getData('sites', '*');
+        const data = await getData('Site', '*');
         setSites(data);
         alert(data);
       } catch (error) {
