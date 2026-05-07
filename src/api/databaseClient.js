@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const dataFolder = '/public/data';
+const dataFolder = '/data';
 
 const sitesData = [
 [
