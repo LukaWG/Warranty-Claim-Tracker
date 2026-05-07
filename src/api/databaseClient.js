@@ -28,13 +28,14 @@ async function readJsonFile(fileName) {
   else if (fileName === 'ClaimNote') {
     return claimNoteData[0];
   }
-  else if (fileName === 'PendingUserInvitation') {
+  else if (fileName === 'PendingUserInvite') {
     return pendingUserInviteData[0];
   }
   else if (fileName === 'WarrantyClaim') {
     return warrantyClaimData[0];
   }
   else {
+    return null;
     throw new Error(`Unknown file name: ${fileName}`);
   }
   const filePath = getJsonFilePath(fileName);
