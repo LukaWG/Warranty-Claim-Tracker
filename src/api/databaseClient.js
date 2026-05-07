@@ -80,7 +80,7 @@ async function updateData(fileName, where, data) {
 
 }
 
-function updateSite(siteId, data) {
+export async function updateSite(siteId, data) {
     return updateData('Site', `id=${siteId}`, data);
 }
 
