@@ -28,10 +28,29 @@ export default function Configuration() {
   const [editingBrandThresholds, setEditingBrandThresholds] = useState({});
   const [editingBrand, setEditingBrand] = useState(null);
 
-  const { data: sites = [], isLoading: sitesLoading } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => getData('sites', '*')
-  });
+  // fetch site data and store in sites state without using useQuery to demonstrate direct database access for simple data retrieval
+  const [sites, setSites] = useState([]);
+  const [sitesLoading, setSitesLoading] = useState(true);
+  React.useEffect(() => {
+    async function fetchSites() {
+      setSitesLoading(true);
+      try {
+        const data = await getData('sites', '*');
+        setSites(data);
+      } catch (error) {
+        console.error('Failed to fetch sites:', error);
+        alert('Failed to fetch sites. Please check the console for more details.');
+      } finally {
+        setSitesLoading(false);
+      }
+    }
+    fetchSites();
+  }, []);
+
+  // const { data: sites = [], isLoading: sitesLoading } = useQuery({
+  //   queryKey: ['sites'],
+  //   queryFn: () => getData('sites', '*')
+  // });
 
   const { data: alerts = [], isLoading: alertsLoading } = useQuery({
     queryKey: ['alerts'],
