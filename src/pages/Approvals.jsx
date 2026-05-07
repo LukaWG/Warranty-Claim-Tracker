@@ -6,20 +6,40 @@ import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { getData } from '@/api/databaseClient';
 
 export default function Approvals() {
   const queryClient = useQueryClient();
   const [approvalNotes, setApprovalNotes] = useState({});
+  
+  
+    const [claims, setPendingApprovals] = useState([]);
+    const [isLoading, setisLoading] = useState(true);
+    React.useEffect(() => {
+      async function fetchPendingApprovals() {
+        setisLoading(true);
+        try {
+          const data = await getData('PendingApprovals', '*');
+          setPendingApprovals(data);
+        } catch (error) {
+          console.error('Failed to fetch pending Approvals:', error);
+          alert('Failed to fetch pending Approvals. Please check the console for more details.');
+        } finally {
+          setisLoading(false);
+        }
+      }
+      fetchPendingApprovals();
+    }, []);
 
-  const { data: claims = [], isLoading } = useQuery({
-    queryKey: ['pendingApprovals'],
-    queryFn: () => base44.entities.WarrantyClaim.filter({ approval_status: 'pending_approval' }, '-created_date')
-  });
+  // const { data: claims = [], isLoading } = useQuery({
+  //   queryKey: ['pendingApprovals'],
+  //   queryFn: () => base44.entities.WarrantyClaim.filter({ approval_status: 'pending_approval' }, '-created_date')
+  // });
 
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ['allUsers'],
-    queryFn: () => base44.entities.User.list('email')
-  });
+  // const { data: allUsers = [] } = useQuery({
+  //   queryKey: ['allUsers'],
+  //   queryFn: () => base44.entities.User.list('email')
+  // });
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {

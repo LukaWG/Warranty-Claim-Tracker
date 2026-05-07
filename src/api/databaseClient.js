@@ -34,6 +34,9 @@ async function readJsonFile(fileName) {
   else if (fileName === 'WarrantyClaim') {
     return warrantyClaimData[0];
   }
+  else if (fileName === 'PendingApprovals') {
+    return warrantyClaimData[0].filter(claim => claim.approval_status === 'pending_approval');
+  }
   else {
     throw new Error(`Unknown file name: ${fileName}`);
   }
