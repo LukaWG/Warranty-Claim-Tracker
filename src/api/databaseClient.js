@@ -19,6 +19,8 @@ class DatabaseClient {
 
     async get() {
         // Get all entries or a specific entry by id
+        // [ ] Rewrite this so that it fetches data here. Will be needed when data is changed to fetch new data from the soruce
+        //     Means that the constructor should call this.get instead of readJsonFile directly
         return this.data
     }
 
@@ -30,6 +32,13 @@ class DatabaseClient {
         // Implementation for deleting data
     }
 }
+
+class SiteClient extends DatabaseClient {
+    constructor() {
+        super('Site');
+        // format data in brands and brand rates to be stored into an array
+    }
+    
 
 
 class DatabaseClients {
