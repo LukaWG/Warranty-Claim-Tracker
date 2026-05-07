@@ -35,7 +35,6 @@ async function readJsonFile(fileName) {
     return warrantyClaimData[0];
   }
   else {
-    return null;
     throw new Error(`Unknown file name: ${fileName}`);
   }
   const filePath = getJsonFilePath(fileName);
