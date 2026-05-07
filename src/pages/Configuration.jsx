@@ -28,150 +28,131 @@ export default function Configuration() {
 	const [editingBrandThresholds, setEditingBrandThresholds] = useState({});
 	const [editingBrand, setEditingBrand] = useState(null);
 
-	// fetch site data and store in sites state without using useQuery to demonstrate direct database access for simple data retrieval
-	// const [sites, setSites] = useState([]);
-	// const [sitesLoading, setSitesLoading] = useState(true);
-	// React.useEffect(() => {
-	// async function fetchSites() {
-	// 	setSitesLoading(true);
-	// 	try {
-	// 	const data = await getData('Site', '*');
-	// 	setSites(data);
-	// 	} catch (error) {
-	// 	console.error('Failed to fetch sites:', error);
-	// 	alert('Failed to fetch sites. Please check the console for more details.');
-	// 	} finally {
-	// 	setSitesLoading(false);
-	// 	}
-	// }
-	// fetchSites();
-	// }, []);
-
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
 	  queryFn: () => getData('Site', '*')
 	});
 
 
-	const [alerts, setAlerts] = useState([]);
-	const [alertsLoading, setAlertsLoading] = useState(true);
-	React.useEffect(() => {
-	async function fetchAlerts() {
-		setAlertsLoading(true);
-		try {
-		const data = await getData('Alert', '*');
-		setAlerts(data);
-		} catch (error) {
-		console.error('Failed to fetch alerts:', error);
-		alert('Failed to fetch alerts. Please check the console for more details.');
-		} finally {
-		setAlertsLoading(false);
-		}
-	}
-	fetchAlerts();
-	}, []);
+	// const [alerts, setAlerts] = useState([]);
+	// const [alertsLoading, setAlertsLoading] = useState(true);
+	// React.useEffect(() => {
+	// async function fetchAlerts() {
+	// 	setAlertsLoading(true);
+	// 	try {
+	// 	const data = await getData('Alert', '*');
+	// 	setAlerts(data);
+	// 	} catch (error) {
+	// 	console.error('Failed to fetch alerts:', error);
+	// 	alert('Failed to fetch alerts. Please check the console for more details.');
+	// 	} finally {
+	// 	setAlertsLoading(false);
+	// 	}
+	// }
+	// fetchAlerts();
+	// }, []);
 
-	// const { data: alerts = [], isLoading: alertsLoading } = useQuery({
-	//   queryKey: ['alerts'],
-	//   queryFn: () => base44.entities.Alert.list('-created_date')
-	// });
-
-
-	const [resolutions, setResolutions] = useState([]);
-	const [resolutionsLoading, setResolutionsLoading] = useState(true);
-	React.useEffect(() => {
-	async function fetchResolutions() {
-		setResolutionsLoading(true);
-		try {
-		const data = await getData('AlertResolution', '*');
-		setResolutions(data);
-		} catch (error) {
-		console.error('Failed to fetch resolutions:', error);
-		alert('Failed to fetch resolutions. Please check the console for more details.');
-		} finally {
-		setResolutionsLoading(false);
-		}
-	}
-	fetchResolutions();
-	}, []);
-
-	// const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
-	//   queryKey: ['resolutions'],
-	//   queryFn: () => base44.entities.AlertResolution.list('-created_date')
-	// });
+	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
+	  queryKey: ['alerts'],
+	  queryFn: () => getData('Alert', '*')
+	});
 
 
-	const [brands, setBrands] = useState([]);
-	const [brandsLoading, setBrandsLoading] = useState(true);
-	React.useEffect(() => {
-	async function fetchBrands() {
-		setBrandsLoading(true);
-		try {
-		const data = await getData('Brand', '*');
-		setBrands(data);
-		} catch (error) {
-		console.error('Failed to fetch brands:', error);
-		alert('Failed to fetch brands. Please check the console for more details.');
-		} finally {
-		setBrandsLoading(false);
-		}
-	}
-	fetchBrands();
-	}, []);
+	// const [resolutions, setResolutions] = useState([]);
+	// const [resolutionsLoading, setResolutionsLoading] = useState(true);
+	// React.useEffect(() => {
+	// async function fetchResolutions() {
+	// 	setResolutionsLoading(true);
+	// 	try {
+	// 	const data = await getData('AlertResolution', '*');
+	// 	setResolutions(data);
+	// 	} catch (error) {
+	// 	console.error('Failed to fetch resolutions:', error);
+	// 	alert('Failed to fetch resolutions. Please check the console for more details.');
+	// 	} finally {
+	// 	setResolutionsLoading(false);
+	// 	}
+	// }
+	// fetchResolutions();
+	// }, []);
+
+	const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
+	  queryKey: ['resolutions'],
+	  queryFn: () => getData('AlertResolution', '*')
+	});
 
 
-	// const { data: brands = [], isLoading: brandsLoading } = useQuery({
-	//   queryKey: ['brands'],
-	//   queryFn: () => base44.entities.Brand.list('-created_date')
-	// });
+	// const [brands, setBrands] = useState([]);
+	// const [brandsLoading, setBrandsLoading] = useState(true);
+	// React.useEffect(() => {
+	// async function fetchBrands() {
+	// 	setBrandsLoading(true);
+	// 	try {
+	// 	const data = await getData('Brand', '*');
+	// 	setBrands(data);
+	// 	} catch (error) {
+	// 	console.error('Failed to fetch brands:', error);
+	// 	alert('Failed to fetch brands. Please check the console for more details.');
+	// 	} finally {
+	// 	setBrandsLoading(false);
+	// 	}
+	// }
+	// fetchBrands();
+	// }, []);
 
 
-	const [users, setUsers] = useState([]);
-	const [usersLoading, setUsersLoading] = useState(true);
-	React.useEffect(() => {
-	async function fetchUsers() {
-		setUsersLoading(true);
-		try {
-		const data = await getData('User', '*');
-		setUsers(data);
-		} catch (error) {
-		console.error('Failed to fetch users:', error);
-		alert('Failed to fetch users. Please check the console for more details.');
-		} finally {
-		setUsersLoading(false);
-		}
-	}
-	fetchUsers();
-	}, []);
-
-	// const { data: users = [], isLoading: usersLoading } = useQuery({
-	//   queryKey: ['users'],
-	//   queryFn: () => base44.entities.User.list('-created_date')
-	// });
+	const { data: brands = [], isLoading: brandsLoading } = useQuery({
+	  queryKey: ['brands'],
+	  queryFn: () => getData('Brand', '*')
+	});
 
 
-	const [pendingInvites, setPendingInvites] = useState([]);
-	const [pendingInvitesLoading, setPendingInvitesLoading] = useState(true);
-	React.useEffect(() => {
-	async function fetchPendingInvites() {
-		setPendingInvitesLoading(true);
-		try {
-		const data = await getData('PendingUserInvite', '*');
-		setPendingInvites(data);
-		} catch (error) {
-		console.error('Failed to fetch pending invites:', error);
-		alert('Failed to fetch pending invites. Please check the console for more details.');
-		} finally {
-		setPendingInvitesLoading(false);
-		}
-	}
-	fetchPendingInvites();
-	}, []);
+	// const [users, setUsers] = useState([]);
+	// const [usersLoading, setUsersLoading] = useState(true);
+	// React.useEffect(() => {
+	// async function fetchUsers() {
+	// 	setUsersLoading(true);
+	// 	try {
+	// 	const data = await getData('User', '*');
+	// 	setUsers(data);
+	// 	} catch (error) {
+	// 	console.error('Failed to fetch users:', error);
+	// 	alert('Failed to fetch users. Please check the console for more details.');
+	// 	} finally {
+	// 	setUsersLoading(false);
+	// 	}
+	// }
+	// fetchUsers();
+	// }, []);
 
-	// const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
-	//   queryKey: ['pendingInvites'],
-	//   queryFn: () => base44.entities.PendingUserInvite.list('-created_date')
-	// });
+	const { data: users = [], isLoading: usersLoading } = useQuery({
+		queryKey: ['users'],
+		queryFn: () => getData('User', '*')
+	});
+
+
+	// const [pendingInvites, setPendingInvites] = useState([]);
+	// const [pendingInvitesLoading, setPendingInvitesLoading] = useState(true);
+	// React.useEffect(() => {
+	// async function fetchPendingInvites() {
+	// 	setPendingInvitesLoading(true);
+	// 	try {
+	// 	const data = await getData('PendingUserInvite', '*');
+	// 	setPendingInvites(data);
+	// 	} catch (error) {
+	// 	console.error('Failed to fetch pending invites:', error);
+	// 	alert('Failed to fetch pending invites. Please check the console for more details.');
+	// 	} finally {
+	// 	setPendingInvitesLoading(false);
+	// 	}
+	// }
+	// fetchPendingInvites();
+	// }, []);
+
+	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
+	  queryKey: ['pendingInvites'],
+	  queryFn: () => getData('PendingUserInvite', '*')
+	});
 
 	const deletePendingInviteMutation = useMutation({
 	mutationFn: (id) => base44.entities.PendingUserInvite.delete(id),
