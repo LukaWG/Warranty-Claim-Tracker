@@ -1,4 +1,4 @@
-export const siteData = [
+export let siteData = [
 [
   {
     "pid": 1,
@@ -430,7 +430,7 @@ export const siteData = [
 ]
 ];
 
-export const alertData = [
+export let alertData = [
   [
   {
     "pid": 1,
@@ -468,7 +468,7 @@ export const alertData = [
 ]
 ];
 
-export const alertResolutionData = [
+export let alertResolutionData = [
 [
   {
     "pid": 1,
@@ -495,7 +495,7 @@ export const alertResolutionData = [
 ]
 ];
 
-export const brandData = [
+export let brandData = [
 [
   {
     "pid": 1,
@@ -860,7 +860,7 @@ export const brandData = [
 ]
 ];
 
-export const claimAuditData = [
+export let claimAuditData = [
 [
   {
     "pid": 1,
@@ -2465,7 +2465,7 @@ export const claimAuditData = [
 ]
 ];
 
-export const claimNoteData = [
+export let claimNoteData = [
 [
   {
     "pid": 1,
@@ -3226,7 +3226,7 @@ export const claimNoteData = [
 ]
 ];
 
-export const pendingUserInviteData = [
+export let pendingUserInviteData = [
 [
   {
     "pid": 1,
@@ -3273,7 +3273,7 @@ export const pendingUserInviteData = [
 ]
 ];
 
-export const warrantyClaimData = [
+export let warrantyClaimData = [
 [
   {
     "pId": 1,
