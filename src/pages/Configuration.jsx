@@ -31,38 +31,38 @@ export default function Configuration() {
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
-	  queryFn: () => databaseClients.clients[Site].get()
+	  queryFn: () => databaseClients.clients["Site"].get()
 	});
 
 	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
 	  queryKey: ['alerts'],
-	  queryFn: () => databaseClients.clients[Alert].get()
+	  queryFn: () => databaseClients.clients["Alert"].get()
 	});
 
 	const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
 	  queryKey: ['resolutions'],
-	  queryFn: () => databaseClients.clients[AlertResolution].get()
+	  queryFn: () => databaseClients.clients["AlertResolution"].get()
 	});
 
 
 	const { data: brands = [], isLoading: brandsLoading } = useQuery({
 	  queryKey: ['brands'],
-	  queryFn: () => databaseClients.clients[Brand].get()
+	  queryFn: () => databaseClients.clients["Brand"].get()
 	});
 
 	const { data: users = [], isLoading: usersLoading } = useQuery({
 		queryKey: ['users'],
-		queryFn: () => databaseClients.clients[User].get()
+		queryFn: () => databaseClients.clients["User"].get()
 	});
 
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
-	  queryFn: () => databaseClients.clients[PendingUserInvite].get()
+	  queryFn: () => databaseClients.clients["PendingUserInvite"].get()
 	});
 
 	// [ ]: update deletion functions to not use base44
 	const deletePendingInviteMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients[PendingUserInvite].delete(id),
+	mutationFn: (id) => databaseClients.clients["PendingUserInvite"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
 	});
 
