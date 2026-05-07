@@ -1,5 +1,5 @@
 import fs from 'fs';
-import siteData from '/data/sites.json';
+import siteData from '/data/data.js';
 
 const dataFolder = '/data';
 
