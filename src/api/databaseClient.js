@@ -1,10 +1,9 @@
 import fs from 'fs';
-import path from 'path';
 
 const dataFolder = '@/data';
 
 function getJsonFilePath(fileName) {
-  return path.join(dataFolder, `${fileName}.json`);
+  return `${dataFolder}/${fileName}.json`;
 }
 
 async function readJsonFile(fileName) {
