@@ -45,7 +45,7 @@ export default function Approvals() {
           setAllUsers(data);
         } catch (error) {
           console.error('Failed to fetch pending Approvals:', error);
-          alert('Failed to fetch pending Approvals. Please check the console for more details.');
+          alert('Failed to fetch users. Please check the console for more details.');
         }
       }
       fetchPendingApprovals();
