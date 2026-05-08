@@ -10,26 +10,74 @@ import { siteData, alertData, alertResolutionData, brandData, claimAuditData, cl
 class DatabaseClient {
     constructor(fileName) {
         this.fileName = fileName;
-        this.data = readJsonFile(this.fileName);
+        this.fetch();
     }
 
     async create(data) {
         // Create a new entry
+        await this.fetch();
+        this.data.push(data);
+        await this.save();
+    }
+
+    async fetch() {
+        // Fetch data from the source
+        this.data = readJsonFile(this.fileName);
     }
 
     async get() {
         // Get all entries or a specific entry by id
         // [ ] Rewrite this so that it fetches data here. Will be needed when data is changed to fetch new data from the soruce
         //     Means that the constructor should call this.get instead of readJsonFile directly
+        await this.fetch();
         return this.data
     }
 
     async update(id, data) {
         // Implementation for updating data
+        await this.fetch();
+        const index = this.data.findIndex(item => item.id === id);
+        if (index === -1) {
+            throw new Error(`Item with id ${id} not found`);
+        }
+        this.data[index] = { ...this.data[index], ...data };
+        await this.save();
     }
 
     async delete(id) {
         // Implementation for deleting data
+        await this.fetch();
+        this.data = this.data.filter(item => item.id !== id);
+        await this.save();
+    }
+
+    async save() {
+        // Implementation for saving data back to the source
+        // For now, replace the variable in this file. In the future, we can write to the JSON file or use a real database.
+        if (this.fileName === 'Site') {
+            siteData[0] = this.data;
+        }
+        else if (this.fileName === 'Alert') {
+            alertData[0] = this.data;
+        }
+        else if (this.fileName === 'AlertResolution') {
+            alertResolutionData[0] = this.data;
+        }
+        else if (this.fileName === 'Brand') {
+            brandData[0] = this.data;
+        }
+        else if (this.fileName === 'ClaimAudit') {
+            claimAuditData[0] = this.data;
+        }
+        else if (this.fileName === 'ClaimNote') {
+            claimNoteData[0] = this.data;
+        }
+        else if (this.fileName === 'PendingUserInvite') {
+            pendingUserInviteData[0] = this.data;
+        }
+        else if (this.fileName === 'WarrantyClaim') {
+            warrantyClaimData[0] = this.data;
+        }
     }
 }
 
@@ -44,10 +92,11 @@ class SiteClient extends DatabaseClient {
 class DatabaseClients {
     constructor() {
         this.clients = {};
-        const fileNames = ['Site', 'Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'WarrantyClaim'];
+        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'WarrantyClaim'];
         fileNames.forEach(fileName => {
             this.clients[fileName] = new DatabaseClient(fileName);
         });
+        this.clients['Site'] = new SiteClient();
     }
 }
 
