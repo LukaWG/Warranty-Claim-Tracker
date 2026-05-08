@@ -1,6 +1,6 @@
 // TODO
-// [ ] Change implementation to be class based with create, update, delete, and get functions.
-// [ ] Instantiate for each json file and export instance. For example, export const siteClient = new DatabaseClient('Site');
+// [x] Change implementation to be class based with create, update, delete, and get functions.
+// [x] Instantiate for each json file and export instance. For example, export const siteClient = new DatabaseClient('Site');
 
 
 

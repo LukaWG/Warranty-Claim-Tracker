@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -189,7 +189,7 @@ export default function Configuration() {
 		
 		// Invite user with platform role
 		// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-		await base44.users.inviteUser(email, platformRole);
+		// await base44.users.inviteUser(email, platformRole);
 		console.log('User invited and pending info stored');
 	},
 	onSuccess: () => {
@@ -207,7 +207,8 @@ export default function Configuration() {
 	const resendInviteMutation = useMutation({
 	mutationFn: async ({ email, role }) => {
 		const platformRole = role === 'Admin Manager' ? 'admin' : 'user';
-		await base44.users.inviteUser(email, platformRole);
+		// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
+		// await base44.users.inviteUser(email, platformRole);
 	}
 	});
 
@@ -241,8 +242,10 @@ export default function Configuration() {
 	e.preventDefault();
 	
 	// Check if user is logged in
+	// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
 	try {
-		await base44.auth.me();
+		// await base44.auth.me(); // Commented out for testing
+		// [ ] Check whether user is logged in before inviting user
 	} catch (error) {
 		alert('You must be logged in to invite users. Please refresh the page and log in.');
 		return;

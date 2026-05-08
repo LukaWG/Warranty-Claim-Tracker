@@ -5,67 +5,67 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { getData } from '@/api/databaseClient';
+// import { base44 } from '@/api/base44Client';
+import { databaseClients, getData } from '@/api/databaseClient';
 
 export default function Approvals() {
   const queryClient = useQueryClient();
   const [approvalNotes, setApprovalNotes] = useState({});
   
   
-    const [claims, setPendingApprovals] = useState([]);
-    const [isLoading, setisLoading] = useState(true);
-    React.useEffect(() => {
-      async function fetchPendingApprovals() {
-        setisLoading(true);
-        try {
-          const data = await getData('PendingApprovals', '*');
-          setPendingApprovals(data);
-        } catch (error) {
-          console.error('Failed to fetch pending Approvals:', error);
-          alert('Failed to fetch pending Approvals. Please check the console for more details.');
-        } finally {
-          setisLoading(false);
-        }
-      }
-      fetchPendingApprovals();
-    }, []);
+    // const [claims, setPendingApprovals] = useState([]);
+    // const [isLoading, setisLoading] = useState(true);
+    // React.useEffect(() => {
+    //   async function fetchPendingApprovals() {
+    //     setisLoading(true);
+    //     try {
+    //       const data = await getData('PendingApprovals', '*');
+    //       setPendingApprovals(data);
+    //     } catch (error) {
+    //       console.error('Failed to fetch pending Approvals:', error);
+    //       alert('Failed to fetch pending Approvals. Please check the console for more details.');
+    //     } finally {
+    //       setisLoading(false);
+    //     }
+    //   }
+    //   fetchPendingApprovals();
+    // }, []);
 
-  // const { data: claims = [], isLoading } = useQuery({
-  //   queryKey: ['pendingApprovals'],
-  //   queryFn: () => base44.entities.WarrantyClaim.filter({ approval_status: 'pending_approval' }, '-created_date')
-  // });
+  const { data: claims = [], isLoading } = useQuery({
+    queryKey: ['pendingApprovals'],
+    queryFn: () => databaseClients.clients['WarrantyClaim'].get()
+  });
   
   
-    const [allUsers, setAllUsers] = useState([]);
-    React.useEffect(() => {
-      async function fetchPendingApprovals() {
-        try {
-          const data = await getData('User', '*');
-          setAllUsers(data);
-        } catch (error) {
-          console.error('Failed to fetch pending Approvals:', error);
-          alert('Failed to fetch users. Please check the console for more details.');
-        }
-      }
-      fetchPendingApprovals();
-    }, []);
+    // const [allUsers, setAllUsers] = useState([]);
+    // React.useEffect(() => {
+    //   async function fetchPendingApprovals() {
+    //     try {
+    //       const data = await getData('User', '*');
+    //       setAllUsers(data);
+    //     } catch (error) {
+    //       console.error('Failed to fetch pending Approvals:', error);
+    //       alert('Failed to fetch users. Please check the console for more details.');
+    //     }
+    //   }
+    //   fetchPendingApprovals();
+    // }, []);
 
-  // const { data: allUsers = [] } = useQuery({
-  //   queryKey: ['allUsers'],
-  //   queryFn: () => base44.entities.User.list('email')
-  // });
+  const { data: allUsers = [] } = useQuery({
+    queryKey: ['allUsers'],
+    queryFn: () => databaseClients.clients['User'].get()
+  });
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {
       const claim = claims.find(c => c.id === id);
-      await base44.entities.WarrantyClaim.update(id, { 
+      await databaseClients.clients['WarrantyClaim'].update(id, {
         approval_status: 'approved',
         reg_number: claim?.reg_number || 'UNKNOWN',
         approval_note: approvalNotes[id] || ''
       });
       if (claim) {
-        await base44.entities.ClaimAudit.create({
+        await databaseClients.clients['ClaimAudit'].create({
           claim_id: id,
           wip_number: claim.wip_number,
           field_changed: 'approval_status',
@@ -81,13 +81,13 @@ export default function Approvals() {
   const rejectMutation = useMutation({
     mutationFn: async (id) => {
       const claim = claims.find(c => c.id === id);
-      await base44.entities.WarrantyClaim.update(id, { 
+      await databaseClients.clients['WarrantyClaim'].update(id, { 
         approval_status: 'rejected',
         reg_number: claim?.reg_number || 'UNKNOWN',
         approval_note: approvalNotes[id] || ''
       });
       if (claim) {
-        await base44.entities.ClaimAudit.create({
+        await databaseClients.clients['ClaimAudit'].create({
           claim_id: id,
           wip_number: claim.wip_number,
           field_changed: 'approval_status',
