@@ -33,7 +33,7 @@ export default function Approvals() {
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ['pendingApprovals'],
-    queryFn: () => databaseClients.clients['WarrantyClaim'].get()
+    queryFn: () => databaseClients.clients['WarrantyClaim'].query('*', 'approval_status=pending_approval')
   });
   
   
