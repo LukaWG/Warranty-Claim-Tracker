@@ -68,7 +68,7 @@ export default function Configuration() {
 
 	// [ ] Update to use create site function in databaseClient.js
 	const createSiteMutation = useMutation({
-	mutationFn: (data) => base44.entities.Site.create(data),
+	mutationFn: (data) => databaseClients.clients["Site"].create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setNewSite({ name: '', code: '' });
@@ -76,7 +76,7 @@ export default function Configuration() {
 	});
 
 	const updateSiteMutation = useMutation({
-	mutationFn: ({ id, data }) => updateSite(id, data),
+	mutationFn: ({ id, data }) => databaseClients.clients["Site"].update(id, data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setEditingSite(null);
@@ -85,12 +85,12 @@ export default function Configuration() {
 
 	// [ ]: update to use delete function in databaseClient.js
 	const deleteSiteMutation = useMutation({
-	mutationFn: (id) => base44.entities.Site.delete(id),
+	mutationFn: (id) => databaseClients.clients["Site"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] })
 	});
 
 	const createAlertMutation = useMutation({
-	mutationFn: (data) => base44.entities.Alert.create(data),
+	mutationFn: (data) => databaseClients.clients["Alert"].create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['alerts'] });
 		setNewAlert({ name: '' });
@@ -98,12 +98,12 @@ export default function Configuration() {
 	});
 
 	const deleteAlertMutation = useMutation({
-	mutationFn: (id) => base44.entities.Alert.delete(id),
+	mutationFn: (id) => databaseClients.clients["Alert"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] })
 	});
 
 	const createResolutionMutation = useMutation({
-	mutationFn: (data) => base44.entities.AlertResolution.create(data),
+	mutationFn: (data) => databaseClients.clients["AlertResolution"].create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['resolutions'] });
 		setNewResolution({ name: '' });
@@ -111,12 +111,12 @@ export default function Configuration() {
 	});
 
 	const deleteResolutionMutation = useMutation({
-	mutationFn: (id) => base44.entities.AlertResolution.delete(id),
+	mutationFn: (id) => databaseClients.clients["AlertResolution"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['resolutions'] })
 	});
 
 	const createBrandMutation = useMutation({
-	mutationFn: (data) => base44.entities.Brand.create(data),
+	mutationFn: (data) => databaseClients.clients["Brand"].create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['brands'] });
 		setNewBrand({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
@@ -124,12 +124,12 @@ export default function Configuration() {
 	});
 
 	const updateBrandMutation = useMutation({
-	mutationFn: ({ id, data }) => base44.entities.Brand.update(id, data),
+	mutationFn: ({ id, data }) => databaseClients.clients["Brand"].update(id, data),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
 	});
 
 	const deleteBrandMutation = useMutation({
-	mutationFn: (id) => base44.entities.Brand.delete(id),
+	mutationFn: (id) => databaseClients.clients["Brand"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
 	});
 
@@ -179,7 +179,7 @@ export default function Configuration() {
 		const platformRole = (role === 'Owner') ? 'admin' : 'user';
 		
 		// Store pending user information for when they register
-		await base44.entities.PendingUserInvite.create({
+		await databaseClients.clients["PendingUserInvite"].create({
 		email: email,
 		custom_role: role,
 		first_name: first_name,
@@ -188,6 +188,7 @@ export default function Configuration() {
 		});
 		
 		// Invite user with platform role
+		// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
 		await base44.users.inviteUser(email, platformRole);
 		console.log('User invited and pending info stored');
 	},
@@ -212,7 +213,7 @@ export default function Configuration() {
 
 	const updateUserRoleMutation = useMutation({
 	mutationFn: ({ id, role }) => {
-		return base44.entities.User.update(id, { custom_role: role });
+		return databaseClients.clients["User"].update(id, { custom_role: role });
 	},
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -224,7 +225,7 @@ export default function Configuration() {
 	});
 
 	const updateUserMutation = useMutation({
-	mutationFn: ({ id, data }) => base44.entities.User.update(id, data),
+	mutationFn: ({ id, data }) => databaseClients.clients["User"].update(id, data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['users'] });
 		setEditingUser(null);
@@ -232,7 +233,7 @@ export default function Configuration() {
 	});
 
 	const deleteUserMutation = useMutation({
-	mutationFn: (id) => base44.entities.User.delete(id),
+	mutationFn: (id) => databaseClients.clients["User"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] })
 	});
 
