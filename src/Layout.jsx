@@ -19,7 +19,7 @@ export default function Layout({ children, currentPageName }) {
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
+    queryFn: () => databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com'), // Fetch current user
     staleTime: 30000,
   });
   
