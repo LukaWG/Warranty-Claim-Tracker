@@ -38,7 +38,7 @@ class SiteClient extends DatabaseClient {
         super('Site');
         // format data in brands and brand rates to be stored into an array
     }
-    
+  }
 
 
 class DatabaseClients {
