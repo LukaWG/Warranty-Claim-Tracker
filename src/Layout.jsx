@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';
 import HendyLogo from '@/components/layout/HendyLogo';
 import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function Layout({ children, currentPageName }) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -17,7 +18,8 @@ export default function Layout({ children, currentPageName }) {
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me(),
+    // [ ] Sort user logic and get current user here. For now just getting me manually
+    queryFn: () => databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
     staleTime: 30000,
   });
   
@@ -145,10 +147,12 @@ export default function Layout({ children, currentPageName }) {
           )}
           <button
             onClick={() => {
-              localStorage.removeItem('base44_access_token');
-              localStorage.removeItem('base44_token');
-              localStorage.removeItem('token');
-              base44.auth.redirectToLogin();
+              // [ ] Implement log out logic
+              // localStorage.removeItem('base44_access_token');
+              // localStorage.removeItem('base44_token');
+              // localStorage.removeItem('token');
+              // base44.auth.redirectToLogin();
+              alert("Logged out");
             }}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors mb-3"
           >
