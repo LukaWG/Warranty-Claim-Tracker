@@ -6777,3 +6777,14 @@ export let warrantyClaimData = [
   }
 ]
 ];
+
+export let userData = [[
+  {
+    "id": "69de371b5596465ed57bba72",
+    "email": "owilliams@hendy-group.com",
+    "first_name": "Oliver",
+    "last_name": "Williams",
+    "custom_role": "Service Manager",
+    "default_site": null
+  }
+]]

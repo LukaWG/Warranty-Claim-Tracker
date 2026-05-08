@@ -4,7 +4,7 @@
 
 
 
-import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, warrantyClaimData } from '/data/data.js';
+import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData } from '/data/data.js';
 
 
 class DatabaseClient {
@@ -75,6 +75,9 @@ class DatabaseClient {
         else if (this.fileName === 'PendingUserInvite') {
             pendingUserInviteData[0] = this.data;
         }
+        else if (this.fileName === 'User') {
+            userData[0] = this.data;
+        }
         else if (this.fileName === 'WarrantyClaim') {
             warrantyClaimData[0] = this.data;
         }
@@ -92,7 +95,7 @@ class SiteClient extends DatabaseClient {
 class DatabaseClients {
     constructor() {
         this.clients = {};
-        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'WarrantyClaim'];
+        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'User', 'WarrantyClaim'];
         fileNames.forEach(fileName => {
             this.clients[fileName] = new DatabaseClient(fileName);
         });
@@ -137,6 +140,9 @@ function readJsonFile(fileName) {
   }
   else if (fileName === 'PendingApprovals') {
     return warrantyClaimData[0].filter(claim => claim.approval_status === 'pending_approval');
+  }
+  else if (fileName === 'User') {
+    return userData[0];
   }
   else {
     throw new Error(`Unknown file name: ${fileName}`);
