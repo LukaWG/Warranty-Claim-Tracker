@@ -30,7 +30,7 @@ export default function Dashboard() {
 
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => databaseClients.clients['WarrantyClaim'].query() // Fetch all claims for filtering on frontend
+    queryFn: () => databaseClients.clients['WarrantyClaim'].query(), // Fetch all claims for filtering on frontend
     // queryFn: () => base44.entities.WarrantyClaim.list('-created_date'),
     refetchInterval: 30000,
     refetchIntervalInBackground: true,
