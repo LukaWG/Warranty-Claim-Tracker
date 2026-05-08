@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import ClaimFormCard from '@/components/claims/ClaimFormCard';
 import HendyLogo from '@/components/layout/HendyLogo';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function ClaimForm() {
   const navigate = useNavigate();
@@ -12,7 +13,8 @@ export default function ClaimForm() {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        const user = await base44.auth.me();
+        // [ ] Sort user logic and get current user here. For now just getting me manually
+        const user = await databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com'); // Fetch current user
         const role = user.custom_role || user.role;
         if (role !== 'Processor' && role !== 'Service Manager' && role !== 'Owner' && role !== 'admin') {
           navigate(createPageUrl('Dashboard'));
@@ -25,7 +27,7 @@ export default function ClaimForm() {
   }, [navigate]);
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.WarrantyClaim.create(data)
+    mutationFn: (data) => databaseClients.clients['WarrantyClaim'].create(data)
   });
 
   const handleSubmit = async (formData) => {

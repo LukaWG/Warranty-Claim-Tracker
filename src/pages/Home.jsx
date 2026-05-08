@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -9,7 +10,9 @@ export default function Home() {
   useEffect(() => {
     const redirectUser = async () => {
       try {
-        const user = await base44.auth.me();
+        // const user = await base44.auth.me();
+        // [ ] Sort user logic and get current user here. For now just getting me manually
+        const user = await databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
         const role = user.custom_role || user.role;
 
         // Redirect based on role
