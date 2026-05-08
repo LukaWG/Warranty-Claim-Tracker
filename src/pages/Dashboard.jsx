@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BrandStatsSection from '@/components/dashboard/BrandStatsSection';
 import ClaimsTable from '@/components/dashboard/ClaimsTable';
@@ -11,6 +11,7 @@ import ExportButton from '@/components/dashboard/ExportButton';
 
 import { FileText, Clock, CheckCircle, AlertCircle, XCircle, Loader, Search, Gift } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { databaseClients } from '@/api/databaseClient';
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
@@ -23,29 +24,34 @@ export default function Dashboard() {
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    // [ ] Sort user logic and get current user here. For now just getting me manually
+    queryFn: () => databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
   });
 
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => base44.entities.WarrantyClaim.list('-created_date'),
+    queryFn: () => databaseClients.clients['WarrantyClaim'].query() // Fetch all claims for filtering on frontend
+    // queryFn: () => base44.entities.WarrantyClaim.list('-created_date'),
     refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => base44.entities.Brand.list('name')
+    queryFn: () => databaseClients.clients['Brand'].query('name') // Fetch brands for stats and filters
+    // queryFn: () => base44.entities.Brand.list('name')
   });
 
   const { data: allSites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => base44.entities.Site.list('name')
+    queryFn: () => databaseClients.clients['Site'].query('name') // Fetch sites for filters
+    // queryFn: () => base44.entities.Site.list('name')
   });
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => base44.entities.User.list('email')
+    queryFn: () => databaseClients.clients['User'].query('email') // Fetch users for filters
+    // queryFn: () => base44.entities.User.list('email')
   });
 
   // Load selected brands from localStorage on mount
@@ -138,7 +144,8 @@ export default function Dashboard() {
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
-    await base44.entities.ClaimAudit.create({
+    await databaseClients.clients['ClaimAudit'].create({
+    // await base44.entities.ClaimAudit.create({
       claim_id: claimId,
       wip_number: wipNumber,
       field_changed: fieldChanged,
@@ -149,7 +156,7 @@ export default function Dashboard() {
   };
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.WarrantyClaim.update(id, data),
+    mutationFn: ({ id, data }) => databaseClients.clients['WarrantyClaim'].update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['claims'] });
       queryClient.invalidateQueries({ queryKey: ['audits'] });
@@ -163,7 +170,8 @@ export default function Dashboard() {
       await createAuditLog(id, claim.wip_number, 'status', claim.status, status, 'status_changed');
       
       // Send email alert if status changed to rejected
-      if (status === 'rejected' && claim.status !== 'rejected') {
+      // [ ] Change send email logic away from base44
+      /*if (status === 'rejected' && claim.status !== 'rejected') {
         await base44.integrations.Core.SendEmail({
           to: claim.submitted_for || claim.created_by,
           subject: `Claim Rejected - WIP #${claim.wip_number}`,
@@ -184,7 +192,7 @@ export default function Dashboard() {
         <p>Best regards,<br>
         The Warranty App Team</p>`
         });
-      }
+      }*/
     }
     updateMutation.mutate({ id, data: { status } });
   };
@@ -218,7 +226,7 @@ export default function Dashboard() {
       }
       
       // Send email alert if alert is being added (status will change to rejected)
-      if (alert && !claim.alert) {
+      /*if (alert && !claim.alert) {
         await base44.integrations.Core.SendEmail({
           to: claim.submitted_for || claim.created_by,
           subject: `Claim Alert - WIP #${claim.wip_number}`,
@@ -240,7 +248,7 @@ export default function Dashboard() {
         <p>Best regards,<br>
         The Warranty App Team</p>`
         });
-      }
+      }*/
     }
     const alertNewStatus = claim?.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
     updateMutation.mutate({ 
@@ -303,7 +311,7 @@ export default function Dashboard() {
     };
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.WarrantyClaim.delete(id),
+    mutationFn: (id) => databaseClients.clients['WarrantyClaim'].delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['claims'] })
   });
 
