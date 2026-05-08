@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+// import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import ChartsSection from '@/components/dashboard/ChartsSection';
 import DynamicChartsSection from '@/components/dashboard/DynamicChartsSection';
@@ -11,6 +11,7 @@ import CustomizeReportingModal from '@/components/reporting/CustomizeReportingMo
 import { BarChart3, FileText, Clock, CheckCircle, XCircle, AlertCircle, Loader, Settings2, Wrench, Package, PoundSterling, HardHat, Search, Gift } from 'lucide-react';
 import LagTimeSection from '@/components/reporting/LagTimeSection';
 import { Button } from "@/components/ui/button";
+import { databaseClients } from '@/api/databaseClient';
 
 export default function Reporting() {
   const [filters, setFilters] = useState({ site: 'all', user: 'all', status: 'all', alert: 'all', resolution: 'all', dateFrom: '', dateTo: '' });
@@ -56,7 +57,7 @@ export default function Reporting() {
 
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => base44.entities.WarrantyClaim.list('-created_date')
+    queryFn: () => databaseClients.clients['WarrantyClaim'].get() // Fetch all claims for filtering and stats
   });
 
   // Apply filters
