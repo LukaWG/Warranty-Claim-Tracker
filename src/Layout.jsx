@@ -32,7 +32,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
-  console.warn(currentUser?.email + ' - ' + displayRole);
+  console.log(currentUser?.email + ' - ' + displayRole + ' - ' + currentUser?.custom_role);
   const navItems = currentUser 
     ? allNavItems.filter(item => item.roles.includes(displayRole))
     : allNavItems;
