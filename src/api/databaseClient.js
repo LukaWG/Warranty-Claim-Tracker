@@ -125,11 +125,13 @@ class SiteClient extends DatabaseClient {
 class DatabaseClients {
     constructor() {
         this.clients = {};
-        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'User', 'WarrantyClaim'];
-        fileNames.forEach(fileName => {
-            this.clients[fileName] = new DatabaseClient(fileName);
+        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'User', 'WarrantyClaim', 'Site'];
+
+        fileNames.forEach((fileName) => {
+            const client = fileName === 'Site' ? new SiteClient() : new DatabaseClient(fileName);
+            this.clients[fileName] = client;
+            this[fileName] = client;
         });
-        this.clients['Site'] = new SiteClient();
     }
 }
 

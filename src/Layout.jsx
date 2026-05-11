@@ -32,7 +32,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   // TESTING
-  const testUser = databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com');
+  const testUser = await databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com');
   console.log('Test User:', testUser);
   console.log('Current User from React Query:', currentUser);
   // Role
