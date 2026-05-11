@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Settings, LayoutDashboard, FileEdit, Search, BarChart3, LogOut, Menu, X, ShieldCheck } from 'lucide-react';
