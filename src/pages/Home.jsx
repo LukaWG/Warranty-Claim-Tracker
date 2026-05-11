@@ -12,8 +12,8 @@ export default function Home() {
       try {
         // const user = await base44.auth.me();
         // [ ] Sort user logic and get current user here. For now just getting me manually
-        const user = await databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
-        const role = user.custom_role || user.role;
+        const user = await databaseClients.User.me(); // Fetch current user
+        const role = user?.custom_role || user?.role;
 
         // Redirect based on role
         if (role === 'Processor') {

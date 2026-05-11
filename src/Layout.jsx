@@ -16,10 +16,24 @@ export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [roleOverride, setRoleOverride] = useState(null);
 
+  // CHANGING USER
+  const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
+
+  useEffect(() => {
+    const handleActingUserChanged = () => {
+      setActingUserId(databaseClients.User.getActingUserId());
+    };
+
+    window.addEventListener('acting-user-changed', handleActingUserChanged);
+    return () => window.removeEventListener('acting-user-changed', handleActingUserChanged);
+  }, []);
+
+  // END CHANGING USER
+
   const { data: currentUser } = useQuery({
-    queryKey: ['currentUser'],
+    queryKey: ['currentUser', actingUserId],
     // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com'), // Fetch current user
+    queryFn: () => databaseClients.User.me(),
     staleTime: 30000,
   });
   
@@ -31,23 +45,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] }
   ];
 
-  // TESTING
-  async function testQuery() {
-    const testUser = await databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com');
-    console.log('Test User:', testUser);
-    console.log('Current User from React Query:', currentUser);
-    // Role
-    console.log('Test User Role:', testUser[0]?.role);
-    console.log('Test User Custom Role:', testUser[0]?.custom_role);
-    console.log('Current User Role:', currentUser[0]?.role);
-    console.log('Current User Custom Role:', currentUser[0]?.custom_role);
-  };
-  testQuery();
-
-// END TESTING
-
-  const displayRole = roleOverride || currentUser?.[0]?.custom_role || currentUser?.[0]?.role;
-  console.log(currentUser?.[0]?.email + ' - ' + displayRole + ' - ' + currentUser?.[0]?.custom_role);
+  const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
   const navItems = currentUser 
     ? allNavItems.filter(item => item.roles.includes(displayRole))
     : allNavItems;

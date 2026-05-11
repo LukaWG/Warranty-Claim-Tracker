@@ -22,10 +22,23 @@ export default function Dashboard() {
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [showClaimed, setShowClaimed] = useState(true);
 
+    // CHANGING USER
+    const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
+
+    useEffect(() => {
+      const handleUserChanged = () => {
+        setActingUserId(databaseClients.User.getActingUserId());
+      };
+
+      window.addEventListener('acting-user-changed', handleUserChanged);
+      return () => window.removeEventListener('acting-user-changed', handleUserChanged);
+    }, []);
+    // END CHANGING USER
+
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
-    queryKey: ['currentUser'],
+    queryKey: ['currentUser', actingUserId],
     // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com') // Fetch current user
+    queryFn: () => databaseClients.User.me() // Fetch current user
   });
 
   const { data: allClaims = [], isLoading } = useQuery({

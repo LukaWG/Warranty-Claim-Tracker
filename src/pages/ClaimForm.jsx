@@ -14,9 +14,9 @@ export default function ClaimForm() {
     const checkAccess = async () => {
       try {
         // [ ] Sort user logic and get current user here. For now just getting me manually
-        const user = await databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com'); // Fetch current user
-        const role = user.custom_role || user.role;
-        if (role !== 'Processor' && role !== 'Service Manager' && role !== 'Owner' && role !== 'admin') {
+        const user = await databaseClients.User.me(); // Fetch current user
+        const role = user?.custom_role || user?.role;
+        if (role !== 'Processor' && role !== 'Site Manager' && role !== 'Service Manager' && role !== 'Owner' && role !== 'admin') {
           navigate(createPageUrl('Dashboard'));
         }
       } catch (error) {

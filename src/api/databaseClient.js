@@ -6,6 +6,24 @@
 
 import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData } from '/data/data.js';
 
+const ACTING_USER_STORAGE_KEY = 'actingUserId';
+
+function loadActingUserId() {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(ACTING_USER_STORAGE_KEY);
+}
+
+function saveActingUserId(userId) {
+  if (typeof window === 'undefined') return;
+  if (userId === null || typeof userId === 'undefined') {
+    localStorage.removeItem(ACTING_USER_STORAGE_KEY);
+  } else {
+    localStorage.setItem(ACTING_USER_STORAGE_KEY, String(userId));
+  }
+  window.dispatchEvent(new Event('acting-user-changed'));
+}
+
+let actingUserId = loadActingUserId();
 
 class DatabaseClient {
     constructor(fileName) {
@@ -49,6 +67,43 @@ class DatabaseClient {
         await this.fetch();
         this.data = this.data.filter(item => item.id !== id);
         await this.save();
+    }
+
+    async me() {
+        if (this.fileName !== 'User') {
+            throw new Error('me() is only available on the User client');
+        }
+
+        if (actingUserId) {
+            const result = await this.query('*', `id=${actingUserId}`);
+            return Array.isArray(result) ? result[0] : result;
+        }
+
+        const defaultUser = await this.query('*', 'email=lwilson-green@hendy-group.com');
+        return Array.isArray(defaultUser) ? defaultUser[0] : defaultUser;
+    }
+
+    setTestingUser(userId) {
+        if (this.fileName !== 'User') {
+            throw new Error('setTestingUser() is only available on the User client');
+        }
+        actingUserId = userId;
+        saveActingUserId(userId);
+    }
+
+    clearTestingUser() {
+        if (this.fileName !== 'User') {
+            throw new Error('clearTestingUser() is only available on the User client');
+        }
+        actingUserId = null;
+        saveActingUserId(null);
+    }
+
+    getActingUserId() {
+        if (this.fileName !== 'User') {
+            throw new Error('getActingUserId() is only available on the User client');
+        }
+        return actingUserId;
     }
 
     async save() {
