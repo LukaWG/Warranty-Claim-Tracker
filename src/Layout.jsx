@@ -31,6 +31,18 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] }
   ];
 
+  // TESTING
+  const testUser = await databaseClients.clients['User'].query('*', 'email=lwilson-green@hendy-group.com');
+  console.log('Test User:', testUser);
+  console.log('Current User from React Query:', currentUser);
+  // Role
+  console.log('Test User Role:', testUser[0]?.role);
+  console.log('Test User Custom Role:', testUser[0]?.custom_role);
+  console.log('Current User Role:', currentUser?.role);
+  console.log('Current User Custom Role:', currentUser?.custom_role);
+
+// END TESTING
+
   const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
   console.log(currentUser?.email + ' - ' + displayRole + ' - ' + currentUser?.custom_role);
   const navItems = currentUser 
