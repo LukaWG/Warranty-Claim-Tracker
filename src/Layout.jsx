@@ -39,8 +39,8 @@ export default function Layout({ children, currentPageName }) {
     // Role
     console.log('Test User Role:', testUser[0]?.role);
     console.log('Test User Custom Role:', testUser[0]?.custom_role);
-    console.log('Current User Role:', currentUser?.role);
-    console.log('Current User Custom Role:', currentUser?.custom_role);
+    console.log('Current User Role:', currentUser[0]?.role);
+    console.log('Current User Custom Role:', currentUser[0]?.custom_role);
   };
   testQuery();
 
