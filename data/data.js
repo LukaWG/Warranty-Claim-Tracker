@@ -6794,5 +6794,53 @@ export let userData = [[
     "last_name": "Wilson-Green",
     "custom_role": "Owner",
     "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba74",
+    "email": "testuser1@example.com",
+    "first_name": "Test",
+    "last_name": "Processor",
+    "custom_role": "Processor",
+    "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba75",
+    "email": "testuser2@example.com",
+    "first_name": "Test",
+    "last_name": "Site Manager",
+    "custom_role": "Site Manager",
+    "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba76",
+    "email": "testuser1@example.com",
+    "first_name": "Test",
+    "last_name": "Admin",
+    "custom_role": "Admin",
+    "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba77",
+    "email": "testuser1@example.com",
+    "first_name": "Test",
+    "last_name": "Admin Manager",
+    "custom_role": "Admin Manager",
+    "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba78",
+    "email": "testuser1@example.com",
+    "first_name": "Test",
+    "last_name": "Service Manager",
+    "custom_role": "Service Manager",
+    "default_site": null
+  },
+  {
+    "id": "69de371b5596465ed57bba79",
+    "email": "testuser1@example.com",
+    "first_name": "Test",
+    "last_name": "Owner",
+    "custom_role": "Owner",
+    "default_site": null
   }
 ]]
