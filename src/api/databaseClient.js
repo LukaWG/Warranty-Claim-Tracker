@@ -86,9 +86,9 @@ class DatabaseClient {
     async query(select='*', where="") {
         // Implementation for querying data with select and where clauses
         await this.fetch();
-        debugger;
         let data = this.data;
-        if (where) {
+        if (where) {  
+            debugger;   
             const [key, value] = where.split('=');
             console.log(`Filtering ${this.fileName} where ${key.trim()} = ${value.trim()}`);
             if (key && typeof value !== 'undefined') {
