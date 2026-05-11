@@ -32,14 +32,17 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   // TESTING
-  const testUser = await databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com');
-  console.log('Test User:', testUser);
-  console.log('Current User from React Query:', currentUser);
-  // Role
-  console.log('Test User Role:', testUser[0]?.role);
-  console.log('Test User Custom Role:', testUser[0]?.custom_role);
-  console.log('Current User Role:', currentUser?.role);
-  console.log('Current User Custom Role:', currentUser?.custom_role);
+  async function testQuery() {
+    const testUser = await databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com');
+    console.log('Test User:', testUser);
+    console.log('Current User from React Query:', currentUser);
+    // Role
+    console.log('Test User Role:', testUser[0]?.role);
+    console.log('Test User Custom Role:', testUser[0]?.custom_role);
+    console.log('Current User Role:', currentUser?.role);
+    console.log('Current User Custom Role:', currentUser?.custom_role);
+  };
+  testQuery();
 
 // END TESTING
 
