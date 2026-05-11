@@ -19,7 +19,7 @@ export default function Layout({ children, currentPageName }) {
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com').then(data => data?.[0]), // Fetch current user
+    queryFn: () => databaseClients.User.query('*', 'email=lwilson-green@hendy-group.com'), // Fetch current user
     staleTime: 30000,
   });
   
@@ -46,8 +46,8 @@ export default function Layout({ children, currentPageName }) {
 
 // END TESTING
 
-  const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
-  console.log(currentUser?.email + ' - ' + displayRole + ' - ' + currentUser?.custom_role);
+  const displayRole = roleOverride || currentUser[0]?.custom_role || currentUser[0]?.role;
+  console.log(currentUser[0]?.email + ' - ' + displayRole + ' - ' + currentUser[0]?.custom_role);
   const navItems = currentUser 
     ? allNavItems.filter(item => item.roles.includes(displayRole))
     : allNavItems;
