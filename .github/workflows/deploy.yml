@@ -3,7 +3,7 @@ name: Pages Deployment
 on:
   push:
     branches:
-      - main
+      - cra
   workflow_dispatch:
 
 permissions:
@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: cra
 
       - name: Setup Node
         uses: actions/setup-node@v4
