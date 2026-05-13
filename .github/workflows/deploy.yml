@@ -3,10 +3,7 @@ name: Pages Deployment
 on:
   push:
     branches:
-<<<<<<< HEAD
       - main
-=======
->>>>>>> 896dcaf (Adjust deployment branch)
       - nextjs
   workflow_dispatch:
 
