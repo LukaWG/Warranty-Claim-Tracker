@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { createPageUrl } from './utils';
 import { Settings, LayoutDashboard, FileEdit, Search, BarChart3, LogOut, Menu, X, ShieldCheck } from 'lucide-react';
 import { cn } from "@/lib/utils";
@@ -125,7 +125,7 @@ export default function Layout({ children, currentPageName }) {
               return (
                 <Link
                   key={item.name}
-                  to={createPageUrl(item.name)}
+                  href={createPageUrl(item.name)}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { createPageUrl } from '@/utils';
@@ -46,7 +46,7 @@ export default function ChangeUser() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Link to={createPageUrl('Home')}>
+            <Link href={createPageUrl('Home')}>
               <Button variant="outline">Back home</Button>
             </Link>
             <Button variant="secondary" onClick={handleClearSelection}>

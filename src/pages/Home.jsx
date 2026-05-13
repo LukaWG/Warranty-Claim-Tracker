@@ -1,43 +1,38 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 // import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { databaseClients } from '@/api/databaseClient';
 
 export default function Home() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const redirectUser = async () => {
       try {
-        // const user = await base44.auth.me();
-        // [ ] Sort user logic and get current user here. For now just getting me manually
-        const user = await databaseClients.User.me(); // Fetch current user
+        const user = await databaseClients.User.me();
         const role = user?.custom_role || user?.role;
 
-        // Redirect based on role
         if (role === 'Processor') {
-          navigate(createPageUrl('ClaimForm'));
+          router.replace(createPageUrl('ClaimForm'));
         } else if (role === 'Admin Manager') {
-          navigate(createPageUrl('Dashboard'));
+          router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Admin') {
-          navigate(createPageUrl('Dashboard'));
+          router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Service Manager') {
-          navigate(createPageUrl('Dashboard'));
+          router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Owner') {
-          navigate(createPageUrl('Dashboard'));
+          router.replace(createPageUrl('Dashboard'));
         } else {
-          // Default to ClaimForm for unknown roles
-          navigate(createPageUrl('ClaimForm'));
+          router.replace(createPageUrl('ClaimForm'));
         }
       } catch (error) {
-        // If not authenticated, redirect to ClaimForm
-        navigate(createPageUrl('ClaimForm'));
+        router.replace(createPageUrl('ClaimForm'));
       }
     };
 
     redirectUser();
-  }, [navigate]);
+  }, [router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

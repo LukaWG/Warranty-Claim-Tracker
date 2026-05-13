@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useAuth } from './AuthContext';
 import { base44 } from '@/api/base44Client';
 import { pagesConfig } from '@/pages.config';
 
 export default function NavigationTracker() {
-    const location = useLocation();
+    const router = useRouter();
     const { isAuthenticated } = useAuth();
     const { Pages, mainPage } = pagesConfig;
     const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -13,29 +13,25 @@ export default function NavigationTracker() {
     // Post navigation changes to parent window
     useEffect(() => {
         window.parent?.postMessage({
-            type: "app_changed_url",
-            url: window.location.href
+            type: 'app_changed_url',
+            url: window.location.href,
         }, '*');
-    }, [location]);
+    }, [router.asPath]);
 
     // Log user activity when navigating to a page
     useEffect(() => {
-        // Extract page name from pathname
-        const pathname = location.pathname;
+        const rawPathname = router.asPath || '/';
+        const normalizedPathname = rawPathname.replace(/^\/Warranty-Claim-Tracker/, '') || '/';
         let pageName;
-        
-        if (pathname === '/' || pathname === '') {
+
+        if (normalizedPathname === '/' || normalizedPathname === '') {
             pageName = mainPageKey;
         } else {
-            // Remove leading slash and get the first segment
-            const pathSegment = pathname.replace(/^\//, '').split('/')[0];
-            
-            // Try case-insensitive lookup in Pages config
+            const pathSegment = normalizedPathname.replace(/^\//, '').split('/')[0];
             const pageKeys = Object.keys(Pages);
             const matchedKey = pageKeys.find(
                 key => key.toLowerCase() === pathSegment.toLowerCase()
             );
-            
             pageName = matchedKey || null;
         }
 
@@ -44,7 +40,7 @@ export default function NavigationTracker() {
                 // Silently fail - logging shouldn't break the app
             });
         }
-    }, [location, isAuthenticated, Pages, mainPageKey]);
+    }, [router.asPath, isAuthenticated, Pages, mainPageKey]);
 
     return null;
 }

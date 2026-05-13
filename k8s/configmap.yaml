@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: warranty-claim-tracker-config
+  namespace: warranty-claim-tracker
+data:
+  base-path: "/Warranty-Claim-Tracker"

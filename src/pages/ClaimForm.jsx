@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 // import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
@@ -8,23 +8,22 @@ import HendyLogo from '@/components/layout/HendyLogo';
 import { databaseClients } from '@/api/databaseClient';
 
 export default function ClaimForm() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        // [ ] Sort user logic and get current user here. For now just getting me manually
-        const user = await databaseClients.User.me(); // Fetch current user
+        const user = await databaseClients.User.me();
         const role = user?.custom_role || user?.role;
         if (role !== 'Processor' && role !== 'Site Manager' && role !== 'Service Manager' && role !== 'Owner' && role !== 'admin') {
-          navigate(createPageUrl('Dashboard'));
+          router.replace(createPageUrl('Dashboard'));
         }
       } catch (error) {
         // If not authenticated, allow claim form for public access
       }
     };
     checkAccess();
-  }, [navigate]);
+  }, [router]);
 
   const createMutation = useMutation({
     mutationFn: (data) => databaseClients.clients['WarrantyClaim'].create(data)
