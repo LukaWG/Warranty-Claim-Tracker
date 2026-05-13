@@ -10,7 +10,8 @@ import { motion } from "framer-motion";
 import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, History, MessageSquare, Maximize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 
@@ -43,29 +44,26 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const col = (key) => visibleColumns[key];
 
-  const { data: currentUser } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
-  });
+  const { user: currentUser } = useAuth();
 
   const { data: alerts = [] } = useQuery({
     queryKey: ['alerts'],
-    queryFn: () => base44.entities.Alert.list('name')
+    queryFn: () => databaseClients.Alert.get()
   });
 
   const { data: resolutions = [] } = useQuery({
     queryKey: ['resolutions'],
-    queryFn: () => base44.entities.AlertResolution.list('name')
+    queryFn: () => databaseClients.AlertResolution.get()
   });
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => base44.entities.Brand.list('name')
+    queryFn: () => databaseClients.Brand.get()
   });
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => base44.entities.User.list('email')
+    queryFn: () => databaseClients.User.get()
   });
 
   const isProcessor = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';

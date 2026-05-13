@@ -3854,7 +3854,7 @@ Object.defineProperty(exports, "hasBasePath", {
     }
 });
 const _pathhasprefix = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/shared/lib/router/utils/path-has-prefix.js [ssr] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function hasBasePath(path) {
     return (0, _pathhasprefix.pathHasPrefix)(path, basePath);
 }
@@ -3879,7 +3879,7 @@ Object.defineProperty(exports, "removeBasePath", {
     }
 });
 const _hasbasepath = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/client/has-base-path.js [ssr] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function removeBasePath(path) {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
@@ -3932,7 +3932,7 @@ Object.defineProperty(exports, "addBasePath", {
 });
 const _addpathprefix = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/shared/lib/router/utils/add-path-prefix.js [ssr] (ecmascript)");
 const _normalizetrailingslash = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/client/normalize-trailing-slash.js [ssr] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function addBasePath(path, required) {
     return (0, _normalizetrailingslash.normalizePathTrailingSlash)(("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : (0, _addpathprefix.addPathPrefix)(path, basePath));
 }
@@ -5085,7 +5085,7 @@ class Router {
         // if auto prerendered and dynamic route wait to update asPath
         // until after mount to prevent hydration mismatch
         const autoExportDynamic = (0, _isdynamic.isDynamicRoute)(pathname) && self.__NEXT_DATA__.autoExport;
-        this.basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+        this.basePath = ("TURBOPACK compile-time value", "") || '';
         this.sub = subscription;
         this.clc = null;
         this._wrapApp = wrapApp;
@@ -6468,7 +6468,7 @@ Object.defineProperty(exports, "getDomainLocale", {
     }
 });
 const _normalizetrailingslash = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/client/normalize-trailing-slash.js [ssr] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function getDomainLocale(path, locale, locales, domainLocales) {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;

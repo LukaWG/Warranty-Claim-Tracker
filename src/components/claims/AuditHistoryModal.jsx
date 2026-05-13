@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
 import { format } from "date-fns";
 import { History, User, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 export default function AuditHistoryModal({ claim, open, onClose }) {
   const { data: audits = [], isLoading } = useQuery({
     queryKey: ['audits', claim?.id],
-    queryFn: () => base44.entities.ClaimAudit.filter({ claim_id: claim?.id }, '-created_date'),
+    queryFn: () => databaseClients.ClaimAudit.query('*', `claim_id=${claim?.id}`),
     enabled: open && !!claim
   });
 

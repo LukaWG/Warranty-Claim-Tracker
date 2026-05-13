@@ -1,5 +1,12 @@
 {
-  "/404": "pages/404.js",
+  "/": "pages/index.js",
+  "/Approvals": "pages/Approvals.js",
+  "/ChangeUser": "pages/ChangeUser.js",
+  "/ClaimForm": "pages/ClaimForm.js",
+  "/Configuration": "pages/Configuration.js",
+  "/Dashboard": "pages/Dashboard.js",
+  "/Reporting": "pages/Reporting.js",
+  "/[...page]": "pages/[...page].js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js"

@@ -23,7 +23,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$W
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useQuery.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/databaseClient.js [client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 ;
@@ -47,7 +47,7 @@ function ClaimFormCard({ onSubmit, isSubmitting }) {
             'sites'
         ],
         queryFn: {
-            "ClaimFormCard.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Site.list('name')
+            "ClaimFormCard.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].Site.get()
         }["ClaimFormCard.useQuery"]
     });
     const { data: brands = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -55,7 +55,7 @@ function ClaimFormCard({ onSubmit, isSubmitting }) {
             'brands'
         ],
         queryFn: {
-            "ClaimFormCard.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Brand.list('name')
+            "ClaimFormCard.useQuery": ()=>base44.entities.Brand.list('name')
         }["ClaimFormCard.useQuery"]
     });
     const { data: currentUser } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -63,7 +63,7 @@ function ClaimFormCard({ onSubmit, isSubmitting }) {
             'currentUser'
         ],
         queryFn: {
-            "ClaimFormCard.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].auth.me()
+            "ClaimFormCard.useQuery": ()=>base44.auth.me()
         }["ClaimFormCard.useQuery"]
     });
     const { data: allUsers = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -71,7 +71,7 @@ function ClaimFormCard({ onSubmit, isSubmitting }) {
             'allUsers'
         ],
         queryFn: {
-            "ClaimFormCard.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.User.list('email')
+            "ClaimFormCard.useQuery": ()=>base44.entities.User.list('email')
         }["ClaimFormCard.useQuery"],
         enabled: (currentUser?.custom_role || currentUser?.role) === 'Service Manager'
     });
@@ -118,7 +118,7 @@ function ClaimFormCard({ onSubmit, isSubmitting }) {
         };
         delete submitData.submitting_as;
         if (isServiceManager && formData.submitting_as) {
-            await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].functions.invoke('submitClaimAs', {
+            await base44.functions.invoke('submitClaimAs', {
                 claimData: submitData,
                 submittingAs: formData.submitting_as
             });
@@ -923,7 +923,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$W
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$checkbox$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/ui/checkbox.jsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$utils$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/utils.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useQuery.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/databaseClient.js [client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 ;
@@ -948,7 +948,7 @@ function EditClaimModal({ claim, open, onClose, onSave }) {
             'sites'
         ],
         queryFn: {
-            "EditClaimModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Site.list('name')
+            "EditClaimModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].Site.get()
         }["EditClaimModal.useQuery"]
     });
     const { data: brands = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -956,7 +956,7 @@ function EditClaimModal({ claim, open, onClose, onSave }) {
             'brands'
         ],
         queryFn: {
-            "EditClaimModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Brand.list('name')
+            "EditClaimModal.useQuery": ()=>base44.entities.Brand.list('name')
         }["EditClaimModal.useQuery"]
     });
     const { data: currentUser } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -964,7 +964,7 @@ function EditClaimModal({ claim, open, onClose, onSave }) {
             'currentUser'
         ],
         queryFn: {
-            "EditClaimModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].auth.me()
+            "EditClaimModal.useQuery": ()=>base44.auth.me()
         }["EditClaimModal.useQuery"]
     });
     const claimParts = (claim?.claim_number || '').split('-');
@@ -2183,7 +2183,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$W
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/react/index.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$dialog$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/ui/dialog.jsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useQuery.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/databaseClient.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/date-fns/format.mjs [client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$history$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__History$3e$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/lucide-react/dist/esm/icons/history.js [client] (ecmascript) <export default as History>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/lucide-react/dist/esm/icons/user.js [client] (ecmascript) <export default as User>");
@@ -2206,9 +2206,7 @@ function AuditHistoryModal({ claim, open, onClose }) {
             claim?.id
         ],
         queryFn: {
-            "AuditHistoryModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.ClaimAudit.filter({
-                    claim_id: claim?.id
-                }, '-created_date')
+            "AuditHistoryModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].ClaimAudit.query('*', `claim_id=${claim?.id}`)
         }["AuditHistoryModal.useQuery"],
         enabled: open && !!claim
     });
@@ -2420,7 +2418,8 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/react/jsx-dev-runtime.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/react/index.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/databaseClient.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/AuthContext.jsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useQuery.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useMutation$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useMutation.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$QueryClientProvider$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js [client] (ecmascript)");
@@ -2444,6 +2443,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+;
 function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
     _s();
     const [newNote, setNewNote] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])('');
@@ -2451,12 +2451,13 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
     const [isUploading, setIsUploading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const fileInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const queryClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$QueryClientProvider$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQueryClient"])();
+    const { user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const { data: currentUser } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
         queryKey: [
             'currentUser'
         ],
         queryFn: {
-            "ClaimNotesModal.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].auth.me()
+            "ClaimNotesModal.useQuery": ()=>Promise.resolve(user)
         }["ClaimNotesModal.useQuery"]
     });
     const { data: notes = [], isLoading } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -2465,9 +2466,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
             claim?.id
         ],
         queryFn: {
-            "ClaimNotesModal.useQuery": ()=>claim?.id ? __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.ClaimNote.filter({
-                    claim_id: claim.id
-                }, '-created_date') : []
+            "ClaimNotesModal.useQuery": ()=>claim?.id ? __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].ClaimNote.query('*', `claim_id=${claim.id}`) : []
         }["ClaimNotesModal.useQuery"],
         enabled: !!claim?.id
     });
@@ -2488,7 +2487,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
     const addNoteMutation = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useMutation$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useMutation"])({
         mutationFn: {
             "ClaimNotesModal.useMutation[addNoteMutation]": async ({ content, imageUrl })=>{
-                const note = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.ClaimNote.create({
+                const note = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].ClaimNote.create({
                     claim_id: claim.id,
                     content,
                     ...imageUrl ? {
@@ -2498,10 +2497,10 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                 // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
                 const userRole = currentUser?.custom_role || currentUser?.role;
                 if (claim.status === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
-                    await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.WarrantyClaim.update(claim.id, {
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].WarrantyClaim.update(claim.id, {
                         status: 'awaiting_review'
                     });
-                    await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.ClaimAudit.create({
+                    await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].ClaimAudit.create({
                         claim_id: claim.id,
                         wip_number: claim.wip_number,
                         field_changed: 'status',
@@ -2511,7 +2510,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                     });
                 }
                 // Create audit log for note addition
-                await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.ClaimAudit.create({
+                await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].ClaimAudit.create({
                     claim_id: claim.id,
                     wip_number: claim.wip_number,
                     field_changed: 'note_added',
@@ -2547,7 +2546,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
         let imageUrl = null;
         if (attachedImage?.file) {
             setIsUploading(true);
-            const result = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].integrations.Core.UploadFile({
+            const result = await base44.integrations.Core.UploadFile({
                 file: attachedImage.file
             });
             imageUrl = result.file_url;
@@ -2572,19 +2571,19 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                 className: "h-5 w-5"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                lineNumber: 107,
+                                lineNumber: 109,
                                 columnNumber: 13
                             }, this),
                             "Claim Notes"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                        lineNumber: 106,
+                        lineNumber: 108,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                    lineNumber: 105,
+                    lineNumber: 107,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2598,7 +2597,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                     children: "Add Note"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                    lineNumber: 115,
+                                    lineNumber: 117,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -2612,7 +2611,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                             className: "min-h-24"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                            lineNumber: 117,
+                                            lineNumber: 119,
                                             columnNumber: 15
                                         }, this),
                                         attachedImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2624,7 +2623,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                     className: "max-h-32 rounded-lg border border-slate-200 object-contain"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 127,
+                                                    lineNumber: 129,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2635,18 +2634,18 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                         className: "h-3 w-3"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                        lineNumber: 137,
+                                                        lineNumber: 139,
                                                         columnNumber: 21
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 132,
+                                                    lineNumber: 134,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                            lineNumber: 126,
+                                            lineNumber: 128,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2662,7 +2661,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                             onChange: handleFileChange
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 144,
+                                                            lineNumber: 146,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2676,20 +2675,20 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                                     className: "h-4 w-4 mr-1"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                                    lineNumber: 158,
+                                                                    lineNumber: 160,
                                                                     columnNumber: 21
                                                                 }, this),
                                                                 "Attach Screenshot"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 151,
+                                                            lineNumber: 153,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 143,
+                                                    lineNumber: 145,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2706,7 +2705,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                             children: "Cancel"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 163,
+                                                            lineNumber: 165,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2716,31 +2715,31 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                             children: isUploading ? 'Uploading...' : addNoteMutation.isPending ? 'Adding...' : 'Add Note'
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 174,
+                                                            lineNumber: 176,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 162,
+                                                    lineNumber: 164,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                            lineNumber: 142,
+                                            lineNumber: 144,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                    lineNumber: 116,
+                                    lineNumber: 118,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                            lineNumber: 114,
+                            lineNumber: 116,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2750,7 +2749,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                     children: "Notes History"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                    lineNumber: 188,
+                                    lineNumber: 190,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2761,12 +2760,12 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                             className: "h-6 w-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                            lineNumber: 192,
+                                            lineNumber: 194,
                                             columnNumber: 19
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                        lineNumber: 191,
+                                        lineNumber: 193,
                                         columnNumber: 17
                                     }, this) : notes.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex flex-col items-center justify-center py-8 text-center",
@@ -2775,7 +2774,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                 className: "h-8 w-8 text-slate-300 mb-2"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                lineNumber: 196,
+                                                lineNumber: 198,
                                                 columnNumber: 19
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2783,13 +2782,13 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                 children: "No notes yet"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                lineNumber: 197,
+                                                lineNumber: 199,
                                                 columnNumber: 19
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                        lineNumber: 195,
+                                        lineNumber: 197,
                                         columnNumber: 17
                                     }, this) : notes.map((note)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "bg-slate-50 rounded-lg p-4 border border-slate-200",
@@ -2804,7 +2803,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                                     className: "h-3 w-3 text-slate-400"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                                    lineNumber: 204,
+                                                                    lineNumber: 206,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2812,13 +2811,13 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                                     children: note.created_by
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                                    lineNumber: 205,
+                                                                    lineNumber: 207,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 203,
+                                                            lineNumber: 205,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2826,13 +2825,13 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                             children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$date$2d$fns$2f$format$2e$mjs__$5b$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(new Date(note.created_date), 'MMM d, yyyy HH:mm')
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                            lineNumber: 207,
+                                                            lineNumber: 209,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 202,
+                                                    lineNumber: 204,
                                                     columnNumber: 21
                                                 }, this),
                                                 note.content && note.content.trim() !== ' ' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2840,7 +2839,7 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                     children: note.content
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 212,
+                                                    lineNumber: 214,
                                                     columnNumber: 23
                                                 }, this),
                                                 note.image_url && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -2854,52 +2853,53 @@ function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
                                                         className: "max-h-48 rounded-lg border border-slate-200 object-contain hover:opacity-90 transition-opacity"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                        lineNumber: 216,
+                                                        lineNumber: 218,
                                                         columnNumber: 25
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                                    lineNumber: 215,
+                                                    lineNumber: 217,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, note.id, true, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                            lineNumber: 201,
+                                            lineNumber: 203,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                                    lineNumber: 189,
+                                    lineNumber: 191,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                            lineNumber: 187,
+                            lineNumber: 189,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-                    lineNumber: 112,
+                    lineNumber: 114,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-            lineNumber: 104,
+            lineNumber: 106,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/claims/ClaimNotesModal.jsx",
-        lineNumber: 103,
+        lineNumber: 105,
         columnNumber: 5
     }, this);
 }
-_s(ClaimNotesModal, "cCVJVXgNIftkUndE98vANzfrFZU=", false, function() {
+_s(ClaimNotesModal, "T7XECKsEBqZUGRHrTBMXiw3Qy7w=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$QueryClientProvider$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQueryClient"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["useAuth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useMutation$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useMutation"]

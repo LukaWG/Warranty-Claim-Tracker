@@ -10,37 +10,29 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__ = __turbopack_context__.i("[externals]/react/jsx-dev-runtime [external] (react/jsx-dev-runtime, cjs)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$next$2f$router$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/router.js [ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/AuthContext.jsx [ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$externals$5d2f40$tanstack$2f$react$2d$query__$5b$external$5d$__$2840$tanstack$2f$react$2d$query$2c$__esm_import$2c$__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$29$__ = __turbopack_context__.i("[externals]/@tanstack/react-query [external] (@tanstack/react-query, esm_import, [project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query)");
 var __turbopack_async_dependencies__ = __turbopack_handle_async_dependencies__([
-    __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__,
     __TURBOPACK__imported__module__$5b$externals$5d2f40$tanstack$2f$react$2d$query__$5b$external$5d$__$2840$tanstack$2f$react$2d$query$2c$__esm_import$2c$__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$29$__
 ]);
-[__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__, __TURBOPACK__imported__module__$5b$externals$5d2f40$tanstack$2f$react$2d$query__$5b$external$5d$__$2840$tanstack$2f$react$2d$query$2c$__esm_import$2c$__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
+[__TURBOPACK__imported__module__$5b$externals$5d2f40$tanstack$2f$react$2d$query__$5b$external$5d$__$2840$tanstack$2f$react$2d$query$2c$__esm_import$2c$__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$29$__] = __turbopack_async_dependencies__.then ? (await __turbopack_async_dependencies__)() : __turbopack_async_dependencies__;
 ;
 ;
 ;
 ;
 function PageNotFound({}) {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$next$2f$router$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
+    const { user, isAuthenticated } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const pageName = router.asPath.replace(/^\/Warranty-Claim-Tracker\/?/, '').split('/')[0] || 'Unknown';
     const { data: authData, isFetched } = (0, __TURBOPACK__imported__module__$5b$externals$5d2f40$tanstack$2f$react$2d$query__$5b$external$5d$__$2840$tanstack$2f$react$2d$query$2c$__esm_import$2c$__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$29$__["useQuery"])({
         queryKey: [
             'user'
         ],
         queryFn: async ()=>{
-            try {
-                const user = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["base44"].auth.me();
-                return {
-                    user,
-                    isAuthenticated: true
-                };
-            } catch (error) {
-                return {
-                    user: null,
-                    isAuthenticated: false
-                };
-            }
+            return {
+                user,
+                isAuthenticated
+            };
         }
     });
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -58,20 +50,20 @@ function PageNotFound({}) {
                                 children: "404"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                lineNumber: 28,
+                                lineNumber: 24,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                                 className: "h-0.5 w-16 bg-slate-200 mx-auto"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                lineNumber: 29,
+                                lineNumber: 25,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                        lineNumber: 27,
+                        lineNumber: 23,
                         columnNumber: 21
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -82,7 +74,7 @@ function PageNotFound({}) {
                                 children: "Page Not Found"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                lineNumber: 34,
+                                lineNumber: 30,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -98,20 +90,20 @@ function PageNotFound({}) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                        lineNumber: 38,
+                                        lineNumber: 34,
                                         columnNumber: 38
                                     }, this),
                                     " could not be found in this application."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                lineNumber: 37,
+                                lineNumber: 33,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                        lineNumber: 33,
+                        lineNumber: 29,
                         columnNumber: 21
                     }, this),
                     isFetched && authData.isAuthenticated && authData.user?.role === 'admin' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -125,12 +117,12 @@ function PageNotFound({}) {
                                         className: "w-2 h-2 rounded-full bg-orange-400"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                        lineNumber: 47,
+                                        lineNumber: 43,
                                         columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                    lineNumber: 46,
+                                    lineNumber: 42,
                                     columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
@@ -141,7 +133,7 @@ function PageNotFound({}) {
                                             children: "Admin Note"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                            lineNumber: 50,
+                                            lineNumber: 46,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("p", {
@@ -149,30 +141,30 @@ function PageNotFound({}) {
                                             children: "This could mean that the AI hasn't implemented this page yet. Ask it to implement it in the chat."
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                            lineNumber: 51,
+                                            lineNumber: 47,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                    lineNumber: 49,
+                                    lineNumber: 45,
                                     columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                            lineNumber: 45,
+                            lineNumber: 41,
                             columnNumber: 29
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                        lineNumber: 44,
+                        lineNumber: 40,
                         columnNumber: 25
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                         className: "pt-6",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("button", {
-                            onClick: ()=>router.push('/Warranty-Claim-Tracker'),
+                            onClick: ()=>router.push('/'),
                             className: "inline-flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("svg", {
@@ -187,40 +179,40 @@ function PageNotFound({}) {
                                         d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                        lineNumber: 66,
+                                        lineNumber: 62,
                                         columnNumber: 33
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                                    lineNumber: 65,
+                                    lineNumber: 61,
                                     columnNumber: 29
                                 }, this),
                                 "Go Home"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                            lineNumber: 61,
+                            lineNumber: 57,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                        lineNumber: 60,
+                        lineNumber: 56,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-                lineNumber: 25,
+                lineNumber: 21,
                 columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-            lineNumber: 24,
+            lineNumber: 20,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/PageNotFound.jsx",
-        lineNumber: 23,
+        lineNumber: 19,
         columnNumber: 9
     }, this);
 }

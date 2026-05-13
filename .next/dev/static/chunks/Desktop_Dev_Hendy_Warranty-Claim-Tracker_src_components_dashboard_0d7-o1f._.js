@@ -1164,11 +1164,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$W
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$client$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/lucide-react/dist/esm/icons/x.js [client] (ecmascript) <export default as X>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/ui/button.jsx [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/@tanstack/react-query/build/modern/useQuery.js [client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/base44Client.js [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/AuthContext.jsx [client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/api/databaseClient.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$utils$2e$js__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/lib/utils.js [client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$dashboard$2f$ColumnVisibilityPicker$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ColumnVisibilityPicker.jsx [client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
+;
 ;
 ;
 ;
@@ -1230,20 +1232,13 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
         localStorage.setItem('claimsTableColumns', JSON.stringify(newColumns));
     };
     const col = (key)=>visibleColumns[key];
-    const { data: currentUser } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
-        queryKey: [
-            'currentUser'
-        ],
-        queryFn: {
-            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].auth.me()
-        }["ClaimsTable.useQuery"]
-    });
+    const { user: currentUser } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const { data: alerts = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
         queryKey: [
             'alerts'
         ],
         queryFn: {
-            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Alert.list('name')
+            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].Alert.get()
         }["ClaimsTable.useQuery"]
     });
     const { data: resolutions = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -1251,7 +1246,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
             'resolutions'
         ],
         queryFn: {
-            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.AlertResolution.list('name')
+            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].AlertResolution.get()
         }["ClaimsTable.useQuery"]
     });
     const { data: brands = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -1259,7 +1254,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
             'brands'
         ],
         queryFn: {
-            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.Brand.list('name')
+            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].Brand.get()
         }["ClaimsTable.useQuery"]
     });
     const { data: allUsers = [] } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"])({
@@ -1267,7 +1262,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
             'allUsers'
         ],
         queryFn: {
-            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$base44Client$2e$js__$5b$client$5d$__$28$ecmascript$29$__["base44"].entities.User.list('email')
+            "ClaimsTable.useQuery": ()=>__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$api$2f$databaseClient$2e$js__$5b$client$5d$__$28$ecmascript$29$__["databaseClients"].User.get()
         }["ClaimsTable.useQuery"]
     });
     const isProcessor = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';
@@ -1331,12 +1326,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                 className: "h-5 w-5 text-slate-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                lineNumber: 116,
+                                                lineNumber: 114,
                                                 columnNumber: 18
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 115,
+                                            lineNumber: 113,
                                             columnNumber: 16
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1346,7 +1341,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "All Warranty Claims"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 119,
+                                                    lineNumber: 117,
                                                     columnNumber: 18
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1357,19 +1352,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 120,
                                                     columnNumber: 18
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 118,
+                                            lineNumber: 116,
                                             columnNumber: 16
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 114,
+                                    lineNumber: 112,
                                     columnNumber: 14
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1380,7 +1375,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                             onColumnsChange: handleColumnsChange
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 128,
+                                            lineNumber: 126,
                                             columnNumber: 16
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1393,29 +1388,29 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                 className: "h-5 w-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                lineNumber: 136,
+                                                lineNumber: 134,
                                                 columnNumber: 18
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 129,
+                                            lineNumber: 127,
                                             columnNumber: 16
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 127,
+                                    lineNumber: 125,
                                     columnNumber: 14
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 113,
+                            lineNumber: 111,
                             columnNumber: 12
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                        lineNumber: 112,
+                        lineNumber: 110,
                         columnNumber: 10
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$card$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1426,12 +1421,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                 className: "h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 144,
+                                lineNumber: 142,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 143,
+                            lineNumber: 141,
                             columnNumber: 13
                         }, this) : claims.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex flex-col items-center justify-center py-16 text-center",
@@ -1442,12 +1437,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                         className: "h-8 w-8 text-slate-400"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 149,
+                                        lineNumber: 147,
                                         columnNumber: 17
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 148,
+                                    lineNumber: 146,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1455,7 +1450,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                     children: "No claims yet"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 151,
+                                    lineNumber: 149,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1463,13 +1458,13 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                     children: "Submit your first warranty claim to get started"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 152,
+                                    lineNumber: 150,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 147,
+                            lineNumber: 145,
                             columnNumber: 13
                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "overflow-x-auto",
@@ -1484,7 +1479,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "WIP Number"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 159,
+                                                    lineNumber: 157,
                                                     columnNumber: 45
                                                 }, this),
                                                 col('reg_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1492,7 +1487,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Reg No."
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 160,
+                                                    lineNumber: 158,
                                                     columnNumber: 45
                                                 }, this),
                                                 col('invoice_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1500,7 +1495,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Invoice #"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 161,
+                                                    lineNumber: 159,
                                                     columnNumber: 49
                                                 }, this),
                                                 col('claim_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1508,7 +1503,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Claim #"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 162,
+                                                    lineNumber: 160,
                                                     columnNumber: 47
                                                 }, this),
                                                 col('site') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1516,7 +1511,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Site"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 163,
+                                                    lineNumber: 161,
                                                     columnNumber: 39
                                                 }, this),
                                                 col('brand') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1524,7 +1519,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Brand"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 164,
+                                                    lineNumber: 162,
                                                     columnNumber: 40
                                                 }, this),
                                                 col('expected_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1532,7 +1527,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Expected Hours"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 165,
+                                                    lineNumber: 163,
                                                     columnNumber: 49
                                                 }, this),
                                                 col('actual_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1540,7 +1535,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Actual Hours"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 166,
+                                                    lineNumber: 164,
                                                     columnNumber: 47
                                                 }, this),
                                                 col('parts') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1548,7 +1543,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Parts"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 167,
+                                                    lineNumber: 165,
                                                     columnNumber: 40
                                                 }, this),
                                                 col('labour') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1556,7 +1551,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Labour"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 168,
+                                                    lineNumber: 166,
                                                     columnNumber: 41
                                                 }, this),
                                                 col('sub_con') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1564,7 +1559,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Sub Con"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 169,
+                                                    lineNumber: 167,
                                                     columnNumber: 42
                                                 }, this),
                                                 col('credit') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1572,7 +1567,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Credit"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 170,
+                                                    lineNumber: 168,
                                                     columnNumber: 41
                                                 }, this),
                                                 col('total_claim_cost') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1580,7 +1575,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Total Cost"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 171,
+                                                    lineNumber: 169,
                                                     columnNumber: 51
                                                 }, this),
                                                 col('last_clocking_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1588,7 +1583,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Last Clocking"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 172,
+                                                    lineNumber: 170,
                                                     columnNumber: 53
                                                 }, this),
                                                 col('scanned_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1596,7 +1591,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Scanned Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 173,
+                                                    lineNumber: 171,
                                                     columnNumber: 47
                                                 }, this),
                                                 col('manufacturer_deadline') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1604,7 +1599,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Mfr Deadline"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 174,
+                                                    lineNumber: 172,
                                                     columnNumber: 56
                                                 }, this),
                                                 col('status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1612,7 +1607,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Status"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 175,
+                                                    lineNumber: 173,
                                                     columnNumber: 41
                                                 }, this),
                                                 col('approval_status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1620,7 +1615,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Approval Status"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 176,
+                                                    lineNumber: 174,
                                                     columnNumber: 50
                                                 }, this),
                                                 col('claimed_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1628,7 +1623,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Claimed Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 177,
+                                                    lineNumber: 175,
                                                     columnNumber: 47
                                                 }, this),
                                                 col('claimed_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1636,7 +1631,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Claimed By"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 178,
+                                                    lineNumber: 176,
                                                     columnNumber: 45
                                                 }, this),
                                                 col('alert') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1644,7 +1639,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Alert"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 179,
+                                                    lineNumber: 177,
                                                     columnNumber: 40
                                                 }, this),
                                                 col('resolution') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1652,7 +1647,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Resolution"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 180,
+                                                    lineNumber: 178,
                                                     columnNumber: 45
                                                 }, this),
                                                 col('submitted_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1660,7 +1655,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Submitted By"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 181,
+                                                    lineNumber: 179,
                                                     columnNumber: 47
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1668,18 +1663,18 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                     children: "Actions"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 182,
+                                                    lineNumber: 180,
                                                     columnNumber: 23
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 158,
+                                            lineNumber: 156,
                                             columnNumber: 20
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 157,
+                                        lineNumber: 155,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -1702,7 +1697,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.wip_number
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 195,
+                                                        lineNumber: 193,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('reg_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1710,7 +1705,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.reg_number || "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 200,
+                                                        lineNumber: 198,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('invoice_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1718,7 +1713,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.invoice_number || "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 205,
+                                                        lineNumber: 203,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('claim_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1726,7 +1721,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.claim_number || "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 210,
+                                                        lineNumber: 208,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('site') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1737,19 +1732,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                     className: "h-4 w-4 text-slate-400"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 217,
+                                                                    lineNumber: 215,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 claim.site
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 216,
+                                                            lineNumber: 214,
                                                             columnNumber: 27
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 215,
+                                                        lineNumber: 213,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('brand') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1757,7 +1752,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.brand || "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 223,
+                                                        lineNumber: 221,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('expected_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1768,7 +1763,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                     className: "h-4 w-4 text-slate-400"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 230,
+                                                                    lineNumber: 228,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 claim.expected_hours,
@@ -1776,12 +1771,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 229,
+                                                            lineNumber: 227,
                                                             columnNumber: 27
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 228,
+                                                        lineNumber: 226,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('actual_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1789,7 +1784,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 236,
+                                                        lineNumber: 234,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('parts') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1797,7 +1792,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.parts ? `£${claim.parts.toFixed(2)}` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 241,
+                                                        lineNumber: 239,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('labour') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1805,7 +1800,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.labour ? `£${claim.labour.toFixed(2)}` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 246,
+                                                        lineNumber: 244,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('sub_con') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1813,7 +1808,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.sub_con ? `£${claim.sub_con.toFixed(2)}` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 251,
+                                                        lineNumber: 249,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('credit') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1821,7 +1816,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.credit ? `£${claim.credit.toFixed(2)}` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 256,
+                                                        lineNumber: 254,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('total_claim_cost') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1829,7 +1824,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 261,
+                                                        lineNumber: 259,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('last_clocking_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1837,7 +1832,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: formatDate(claim.last_clocking_date)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 266,
+                                                        lineNumber: 264,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('scanned_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1845,7 +1840,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: formatDateTime(claim.scanned_date)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 271,
+                                                        lineNumber: 269,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('manufacturer_deadline') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1886,7 +1881,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         children: formatDate(claim.manufacturer_deadline)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 319,
+                                                                        lineNumber: 317,
                                                                         columnNumber: 31
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1898,19 +1893,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 320,
+                                                                        lineNumber: 318,
                                                                         columnNumber: 31
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 318,
+                                                                lineNumber: 316,
                                                                 columnNumber: 29
                                                             }, this);
                                                         })() : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 276,
+                                                        lineNumber: 274,
                                                         columnNumber: 23
                                                     }, this),
                                                     col('status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1921,12 +1916,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: statusConfig[claim.status]?.label
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 328,
+                                                            lineNumber: 326,
                                                             columnNumber: 26
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 327,
+                                                        lineNumber: 325,
                                                         columnNumber: 25
                                                     }, this),
                                                     col('approval_status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1940,19 +1935,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 341,
+                                                            lineNumber: 339,
                                                             columnNumber: 27
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-sm text-slate-400",
                                                             children: "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 351,
+                                                            lineNumber: 349,
                                                             columnNumber: 27
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 339,
+                                                        lineNumber: 337,
                                                         columnNumber: 30
                                                     }, this),
                                                     col('claimed_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1960,7 +1955,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.claimed_date ? formatDateTime(claim.claimed_date) : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 357,
+                                                        lineNumber: 355,
                                                         columnNumber: 29
                                                     }, this),
                                                     col('claimed_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1968,7 +1963,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: claim.claimed_by ? getUserName(claim.claimed_by) : "—"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 362,
+                                                        lineNumber: 360,
                                                         columnNumber: 29
                                                     }, this),
                                                     col('alert') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1979,7 +1974,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                     className: "h-4 w-4 text-amber-500 flex-shrink-0"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 371,
+                                                                    lineNumber: 369,
                                                                     columnNumber: 30
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1987,20 +1982,20 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                     children: claim.alert
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 372,
+                                                                    lineNumber: 370,
                                                                     columnNumber: 30
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 370,
+                                                            lineNumber: 368,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-sm text-slate-400",
                                                             children: "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 375,
+                                                            lineNumber: 373,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Select"], {
                                                             value: claim.alert || "none",
@@ -2015,7 +2010,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 className: "h-4 w-4 text-amber-500 flex-shrink-0"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 385,
+                                                                                lineNumber: 383,
                                                                                 columnNumber: 34
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2023,25 +2018,25 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: claim.alert
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 386,
+                                                                                lineNumber: 384,
                                                                                 columnNumber: 34
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 384,
+                                                                        lineNumber: 382,
                                                                         columnNumber: 32
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                         className: "text-sm text-slate-400",
                                                                         children: "Select alert..."
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 389,
+                                                                        lineNumber: 387,
                                                                         columnNumber: 32
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 382,
+                                                                    lineNumber: 380,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2051,7 +2046,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: "No Alert"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 393,
+                                                                            lineNumber: 391,
                                                                             columnNumber: 30
                                                                         }, this),
                                                                         alerts.map((alert)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2059,24 +2054,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: alert.name
                                                                             }, alert.id, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 395,
+                                                                                lineNumber: 393,
                                                                                 columnNumber: 32
                                                                             }, this))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 392,
+                                                                    lineNumber: 390,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 378,
+                                                            lineNumber: 376,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 367,
+                                                        lineNumber: 365,
                                                         columnNumber: 29
                                                     }, this),
                                                     col('resolution') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2085,14 +2080,14 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.alert_resolution
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 408,
+                                                            lineNumber: 406,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                             className: "text-sm text-slate-400",
                                                             children: "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 410,
+                                                            lineNumber: 408,
                                                             columnNumber: 29
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Select"], {
                                                             value: claim.alert_resolution || "none",
@@ -2105,19 +2100,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         children: claim.alert_resolution
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 419,
+                                                                        lineNumber: 417,
                                                                         columnNumber: 32
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                         className: "text-sm text-slate-400",
                                                                         children: "Select resolution..."
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 421,
+                                                                        lineNumber: 419,
                                                                         columnNumber: 32
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 417,
+                                                                    lineNumber: 415,
                                                                     columnNumber: 29
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -2127,7 +2122,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: "No Resolution"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 425,
+                                                                            lineNumber: 423,
                                                                             columnNumber: 30
                                                                         }, this),
                                                                         resolutions.map((resolution)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -2135,24 +2130,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: resolution.name
                                                                             }, resolution.id, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 427,
+                                                                                lineNumber: 425,
                                                                                 columnNumber: 32
                                                                             }, this))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 424,
+                                                                    lineNumber: 422,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 413,
+                                                            lineNumber: 411,
                                                             columnNumber: 29
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 405,
+                                                        lineNumber: 403,
                                                         columnNumber: 29
                                                     }, this),
                                                     col('submitted_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2163,7 +2158,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                     className: "h-4 w-4 text-slate-400"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 439,
+                                                                    lineNumber: 437,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2174,7 +2169,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: getUserName(claim.submitted_for || claim.created_by)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 441,
+                                                                            lineNumber: 439,
                                                                             columnNumber: 29
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2182,24 +2177,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: formatDate(claim.created_date)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 442,
+                                                                            lineNumber: 440,
                                                                             columnNumber: 29
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 440,
+                                                                    lineNumber: 438,
                                                                     columnNumber: 27
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 438,
+                                                            lineNumber: 436,
                                                             columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 437,
+                                                        lineNumber: 435,
                                                         columnNumber: 29
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2216,12 +2211,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 457,
+                                                                        lineNumber: 455,
                                                                         columnNumber: 32
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 450,
+                                                                    lineNumber: 448,
                                                                     columnNumber: 30
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2234,12 +2229,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 467,
+                                                                        lineNumber: 465,
                                                                         columnNumber: 30
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 460,
+                                                                    lineNumber: 458,
                                                                     columnNumber: 28
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2252,12 +2247,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 476,
+                                                                        lineNumber: 474,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 469,
+                                                                    lineNumber: 467,
                                                                     columnNumber: 27
                                                                 }, this),
                                                                 isServiceManager && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2274,56 +2269,56 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 490,
+                                                                        lineNumber: 488,
                                                                         columnNumber: 31
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 479,
+                                                                    lineNumber: 477,
                                                                     columnNumber: 29
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 448,
+                                                            lineNumber: 446,
                                                             columnNumber: 26
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 447,
+                                                        lineNumber: 445,
                                                         columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, claim.id, true, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                lineNumber: 187,
+                                                lineNumber: 185,
                                                 columnNumber: 21
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 185,
+                                        lineNumber: 183,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 156,
+                                lineNumber: 154,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 155,
+                            lineNumber: 153,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                        lineNumber: 141,
+                        lineNumber: 139,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                lineNumber: 111,
+                lineNumber: 109,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$dialog$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Dialog"], {
@@ -2342,7 +2337,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                         children: "All Warranty Claims"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 509,
+                                        lineNumber: 507,
                                         columnNumber: 16
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -2354,23 +2349,23 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                             className: "h-5 w-5"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 518,
+                                            lineNumber: 516,
                                             columnNumber: 18
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 512,
+                                        lineNumber: 510,
                                         columnNumber: 16
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 508,
+                                lineNumber: 506,
                                 columnNumber: 14
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 507,
+                            lineNumber: 505,
                             columnNumber: 12
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2381,12 +2376,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                     className: "h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 525,
+                                    lineNumber: 523,
                                     columnNumber: 18
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 524,
+                                lineNumber: 522,
                                 columnNumber: 16
                             }, this) : claims.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex flex-col items-center justify-center py-16 text-center",
@@ -2397,12 +2392,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                             className: "h-8 w-8 text-slate-400"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 530,
+                                            lineNumber: 528,
                                             columnNumber: 20
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 529,
+                                        lineNumber: 527,
                                         columnNumber: 18
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2410,13 +2405,13 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                         children: "No claims yet"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                        lineNumber: 532,
+                                        lineNumber: 530,
                                         columnNumber: 18
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 528,
+                                lineNumber: 526,
                                 columnNumber: 16
                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "overflow-x-auto",
@@ -2431,7 +2426,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "WIP Number"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 539,
+                                                        lineNumber: 537,
                                                         columnNumber: 46
                                                     }, this),
                                                     col('reg_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2439,7 +2434,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Reg No."
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 540,
+                                                        lineNumber: 538,
                                                         columnNumber: 46
                                                     }, this),
                                                     col('invoice_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2447,7 +2442,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Invoice #"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 541,
+                                                        lineNumber: 539,
                                                         columnNumber: 50
                                                     }, this),
                                                     col('claim_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2455,7 +2450,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Claim #"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 542,
+                                                        lineNumber: 540,
                                                         columnNumber: 48
                                                     }, this),
                                                     col('site') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2463,7 +2458,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Site"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 543,
+                                                        lineNumber: 541,
                                                         columnNumber: 40
                                                     }, this),
                                                     col('brand') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2471,7 +2466,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Brand"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 544,
+                                                        lineNumber: 542,
                                                         columnNumber: 41
                                                     }, this),
                                                     col('expected_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2479,7 +2474,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Expected Hours"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 545,
+                                                        lineNumber: 543,
                                                         columnNumber: 50
                                                     }, this),
                                                     col('actual_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2487,7 +2482,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Actual Hours"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 546,
+                                                        lineNumber: 544,
                                                         columnNumber: 48
                                                     }, this),
                                                     col('parts') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2495,7 +2490,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Parts"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 547,
+                                                        lineNumber: 545,
                                                         columnNumber: 41
                                                     }, this),
                                                     col('labour') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2503,7 +2498,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Labour"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 548,
+                                                        lineNumber: 546,
                                                         columnNumber: 42
                                                     }, this),
                                                     col('sub_con') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2511,7 +2506,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Sub Con"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 549,
+                                                        lineNumber: 547,
                                                         columnNumber: 43
                                                     }, this),
                                                     col('credit') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2519,7 +2514,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Credit"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 550,
+                                                        lineNumber: 548,
                                                         columnNumber: 42
                                                     }, this),
                                                     col('total_claim_cost') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2527,7 +2522,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Total Cost"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 551,
+                                                        lineNumber: 549,
                                                         columnNumber: 52
                                                     }, this),
                                                     col('last_clocking_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2535,7 +2530,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Last Clocking"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 552,
+                                                        lineNumber: 550,
                                                         columnNumber: 54
                                                     }, this),
                                                     col('scanned_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2543,7 +2538,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Scanned Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 553,
+                                                        lineNumber: 551,
                                                         columnNumber: 48
                                                     }, this),
                                                     col('manufacturer_deadline') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2551,7 +2546,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Mfr Deadline"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 554,
+                                                        lineNumber: 552,
                                                         columnNumber: 57
                                                     }, this),
                                                     col('status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2559,7 +2554,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 555,
+                                                        lineNumber: 553,
                                                         columnNumber: 42
                                                     }, this),
                                                     col('approval_status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2567,7 +2562,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Approval Status"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 556,
+                                                        lineNumber: 554,
                                                         columnNumber: 51
                                                     }, this),
                                                     col('claimed_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2575,7 +2570,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Claimed Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 557,
+                                                        lineNumber: 555,
                                                         columnNumber: 48
                                                     }, this),
                                                     col('claimed_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2583,7 +2578,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Claimed By"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 558,
+                                                        lineNumber: 556,
                                                         columnNumber: 46
                                                     }, this),
                                                     col('alert') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2591,7 +2586,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Alert"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 559,
+                                                        lineNumber: 557,
                                                         columnNumber: 41
                                                     }, this),
                                                     col('resolution') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2599,7 +2594,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Resolution"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 560,
+                                                        lineNumber: 558,
                                                         columnNumber: 46
                                                     }, this),
                                                     col('submitted_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2607,7 +2602,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Submitted By"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 561,
+                                                        lineNumber: 559,
                                                         columnNumber: 48
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -2615,18 +2610,18 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                         children: "Actions"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                        lineNumber: 562,
+                                                        lineNumber: 560,
                                                         columnNumber: 24
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                lineNumber: 538,
+                                                lineNumber: 536,
                                                 columnNumber: 22
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 537,
+                                            lineNumber: 535,
                                             columnNumber: 20
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -2649,7 +2644,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.wip_number
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 575,
+                                                            lineNumber: 573,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('reg_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2657,7 +2652,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.reg_number || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 580,
+                                                            lineNumber: 578,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('invoice_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2665,7 +2660,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.invoice_number || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 585,
+                                                            lineNumber: 583,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('claim_number') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2673,7 +2668,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.claim_number || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 590,
+                                                            lineNumber: 588,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('site') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2684,19 +2679,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4 text-slate-400"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 597,
+                                                                        lineNumber: 595,
                                                                         columnNumber: 32
                                                                     }, this),
                                                                     claim.site
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 596,
+                                                                lineNumber: 594,
                                                                 columnNumber: 30
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 595,
+                                                            lineNumber: 593,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('brand') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2704,7 +2699,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.brand || "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 603,
+                                                            lineNumber: 601,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('expected_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2715,7 +2710,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4 text-slate-400"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 610,
+                                                                        lineNumber: 608,
                                                                         columnNumber: 32
                                                                     }, this),
                                                                     claim.expected_hours,
@@ -2723,12 +2718,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 609,
+                                                                lineNumber: 607,
                                                                 columnNumber: 30
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 608,
+                                                            lineNumber: 606,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('actual_hours') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2736,7 +2731,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 616,
+                                                            lineNumber: 614,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('parts') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2744,7 +2739,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.parts ? `£${claim.parts.toFixed(2)}` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 621,
+                                                            lineNumber: 619,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('labour') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2752,7 +2747,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.labour ? `£${claim.labour.toFixed(2)}` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 626,
+                                                            lineNumber: 624,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('sub_con') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2760,7 +2755,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.sub_con ? `£${claim.sub_con.toFixed(2)}` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 631,
+                                                            lineNumber: 629,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('credit') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2768,7 +2763,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.credit ? `£${claim.credit.toFixed(2)}` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 636,
+                                                            lineNumber: 634,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('total_claim_cost') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2776,7 +2771,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 641,
+                                                            lineNumber: 639,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('last_clocking_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2784,7 +2779,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: formatDate(claim.last_clocking_date)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 646,
+                                                            lineNumber: 644,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('scanned_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2792,7 +2787,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: formatDateTime(claim.scanned_date)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 651,
+                                                            lineNumber: 649,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('manufacturer_deadline') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2832,7 +2827,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: formatDate(claim.manufacturer_deadline)
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 696,
+                                                                            lineNumber: 694,
                                                                             columnNumber: 34
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2844,19 +2839,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 697,
+                                                                            lineNumber: 695,
                                                                             columnNumber: 34
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                    lineNumber: 695,
+                                                                    lineNumber: 693,
                                                                     columnNumber: 32
                                                                 }, this);
                                                             })() : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 656,
+                                                            lineNumber: 654,
                                                             columnNumber: 26
                                                         }, this),
                                                         col('status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2867,12 +2862,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                 children: statusConfig[claim.status]?.label
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 705,
+                                                                lineNumber: 703,
                                                                 columnNumber: 28
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 704,
+                                                            lineNumber: 702,
                                                             columnNumber: 26
                                                         }, this),
                                                         col('approval_status') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2886,19 +2881,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 717,
+                                                                lineNumber: 715,
                                                                 columnNumber: 34
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-sm text-slate-400",
                                                                 children: "—"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 727,
+                                                                lineNumber: 725,
                                                                 columnNumber: 34
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 715,
+                                                            lineNumber: 713,
                                                             columnNumber: 34
                                                         }, this),
                                                         col('claimed') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2907,7 +2902,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                 children: claim.claimed ? 'Yes' : 'No'
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 734,
+                                                                lineNumber: 732,
                                                                 columnNumber: 34
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                                                 children: [
@@ -2921,7 +2916,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         "data-checked": claim.claimed || false
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 737,
+                                                                        lineNumber: 735,
                                                                         columnNumber: 32
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2932,7 +2927,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             }, void 0, true)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 732,
+                                                            lineNumber: 730,
                                                             columnNumber: 34
                                                         }, this),
                                                         col('claimed_date') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2940,7 +2935,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.claimed_date ? formatDateTime(claim.claimed_date) : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 757,
+                                                            lineNumber: 755,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('claimed_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2948,7 +2943,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                             children: claim.claimed_by ? getUserName(claim.claimed_by) : "—"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 762,
+                                                            lineNumber: 760,
                                                             columnNumber: 28
                                                         }, this),
                                                         col('alert') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -2959,7 +2954,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4 text-amber-500 flex-shrink-0"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 771,
+                                                                        lineNumber: 769,
                                                                         columnNumber: 34
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2967,20 +2962,20 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         children: claim.alert
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 772,
+                                                                        lineNumber: 770,
                                                                         columnNumber: 34
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 770,
+                                                                lineNumber: 768,
                                                                 columnNumber: 32
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-sm text-slate-400",
                                                                 children: "—"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 775,
+                                                                lineNumber: 773,
                                                                 columnNumber: 32
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Select"], {
                                                                 value: claim.alert || "none",
@@ -2995,7 +2990,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                     className: "h-4 w-4 text-amber-500 flex-shrink-0"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                    lineNumber: 785,
+                                                                                    lineNumber: 783,
                                                                                     columnNumber: 38
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3003,25 +2998,25 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                     children: claim.alert
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                    lineNumber: 786,
+                                                                                    lineNumber: 784,
                                                                                     columnNumber: 38
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 784,
+                                                                            lineNumber: 782,
                                                                             columnNumber: 36
                                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                             className: "text-sm text-slate-400",
                                                                             children: "Select alert..."
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 789,
+                                                                            lineNumber: 787,
                                                                             columnNumber: 36
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 782,
+                                                                        lineNumber: 780,
                                                                         columnNumber: 32
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3031,7 +3026,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: "No Alert"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 793,
+                                                                                lineNumber: 791,
                                                                                 columnNumber: 34
                                                                             }, this),
                                                                             alerts.map((alert)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3039,24 +3034,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                     children: alert.name
                                                                                 }, alert.id, false, {
                                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                    lineNumber: 795,
+                                                                                    lineNumber: 793,
                                                                                     columnNumber: 36
                                                                                 }, this))
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 792,
+                                                                        lineNumber: 790,
                                                                         columnNumber: 32
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 778,
+                                                                lineNumber: 776,
                                                                 columnNumber: 30
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 767,
+                                                            lineNumber: 765,
                                                             columnNumber: 26
                                                         }, this),
                                                         col('resolution') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3065,14 +3060,14 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                 children: claim.alert_resolution
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 808,
+                                                                lineNumber: 806,
                                                                 columnNumber: 32
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-sm text-slate-400",
                                                                 children: "—"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 810,
+                                                                lineNumber: 808,
                                                                 columnNumber: 32
                                                             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Select"], {
                                                                 value: claim.alert_resolution || "none",
@@ -3085,19 +3080,19 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             children: claim.alert_resolution
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 819,
+                                                                            lineNumber: 817,
                                                                             columnNumber: 36
                                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                             className: "text-sm text-slate-400",
                                                                             children: "Select resolution..."
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 821,
+                                                                            lineNumber: 819,
                                                                             columnNumber: 36
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 817,
+                                                                        lineNumber: 815,
                                                                         columnNumber: 32
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectContent"], {
@@ -3107,7 +3102,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: "No Resolution"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 825,
+                                                                                lineNumber: 823,
                                                                                 columnNumber: 34
                                                                             }, this),
                                                                             resolutions.map((resolution)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$select$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["SelectItem"], {
@@ -3115,24 +3110,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                     children: resolution.name
                                                                                 }, resolution.id, false, {
                                                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                    lineNumber: 827,
+                                                                                    lineNumber: 825,
                                                                                     columnNumber: 36
                                                                                 }, this))
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 824,
+                                                                        lineNumber: 822,
                                                                         columnNumber: 32
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 813,
+                                                                lineNumber: 811,
                                                                 columnNumber: 30
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 805,
+                                                            lineNumber: 803,
                                                             columnNumber: 26
                                                         }, this),
                                                         col('submitted_by') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3143,7 +3138,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                         className: "h-4 w-4 text-slate-400"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 839,
+                                                                        lineNumber: 837,
                                                                         columnNumber: 30
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3154,7 +3149,7 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: getUserName(claim.submitted_for || claim.created_by)
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 841,
+                                                                                lineNumber: 839,
                                                                                 columnNumber: 32
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3162,24 +3157,24 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                                 children: formatDate(claim.created_date)
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                                lineNumber: 842,
+                                                                                lineNumber: 840,
                                                                                 columnNumber: 32
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 840,
+                                                                        lineNumber: 838,
                                                                         columnNumber: 30
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 838,
+                                                                lineNumber: 836,
                                                                 columnNumber: 28
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 837,
+                                                            lineNumber: 835,
                                                             columnNumber: 26
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$table$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -3196,12 +3191,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             className: "h-4 w-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 857,
+                                                                            lineNumber: 855,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 850,
+                                                                        lineNumber: 848,
                                                                         columnNumber: 33
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3214,12 +3209,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             className: "h-4 w-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 867,
+                                                                            lineNumber: 865,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 860,
+                                                                        lineNumber: 858,
                                                                         columnNumber: 31
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3232,12 +3227,12 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             className: "h-4 w-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 876,
+                                                                            lineNumber: 874,
                                                                             columnNumber: 33
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 869,
+                                                                        lineNumber: 867,
                                                                         columnNumber: 31
                                                                     }, this),
                                                                     isServiceManager && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$components$2f$ui$2f$button$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3254,73 +3249,73 @@ function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, o
                                                                             className: "h-4 w-4"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                            lineNumber: 890,
+                                                                            lineNumber: 888,
                                                                             columnNumber: 35
                                                                         }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                        lineNumber: 879,
+                                                                        lineNumber: 877,
                                                                         columnNumber: 33
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                                lineNumber: 848,
+                                                                lineNumber: 846,
                                                                 columnNumber: 29
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                            lineNumber: 847,
+                                                            lineNumber: 845,
                                                             columnNumber: 26
                                                         }, this)
                                                     ]
                                                 }, claim.id, true, {
                                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                                    lineNumber: 567,
+                                                    lineNumber: 565,
                                                     columnNumber: 24
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                            lineNumber: 565,
+                                            lineNumber: 563,
                                             columnNumber: 20
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                    lineNumber: 536,
+                                    lineNumber: 534,
                                     columnNumber: 18
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                                lineNumber: 535,
+                                lineNumber: 533,
                                 columnNumber: 16
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                            lineNumber: 522,
+                            lineNumber: 520,
                             columnNumber: 12
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                    lineNumber: 506,
+                    lineNumber: 504,
                     columnNumber: 10
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-                lineNumber: 505,
+                lineNumber: 503,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/src/components/dashboard/ClaimsTable.jsx",
-        lineNumber: 106,
+        lineNumber: 104,
         columnNumber: 5
     }, this);
 }
-_s(ClaimsTable, "os6Gr0fw2q573/u/z1cINYh1PC8=", false, function() {
+_s(ClaimsTable, "AZe2VcFfsOW39N77K2UHaawmIP8=", false, function() {
     return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$src$2f$lib$2f$AuthContext$2e$jsx__$5b$client$5d$__$28$ecmascript$29$__["useAuth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$Dev$2f$Hendy$2f$Warranty$2d$Claim$2d$Tracker$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useQuery"],

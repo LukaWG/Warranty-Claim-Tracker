@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,15 +15,16 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: () => Promise.resolve(user)
   });
 
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['claimNotes', claim?.id],
-    queryFn: () => claim?.id ? base44.entities.ClaimNote.filter({ claim_id: claim.id }, '-created_date') : [],
+    queryFn: () => claim?.id ? databaseClients.ClaimNote.query('*', `claim_id=${claim.id}`) : [],
     enabled: !!claim?.id
   });
 
@@ -43,7 +45,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
 
   const addNoteMutation = useMutation({
     mutationFn: async ({ content, imageUrl }) => {
-      const note = await base44.entities.ClaimNote.create({
+      const note = await databaseClients.ClaimNote.create({
         claim_id: claim.id,
         content,
         ...(imageUrl ? { image_url: imageUrl } : {})
@@ -52,8 +54,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
       // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (claim.status === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
-        await base44.entities.WarrantyClaim.update(claim.id, { status: 'awaiting_review' });
-        await base44.entities.ClaimAudit.create({
+        await databaseClients.WarrantyClaim.update(claim.id, { status: 'awaiting_review' });
+        await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
           wip_number: claim.wip_number,
           field_changed: 'status',
@@ -64,7 +66,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
       }
 
       // Create audit log for note addition
-      await base44.entities.ClaimAudit.create({
+      await databaseClients.ClaimAudit.create({
         claim_id: claim.id,
         wip_number: claim.wip_number,
         field_changed: 'note_added',

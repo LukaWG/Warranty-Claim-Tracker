@@ -4137,7 +4137,7 @@ class Router {
         // if auto prerendered and dynamic route wait to update asPath
         // until after mount to prevent hydration mismatch
         const autoExportDynamic = (0, _isdynamic.isDynamicRoute)(pathname) && self.__NEXT_DATA__.autoExport;
-        this.basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+        this.basePath = ("TURBOPACK compile-time value", "") || '';
         this.sub = subscription;
         this.clc = null;
         this._wrapApp = wrapApp;

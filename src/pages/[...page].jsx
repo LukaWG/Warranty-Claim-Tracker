@@ -18,7 +18,13 @@ export default function DynamicPage() {
       return mainPageKey;
     }
 
-    const pathSegment = normalizedPathname.replace(/^\//, '').split('/')[0];
+    const pathSegment = normalizedPathname.replace(/^\//, '').split('/')[0]; // Get first segment of the path
+    // Check that pages is defined and is an object before trying to find the key
+    if (!pages || typeof pages !== 'object') {
+      console.warn('Pages configuration is missing or invalid.');
+      return null;
+    }
+    // Check that the path segment matches a page key (case-insensitive)
     const matchedKey = Object.keys(pages).find(
       key => key.toLowerCase() === pathSegment.toLowerCase()
     );

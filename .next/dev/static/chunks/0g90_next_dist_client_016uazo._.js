@@ -305,7 +305,7 @@ Object.defineProperty(exports, "addBasePath", {
 });
 const _addpathprefix = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/shared/lib/router/utils/add-path-prefix.js [client] (ecmascript)");
 const _normalizetrailingslash = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/client/normalize-trailing-slash.js [client] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function addBasePath(path, required) {
     return (0, _normalizetrailingslash.normalizePathTrailingSlash)(("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : (0, _addpathprefix.addPathPrefix)(path, basePath));
 }
@@ -1333,7 +1333,7 @@ Object.defineProperty(exports, "hasBasePath", {
     }
 });
 const _pathhasprefix = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/shared/lib/router/utils/path-has-prefix.js [client] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function hasBasePath(path) {
     return (0, _pathhasprefix.pathHasPrefix)(path, basePath);
 }
@@ -1360,7 +1360,7 @@ Object.defineProperty(exports, "removeBasePath", {
     }
 });
 const _hasbasepath = __turbopack_context__.r("[project]/Desktop/Dev/Hendy/Warranty-Claim-Tracker/node_modules/next/dist/client/has-base-path.js [client] (ecmascript)");
-const basePath = ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker") || '';
+const basePath = ("TURBOPACK compile-time value", "") || '';
 function removeBasePath(path) {
     if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
     ;
@@ -3303,7 +3303,7 @@ function AppContainer({ children }) {
                                         "qualities": ("TURBOPACK compile-time value", [
                                             ("TURBOPACK compile-time value", 75)
                                         ]),
-                                        "path": ("TURBOPACK compile-time value", "/Warranty-Claim-Tracker/_next/image"),
+                                        "path": ("TURBOPACK compile-time value", "/_next/image"),
                                         "loader": ("TURBOPACK compile-time value", "default"),
                                         "dangerouslyAllowSVG": ("TURBOPACK compile-time value", false),
                                         "unoptimized": ("TURBOPACK compile-time value", false),
