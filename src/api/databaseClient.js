@@ -4,7 +4,7 @@
 
 
 
-import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData } from '/data/data.js';
+import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData } from '../../data/data.js';
 
 const ACTING_USER_STORAGE_KEY = 'actingUserId';
 

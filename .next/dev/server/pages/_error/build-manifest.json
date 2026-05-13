@@ -1,0 +1,24 @@
+{
+  "devFiles": [],
+  "ampDevFiles": [],
+  "polyfillFiles": [],
+  "lowPriorityFiles": [],
+  "rootMainFiles": [],
+  "pages": {
+    "/_error": [
+      "static/chunks/0g90_next_dist_compiled_02yxalv._.js",
+      "static/chunks/0g90_next_dist_shared_lib_13d02-z._.js",
+      "static/chunks/0g90_next_dist_client_016uazo._.js",
+      "static/chunks/0g90_next_dist_0ml_pee._.js",
+      "static/chunks/[next]_entry_page-loader_ts_03~yq8j._.js",
+      "static/chunks/0g90_react_10zxbhy._.js",
+      "static/chunks/0g90_react-dom_cjs_react-dom_development_0wmurfk.js",
+      "static/chunks/0g90_react-dom_0fy-_6u._.js",
+      "static/chunks/0g90_08rkcwu._.js",
+      "static/chunks/[root-of-the-server]__0ym.i5c._.js",
+      "static/chunks/Desktop_Dev_Hendy_Warranty-Claim-Tracker_src_pages__error_07xvfw~._.js",
+      "static/chunks/turbopack-Desktop_Dev_Hendy_Warranty-Claim-Tracker_src_pages__error_055db4e._.js"
+    ]
+  },
+  "ampFirstPages": []
+}
