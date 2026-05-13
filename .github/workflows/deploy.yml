@@ -3,6 +3,7 @@ name: Pages Deployment
 on:
   push:
     branches:
+      - main
       - nextjs
   workflow_dispatch:
 
@@ -30,8 +31,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build app
-        run: npm run build
+      - name: Build static site for Pages
+        run: npm run build:pages
 
       - name: Deploy to GitHub Pages
         uses: actions/upload-pages-artifact@v3
