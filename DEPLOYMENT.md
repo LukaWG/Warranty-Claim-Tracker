@@ -10,7 +10,7 @@ This project has been successfully converted from Vite/React Router to **Next.js
 - ✅ Replaced React Router with Next.js App Router
 - ✅ Updated all route imports (`useRouter`, `useNavigate`, `Link`) to Next.js equivalents
 - ✅ Created Next.js page structure (`_app.jsx`, `pages/`)
-- ✅ Configured `next.config.js` for `/Warranty-Claim-Tracker` base path
+- ✅ Configured `next.config.js` with root base path `/`
 
 ### Deployment: Kubernetes
 
@@ -30,7 +30,7 @@ npm install
 # Run development server
 npm run dev
 
-# Visit http://localhost:3000/Warranty-Claim-Tracker
+# Visit http://localhost:3000
 ```
 
 ### Build & Test Locally
@@ -42,7 +42,7 @@ npm run build
 # Start production server
 npm start
 
-# Visit http://localhost:3000/Warranty-Claim-Tracker
+# Visit http://localhost:3000
 ```
 
 ### Docker Build & Run
@@ -54,7 +54,7 @@ docker build -t warranty-claim-tracker:latest .
 # Run container
 docker run -p 3000:3000 warranty-claim-tracker:latest
 
-# Visit http://localhost:3000/Warranty-Claim-Tracker
+# Visit http://localhost:3000
 ```
 
 ## Kubernetes Deployment
@@ -74,8 +74,13 @@ kubectl get all -n warranty-claim-tracker
 ### Port Forward for Testing
 
 ```bash
+# Option 1: Port forward to service (recommended)
 kubectl port-forward -n warranty-claim-tracker svc/warranty-claim-tracker 3000:80
-# Visit http://localhost:3000/Warranty-Claim-Tracker
+
+# Option 2: Port forward directly to a pod
+kubectl port-forward -n warranty-claim-tracker <pod-name> 3000:3000
+
+# Visit http://localhost:3000
 ```
 
 ## GitHub Actions Workflow

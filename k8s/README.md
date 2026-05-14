@@ -81,7 +81,12 @@ Once deployed, the application will be accessible at:
 
 For testing locally:
 ```bash
+# Option 1: Port forward to service (recommended)
 kubectl port-forward -n warranty-claim-tracker svc/warranty-claim-tracker 3000:80
+
+# Option 2: Port forward directly to a pod
+kubectl port-forward -n warranty-claim-tracker <pod-name> 3000:3000
+
 # Visit http://localhost:3000/Warranty-Claim-Tracker
 ```
 
