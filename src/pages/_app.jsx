@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
 
   const currentPageName = useMemo(() => {
     const rawPathname = router.asPath || '/';
-    const normalizedPathname = rawPathname.replace(/^\/Warranty-Claim-Tracker/, '') || '/';
+    const normalizedPathname = rawPathname || '/';
     if (normalizedPathname === '/' || normalizedPathname === '') {
       return mainPageKey;
     }

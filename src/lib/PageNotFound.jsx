@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 export default function PageNotFound({}) {
     const router = useRouter();
     const { user, isAuthenticated } = useAuth();
-    const pageName = router.asPath.replace(/^\/Warranty-Claim-Tracker\/?/, '').split('/')[0] || 'Unknown';
+    const pageName = router.asPath.replace(/^\//, '').split('/')[0] || 'Unknown';
 
     const { data: authData, isFetched } = useQuery({
         queryKey: ['user'],

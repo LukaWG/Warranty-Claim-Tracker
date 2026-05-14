@@ -4,12 +4,14 @@ kind: Kustomization
 namespace: warranty-claim-tracker
 
 resources:
-  - namespace.yaml
-  - configmap.yaml
-  - deployment.yaml
-  - service.yaml
-  - ingress.yaml
+- namespace.yaml
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
 
-commonLabels:
-  app: warranty-claim-tracker
-  managed-by: kustomize
+labels:
+- includeSelectors: true
+  pairs:
+    app: warranty-claim-tracker
+    managed-by: kustomize

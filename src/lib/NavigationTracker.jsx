@@ -21,7 +21,7 @@ export default function NavigationTracker() {
     // Log user activity when navigating to a page
     useEffect(() => {
         const rawPathname = router.asPath || '/';
-        const normalizedPathname = rawPathname.replace(/^\/Warranty-Claim-Tracker/, '') || '/';
+        const normalizedPathname = rawPathname || '/';
         let pageName;
 
         if (normalizedPathname === '/' || normalizedPathname === '') {
