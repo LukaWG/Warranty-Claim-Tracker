@@ -3,7 +3,6 @@ name: Pages Deployment
 on:
   push:
     branches:
-      - main
       - nextjs
   workflow_dispatch:
 
