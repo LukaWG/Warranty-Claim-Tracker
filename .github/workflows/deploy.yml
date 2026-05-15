@@ -3,7 +3,7 @@ name: Pages Deployment
 on:
   push:
     branches:
-      - nextjs
+      - main
   workflow_dispatch:
 
 permissions:
