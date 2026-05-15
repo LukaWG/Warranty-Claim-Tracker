@@ -1,3 +1,4 @@
+/*
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { userData } from '../../data/data.js';
 
@@ -97,3 +98,4 @@ export const useAuth = () => {
   }
   return context;
 };
+*/

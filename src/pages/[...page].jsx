@@ -3,6 +3,21 @@ import { useMemo } from 'react';
 import { pagesConfig } from '@/pages.config';
 import PageNotFound from '@/lib/PageNotFound';
 
+import { auth } from "@/lib/auth"
+import { GetServerSideProps } from "next"
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await auth.api.getSession({
+    headers: new Headers(req.headers as Record<string, string>),
+  })
+
+  if (!session) {
+    return { redirect: { destination: "/login", permanent: false } }
+  }
+
+  return { props: { user: session.user } }
+}
+
 export default function DynamicPage() {
   const router = useRouter();
   const { Pages, mainPage } = pagesConfig;

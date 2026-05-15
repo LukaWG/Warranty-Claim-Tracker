@@ -8,6 +8,22 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // import { base44 } from '@/api/base44Client';
 import { databaseClients, getData } from '@/api/databaseClient';
 
+// Redirect if user not logged in
+import { auth } from "@/lib/auth"
+import { GetServerSideProps } from "next"
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await auth.api.getSession({
+    headers: new Headers(req.headers as Record<string, string>),
+  })
+
+  if (!session) {
+    return { redirect: { destination: "/login", permanent: false } }
+  }
+
+  return { props: { user: session.user } }
+}
+
 export default function Approvals() {
   const queryClient = useQueryClient();
   const [approvalNotes, setApprovalNotes] = useState({});

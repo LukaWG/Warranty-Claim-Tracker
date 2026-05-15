@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { useAuth } from '@/lib/AuthContext';
+// import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function ApplyPendingUserInfo() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const applyPendingInfo = async () => {
-      if (!user?.email) return;
+      // if (!user?.email) return;
 
       try {
         // Check if there's pending info for this user

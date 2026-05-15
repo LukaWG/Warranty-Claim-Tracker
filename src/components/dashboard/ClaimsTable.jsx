@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, History, MessageSquare, Maximize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/lib/AuthContext';
+// import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
@@ -44,7 +44,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const col = (key) => visibleColumns[key];
 
-  const { user: currentUser } = useAuth();
+  // const { user: currentUser } = useAuth();
+    const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => databaseClients.User.me(),
+    staleTime: 30000,
+  });
 
   const { data: alerts = [] } = useQuery({
     queryKey: ['alerts'],

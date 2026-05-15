@@ -10,6 +10,15 @@ import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
 // import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { useSession, signOut } from "@/lib/auth-client"
+import { useRouter } from "next/router"
+
+function sideBarLogOut() {
+  const { data: session } = useSession()
+  const router = useRouter()
+  signOut()
+  router.push("/login")
+}
 
 export default function Layout({ children, currentPageName }) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -166,7 +175,7 @@ export default function Layout({ children, currentPageName }) {
               // localStorage.removeItem('base44_token');
               // localStorage.removeItem('token');
               // base44.auth.redirectToLogin();
-              alert("Logged out");
+              sideBarLogOut();
             }}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors mb-3"
           >

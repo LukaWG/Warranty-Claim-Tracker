@@ -14,6 +14,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import EditBrandModal from '@/components/configuration/EditBrandModal';
 import { getData, updateSite, databaseClients } from '@/api/databaseClient';
 
+// Redirect if user not logged in
+import { auth } from "@/lib/auth"
+import { GetServerSideProps } from "next"
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await auth.api.getSession({
+	headers: new Headers(req.headers as Record<string, string>),
+  })
+
+  if (!session) {
+	return { redirect: { destination: "/login", permanent: false } }
+  }
+
+  return { props: { user: session.user } }
+}
+
 export default function Configuration() {
 	const queryClient = useQueryClient();
 	const [newSite, setNewSite] = useState({ name: '', code: '' });

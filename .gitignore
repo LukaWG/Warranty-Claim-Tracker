@@ -32,3 +32,4 @@ dist-ssr
 TODO
 
 .next/
+/src/generated/prisma
