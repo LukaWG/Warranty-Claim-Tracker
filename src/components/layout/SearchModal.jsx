@@ -5,9 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, AlertCircle, ArrowUpDown } from "lucide-react";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
 import { format } from "date-fns";
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
 
 const statusConfig = {
@@ -17,14 +17,14 @@ const statusConfig = {
 };
 
 export default function SearchModal({ open, onClose }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortColumn, setSortColumn] = useState('created_date');
   const [sortDirection, setSortDirection] = useState('desc');
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => base44.entities.WarrantyClaim.list('-created_date'),
+    queryFn: () => databaseClients.WarrantyClaim.get(),
     enabled: open
   });
 
@@ -70,7 +70,7 @@ export default function SearchModal({ open, onClose }) {
   };
 
   const handleClaimClick = (claim) => {
-    navigate(createPageUrl('Dashboard'));
+    router.push(createPageUrl('Dashboard'));
     onClose();
   };
 

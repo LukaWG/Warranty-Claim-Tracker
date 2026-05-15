@@ -1,40 +1,34 @@
 import { useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { useAuth } from '@/lib/AuthContext';
+import { databaseClients } from '@/api/databaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function ApplyPendingUserInfo() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const applyPendingInfo = async () => {
+      if (!user?.email) return;
+
       try {
-        const user = await base44.auth.me();
-        
         // Check if there's pending info for this user
-        const pendingInvites = await base44.entities.PendingUserInvite.filter({ 
-          email: user.email 
-        });
-        
+        const pendingInvites = await databaseClients.PendingUserInvite.query('*', `email=${user.email}`);
+
         if (pendingInvites.length > 0) {
           const pendingInfo = pendingInvites[0];
-          
-          // Update user with pending information
-          await base44.auth.updateMe({
-            custom_role: pendingInfo.custom_role,
-            first_name: pendingInfo.first_name,
-            last_name: pendingInfo.last_name,
-            ...(pendingInfo.default_site ? { default_site: pendingInfo.default_site } : {})
-          });
-          
-          // Delete the pending invite
-          await base44.entities.PendingUserInvite.delete(pendingInfo.id);
-          
-          console.log('Applied pending user info and refreshing...');
-          
+
+          // In a real app, you might update the user data here
+          // For now, since we have static user data, we'll just log this
+          console.log('Found pending user invite:', pendingInfo);
+
+          // Delete the pending invite (in a real app with persistent storage)
+          // await databaseClients.PendingUserInvite.delete(pendingInfo.id);
+
           // Invalidate queries to refresh user data
           queryClient.invalidateQueries({ queryKey: ['currentUser'] });
           queryClient.invalidateQueries({ queryKey: ['users'] });
-          
+
           // Reload page to ensure all data is fresh
           window.location.reload();
         }
@@ -44,7 +38,7 @@ export default function ApplyPendingUserInfo() {
     };
 
     applyPendingInfo();
-  }, [queryClient]);
+  }, [user, queryClient]);
 
   return null;
 }

@@ -49,7 +49,6 @@ import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import Reporting from './pages/Reporting';
 import Configuration from './pages/Configuration';
-import ChangeUser from './pages/ChangeUser';
 import __Layout from './Layout.jsx';
 
 
@@ -59,7 +58,6 @@ export const PAGES = {
     "Home": Home,
     "Reporting": Reporting,
     "Configuration": Configuration,
-    "ChangeUser": ChangeUser,
 }
 
 export const pagesConfig = {

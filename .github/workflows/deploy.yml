@@ -25,13 +25,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20.9.0'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build app
-        run: npm run build
+      - name: Build static site for Pages
+        run: npm run build:pages
 
       - name: Deploy to GitHub Pages
         uses: actions/upload-pages-artifact@v3

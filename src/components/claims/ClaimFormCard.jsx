@@ -11,12 +11,12 @@ import { CalendarIcon, Send, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => base44.entities.Site.list('name')
+    queryFn: () => databaseClients.Site.get()
   });
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],

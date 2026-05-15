@@ -45,7 +45,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      <Route path="/Warranty-Claim-Tracker" element={
+      <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
         </LayoutWrapper>
@@ -53,7 +53,7 @@ const AuthenticatedApp = () => {
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
-          path={`/Warranty-Claim-Tracker/${path}`}
+          path={`/${path}`}
           element={
             <LayoutWrapper currentPageName={path}>
               <Page />
@@ -61,7 +61,7 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
-      <Route path="/Warranty-Claim-Tracker/Approvals" element={<LayoutWrapper currentPageName="Approvals"><Approvals /></LayoutWrapper>} />
+      <Route path="/Approvals" element={<LayoutWrapper currentPageName="Approvals"><Approvals /></LayoutWrapper>} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

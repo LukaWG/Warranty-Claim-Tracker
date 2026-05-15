@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { createPageUrl } from './utils';
 import { Settings, LayoutDashboard, FileEdit, Search, BarChart3, LogOut, Menu, X, ShieldCheck } from 'lucide-react';
 import { cn } from "@/lib/utils";
@@ -42,8 +42,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Service Manager', 'Owner'] },
     { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
-    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] },
-    { name: 'ChangeUser', label: 'Change User', icon: Settings, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Service Manager', 'Owner'] },
+    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] }
   ];
 
   const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
@@ -125,7 +124,7 @@ export default function Layout({ children, currentPageName }) {
               return (
                 <Link
                   key={item.name}
-                  to={createPageUrl(item.name)}
+                  href={createPageUrl(item.name)}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
@@ -145,7 +144,7 @@ export default function Layout({ children, currentPageName }) {
 
         {/* User Profile & Logout */}
         <div className="p-4 border-t border-slate-200">
-          {currentUser && import.meta.env.DEV && (
+          {currentUser && process.env.NODE_ENV === 'development' && (
             <select
               value={roleOverride || currentUser.custom_role || currentUser.role || ''}
               onChange={(e) => setRoleOverride(e.target.value || null)}
