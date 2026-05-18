@@ -16,11 +16,11 @@ import { getData, updateSite, databaseClients } from '@/api/databaseClient';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
-import { GetServerSideProps } from "next"
+// import { GetServerSideProps } from "next"
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps = async ({ req, res }) => {
   const session = await auth.api.getSession({
-	headers: new Headers(req.headers as Record<string, string>),
+	headers: new Headers(req.headers),
   })
 
   if (!session) {
