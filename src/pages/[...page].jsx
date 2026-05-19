@@ -4,6 +4,7 @@ import { pagesConfig } from '@/pages.config';
 import PageNotFound from '@/lib/PageNotFound';
 
 import { auth } from "@/lib/auth"
+import { upgradeToPendingSegment } from 'next/dist/client/components/segment-cache/cache';
 // import { GetServerSideProps } from "next"
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -14,8 +15,18 @@ export const getServerSideProps = async ({ req, res }) => {
   if (!session) {
     return { redirect: { destination: "/login", permanent: false } }
   }
-
-  return { props: { user: session.user } }
+  
+  // return { props: { user: JSON.parse(JSON.stringify(session.user)) } }
+  return {
+    props: {
+      user: {
+        ...session.user,
+        // Ensure dates are serialized properly
+        createdAt: session.user.createdAt?.toISOString?.() ?? null,
+        updatedAt: session.user.updatedAt?.toISOString?.() ?? null,
+      }
+    }
+  }
 }
 
 export default function DynamicPage() {
