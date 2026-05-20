@@ -69,13 +69,41 @@ export default function LoginPage() {
   }
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <style>{`
+        :root {
+          --hendy-blue: #222b57;
+          --hendy-teal: #56C4B7;
+          --hendy-grey: #575756;
+        }
+        .hendy-teal-button {
+            background-color: var(--hendy-teal);
+            color: white;
+        }
+        .hendy-teal-button:hover {
+            background-color: color-mix(in srgb, var(--hendy-teal) 90%, black);
+        }
+        .hendy-teal-button:hover .text {
+            color: white !important;
+        }
+      `}</style>
       <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-semibold mb-1">Sign in</h1>
-        <p className="text-gray-500 text-sm mb-6">
+
+          <div className="text-center mb-8">
+            {/* <div className="text-3xl font-extrabold tracking-wider mb-1" style={{ color: 'var(--hendy-blue)' }}>
+              HENDY
+            </div>
+            <div className="text-xs mb-4 font-medium tracking-widest" style={{ color: 'var(--hendy-grey)' }}>
+              EST. 1859
+            </div> */}
+        <h1 className="text-2xl font-semibold mb-1" style={{ color: 'var(--hendy-blue)' }}>
+          Sign in
+        </h1>
+        <p className="text-sm mb-6" style={{ color: 'var(--hendy-grey)' }}>
           Warranty Claim Tracker
         </p>
-
+        </div>
         {error && (
           <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg mb-4">
             {error}
@@ -83,18 +111,22 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+          <div style={{ color: 'var(--hendy-grey)' }}>
+            <label className="block text-sm font-medium mb-1">
+              Email
+            </label>
             <input
               type="email" required
               value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div>
+          <div style={{ color: 'var(--hendy-grey)' }}>
             <div className="flex justify-between items-center mb-1">
-              <label className="text-sm font-medium">Password</label>
-              <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              <label className="text-sm font-medium">
+                Password
+              </label>
+              <Link href="/forgot-password" className="text-sm hover:underline" style={{ color: 'var(--hendy-teal)' }}>
                 Forgot password?
               </Link>
             </div>
@@ -106,7 +138,9 @@ export default function LoginPage() {
           </div>
           <button
             type="submit" disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+            className="w-full rounded-lg py-2.5 text-sm font-medium hendy-teal-button disabled:opacity-50 transition"
+            // style={{ backgroundColor: 'var(--hendy-teal)' }}. bg-blue-600 text-white   hover:bg-blue-700 
+
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
@@ -140,7 +174,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-600 hover:underline">
+          <Link href="/signup" className="text-blue-600 hover:underline" style={{ color: 'var(--hendy-teal)' }}>
             Sign up
           </Link>
         </p>

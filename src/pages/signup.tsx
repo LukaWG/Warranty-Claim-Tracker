@@ -59,11 +59,33 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <style>{`
+        :root {
+          --hendy-blue: #222b57;
+          --hendy-teal: #56C4B7;
+          --hendy-grey: #575756;
+        }
+        .hendy-teal-button {
+            background-color: var(--hendy-teal);
+            color: white;
+        }
+        .hendy-teal-button:hover {
+            background-color: color-mix(in srgb, var(--hendy-teal) 90%, black);
+        }
+        .hendy-teal-button:hover .text {
+            color: white !important;
+        }
+      `}</style>
       <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-semibold mb-1">Create account</h1>
-        <p className="text-gray-500 text-sm mb-6">
+          <div className="text-center mb-8">
+
+        <h1 className="text-2xl font-semibold mb-1" style={{ color: 'var(--hendy-blue)' }}>
+          Create account
+        </h1>
+        <p className="text-gray-500 text-sm mb-6" style={{ color: 'var(--hendy-grey)' }}>
           Warranty Claim Tracker
         </p>
+        </div>
 
         {error && (
           <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg mb-4">
@@ -72,7 +94,7 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4" style={{ color: 'var(--hendy-grey)' }}>
             <div>
               <label className="block text-sm font-medium mb-1">First Name</label>
               <input
@@ -95,7 +117,7 @@ export default function SignUpPage() {
             { label: "Email", value: email, set: setEmail, type: "email" },
             { label: "Password", value: password, set: setPassword, type: "password" },
           ].map(({ label, value, set, type }) => (
-            <div key={label}>
+            <div key={label} style={{ color: 'var(--hendy-grey)' }}>
               <label className="block text-sm font-medium mb-1">{label}</label>
               <input
                 type={type} required
@@ -106,7 +128,7 @@ export default function SignUpPage() {
           ))}
           <button
             type="submit" disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+            className="w-full rounded-lg py-2.5 text-sm font-medium hendy-teal-button disabled:opacity-50 transition"
           >
             {loading ? "Creating account…" : "Create account"}
           </button>
@@ -133,14 +155,14 @@ export default function SignUpPage() {
                 <path fill="#05a6f0" d="M1 11h9v9H1z"/>
                 <path fill="#ffba08" d="M11 11h9v9h-9z"/>
               </svg>
-              Microsoft
+              <span style={{ color: 'var(--hendy-grey)' }}>Microsoft</span>
             </button>
           </div>
         )}
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href="/login" className="text-blue-600 hover:underline" style={{ color: 'var(--hendy-teal)' }}>
             Sign in
           </Link>
         </p>
