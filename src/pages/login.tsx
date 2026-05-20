@@ -1,16 +1,40 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { signIn } from "@/lib/auth-client"
+import { signIn, useSession } from "@/lib/auth-client"
 import Link from "next/link"
 
 export default function LoginPage() {
   const router = useRouter()
-  const callbackUrl = (router.query.callbackUrl as string) ?? "/dashboard"
+  const { data: session, isPending } = useSession()
+
+  let callbackUrl = (router.query.callbackUrl as string) ?? "/"
+  if (
+    callbackUrl === "/login" ||
+    callbackUrl === "/signup" ||
+    callbackUrl === "/forgot-password" ||
+    callbackUrl === "/reset-password"
+  ) {
+    callbackUrl = "/"
+  }
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (session) {
+      router.push("/")
+    }
+  }, [session, router])
+
+  if (isPending) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -55,7 +79,12 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <div className="flex justify-between items-center mb-1">
+              <label className="text-sm font-medium">Password</label>
+              <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <input
               type="password" required
               value={password} onChange={(e) => setPassword(e.target.value)}

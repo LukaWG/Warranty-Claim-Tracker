@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth"
+import { admin } from "better-auth/plugins"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from "./prisma"
 
@@ -10,5 +11,25 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      console.log(`\n========================================`);
+      console.log(`🔑 PASSWORD RESET REQUEST`);
+      console.log(`User: ${user.email}`);
+      console.log(`Reset URL: ${url}`);
+      console.log(`Token: ${token}`);
+      console.log(`========================================\n`);
+    }
+  },
+  plugins: [
+    admin(),
+  ],
+  user: {
+    additionalFields: {
+      firstName: { type: "string", required: false, input: true },
+      lastName: { type: "string", required: false, input: true },
+      customRole: { type: "string", defaultValue: "Processor", input: true },
+      defaultSite: { type: "string", required: false, input: true },
+      mustChangePassword: { type: "boolean", defaultValue: false, input: true },
+    }
   }
 })

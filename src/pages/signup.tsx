@@ -1,15 +1,32 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { signUp } from "@/lib/auth-client"
+import { signUp, useSession } from "@/lib/auth-client"
 import Link from "next/link"
 
 export default function SignUpPage() {
   const router = useRouter()
-  const [name, setName] = useState("")
+  const { data: session, isPending } = useSession()
+
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (session) {
+      router.push("/")
+    }
+  }, [session, router])
+
+  if (isPending) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -17,17 +34,19 @@ export default function SignUpPage() {
     setError("")
 
     const { error } = await signUp.email({
-      name,
+      name: `${firstName} ${lastName}`.trim(),
       email,
       password,
-      callbackURL: "/dashboard",
+      firstName,
+      lastName,
+      callbackURL: "/",
     })
 
     if (error) {
       setError(error.message ?? "Something went wrong.")
       setLoading(false)
     } else {
-      router.push("/dashboard")
+      router.push("/")
     }
   }
 
@@ -46,8 +65,26 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">First Name</label>
+              <input
+                type="text" required
+                value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Last Name</label>
+              <input
+                type="text" required
+                value={lastName} onChange={(e) => setLastName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
           {[
-            { label: "Name", value: name, set: setName, type: "text" },
             { label: "Email", value: email, set: setEmail, type: "email" },
             { label: "Password", value: password, set: setPassword, type: "password" },
           ].map(({ label, value, set, type }) => (

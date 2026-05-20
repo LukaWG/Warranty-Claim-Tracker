@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, MapPin, AlertCircle, Settings, Tag, Users, Mail, Pencil, Clock } from 'lucide-react';
+import { Plus, Trash2, MapPin, AlertCircle, Settings, Tag, Users, Mail, Pencil, Clock, Key } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import EditBrandModal from '@/components/configuration/EditBrandModal';
 import { getData, updateSite, databaseClients } from '@/api/databaseClient';
+
+import { authUsers } from "@/api/authClient";
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -26,9 +28,30 @@ export const getServerSideProps = async ({ req, res }) => {
   if (!session) {
 	return { redirect: { destination: "/login", permanent: false } }
   }
-
-  return { props: { user: session.user } }
+  
+  // return { props: { user: JSON.parse(JSON.stringify(session.user)) } }
+  return {
+    props: {
+      user: {
+        ...session.user,
+        // Ensure dates are serialized properly
+        createdAt: session.user.createdAt instanceof Date ? session.user.createdAt.toISOString() : (session.user.createdAt ?? null),
+        updatedAt: session.user.updatedAt instanceof Date ? session.user.updatedAt.toISOString() : (session.user.updatedAt ?? null),
+        role: session.user.role ?? null,
+        banned: session.user.banned ?? null,
+        banReason: session.user.banReason ?? null,
+        banExpires: session.user.banExpires instanceof Date ? session.user.banExpires.toISOString() : (session.user.banExpires ?? null),
+        first_name: session.user.firstName ?? session.user.first_name ?? null,
+        last_name: session.user.lastName ?? session.user.last_name ?? null,
+        custom_role: session.user.customRole ?? session.user.custom_role ?? null,
+        default_site: session.user.defaultSite ?? session.user.default_site ?? null,
+        mustChangePassword: session.user.mustChangePassword ?? null,
+      }
+    }
+  }
 }
+
+
 
 export default function Configuration() {
 	const queryClient = useQueryClient();
@@ -40,9 +63,54 @@ export default function Configuration() {
 	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '' });
 	const [showUserDialog, setShowUserDialog] = useState(false);
 	const [editingUser, setEditingUser] = useState(null);
+	const [tempPassword, setTempPassword] = useState(null);
+	const [showTempPasswordDialog, setShowTempPasswordDialog] = useState(false);
 	const [editingBrandDeadlines, setEditingBrandDeadlines] = useState({});
 	const [editingBrandThresholds, setEditingBrandThresholds] = useState({});
 	const [editingBrand, setEditingBrand] = useState(null);
+	
+	// Fetch users from better-auth
+	const { data: users = [], isLoading: usersLoading } = useQuery({
+	queryKey: ["users"],
+	queryFn: () => authUsers.list(),
+	});
+
+	const inviteUserMutation = useMutation({
+	mutationFn: ({ email, role, first_name, last_name, default_site }) =>
+		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site }),
+	onSuccess: () => {
+		queryClient.invalidateQueries({ queryKey: ["users"] });
+		setNewUser({ email: "", role: "Processor", first_name: "", last_name: "", default_site: "" });
+		setShowUserDialog(false);
+	},
+	onError: (error) => alert(`Failed to add user: ${error.message}`),
+	});
+
+	const updateUserRoleMutation = useMutation({
+	mutationFn: ({ id, role }) => authUsers.update(id, { custom_role: role }),
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+	onError: () => alert("Failed to update role. Please try again."),
+	});
+
+	const updateUserMutation = useMutation({
+	mutationFn: ({ id, data }) =>
+		authUsers.update(id, {
+		first_name: data.first_name,
+		last_name: data.last_name,
+		custom_role: data.custom_role,
+		default_site: data.default_site,
+		}),
+	onSuccess: () => {
+		queryClient.invalidateQueries({ queryKey: ["users"] });
+		setEditingUser(null);
+	},
+	onError: () => alert("Failed to update user. Please try again."),
+	});
+
+	const deleteUserMutation = useMutation({
+	mutationFn: (id) => authUsers.delete(id),
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+	});
 
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
@@ -66,10 +134,10 @@ export default function Configuration() {
 	  queryFn: () => databaseClients.clients["Brand"].get()
 	});
 
-	const { data: users = [], isLoading: usersLoading } = useQuery({
-		queryKey: ['users'],
-		queryFn: () => databaseClients.clients["User"].get()
-	});
+	// const { data: users = [], isLoading: usersLoading } = useQuery({
+	// 	queryKey: ['users'],
+	// 	queryFn: () => databaseClients.clients["User"].get()
+	// });
 
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
@@ -186,73 +254,87 @@ export default function Configuration() {
 	}
 	};
 
-	const inviteUserMutation = useMutation({
-	mutationFn: async ({ email, role, first_name, last_name, default_site }) => {
-		console.log('Inviting user:', { email, role, first_name, last_name });
+	// const inviteUserMutation = useMutation({
+	// mutationFn: async ({ email, role, first_name, last_name, default_site }) => {
+	// 	console.log('Inviting user:', { email, role, first_name, last_name });
 		
-		// Map custom role to platform role (admin or user)
-		// Only Owner has platform admin access for configuration management
-		const platformRole = (role === 'Owner') ? 'admin' : 'user';
+	// 	// Map custom role to platform role (admin or user)
+	// 	// Only Owner has platform admin access for configuration management
+	// 	const platformRole = (role === 'Owner') ? 'admin' : 'user';
 		
-		// Store pending user information for when they register
-		await databaseClients.clients["PendingUserInvite"].create({
-		email: email,
-		custom_role: role,
-		first_name: first_name,
-		last_name: last_name,
-		default_site: default_site || null
-		});
+	// 	// Store pending user information for when they register
+	// 	await databaseClients.clients["PendingUserInvite"].create({
+	// 	email: email,
+	// 	custom_role: role,
+	// 	first_name: first_name,
+	// 	last_name: last_name,
+	// 	default_site: default_site || null
+	// 	});
 		
-		// Invite user with platform role
-		// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-		// await base44.users.inviteUser(email, platformRole);
-		console.log('User invited and pending info stored');
+	// 	// Invite user with platform role
+	// 	// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
+	// 	// await base44.users.inviteUser(email, platformRole);
+	// 	console.log('User invited and pending info stored');
+	// },
+	// onSuccess: () => {
+	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
+	// 	setNewUser({ email: '', role: 'Processor', first_name: '', last_name: '' });
+	// 	setShowUserDialog(false);
+	// },
+	// onError: (error) => {
+	// 	console.error('Failed to invite user:', error);
+	// 	const errorMessage = error?.message || error?.toString() || 'Unknown error';
+	// 	alert(`Failed to invite user: ${errorMessage}\n\nPlease check the console for more details.`);
+	// }
+	// });
+
+	const resetUserPasswordMutation = useMutation({
+	mutationFn: async ({ id }) => {
+		const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
+		let generatedPassword = "";
+		for (let i = 0; i < 10; i++) {
+			generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+		}
+		
+		await authUsers.resetPassword(id, generatedPassword);
+		await authUsers.update(id, { must_change_password: true });
+		return generatedPassword;
 	},
-	onSuccess: () => {
-		queryClient.invalidateQueries({ queryKey: ['users'] });
-		setNewUser({ email: '', role: 'Processor', first_name: '', last_name: '' });
-		setShowUserDialog(false);
+	onSuccess: (generatedPassword) => {
+		setTempPassword(generatedPassword);
+		setShowTempPasswordDialog(true);
+		queryClient.invalidateQueries({ queryKey: ["users"] });
 	},
 	onError: (error) => {
-		console.error('Failed to invite user:', error);
-		const errorMessage = error?.message || error?.toString() || 'Unknown error';
-		alert(`Failed to invite user: ${errorMessage}\n\nPlease check the console for more details.`);
+		alert(`Failed to reset password: ${error.message || "Unknown error"}`);
 	}
 	});
 
-	const resendInviteMutation = useMutation({
-	mutationFn: async ({ email, role }) => {
-		const platformRole = role === 'Admin Manager' ? 'admin' : 'user';
-		// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-		// await base44.users.inviteUser(email, platformRole);
-	}
-	});
+	// const updateUserRoleMutation = useMutation({
+	// mutationFn: ({ id, role }) => {
+	// 	return databaseClients.clients["User"].update(id, { custom_role: role });
+	// },
+	// onSuccess: () => {
+	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
+	// },
+	// onError: (error) => {
+	// 	console.error('Failed to update user role:', error);
+	// 	alert('Failed to update user role. Please try again.');
+	// }
+	// });
 
-	const updateUserRoleMutation = useMutation({
-	mutationFn: ({ id, role }) => {
-		return databaseClients.clients["User"].update(id, { custom_role: role });
-	},
-	onSuccess: () => {
-		queryClient.invalidateQueries({ queryKey: ['users'] });
-	},
-	onError: (error) => {
-		console.error('Failed to update user role:', error);
-		alert('Failed to update user role. Please try again.');
-	}
-	});
+	// const updateUserMutation = useMutation({
+	// mutationFn: ({ id, data }) => databaseClients.clients["User"].update(id, data),
+	// onSuccess: () => {
+	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
+	// 	setEditingUser(null);
+	// }
+	// });
 
-	const updateUserMutation = useMutation({
-	mutationFn: ({ id, data }) => databaseClients.clients["User"].update(id, data),
-	onSuccess: () => {
-		queryClient.invalidateQueries({ queryKey: ['users'] });
-		setEditingUser(null);
-	}
-	});
-
-	const deleteUserMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["User"].delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] })
-	});
+	// const deleteUserMutation = useMutation({
+	// mutationFn: (id) => databaseClients.clients["User"].delete(id),
+	// onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] })
+	// });
 
 	const handleUserInvite = async (e) => {
 	e.preventDefault();
@@ -1188,7 +1270,7 @@ export default function Configuration() {
 								</select>
 							</TableCell>
 							<TableCell className="text-slate-600">
-								{new Date(user.created_date).toLocaleDateString()}
+								{user.created_date ? new Date(user.created_date).toLocaleDateString() : '—'}
 							</TableCell>
 							<TableCell>
 								<div className="flex items-center gap-2">
@@ -1205,16 +1287,15 @@ export default function Configuration() {
 									variant="ghost"
 									size="icon"
 									onClick={() => {
-									resendInviteMutation.mutate({ 
-										email: user.email, 
-										role: user.custom_role || user.role 
-									});
+										if (window.confirm(`Reset password for user "${user.email}"?`)) {
+											resetUserPasswordMutation.mutate({ id: user.id });
+										}
 									}}
-									disabled={resendInviteMutation.isPending}
+									disabled={resetUserPasswordMutation.isPending}
 									className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-									title="Send invite email"
+									title="Reset Password"
 								>
-									<Mail className="h-4 w-4" />
+									<Key className="h-4 w-4" />
 								</Button>
 								<Button
 									variant="ghost"
@@ -1594,6 +1675,43 @@ export default function Configuration() {
 				</DialogFooter>
 				</form>
 			)}
+			</DialogContent>
+		</Dialog>
+
+		{/* Temporary Password Dialog */}
+		<Dialog open={showTempPasswordDialog} onOpenChange={setShowTempPasswordDialog}>
+			<DialogContent className="sm:max-w-md">
+			<DialogHeader>
+				<DialogTitle className="text-slate-800">Password Reset Successful</DialogTitle>
+			</DialogHeader>
+			<div className="space-y-4 my-4">
+				<p className="text-sm text-slate-500">
+					A temporary password has been successfully generated for the user. Please copy and share this password with them, as it will only be displayed once.
+				</p>
+				<div className="flex items-center space-x-2">
+					<Input
+						readOnly
+						value={tempPassword || ''}
+						className="font-mono bg-slate-50 text-center text-lg select-all flex-1 py-5 border-slate-300 font-semibold"
+					/>
+					<Button
+						type="button"
+						className="px-4 py-5"
+						style={{ backgroundColor: 'var(--hendy-blue)' }}
+						onClick={() => {
+							navigator.clipboard.writeText(tempPassword || '');
+							alert('Password copied to clipboard!');
+						}}
+					>
+						Copy
+					</Button>
+				</div>
+			</div>
+			<DialogFooter className="justify-end">
+				<Button type="button" variant="outline" onClick={() => setShowTempPasswordDialog(false)}>
+					Close
+				</Button>
+			</DialogFooter>
 			</DialogContent>
 		</Dialog>
 		</div>

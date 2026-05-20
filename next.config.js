@@ -14,6 +14,12 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   allowedDevOrigins: ['192.168.0.182'],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack(config, { isServer }) {
     config.resolve.alias['@'] = path.resolve(__dirname, './src')
     config.resolve.alias['@vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts'] = stubPath

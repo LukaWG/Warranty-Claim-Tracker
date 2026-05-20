@@ -21,6 +21,19 @@ model user {
   updatedAt     DateTime
   sessions      session[]
   accounts      account[]
+  firstName     String? @map("first_name")
+  lastName      String? @map("last_name")
+  customRole    String?   @default("Processor") @map("custom_role")
+  defaultSite   String?   @map("default_site")
+  mustChangePassword Boolean? @default(false) @map("must_change_password")
+
+  // Better Auth Admin Plugin Fields
+  role          String?   @default("user")
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
+
+  @@map("user")
 }
 
 model session {
@@ -33,6 +46,7 @@ model session {
   userAgent String?
   userId    String
   user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
 }
 
 model account {

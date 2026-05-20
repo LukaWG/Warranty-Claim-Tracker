@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
-import { useAuth } from './AuthContext';
+import { useSession } from '@/lib/auth-client';
 import { useQuery } from '@tanstack/react-query';
 
 
 export default function PageNotFound({}) {
     const router = useRouter();
-    const { user, isAuthenticated } = useAuth();
+    const { data: session } = useSession();
+    const user = session?.user;
+    const isAuthenticated = !!session;
     const pageName = router.asPath.replace(/^\//, '').split('/')[0] || 'Unknown';
 
     const { data: authData, isFetched } = useQuery({
