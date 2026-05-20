@@ -49,6 +49,13 @@ export default function SignUpPage() {
       router.push("/")
     }
   }
+  async function handleMicrosoftLogin() {
+    setLoading(true)
+    await signIn.social({
+      provider: "microsoft",
+      callbackURL: "/",
+    })
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -104,6 +111,32 @@ export default function SignUpPage() {
             {loading ? "Creating account…" : "Create account"}
           </button>
         </form>
+
+        {process.env.NEXT_PUBLIC_ENABLE_MICROSOFT_SSO === "true" && (
+          <div className="mt-6">
+            <div className="relative mb-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-card text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            <button
+              onClick={handleMicrosoftLogin}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-2.5 text-sm font-medium hover:bg-gray-50 disabled:opacity-50 transition text-gray-700"
+            >
+              <svg width="20" height="20" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#f35325" d="M1 1h9v9H1z"/>
+                <path fill="#81bc06" d="M11 1h9v9h-9z"/>
+                <path fill="#05a6f0" d="M1 11h9v9H1z"/>
+                <path fill="#ffba08" d="M11 11h9v9h-9z"/>
+              </svg>
+              Microsoft
+            </button>
+          </div>
+        )}
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Already have an account?{" "}

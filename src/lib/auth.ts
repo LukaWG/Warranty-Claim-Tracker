@@ -13,7 +13,7 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     sendResetPassword: async ({ user, url, token }, request) => {
       console.log(`\n========================================`);
-      console.log(`🔑 PASSWORD RESET REQUEST`);
+      console.log(`PASSWORD RESET REQUEST`);
       console.log(`User: ${user.email}`);
       console.log(`Reset URL: ${url}`);
       console.log(`Token: ${token}`);
@@ -23,6 +23,13 @@ export const auth = betterAuth({
   plugins: [
     admin(),
   ],
+  socialProviders: {
+    microsoft: {
+      clientId: process.env.MICROSOFT_CLIENT_ID || "placeholder_client_id",
+      clientSecret: process.env.MICROSOFT_CLIENT_SECRET || "placeholder_secret",
+      tenantId: process.env.MICROSOFT_TENANT_ID || "common",
+    }
+  },
   user: {
     additionalFields: {
       firstName: { type: "string", required: false, input: true },
