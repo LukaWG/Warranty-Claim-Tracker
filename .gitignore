@@ -33,3 +33,4 @@ TODO
 
 .next/
 /src/generated/prisma
+.antigravitycli/
