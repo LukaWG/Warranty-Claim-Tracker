@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useAuth } from '@/lib/AuthContext';
+// import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function ApplyPendingUserInfo() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const user = null; // Placeholder until we have auth context set up
   const queryClient = useQueryClient();
 
   useEffect(() => {

@@ -4,6 +4,22 @@ import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
 import { databaseClients } from '@/api/databaseClient';
 
+// Redirect if user not logged in
+import { auth } from "@/lib/auth"
+// import { GetServerSideProps } from "next"
+
+export const getServerSideProps = async ({ req, res }) => {
+  const session = await auth.api.getSession({
+    headers: new Headers(req.headers),
+  })
+
+  if (!session) {
+    return { redirect: { destination: "/login", permanent: false } }
+  }
+
+  return { props: { user: session.user } }
+}
+
 export default function Home() {
   const router = useRouter();
 

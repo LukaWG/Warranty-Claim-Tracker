@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { databaseClients } from '@/api/databaseClient';
-import { useAuth } from '@/lib/AuthContext';
+// import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -15,11 +15,17 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  // const { user } = useAuth();
+
+  // const { data: currentUser } = useQuery({
+  //   queryKey: ['currentUser'],
+  //   queryFn: () => Promise.resolve(user)
+  // });
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => Promise.resolve(user)
+    queryFn: () => databaseClients.User.me(),
+    staleTime: 30000,
   });
 
   const { data: notes = [], isLoading } = useQuery({
