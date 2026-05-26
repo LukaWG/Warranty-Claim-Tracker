@@ -24,6 +24,7 @@ export default async function authHandler(
   res: NextApiResponse
 ) {
   const host = req.headers.host || "localhost:3000"
+  console.log(`[Auth API] Incoming request: ${req.method} ${req.url} from host: ${host}`)
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http"
   
   // Reconstruct full URL so Better Auth can parse it
