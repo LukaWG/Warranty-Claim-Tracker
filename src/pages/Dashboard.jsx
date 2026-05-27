@@ -144,6 +144,8 @@ export default function Dashboard() {
         }
       }
 
+      const wipNumMatch = !filters.wipNum || claim.wip_number.toLowerCase().includes(filters.wipNum.toLowerCase());
+      const repairNumMatch = !filters.repairNum || (claim.repair_number && claim.repair_number.toLowerCase().includes(filters.repairNum.toLowerCase()));
       const siteMatch = !filters.site?.length || filters.site.includes(claim.site);
       const brandMatch = !filters.brand?.length || filters.brand.includes(claim.brand);
       const userMatch = !filters.user?.length || filters.user.includes(claim.created_by) || filters.user.includes(claim.submitted_for);
@@ -188,7 +190,7 @@ export default function Dashboard() {
       }
 
       const claimedMatch = showClaimed || !claim.claimed;
-      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && claimedMatch;
+      return wipNumMatch && repairNumMatch && siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && claimedMatch;
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
