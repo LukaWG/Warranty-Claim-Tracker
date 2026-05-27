@@ -14,6 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
+import ClaimTimeline from './ClaimTimeline';
 
 const statusConfig = {
   in_progress: { label: "In Progress", className: "bg-blue-50 border-blue-200", style: { color: '#222b57' } },
@@ -907,6 +908,14 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
            </div>
          </DialogContent>
         </Dialog>
+
+        {timelineClaim && (
+          <ClaimTimeline
+            claim={timelineClaim}
+            open={!!timelineClaim}
+            onClose={() => setTimelineClaim(null)}
+          />
+         )}
         </motion.div>
         );
         }
