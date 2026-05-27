@@ -123,10 +123,10 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   };
 
   const handleClearFilters = () => {
-    onFilterChange({ site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
+    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
   };
 
-  const hasActiveFilters = filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
+  const hasActiveFilters = filters.wipNum || filters.repairNum || filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
     filters.claimedBy?.length > 0 || filters.status?.length > 0 || filters.alert?.length > 0 ||
     filters.resolution?.length > 0 || filters.dateFrom || filters.dateTo;
 
@@ -146,6 +146,24 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-9 gap-4">
+        <div className="space-y-2">
+          <Label className="text-xs text-slate-600">WIP Number</Label>
+          <Input
+            placeholder="Enter WIP number"
+            value={filters.wipNum}
+            onChange={(e) => onFilterChange({ ...filters, wipNum: e.target.value })}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs text-slate-600">Repair Number</Label>
+          <Input
+            placeholder="Enter repair number"
+            value={filters.repairNum}
+            onChange={(e) => onFilterChange({ ...filters, repairNum: e.target.value })}
+          />
+        </div>
+
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect

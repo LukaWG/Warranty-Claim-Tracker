@@ -50,7 +50,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({ site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
