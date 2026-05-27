@@ -211,9 +211,11 @@ class DatabaseClient {
     async filter(filterBy, orderBy="") {
         // filterBy is an object with key as the field to filter by and value as the value to filter for. For example, { site_id: 1, brand: 'Brand A' }
         await this.fetch();
+        debugger;
         let data = this.data;
         Object.entries(filterBy).forEach(([key, value]) => {
             if (value !== undefined && value !== null) {
+                console.log(`Filtering by ${key}=${value}`);
                 data = data.filter((item) => {
                     const itemValue = item[key];
                     if (itemValue === undefined || itemValue === null) {
@@ -221,6 +223,8 @@ class DatabaseClient {
                     }
                     return String(itemValue) === String(value);
                 });
+                console.log(`Found ${data.length} items after filtering by ${key}=${value}`);
+                console.log('Filtered data:', data);
             }
         });
         // Sort by orderBy field if provided. orderBy is a string in the format "field"
