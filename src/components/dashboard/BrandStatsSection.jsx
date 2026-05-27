@@ -93,8 +93,11 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
       const siteClaims = brandClaims.filter(c => c.site === site);
       const siteClaimedCount = allClaims.filter(c => c.brand === activeBrandFilter && c.site === site && c.claimed).length;
       const siteTotalHours = siteClaims.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
+      const siteInProgress = siteClaims.filter(c => c.status === 'in_progress').length;
+      const siteAwaitingReview = siteClaims.filter(c => c.status === 'awaiting_review').length;
+      const siteRejected = siteClaims.filter(c => c.status === 'rejected').length;
       const colorCounts = activeBrandObj ? getColorCounts(activeBrandObj, siteClaims) : { redCount: 0, amberCount: 0, greenCount: 0 };
-      return { site, count: siteClaims.length, claimedCount: siteClaimedCount, totalExpectedHours: siteTotalHours, colorCounts };
+      return { site, count: siteClaims.length, claimedCount: siteClaimedCount, totalExpectedHours: siteTotalHours, totalInProgress: siteInProgress, totalAwaitingReview: siteAwaitingReview, totalRejected: siteRejected, colorCounts };
     });
 
     return (
@@ -128,6 +131,15 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
                       <p className="text-sm font-medium text-slate-500 mb-1">{stat.site}</p>
                       <p className="text-3xl font-bold text-slate-800">{stat.count}</p>
                       <p className="text-xs text-slate-500 mt-1">{stat.totalExpectedHours.toFixed(1)}h in progress</p>
+                      {stat.totalInProgress > 0 && (
+                        <p className="text-xs text-slate-500 mt-1">{stat.totalInProgress} in progress</p>
+                      )}
+                      {stat.totalAwaitingReview > 0 && (
+                        <p className="text-xs text-slate-500 mt-1">{stat.totalAwaitingReview} awaiting review</p>
+                      )}
+                      {stat.totalRejected > 0 && (
+                        <p className="text-xs text-slate-500 mt-1">{stat.totalRejected} rejected</p>
+                      )}
                     </div>
                     <div className="flex justify-center">
                       <TrafficLightIcon size="md" colorCounts={stat.colorCounts} />
