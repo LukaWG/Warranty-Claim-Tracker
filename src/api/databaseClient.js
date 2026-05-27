@@ -207,6 +207,35 @@ class DatabaseClient {
             return selected;
         });
     }
+
+    async filter(filterBy, orderBy="") {
+        // filterBy is an object with key as the field to filter by and value as the value to filter for. For example, { site_id: 1, brand: 'Brand A' }
+        await this.fetch();
+        let data = this.data;
+        Object.entries(filterBy).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                data = data.filter((item) => {
+                    const itemValue = item[key];
+                    if (itemValue === undefined || itemValue === null) {
+                        return false;
+                    }
+                    return String(itemValue) === String(value);
+                });
+            }
+        });
+        // Sort by orderBy field if provided. orderBy is a string in the format "field"
+        if (orderBy) {
+            data.sort((a, b) => {
+                const aValue = a[orderBy];
+                const bValue = b[orderBy];
+                if (aValue === undefined || aValue === null) return 1;
+                if (bValue === undefined || bValue === null) return -1;
+                if (aValue < bValue) return -1;
+                if (aValue > bValue) return 1;
+                return 0;
+            });
+        }
+        
 }
 
 class SiteClient extends DatabaseClient {
