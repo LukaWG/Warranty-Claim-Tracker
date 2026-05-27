@@ -23,6 +23,14 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
     queryKey: ['brands'],
     queryFn: () => databaseClients.Brand.get()
   });
+  const { data: alerts = [] } = useQuery({
+    queryKey: ['alerts'],
+    queryFn: () => databaseClients.Alert.get()
+  });
+  const { data: resolutions = [] } = useQuery({
+    queryKey: ['resolutions'],
+    queryFn: () => databaseClients.AlertResolution.get()
+  });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => databaseClients.User.get()
