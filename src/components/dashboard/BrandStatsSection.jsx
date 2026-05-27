@@ -174,15 +174,6 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
             <p className="text-sm font-medium text-slate-500 mb-1">All Brands</p>
             <p className="text-3xl font-bold text-slate-800">{allBrandsClaims.length}</p>
             <p className="text-xs text-slate-500 mt-1">{allBrandsTotalExpectedHours.toFixed(1)}h in progress</p>
-              {stat.totalInProgress > 0 && (
-                <p className="text-xs text-slate-500 mt-1">{stat.totalInProgress} in progress</p>
-              )}
-              {stat.totalAwaitingReview > 0 && (
-                <p className="text-xs text-slate-500 mt-1">{stat.totalAwaitingReview} awaiting review</p>
-              )}
-              {stat.totalRejected > 0 && (
-                <p className="text-xs text-slate-500 mt-1">{stat.totalRejected} rejected</p>
-              )}
           </div>
             <div className="flex justify-center">
               <TrafficLightIcon 
