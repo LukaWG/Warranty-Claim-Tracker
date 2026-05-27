@@ -742,6 +742,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               );
             })()}
           </div>
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
