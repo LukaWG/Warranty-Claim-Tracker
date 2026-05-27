@@ -13,7 +13,7 @@ if (!fs.existsSync(stubPath)) {
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  allowedDevOrigins: ['192.168.0.182', 'lukas-macbook-pro.local', 'localhost'],
+  allowedDevOrigins: ['192.168.0.182', 'lukas-mbp.local', 'localhost'],
   eslint: {
     ignoreDuringBuilds: true,
   },

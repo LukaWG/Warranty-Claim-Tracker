@@ -216,31 +216,6 @@ export default function Dashboard() {
     if (claim?.claimed) return; // locked if claimed
     if (claim) {
       await createAuditLog(id, claim.wip_number, 'status', claim.status, status, 'status_changed');
-      
-      // Send email alert if status changed to rejected
-      // [ ] Change send email logic away from base44
-      /*if (status === 'rejected' && claim.status !== 'rejected') {
-        await base44.integrations.Core.SendEmail({
-          to: claim.submitted_for || claim.created_by,
-          subject: `Claim Rejected - WIP #${claim.wip_number}`,
-          body: `<p>Hello,</p>
-
-        <p>We wanted to inform you that your warranty claim has been rejected and requires your attention.</p>
-
-        <p><strong>Claim Details:</strong></p>
-
-        <p>WIP Number: ${claim.wip_number}<br>
-        Site: ${claim.site}<br>
-        Brand: ${claim.brand}</p>
-
-        <p>Please log in to the Warranty Claims system to review the details and take the necessary action on this claim.</p>
-
-        <p>Log in here: <a href="https://hendywarrantyapp.base44.app/">https://hendywarrantyapp.base44.app/</a></p>
-
-        <p>Best regards,<br>
-        The Warranty App Team</p>`
-        });
-      }*/
     }
     updateMutation.mutate({ id, data: { status } });
   };
@@ -272,31 +247,6 @@ export default function Dashboard() {
       if (claim.status !== newStatus) {
         await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
       }
-      
-      // Send email alert if alert is being added (status will change to rejected)
-      /*if (alert && !claim.alert) {
-        await base44.integrations.Core.SendEmail({
-          to: claim.submitted_for || claim.created_by,
-          subject: `Claim Alert - WIP #${claim.wip_number}`,
-          body: `<p>Hello,</p>
-
-        <p>An alert has been added to your warranty claim and requires your immediate attention.</p>
-
-        <p><strong>Claim Details:</strong></p>
-
-        <p>WIP Number: ${claim.wip_number}<br>
-        Site: ${claim.site}<br>
-        Brand: ${claim.brand}<br>
-        Alert: ${alert}</p>
-
-        <p>Please log in to the Warranty Claims system to review the details and take the necessary action.</p>
-
-        <p>Log in here: <a href="https://hendywarrantyapp.base44.app/">https://hendywarrantyapp.base44.app/</a></p>
-
-        <p>Best regards,<br>
-        The Warranty App Team</p>`
-        });
-      }*/
     }
     const alertNewStatus = claim?.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
     updateMutation.mutate({ 
