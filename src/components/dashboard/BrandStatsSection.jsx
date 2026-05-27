@@ -70,6 +70,9 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   const allBrandsClaims = claims.filter(c => c.status !== 'completed');
   const totalClaimedCount = allClaims.filter(c => c.claimed).length;
   const allBrandsTotalExpectedHours = allBrandsClaims.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
+  const allBrandsTotalInProgress = allBrandsClaims.filter(c => c.status === 'in_progress').length;
+  const allBrandsTotalAwaitingReview = allBrandsClaims.filter(c => c.status === 'awaiting_review').length;
+  const allBrandsTotalRejected = allBrandsClaims.filter(c => c.status === 'rejected').length;
   const allBrandsColorCounts = brands.reduce((acc, brand) => {
     const claimsForBrand = claims.filter(c => c.brand === brand.name && c.status !== 'completed');
     const counts = getColorCounts(brand, claimsForBrand);
@@ -174,6 +177,15 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
             <p className="text-sm font-medium text-slate-500 mb-1">All Brands</p>
             <p className="text-3xl font-bold text-slate-800">{allBrandsClaims.length}</p>
             <p className="text-xs text-slate-500 mt-1">{allBrandsTotalExpectedHours.toFixed(1)}h in progress</p>
+            {allBrandsTotalInProgress > 0 && (
+              <p className="text-xs text-slate-500 mt-1">{allBrandsTotalInProgress} in progress</p>
+            )}
+            {allBrandsTotalAwaitingReview > 0 && (
+              <p className="text-xs text-slate-500 mt-1">{allBrandsTotalAwaitingReview} awaiting review</p>
+            )}
+            {allBrandsTotalRejected > 0 && (
+              <p className="text-xs text-slate-500 mt-1">{allBrandsTotalRejected} rejected</p>
+            )}
           </div>
             <div className="flex justify-center">
               <TrafficLightIcon 
