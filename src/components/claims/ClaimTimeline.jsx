@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { format } from "date-fns";
 import {
   CheckCircle2, AlertCircle, MessageSquare, FileEdit, PlusCircle,
@@ -122,7 +121,8 @@ function TimelineItem({ audit, isLast }) {
 export default function ClaimTimeline({ claim, open, onClose }) {
   const { data: audits = [], isLoading } = useQuery({
     queryKey: ['audits', claim?.id],
-    queryFn: () => base44.entities.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date'),
+    queryFn: () => databaseClients.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date'),
+    // queryFn: () => base44.entities.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date'),
     enabled: open && !!claim,
   });
 
