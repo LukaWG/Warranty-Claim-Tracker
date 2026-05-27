@@ -224,7 +224,7 @@ export default function Approvals() {
                         <p className="font-medium text-slate-700 mt-0.5">{claim.invoice_number || '—'}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400 uppercase tracking-wide">Claim #</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-wide">Repair #</p>
                         <p className="font-medium text-slate-700 mt-0.5">{claim.claim_number || '—'}</p>
                       </div>
                       <div>

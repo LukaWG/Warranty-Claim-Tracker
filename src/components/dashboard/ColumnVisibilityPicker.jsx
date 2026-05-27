@@ -34,7 +34,7 @@ const COLUMN_LABELS = {
   wip_number: 'WIP Number',
   reg_number: 'Reg No.',
   invoice_number: 'Invoice #',
-  claim_number: 'Claim #',
+  claim_number: 'Repair #',
   site: 'Site',
   brand: 'Brand',
   expected_hours: 'Expected Hours',

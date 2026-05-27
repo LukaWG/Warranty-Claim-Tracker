@@ -166,7 +166,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                       {col('wip_number') && <TableHead className="font-semibold text-slate-600">WIP Number</TableHead>}
                       {col('reg_number') && <TableHead className="font-semibold text-slate-600">Reg No.</TableHead>}
                       {col('invoice_number') && <TableHead className="font-semibold text-slate-600">Invoice #</TableHead>}
-                      {col('claim_number') && <TableHead className="font-semibold text-slate-600">Claim #</TableHead>}
+                      {col('claim_number') && <TableHead className="font-semibold text-slate-600">Repair #</TableHead>}
                       {col('site') && <TableHead className="font-semibold text-slate-600">Site</TableHead>}
                       {col('brand') && <TableHead className="font-semibold text-slate-600">Brand</TableHead>}
                       {col('expected_hours') && <TableHead className="font-semibold text-slate-600">Expected Hours</TableHead>}
@@ -546,7 +546,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                        {col('wip_number') && <TableHead className="font-semibold text-slate-600">WIP Number</TableHead>}
                        {col('reg_number') && <TableHead className="font-semibold text-slate-600">Reg No.</TableHead>}
                        {col('invoice_number') && <TableHead className="font-semibold text-slate-600">Invoice #</TableHead>}
-                       {col('claim_number') && <TableHead className="font-semibold text-slate-600">Claim #</TableHead>}
+                       {col('claim_number') && <TableHead className="font-semibold text-slate-600">Repair #</TableHead>}
                        {col('site') && <TableHead className="font-semibold text-slate-600">Site</TableHead>}
                        {col('brand') && <TableHead className="font-semibold text-slate-600">Brand</TableHead>}
                        {col('expected_hours') && <TableHead className="font-semibold text-slate-600">Expected Hours</TableHead>}

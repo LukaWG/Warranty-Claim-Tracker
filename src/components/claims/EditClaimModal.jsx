@@ -214,7 +214,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             <div className="space-y-2 col-span-2">
-              <Label>Claim Number</Label>
+              <Label>Repair Number</Label>
               <div className="flex items-center gap-2">
                 <Input
                   placeholder="Part 1"
