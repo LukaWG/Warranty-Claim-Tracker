@@ -469,7 +469,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             {/* Credit Section - Collapsible */}
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
+            <div className="border border-slate-200 rounded-lg overflow-hidden col-span-2">
             <button
               type="button"
               onClick={() => setCreditExpanded(!creditExpanded)}
@@ -628,7 +628,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
           </div>
 
             {/* Alert & Resolution Section */}
-          <div className="border border-slate-200 rounded-lg p-4 space-y-4">
+          <div className="border border-slate-200 rounded-lg p-4 space-y-4 col-span-2">
             <div className="flex items-center gap-2 mb-1">
               <AlertCircle className="h-4 w-4 text-amber-500" />
               <span className="text-sm font-medium text-slate-700">Alert & Resolution</span>
@@ -677,7 +677,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
           </div>
 
           {/* Mark as Claimed */}
-          <div>
+          <div className="col-span-2">
             {(() => {
               const canClaim = formData.invoice_number && formData.claim_number_1 && parseFloat(formData.total_claim_cost) > 0;
               if (formData.claimed) {
