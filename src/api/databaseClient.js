@@ -235,6 +235,8 @@ class DatabaseClient {
                 return 0;
             });
         }
+        return data;
+    }
         
 }
 
