@@ -370,16 +370,16 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <div className="space-y-1">
             {displayRole !== 'Processor' && displayRole !== 'Site Manager' && (
-              <button
-                onClick={() => {
-                  setSearchOpen(true);
-                  setSidebarOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                <Search className="h-5 w-5 text-slate-500" />
-                <span className="text-sm font-medium">Search Repairs</span>
-              </button>
+              // <button // Search repairs button
+              //   onClick={() => {
+              //     setSearchOpen(true);
+              //     setSidebarOpen(false);
+              //   }}
+              //   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+              // >
+              //   <Search className="h-5 w-5 text-slate-500" />
+              //   <span className="text-sm font-medium">Search Repairs</span>
+              // </button>
             )}
             {navItems.map((item) => {
               const Icon = item.icon;
