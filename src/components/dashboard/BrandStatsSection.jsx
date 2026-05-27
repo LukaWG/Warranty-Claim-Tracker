@@ -48,11 +48,17 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
       const claimsForBrand = claims.filter(c => c.brand === brand.name && c.status !== 'completed');
       const claimedForBrand = allClaims.filter(c => c.brand === brand.name && c.claimed).length;
       const totalExpectedHours = claimsForBrand.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
+      const totalInProgress = claimsForBrand.filter(c => c.status === 'in_progress').length;
+      const totalAwaitingReview = claimsForBrand.filter(c => c.status === 'awaiting_review').length;
+      const totalRejected = claimsForBrand.filter(c => c.status === 'rejected').length;
       return {
         brand,
         count: claimsForBrand.length,
         claimedCount: claimedForBrand,
         totalExpectedHours,
+        totalInProgress,
+        totalAwaitingReview,
+        totalRejected,
         color: getTrafficLightColor(brand, claimsForBrand),
         colorCounts: getColorCounts(brand, claimsForBrand),
         claims: claimsForBrand
@@ -211,6 +217,9 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
               <p className="text-sm font-medium text-slate-500 mb-1">{stat.brand.name}</p>
               <p className="text-3xl font-bold text-slate-800">{stat.count}</p>
               <p className="text-xs text-slate-500 mt-1">{stat.totalExpectedHours.toFixed(1)}h in progress</p>
+              <p className="text-xs text-slate-500 mt-1">{stat.totalInProgress} in progress</p>
+              <p className="text-xs text-slate-500 mt-1">{stat.totalAwaitingReview} awaiting review</p>
+              <p className="text-xs text-slate-500 mt-1">{stat.totalRejected} rejected</p>
             </div>
                 <div className="flex justify-center">
                   <TrafficLightIcon 
