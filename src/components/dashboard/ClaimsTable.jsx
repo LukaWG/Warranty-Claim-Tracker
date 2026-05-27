@@ -7,13 +7,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, History, MessageSquare, Maximize2, X } from "lucide-react";
+import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, GitCommitHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
+import ClaimTimeline from '@/components/claims/ClaimTimeline';
 
 const statusConfig = {
   in_progress: { label: "In Progress", className: "bg-blue-50 border-blue-200", style: { color: '#222b57' } },
@@ -25,6 +26,9 @@ const statusConfig = {
 export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
+  const [timelineClaim, setTimelineClaim] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [expandedRows, setExpandedRows] = useState(new Set());
 
   useEffect(() => {
     const saved = localStorage.getItem('claimsTableColumns');
@@ -472,11 +476,11 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => onViewHistory(claim)}
-                            className="h-8 w-8 text-slate-400 hover:text-purple-600 hover:bg-purple-50"
-                            title="View history"
+                            onClick={() => setTimelineClaim(claim)}
+                            className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                            title="View timeline"
                           >
-                            <History className="h-4 w-4" />
+                            <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
                           {isServiceManager && (
                             <Button
@@ -904,6 +908,14 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
            </div>
          </DialogContent>
         </Dialog>
+
+        {timelineClaim && (
+          <ClaimTimeline
+            claim={timelineClaim}
+            open={!!timelineClaim}
+            onClose={() => setTimelineClaim(null)}
+          />
+         )}
         </motion.div>
         );
         }

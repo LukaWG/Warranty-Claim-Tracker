@@ -55,7 +55,7 @@ export default function Dashboard() {
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
     const [selectedBrands, setSelectedBrands] = useState([]);
-    const [showClaimed, setShowClaimed] = useState(true);
+    const [showClaimed, setShowClaimed] = useState(false);
 
     // CHANGING USER
     const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
