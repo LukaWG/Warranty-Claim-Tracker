@@ -30,6 +30,42 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
 
+  const toggleRow = (id) => setExpandedRows(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const [expandedRowsFs, setExpandedRowsFs] = useState(new Set());
+  const toggleRowFs = (id) => setExpandedRowsFs(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const handleSort = (key) => {
+    setSortConfig(prev =>
+      prev.key === key
+        ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+        : { key, direction: 'asc' }
+    );
+  };
+
+  const sortedClaims = React.useMemo(() => {
+    if (!sortConfig.key) return claims;
+    return [...claims].sort((a, b) => {
+      let aVal = a[sortConfig.key];
+      let bVal = b[sortConfig.key];
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+      if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+      if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [claims, sortConfig]);
+
   useEffect(() => {
     const saved = localStorage.getItem('claimsTableColumns');
     if (saved) {
@@ -79,6 +115,25 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const isSiteManager = currentUser?.custom_role === 'Site Manager' || currentUser?.role === 'Site Manager';
   const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner';
 
+const SortableHead = ({ colKey, children }) => {
+    const active = sortConfig.key === colKey;
+    return (
+      <TableHead
+        className="font-semibold text-slate-600 cursor-pointer select-none hover:bg-slate-100 transition-colors"
+        onClick={() => handleSort(colKey)}
+      >
+        <div className="flex items-center gap-1">
+          {children}
+          {active ? (
+            sortConfig.direction === 'asc' ? <ArrowUp className="h-3 w-3 text-slate-500" /> : <ArrowDown className="h-3 w-3 text-slate-500" />
+          ) : (
+            <ArrowUpDown className="h-3 w-3 text-slate-300" />
+          )}
+        </div>
+      </TableHead>
+    );
+  };
+
   const getUserName = (email) => {
     if (!email) return "—";
     // Try from allUsers list (admins can see all users)
@@ -124,15 +179,15 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                </div>
                <div>
                  <CardTitle className="text-xl font-semibold text-slate-800">
-                   All Warranty Claims
+                   All Warranty Repairs
                  </CardTitle>
                  <p className="text-sm text-slate-500 mt-0.5">
-                   {claims.length} total claims
+                   {claims.length} total repairs
                  </p>
                </div>
              </div>
              <div className="flex items-center gap-2">
-               <ColumnVisibilityPicker visibleColumns={visibleColumns} onColumnsChange={handleColumnsChange} />
+               <ColumnVisibilityPicker visibleColumns={visibleColumns} onColumnsChange={handleColumnsChange} userRole={currentUser?.custom_role || currentUser?.role} />
                <Button
                  variant="ghost"
                  size="icon"
@@ -155,52 +210,57 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
               <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
                 <FileText className="h-8 w-8 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium">No claims yet</p>
-              <p className="text-sm text-slate-400 mt-1">Submit your first warranty claim to get started</p>
+              <p className="text-slate-600 font-medium">No repairs yet</p>
+              <p className="text-sm text-slate-400 mt-1">Submit your first warranty repair to get started</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                    <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-                      {col('wip_number') && <TableHead className="font-semibold text-slate-600">WIP Number</TableHead>}
-                      {col('reg_number') && <TableHead className="font-semibold text-slate-600">Reg No.</TableHead>}
-                      {col('invoice_number') && <TableHead className="font-semibold text-slate-600">Invoice #</TableHead>}
-                      {col('claim_number') && <TableHead className="font-semibold text-slate-600">Repair #</TableHead>}
-                      {col('site') && <TableHead className="font-semibold text-slate-600">Site</TableHead>}
-                      {col('brand') && <TableHead className="font-semibold text-slate-600">Brand</TableHead>}
-                      {col('expected_hours') && <TableHead className="font-semibold text-slate-600">Expected Hours</TableHead>}
-                      {col('actual_hours') && <TableHead className="font-semibold text-slate-600">Actual Hours</TableHead>}
-                      {col('parts') && <TableHead className="font-semibold text-slate-600">Parts</TableHead>}
-                      {col('labour') && <TableHead className="font-semibold text-slate-600">Labour</TableHead>}
-                      {col('sub_con') && <TableHead className="font-semibold text-slate-600">Sub Con</TableHead>}
-                      {col('credit') && <TableHead className="font-semibold text-slate-600">Credit</TableHead>}
-                      {col('total_claim_cost') && <TableHead className="font-semibold text-slate-600">Total Cost</TableHead>}
-                      {col('last_clocking_date') && <TableHead className="font-semibold text-slate-600">Last Clocking</TableHead>}
-                      {col('scanned_date') && <TableHead className="font-semibold text-slate-600">Scanned Date</TableHead>}
-                      {col('manufacturer_deadline') && <TableHead className="font-semibold text-slate-600">Mfr Deadline</TableHead>}
-                      {col('status') && <TableHead className="font-semibold text-slate-600">Status</TableHead>}
-                      {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
-                      {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
-                      {col('claimed_by') && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
-                      {/* {col('alert') && <TableHead className="font-semibold text-slate-600">Alert</TableHead>} */}
-                      {/* {col('resolution') && <TableHead className="font-semibold text-slate-600">Resolution</TableHead>} */}
-                      {col('submitted_by') && <TableHead className="font-semibold text-slate-600">Submitted By</TableHead>}
+                      {col('wip_number') && <SortableHead colKey="wip_number">WIP Number</SortableHead>}
+                      {col('reg_number') && <SortableHead colKey="reg_number">Reg No.</SortableHead>}
+                      {col('invoice_number') && <SortableHead colKey="invoice_number">Invoice #</SortableHead>}
+                      {col('claim_number') && <SortableHead colKey="claim_number">Repair #</SortableHead>}
+                      {col('site') && <SortableHead colKey="site">Site</SortableHead>}
+                      {col('brand') && <SortableHead colKey="brand">Brand</SortableHead>}
+                      {col('expected_hours') && <SortableHead colKey="expected_hours">Expected Hours</SortableHead>}
+                      {col('actual_hours') && <SortableHead colKey="actual_hours">Actual Hours</SortableHead>}
+                      {col('parts') && <SortableHead colKey="parts">Parts</SortableHead>}
+                      {col('labour') && <SortableHead colKey="labour">Labour</SortableHead>}
+                      {col('sub_con') && <SortableHead colKey="sub_con">Sub Con</SortableHead>}
+                      {col('credit') && <SortableHead colKey="credit">Credit</SortableHead>}
+                      {col('total_claim_cost') && <SortableHead colKey="total_claim_cost">Total Cost</SortableHead>}
+                      {col('last_clocking_date') && <SortableHead colKey="last_clocking_date">Last Clocking</SortableHead>}
+                      {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
+                      {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
+                      {col('status') && <SortableHead colKey="status">Status</SortableHead>}
+                      {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
+                      {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
+                      {col('claimed_by') && <SortableHead colKey="claimed_by">Claimed By</SortableHead>}
+                      {/* {col('alert') && <SortableHead colKey="alert">Alert</SortableHead>} */}
+                      {/* {col('resolution') && <SortableHead colKey="resolution">Resolution</SortableHead>} */}
+                      {col('submitted_by') && <SortableHead colKey="submitted_by">Submitted By</SortableHead>}
                       <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
                       </TableRow>
                  </TableHeader>
                 <TableBody>
-                  {claims.map((claim, index) => (
+                  {sortedClaims.map((claim, index) => (
+                    <React.Fragment key={claim.id}>
                     <motion.tr
                       key={claim.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="group hover:bg-slate-50/50 transition-colors"
+                      className="group hover:bg-slate-50/50 transition-colors cursor-pointer"
+                      onclick={() => toggleRow(claim.id)}
                     >
                       {col('wip_number') && (
                         <TableCell className="font-medium text-slate-800">
-                          {claim.wip_number}
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-slate-300 transition-transform duration-150 ${expandedRows.has(claim.id) ? 'rotate-90' : ''}`}>›</span>
+                            {claim.wip_number}
+                          </div>
                         </TableCell>
                       )}
                       {col('reg_number') && (
@@ -365,81 +425,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             {claim.claimed_date ? formatDateTime(claim.claimed_date) : "—"}
                             </TableCell>
                             )}
-                            {col('claimed_by') && (
+                            {col('claimed_by') && !isProcessor && (
                             <TableCell className="text-slate-600">
                             {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                             </TableCell>
                             )}
-                            {/* {col('alert') && (
-                            <TableCell>
-                            {isProcessor ? (
-                            claim.alert ? (
-                            <div className="flex items-center gap-2">
-                             <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                             <span className="text-sm text-slate-700">{claim.alert}</span>
-                            </div>
-                            ) : (
-                            <span className="text-sm text-slate-400">—</span>
-                            )
-                            ) : (
-                            <Select
-                            value={claim.alert || "none"}
-                            onValueChange={(value) => onAlertChange(claim.id, value === "none" ? "" : value)}
-                            >
-                            <SelectTrigger className="w-44 h-8 border-0 bg-transparent p-0 focus:ring-0">
-                             {claim.alert ? (
-                               <div className="flex items-center gap-2">
-                                 <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                                 <span className="text-sm text-slate-700">{claim.alert}</span>
-                               </div>
-                             ) : (
-                               <span className="text-sm text-slate-400">Select alert...</span>
-                             )}
-                            </SelectTrigger>
-                            <SelectContent>
-                             <SelectItem value="none">No Alert</SelectItem>
-                             {alerts.map((alert) => (
-                               <SelectItem key={alert.id} value={alert.name}>
-                                 {alert.name}
-                               </SelectItem>
-                             ))}
-                            </SelectContent>
-                            </Select>
-                            )}
-                            </TableCell>
-                            )} */}
-                            {/* {col('resolution') && (
-                            <TableCell>
-                            {isProcessor ? (
-                            claim.alert_resolution ? (
-                            <span className="text-sm text-slate-700">{claim.alert_resolution}</span>
-                            ) : (
-                            <span className="text-sm text-slate-400">—</span>
-                            )
-                            ) : (
-                            <Select
-                            value={claim.alert_resolution || "none"}
-                            onValueChange={(value) => onResolutionChange(claim.id, value === "none" ? "" : value)}
-                            >
-                            <SelectTrigger className="w-44 h-8 border-0 bg-transparent p-0 focus:ring-0">
-                             {claim.alert_resolution ? (
-                               <span className="text-sm text-slate-700">{claim.alert_resolution}</span>
-                             ) : (
-                               <span className="text-sm text-slate-400">Select resolution...</span>
-                             )}
-                            </SelectTrigger>
-                            <SelectContent>
-                             <SelectItem value="none">No Resolution</SelectItem>
-                             {resolutions.map((resolution) => (
-                               <SelectItem key={resolution.id} value={resolution.name}>
-                                 {resolution.name}
-                               </SelectItem>
-                             ))}
-                            </SelectContent>
-                            </Select>
-                            )}
-                            </TableCell>
-                            )} */}
+                            
                             {col('submitted_by') && (
                             <TableCell>
                         <div className="flex items-center gap-2 text-slate-600">
@@ -451,7 +442,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                         </div>
                       </TableCell>
                       )}
-                      <TableCell>
+                      <TableCell onclick={(e) => e.stopPropagation()}>
                          <div className="flex items-center gap-1">
                            {!isProcessor && !isSiteManager && (
                              <Button
@@ -459,7 +450,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                size="icon"
                                onClick={() => onEdit(claim)}
                                className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                               title="Edit claim"
+                               title="Edit repair"
                              >
                                <Pencil className="h-4 w-4" />
                              </Button>
@@ -487,12 +478,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                               variant="ghost"
                               size="icon"
                               onClick={() => {
-                                if (window.confirm('Are you sure you want to delete this claim?')) {
+                                if (window.confirm('Are you sure you want to delete this repair?')) {
                                   onDelete(claim.id);
                                 }
                               }}
                               className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                              title="Delete claim"
+                              title="Delete repair"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -500,6 +491,13 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                           </div>
                           </TableCell>
                           </motion.tr>
+                          {expandedRows.has(claim.id) && (
+                            <MiniTimeline
+                              claimId={claim.id}
+                              colSpan={Object.values(visibleColumns).filter(Boolean).length + 1}
+                            />
+                          )}
+                          </React.Fragment>
                           ))}
                           </TableBody>
                           </Table>
@@ -510,22 +508,19 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
         {/* Fullscreen Modal */}
         <Dialog open={fullscreenOpen} onOpenChange={setFullscreenOpen}>
-         <DialogContent className="max-w-full h-screen p-0 bg-white overflow-auto">
-           <DialogHeader className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-4">
-             <div className="flex items-center justify-between">
-               <DialogTitle className="text-2xl font-bold text-slate-800">
-                 All Warranty Claims
-               </DialogTitle>
-               <Button
-                 variant="ghost"
-                 size="icon"
-                 onClick={() => setFullscreenOpen(false)}
-                 className="h-8 w-8 text-slate-400 hover:text-slate-600"
-               >
-                 <X className="h-5 w-5" />
-               </Button>
-             </div>
-           </DialogHeader>
+         <DialogContent className="max-w-full h-screen p-0 bg-white overflow-auto" onInteractOutside={(e) => e.preventDefault()}>
+           <div className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+             <h2 className="text-2xl font-bold text-slate-800">All Warranty Repairs</h2>
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={() => setFullscreenOpen(false)}
+               className="flex items-center gap-2 text-slate-600"
+             >
+               <X className="h-4 w-4" />
+               Exit Fullscreen
+             </Button>
+           </div>
            <div className="p-6">
              {isLoading ? (
                <div className="flex items-center justify-center py-16">
@@ -536,8 +531,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                  <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
                    <FileText className="h-8 w-8 text-slate-400" />
                  </div>
-                 <p className="text-slate-600 font-medium">No claims yet</p>
-               </div>
+                 <p className="text-slate-600 font-medium">No repairs yet</p>
+                 </div>
              ) : (
                <div className="overflow-x-auto">
                  <Table>
@@ -562,25 +557,27 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                        {col('status') && <TableHead className="font-semibold text-slate-600">Status</TableHead>}
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
-                       {col('claimed_by') && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
-                       {col('alert') && <TableHead className="font-semibold text-slate-600">Alert</TableHead>}
-                       {col('resolution') && <TableHead className="font-semibold text-slate-600">Resolution</TableHead>}
+                       {col('claimed_by') && !isProcessor && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
                        {col('submitted_by') && <TableHead className="font-semibold text-slate-600">Submitted By</TableHead>}
                        <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
                      </TableRow>
                    </TableHeader>
                    <TableBody>
-                     {claims.map((claim, index) => (
+                     {sortedClaims.map((claim, index) => (
+                       <React.Fragment key={claim.id}>
                        <motion.tr
-                         key={claim.id}
                          initial={{ opacity: 0, x: -10 }}
                          animate={{ opacity: 1, x: 0 }}
                          transition={{ delay: index * 0.05 }}
-                         className="group hover:bg-slate-50/50 transition-colors"
+                         className="group hover:bg-slate-50/50 transition-colors cursor-pointer"
+                         onClick={() => toggleRowFs(claim.id)}
                        >
                          {col('wip_number') && (
                            <TableCell className="font-medium text-slate-800">
-                             {claim.wip_number}
+                             <div className="flex items-center gap-1.5">
+                               <span className={`text-slate-300 transition-transform duration-150 ${expandedRowsFs.has(claim.id) ? 'rotate-90' : ''}`}>›</span>
+                               {claim.wip_number}
+                             </div>
                            </TableCell>
                          )}
                          {col('reg_number') && (
@@ -765,82 +762,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                            {claim.claimed_date ? formatDateTime(claim.claimed_date) : "—"}
                            </TableCell>
                            )}
-                           {col('claimed_by') && (
+                           {col('claimed_by') && !isProcessor && (
                            <TableCell className="text-slate-600">
                            {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                            </TableCell>
                            )}
-                         {col('alert') && (
-                         <TableCell>
-                           {isProcessor ? (
-                             claim.alert ? (
-                               <div className="flex items-center gap-2">
-                                 <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                                 <span className="text-sm text-slate-700">{claim.alert}</span>
-                               </div>
-                             ) : (
-                               <span className="text-sm text-slate-400">—</span>
-                             )
-                           ) : (
-                             <Select
-                               value={claim.alert || "none"}
-                               onValueChange={(value) => onAlertChange(claim.id, value === "none" ? "" : value)}
-                             >
-                               <SelectTrigger className="w-44 h-8 border-0 bg-transparent p-0 focus:ring-0">
-                                 {claim.alert ? (
-                                   <div className="flex items-center gap-2">
-                                     <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                                     <span className="text-sm text-slate-700">{claim.alert}</span>
-                                   </div>
-                                 ) : (
-                                   <span className="text-sm text-slate-400">Select alert...</span>
-                                 )}
-                               </SelectTrigger>
-                               <SelectContent>
-                                 <SelectItem value="none">No Alert</SelectItem>
-                                 {alerts.map((alert) => (
-                                   <SelectItem key={alert.id} value={alert.name}>
-                                     {alert.name}
-                                   </SelectItem>
-                                 ))}
-                               </SelectContent>
-                             </Select>
-                           )}
-                         </TableCell>
-                         )}
-                         {col('resolution') && (
-                         <TableCell>
-                           {isProcessor ? (
-                             claim.alert_resolution ? (
-                               <span className="text-sm text-slate-700">{claim.alert_resolution}</span>
-                             ) : (
-                               <span className="text-sm text-slate-400">—</span>
-                             )
-                           ) : (
-                             <Select
-                               value={claim.alert_resolution || "none"}
-                               onValueChange={(value) => onResolutionChange(claim.id, value === "none" ? "" : value)}
-                             >
-                               <SelectTrigger className="w-44 h-8 border-0 bg-transparent p-0 focus:ring-0">
-                                 {claim.alert_resolution ? (
-                                   <span className="text-sm text-slate-700">{claim.alert_resolution}</span>
-                                 ) : (
-                                   <span className="text-sm text-slate-400">Select resolution...</span>
-                                 )}
-                               </SelectTrigger>
-                               <SelectContent>
-                                 <SelectItem value="none">No Resolution</SelectItem>
-                                 {resolutions.map((resolution) => (
-                                   <SelectItem key={resolution.id} value={resolution.name}>
-                                     {resolution.name}
-                                   </SelectItem>
-                                 ))}
-                               </SelectContent>
-                             </Select>
-                           )}
-                         </TableCell>
-                         )}
-                         {col('submitted_by') && (
+                           {col('submitted_by') && (
                          <TableCell>
                            <div className="flex items-center gap-2 text-slate-600">
                              <User className="h-4 w-4 text-slate-400" />
@@ -851,7 +778,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                            </div>
                          </TableCell>
                          )}
-                         <TableCell>
+                         <TableCell onClick={e => e.stopPropagation()}>
                             <div className="flex items-center gap-1">
                               {!isProcessor && !isSiteManager && (
                                 <Button
@@ -859,7 +786,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                   size="icon"
                                   onClick={() => onEdit(claim)}
                                   className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                                  title="Edit claim"
+                                  title="Edit repair"
                                 >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
@@ -869,39 +796,46 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                 size="icon"
                                 onClick={() => onViewNotes(claim)}
                                 className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                                title="View notes"
+                                title="Notes"
+                                >
+                                  <MessageSquare className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => setTimelineClaim(claim)}
+                                  className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                                  title="View timeline"
                               >
-                                <MessageSquare className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => onViewHistory(claim)}
-                                className="h-8 w-8 text-slate-400 hover:text-purple-600 hover:bg-purple-50"
-                                title="View history"
-                              >
-                                <History className="h-4 w-4" />
+                                <GitCommitHorizontal className="h-4 w-4" />
                               </Button>
                               {isServiceManager && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => {
-                                    if (window.confirm('Are you sure you want to delete this claim?')) {
+                                    if (window.confirm('Are you sure you want to delete this repair?')) {
                                       onDelete(claim.id);
                                     }
                                   }}
                                   className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                                  title="Delete claim"
+                                  title="Delete repair"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
                               )}
                             </div>
                           </TableCell>
-                       </motion.tr>
-                     ))}
-                   </TableBody>
+                         </motion.tr>
+                         {expandedRowsFs.has(claim.id) && (
+                           <MiniTimeline
+                             claimId={claim.id}
+                             colSpan={Object.values(visibleColumns).filter(Boolean).length + 1}
+                           />
+                         )}
+                         </React.Fragment>
+                         ))}
+                         </TableBody>
                  </Table>
                </div>
              )}
@@ -915,7 +849,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
             open={!!timelineClaim}
             onClose={() => setTimelineClaim(null)}
           />
-         )}
+        )}
         </motion.div>
         );
         }
