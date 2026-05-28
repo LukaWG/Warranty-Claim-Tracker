@@ -107,6 +107,17 @@ export default function Layout({ children, currentPageName }) {
     staleTime: 30000,
   });
 
+  const { data: accounts = [] } = useQuery({
+    queryKey: ['userAccounts', currentUser?.id],
+    queryFn: async () => {
+      const res = await authClient.listAccounts();
+      return res?.data ?? [];
+    },
+    enabled: !!currentUser?.id,
+  });
+
+  const isSSO = accounts.length > 0 && !accounts.some(acc => acc.providerId === 'credential');
+
   const handleVoluntaryPasswordChange = async (e) => {
     e.preventDefault();
     setChangeError("");
@@ -448,13 +459,15 @@ export default function Layout({ children, currentPageName }) {
                   <p className="text-sm font-medium text-slate-800 truncate mt-0.5">{currentUser.full_name || 'User'}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="my-1" />
-                <DropdownMenuItem 
-                  onClick={() => setChangePasswordOpen(true)}
-                  className="flex items-center gap-2.5 px-2.5 py-2 text-slate-700 focus:text-slate-900 focus:bg-slate-50 rounded-md cursor-pointer text-sm"
-                >
-                  <Key className="h-4 w-4 text-slate-500" />
-                  <span>Change Password</span>
-                </DropdownMenuItem>
+                {!isSSO && (
+                  <DropdownMenuItem 
+                    onClick={() => setChangePasswordOpen(true)}
+                    className="flex items-center gap-2.5 px-2.5 py-2 text-slate-700 focus:text-slate-900 focus:bg-slate-50 rounded-md cursor-pointer text-sm"
+                  >
+                    <Key className="h-4 w-4 text-slate-500" />
+                    <span>Change Password</span>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator className="my-1" />
                 <DropdownMenuItem 
                   onClick={handleLogout}

@@ -183,8 +183,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                       {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                       {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
                       {col('claimed_by') && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
-                      {col('alert') && <TableHead className="font-semibold text-slate-600">Alert</TableHead>}
-                      {col('resolution') && <TableHead className="font-semibold text-slate-600">Resolution</TableHead>}
+                      {/* {col('alert') && <TableHead className="font-semibold text-slate-600">Alert</TableHead>} */}
+                      {/* {col('resolution') && <TableHead className="font-semibold text-slate-600">Resolution</TableHead>} */}
                       {col('submitted_by') && <TableHead className="font-semibold text-slate-600">Submitted By</TableHead>}
                       <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
                       </TableRow>
@@ -370,7 +370,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                             </TableCell>
                             )}
-                            {col('alert') && (
+                            {/* {col('alert') && (
                             <TableCell>
                             {isProcessor ? (
                             claim.alert ? (
@@ -407,8 +407,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             </Select>
                             )}
                             </TableCell>
-                            )}
-                            {col('resolution') && (
+                            )} */}
+                            {/* {col('resolution') && (
                             <TableCell>
                             {isProcessor ? (
                             claim.alert_resolution ? (
@@ -439,7 +439,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             </Select>
                             )}
                             </TableCell>
-                            )}
+                            )} */}
                             {col('submitted_by') && (
                             <TableCell>
                         <div className="flex items-center gap-2 text-slate-600">
