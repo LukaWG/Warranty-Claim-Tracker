@@ -15,6 +15,7 @@ import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
+import MiniTimeline from '@/components/claims/MiniTimeline';
 
 const statusConfig = {
   in_progress: { label: "In Progress", className: "bg-blue-50 border-blue-200", style: { color: '#222b57' } },
