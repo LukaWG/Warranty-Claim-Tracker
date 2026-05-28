@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, GitCommitHorizontal } from "lucide-react";
+import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
