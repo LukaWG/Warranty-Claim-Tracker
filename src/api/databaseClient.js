@@ -33,6 +33,16 @@ class DatabaseClient {
     }
 
     async create(data) {
+        // Get user data
+        const userData = await databaseClients.User.me();
+        // Add created_by and created_by_id fields to data
+        data.created_by = userData?.email || 'Unknown';
+        data.created_by_id = userData?.id || null;
+        // Add created_date and updated_date
+        data.created_date = new Date();
+        data.updated_date = new Date();
+        // Generate a new id for the data. In future could let database handle it
+        data.id = `${this.fileName}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
         // Create a new entry
         await this.fetch();
         this.data.push(data);

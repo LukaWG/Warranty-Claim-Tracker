@@ -46,8 +46,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     site: currentUser?.default_site || '',
     brand: '',
     manufacturer_deadline: null,
-    submitting_as: '',
-    claimed_by: currentUser?.email || ''
+    submitting_as: ''
   });
 
   // Auto-populate site when currentUser loads
