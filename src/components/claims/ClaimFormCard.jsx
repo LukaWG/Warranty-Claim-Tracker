@@ -20,15 +20,15 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   });
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => base44.entities.Brand.list('name')
+    queryFn: () => databaseClients.Brand.query('name')
   });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: () => databaseClients.User.me()
   });
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => base44.entities.User.list('email'),
+    queryFn: () => databaseClients.User.list('email'),
     enabled: (currentUser?.custom_role || currentUser?.role) === 'Service Manager'
   });
   const [formData, setFormData] = useState({
@@ -72,7 +72,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     delete submitData.submitting_as;
     
     if (isServiceManager && formData.submitting_as) {
-      await base44.functions.invoke('submitClaimAs', {
+      await databaseClients.Claim.submitClaimAs({
         claimData: submitData,
         submittingAs: formData.submitting_as
       });
