@@ -194,7 +194,7 @@ export default function MiniTimeline({ claimId, colSpan }) {
               return (
                 <React.Fragment key={audit.id}>
                   <div className="flex flex-col items-center flex-shrink-0 group/item">
-                    <div className={`h-7 w-7 rounded-full flex items-center justify-center ${config.bg} shadow-sm`}>
+                    <div className={`h-7 w-7 rounded-full flex items-center justify-center ${config.color} shadow-sm`}>
                       <Icon className="h-3.5 w-3.5 text-white" />
                     </div>
                     <span className="text-[10px] text-slate-600 font-medium mt-1 max-w-[72px] text-center leading-tight">
