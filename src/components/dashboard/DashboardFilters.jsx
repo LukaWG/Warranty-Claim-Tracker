@@ -224,7 +224,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           />
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label className="text-xs text-slate-600">Resolution</Label>
           <MultiSelect
             placeholder="All Resolutions"
@@ -232,7 +232,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             selected={filters.resolution || []}
             onChange={(val) => onFilterChange({ ...filters, resolution: val })}
           />
-        </div>
+        </div> */}
 
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">Date From</Label>
