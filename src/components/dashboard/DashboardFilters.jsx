@@ -254,7 +254,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           />
         </div>
 
-        <div className="space-y-2 flex flex-col justify-end">
+        {/* <div className="space-y-2 flex flex-col justify-end">
           <div className="flex items-center gap-2 h-9">
             <Checkbox
               id="show-claimed-filter"
@@ -264,7 +264,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             <label htmlFor="show-claimed-filter" className="text-xs text-slate-600 cursor-pointer whitespace-nowrap">
               Show Claimed
             </label>
-          </div>
+          </div> */}
         </div>
       </div>
     </Card>
