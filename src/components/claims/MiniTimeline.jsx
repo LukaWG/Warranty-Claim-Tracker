@@ -18,6 +18,9 @@ const statusLabels = {
   credit_rejected: "Credit Rejected",
 };
 
+const RELEVANT_TYPES = new Set(['created', 'status_changed']);
+const RELEVANT_FIELDS = new Set(['alert', 'alert_resolution', 'claimed']);
+
 function getEventConfig(audit) {
   if (audit.change_type === 'created') {
     return {
@@ -83,6 +86,10 @@ export default function MiniTimeline({ claimId, colSpan }) {
     queryFn: () => databaseClients.ClaimAudit.filter({ claim_id: claimId }, 'created_date'),
     enabled: !!claimId,
   });
+
+  const relevant = audits.filter(audit => 
+    RELEVANT_TYPES.has(audit.change_type) || RELEVANT_FIELDS.has(audit.field_changed)
+  );
 
   return (
     // <TableRow className="bg-slate-50/20 hover:bg-slate-50/20 border-b border-slate-100">
