@@ -635,7 +635,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
+              <div className="space-y-2 col-span-2">
                 <Label>Alert</Label>
                 <Select
                   value={formData.alert || "none"}
@@ -656,7 +656,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 </Select>
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label>Resolution</Label>
                 <Select
                   value={formData.alert_resolution || "none"}
@@ -672,7 +672,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
           </div>
 

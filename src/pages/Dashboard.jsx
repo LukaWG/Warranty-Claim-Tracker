@@ -54,7 +54,9 @@ export default function Dashboard() {
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
+    const [creditClaim, setCreditClaim] = useState(null);
     const [selectedBrands, setSelectedBrands] = useState([]);
+    const [pendingAlert, setPendingAlert] = useState([]);
     const [showClaimed, setShowClaimed] = useState(false);
 
     // CHANGING USER
@@ -441,8 +443,23 @@ export default function Dashboard() {
           <ClaimNotesModal
             claim={viewingNotes}
             open={!!viewingNotes}
+            requireNote={!!pendingAlert}
             onClose={() => setViewingNotes(null)}
-            onStatusUpdate={() => {
+            onStatusUpdate={async () => {
+              // If there's a pending alert, apply it now that the note has been added
+              if (pendingAlert) {
+                const { claimId, alert } = pendingAlert;
+                const claim = allClaims.find(c => c.id === claimId);
+                if (claim) {
+                  await createAuditLog(claimId, claim.wip_number, 'alert', claim.alert, alert, 'updated');
+                  const newStatus = alert === 'Info - Post Claim' ? 'claimed_info_requested' : (claim.claimed ? 'completed' : 'rejected');
+                  if (claim.status !== newStatus) {
+                    await createAuditLog(claimId, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+                  }
+                  updateMutation.mutate({ id: claimId, data: { alert, status: newStatus } });
+                }
+                setPendingAlert(null);
+              }
               queryClient.invalidateQueries({ queryKey: ['claims'] });
               setViewingNotes(null);
             }}

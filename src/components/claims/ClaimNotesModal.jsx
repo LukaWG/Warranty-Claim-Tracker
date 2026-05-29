@@ -8,9 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { MessageSquare, User, Paperclip, X, ImageIcon } from 'lucide-react';
 import { format } from 'date-fns';
+import { Checkbox } from '../ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }) {
+
+const ADMIN_ROLES = ['Owner', 'Admin', 'Service Manager', 'Admin Manager'];
+
+
+export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
   const [newNote, setNewNote] = useState('');
+  const [selectedAlert, setSelectedAlert] = useState('Information');
+  const [alertEnabled, setAlertEnabled] = useState(false);
   const [attachedImage, setAttachedImage] = useState(null); // { file, previewUrl }
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
@@ -34,7 +42,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
     enabled: !!claim?.id
   });
 
-
+  const userRole = currentUser?.custom_role || currentUser?.role;
+  const isAdminUser = ADMIN_ROLES.includes(userRole);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -50,12 +59,45 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
   };
 
   const addNoteMutation = useMutation({
-    mutationFn: async ({ content, imageUrl }) => {
+    mutationFn: async ({ content, imageUrl, alert }) => {
       const note = await databaseClients.ClaimNote.create({
         claim_id: claim.id,
         content,
         ...(imageUrl ? { image_url: imageUrl } : {})
       });
+
+      // Update alert on the claim if admin user selected one
+      if (isAdminUser && alert != undefined) {
+        const newAlert = alert === 'none' ? '' : alert;
+        if (newAlert !== (claim.alert || '')) {
+          // Apply same status logic as the edit/alert change flow
+          const newStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested' : 
+            (claim.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
+
+          await databaseClients.WarrantyClaim.update(claim.id, { alert: newAlert, status: newStatus });
+          await databaseClients.ClaimAudit.create({
+            claim_id: claim.id,
+            wip_number: claim.wip_number,
+            field_changed: 'alert',
+            old_value: claim.alert || '',
+            new_value: newAlert,
+            change_type: 'updated'
+          });
+
+          if (claim.status !== newStatus) {
+            await databaseClients.ClaimAudit.create({
+              claim_id: claim.id,
+              wip_number: claim.wip_number,
+              field_changed: 'status',
+              old_value: claim.status,
+              new_value: newStatus,
+              change_type: 'status_changed'
+            });
+          }
+
+
+        }
+      }
 
       // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
       const userRole = currentUser?.custom_role || currentUser?.role;
@@ -67,6 +109,19 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
           field_changed: 'status',
           old_value: 'rejected',
           new_value: 'awaiting_review',
+          change_type: 'status_changed'
+        });
+      }
+
+      // Move to claimed_info_requested if claim is claimed_info_requested and user is a Processor
+      if (claim.status === 'claimed_info_requested' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+        await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
+        await databaseClients.ClaimAudit.create({
+          claim_id: claim.id,
+          wip_number: claim.wip_number,
+          field_changed: 'status',
+          old_value: 'claimed_info_requested',
+          new_value: 'claimed_info_received',
           change_type: 'status_changed'
         });
       }
@@ -87,6 +142,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
       queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
       queryClient.invalidateQueries({ queryKey: ['claims'] });
       setNewNote('');
+      setSelectedAlert('Information');
+      setAlertEnabled(false);
       removeAttachment();
       if (onStatusUpdate) onStatusUpdate();
     }
@@ -99,12 +156,13 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
     let imageUrl = null;
     if (attachedImage?.file) {
       setIsUploading(true);
-      const result = await base44.integrations.Core.UploadFile({ file: attachedImage.file });
+      alert('Image upload is not implemented. The note will be added without the image.'); // Placeholder alert
+      const result = { file_url: undefined }; // Replace with actual upload logic
       imageUrl = result.file_url;
       setIsUploading(false);
     }
 
-    addNoteMutation.mutate({ content: newNote || ' ', imageUrl });
+    addNoteMutation.mutate({ content: newNote || ' ', imageUrl, alert: isAdminUser && alertEnabled ? selectedAlert : undefined });
   };
 
   return (
@@ -118,6 +176,13 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
         </DialogHeader>
 
         <div className="space-y-6">
+          {requireNote && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-md bg-amber-50 border border-amber-200">
+              <span className="text-amber-500">!</span>
+              <p className="text-sm text-amber-700 font-medium">Please add a note explaining this alert before it is saved.</p>
+            </div>
+          )}
+          
           {/* Add Note Section */}
           <div className="border-b pb-6">
             <Label className="text-sm font-medium mb-2 block">Add Note</Label>
@@ -144,6 +209,40 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate }
                   >
                     <X className="h-3 w-3" />
                   </button>
+                </div>
+              )}
+
+              {isAdminUser && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="alert-toggle"
+                      checked={alertEnabled}
+                      OnCheckedChange={(checked) => {
+                        setAlertEnabled(!!checked);
+                        if (!checked) setSelectedAlert('Information');
+                      }}
+                    />
+                    <label htmlFor="alert-toggle" className="text-xs text-slate-500 cursor-pointer select-none">
+                      Update alert status
+                    </label>
+                  </div>
+                  {alertEnabled && (
+                    <Select
+                      value={selectedAlert}
+                      onValueChange={(value) => setSelectedAlert(value)}
+                    >
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="No Alert" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No Alert</SelectItem>
+                        {alerts.filter(alert => alert.active !== false).map((alert) => (
+                          <SelectItem key={alert.id} value={alert.name}>{alert.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               )}
 

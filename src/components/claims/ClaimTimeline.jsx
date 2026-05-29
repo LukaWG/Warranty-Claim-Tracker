@@ -122,8 +122,11 @@ function TimelineItem({ audit, isLast }) {
 export default function ClaimTimeline({ claim, open, onClose }) {
   const { data: audits = [], isLoading } = useQuery({
     queryKey: ['audits', claim?.id],
-    queryFn: () => databaseClients.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date'),
-    // queryFn: () => base44.entities.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date'),
+    queryFn: () => {
+      const audit = databaseClients.ClaimAudit.filter({ claim_id: claim?.id }, 'created_date');
+      // Reverse order to show most recent first
+      return audit.then(results => results.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)));
+    },
     enabled: open && !!claim,
   });
 

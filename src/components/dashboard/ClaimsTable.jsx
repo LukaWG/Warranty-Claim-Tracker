@@ -461,7 +461,7 @@ const SortableHead = ({ colKey, children }) => {
                              size="icon"
                              onClick={() => onViewNotes(claim)}
                              className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                             title="View notes"
+                             title="Notes"
                            >
                              <MessageSquare className="h-4 w-4" />
                            </Button>
