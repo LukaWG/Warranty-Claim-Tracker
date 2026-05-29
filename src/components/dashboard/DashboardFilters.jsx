@@ -264,8 +264,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             <label htmlFor="show-claimed-filter" className="text-xs text-slate-600 cursor-pointer whitespace-nowrap">
               Show Claimed
             </label>
-          </div> */}
-        </div>
+          </div>
+        </div> */}
       </div>
     </Card>
   );
