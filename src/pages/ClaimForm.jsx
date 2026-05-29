@@ -65,7 +65,16 @@ export default function ClaimForm() {
   });
 
   const handleSubmit = async (formData) => {
-    await createMutation.mutateAsync(formData);
+    const claim = await createMutation.mutateAsync(formData);
+    await databaseClients.ClaimAudit.create({
+      claim_id: claim.id,
+      wip_number: claim.wip_number,
+      field_changed: 'created',
+      old_value: '',
+      new_value: claim.status || 'in_progress',
+      change_type: 'created'
+    });
+
   };
 
   return (

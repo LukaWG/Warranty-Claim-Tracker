@@ -37,6 +37,7 @@ class DatabaseClient {
         await this.fetch();
         this.data.push(data);
         await this.save();
+        return data;
     }
 
     async fetch() {
