@@ -85,85 +85,129 @@ export default function MiniTimeline({ claimId, colSpan }) {
   });
 
   return (
-    <TableRow className="bg-slate-50/20 hover:bg-slate-50/20 border-b border-slate-100">
-      <TableCell colSpan={colSpan} className="p-0">
-        <div className="px-8 py-6 border-l-4 border-blue-500 bg-gradient-to-r from-slate-50/40 to-transparent overflow-hidden">
-          <div className="flex items-center gap-2 mb-6">
-            <GitCommitHorizontal className="h-4 w-4 text-slate-500" />
-            <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-              Repair History & Timeline
-            </h4>
-          </div>
+    // <TableRow className="bg-slate-50/20 hover:bg-slate-50/20 border-b border-slate-100">
+    //   <TableCell colSpan={colSpan} className="p-0">
+    //     <div className="px-8 py-6 border-l-4 border-blue-500 bg-gradient-to-r from-slate-50/40 to-transparent overflow-hidden">
+    //       <div className="flex items-center gap-2 mb-6">
+    //         <GitCommitHorizontal className="h-4 w-4 text-slate-500" />
+    //         <h4 className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
+    //           Repair History & Timeline
+    //         </h4>
+    //       </div>
 
-          {isLoading ? (
-            <div className="flex items-center gap-2 py-4 pl-4 text-slate-400 text-sm">
-              <Clock className="h-4 w-4 animate-spin text-blue-500" />
-              <span>Loading timeline...</span>
-            </div>
-          ) : audits.length === 0 ? (
-            <div className="py-4 pl-4 text-slate-400 text-sm flex items-center gap-2">
-              <Clock className="h-4 w-4 text-slate-300" />
-              <span>No activity recorded yet</span>
-            </div>
-          ) : (
-            <div className="relative w-full">
-              {/* Horizontal Scroll Container */}
-              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-                <div className="flex flex-row items-stretch gap-6 min-w-max relative px-4 py-2">
+    //       {isLoading ? (
+    //         <div className="flex items-center gap-2 py-4 pl-4 text-slate-400 text-sm">
+    //           <Clock className="h-4 w-4 animate-spin text-blue-500" />
+    //           <span>Loading timeline...</span>
+    //         </div>
+    //       ) : audits.length === 0 ? (
+    //         <div className="py-4 pl-4 text-slate-400 text-sm flex items-center gap-2">
+    //           <Clock className="h-4 w-4 text-slate-300" />
+    //           <span>No activity recorded yet</span>
+    //         </div>
+    //       ) : (
+    //         <div className="relative w-full">
+    //           {/* Horizontal Scroll Container */}
+    //           <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+    //             <div className="flex flex-row items-stretch gap-6 min-w-max relative px-4 py-2">
                   
-                  {/* Connecting Line - absolutely positioned behind items */}
-                  {audits.length > 1 && (
-                    <div 
-                      className="absolute top-[18px] h-0.5 bg-slate-200" 
-                      style={{ 
-                        left: '116px', // Mathematically centered: padding (16px) + half of item width (100px)
-                        right: '116px',
-                      }}
-                    />
-                  )}
+    //               {/* Connecting Line - absolutely positioned behind items */}
+    //               {audits.length > 1 && (
+    //                 <div 
+    //                   className="absolute top-[18px] h-0.5 bg-slate-200" 
+    //                   style={{ 
+    //                     left: '116px', // Mathematically centered: padding (16px) + half of item width (100px)
+    //                     right: '116px',
+    //                   }}
+    //                 />
+    //               )}
 
-                  {audits.map((audit) => {
-                    const config = getEventConfig(audit);
-                    const Icon = config.icon;
-                    const by = audit.changed_by || audit.created_by || '';
-                    const shortBy = by.includes('@') ? by.split('@')[0] : by;
+    //               {audits.map((audit) => {
+    //                 const config = getEventConfig(audit);
+    //                 const Icon = config.icon;
+    //                 const by = audit.changed_by || audit.created_by || '';
+    //                 const shortBy = by.includes('@') ? by.split('@')[0] : by;
 
-                    return (
-                      <div key={audit.id} className="flex flex-col items-center w-[200px] text-center relative group">
+    //                 return (
+    //                   <div key={audit.id} className="flex flex-col items-center w-[200px] text-center relative group">
                         
-                        {/* Circle Icon Badge */}
-                        <div className={`z-10 h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-transform duration-200 group-hover:scale-110 ${config.color}`}>
-                          <Icon className="h-4 w-4" />
-                        </div>
+    //                     {/* Circle Icon Badge */}
+    //                     <div className={`z-10 h-8 w-8 rounded-full flex items-center justify-center border shadow-sm transition-transform duration-200 group-hover:scale-110 ${config.color}`}>
+    //                       <Icon className="h-4 w-4" />
+    //                     </div>
 
-                        {/* Content Box */}
-                        <div className="mt-4 flex-1 w-full bg-white border border-slate-100 rounded-lg p-3 hover:border-slate-200 hover:shadow-sm transition-all duration-150 flex flex-col justify-between">
-                          <div className="space-y-1">
-                            <span className="text-xs font-semibold text-slate-800 line-clamp-1 block">
-                              {config.label}
-                            </span>
-                            {config.detail && (
-                              <p className="text-[10px] text-slate-500 font-mono bg-slate-50 px-1.5 py-0.5 rounded break-words max-h-12 overflow-y-auto block">
-                                {config.detail}
-                              </p>
-                            )}
-                          </div>
+    //                     {/* Content Box */}
+    //                     <div className="mt-4 flex-1 w-full bg-white border border-slate-100 rounded-lg p-3 hover:border-slate-200 hover:shadow-sm transition-all duration-150 flex flex-col justify-between">
+    //                       <div className="space-y-1">
+    //                         <span className="text-xs font-semibold text-slate-800 line-clamp-1 block">
+    //                           {config.label}
+    //                         </span>
+    //                         {config.detail && (
+    //                           <p className="text-[10px] text-slate-500 font-mono bg-slate-50 px-1.5 py-0.5 rounded break-words max-h-12 overflow-y-auto block">
+    //                             {config.detail}
+    //                           </p>
+    //                         )}
+    //                       </div>
                           
-                          <div className="mt-2 pt-2 border-t border-slate-50 flex flex-col gap-0.5 text-[9px] text-slate-400">
-                            <span className="font-medium text-slate-500 line-clamp-1">By {shortBy}</span>
-                            <span>{format(new Date(audit.created_date), "d MMM yy, HH:mm")}</span>
-                          </div>
-                        </div>
+    //                       <div className="mt-2 pt-2 border-t border-slate-50 flex flex-col gap-0.5 text-[9px] text-slate-400">
+    //                         <span className="font-medium text-slate-500 line-clamp-1">By {shortBy}</span>
+    //                         <span>{format(new Date(audit.created_date), "d MMM yy, HH:mm")}</span>
+    //                       </div>
+    //                     </div>
 
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </TableCell>
-    </TableRow>
+    //                   </div>
+    //                 );
+    //               })}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       )}
+    //     </div>
+    //   </TableCell>
+    // </TableRow>
+
+
+
+        <tr>
+      <td colSpan={colSpan} className="px-4 pb-3 pt-0 bg-slate-50/70 border-b border-slate-100">
+        {isLoading ? (
+          <div className="flex items-center gap-2 py-2">
+            <div className="h-4 w-4 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+            <span className="text-xs text-slate-400">Loading timeline...</span>
+          </div>
+        ) : relevant.length === 0 ? (
+          <p className="text-xs text-slate-400 py-2 italic">No activity recorded</p>
+        ) : (
+          <div className="flex items-center gap-0 overflow-x-auto py-2 scrollbar-hide">
+            {relevant.map((audit, i) => {
+              const config = getEventConfig(audit);
+              if (!config) return null;
+              const Icon = config.icon;
+              const isLast = i === relevant.length - 1;
+              return (
+                <React.Fragment key={audit.id}>
+                  <div className="flex flex-col items-center flex-shrink-0 group/item">
+                    <div className={`h-7 w-7 rounded-full flex items-center justify-center ${config.bg} shadow-sm`}>
+                      <Icon className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <span className="text-[10px] text-slate-600 font-medium mt-1 max-w-[72px] text-center leading-tight">
+                      {config.label}
+                    </span>
+                    <span className="text-[10px] text-slate-400 mt-0.5">
+                      {format(new Date(audit.created_date), "d MMM")}
+                    </span>
+                  </div>
+                  {!isLast && (
+                    <div className="h-px w-8 bg-slate-300 flex-shrink-0 mb-5" />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        )}
+      </td>
+    </tr>
+
+
   );
 }
