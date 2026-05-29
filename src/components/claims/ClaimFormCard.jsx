@@ -16,11 +16,17 @@ import { databaseClients } from '@/api/databaseClient';
 export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
+    queryFn: async () => {
+      const sitesData = await databaseClients.Site.query('name');
+      return sitesData.sort((a, b) => a.name.localeCompare(b.name));
+    }
   });
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.query('name')
+    queryFn: async () => {
+      const brandData = await databaseClients.Brand.query('name');
+      return brandData.sort((a, b) => a.name.localeCompare(b.name));
+    }
   });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
