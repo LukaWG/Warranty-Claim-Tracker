@@ -254,7 +254,7 @@ const SortableHead = ({ colKey, children }) => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                       className="group hover:bg-slate-50/50 transition-colors cursor-pointer"
-                      onclick={() => toggleRow(claim.id)}
+                      onClick={() => toggleRow(claim.id)}
                     >
                       {col('wip_number') && (
                         <TableCell className="font-medium text-slate-800">
@@ -443,7 +443,7 @@ const SortableHead = ({ colKey, children }) => {
                         </div>
                       </TableCell>
                       )}
-                      <TableCell onclick={(e) => e.stopPropagation()}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                          <div className="flex items-center gap-1">
                            {!isProcessor && !isSiteManager && (
                              <Button
