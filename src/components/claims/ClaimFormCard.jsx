@@ -17,14 +17,14 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: async () => {
-      const sitesData = await databaseClients.Site.query('name');
+      const sitesData = await databaseClients.Site.get();
       return sitesData.sort((a, b) => a.name.localeCompare(b.name));
     }
   });
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
     queryFn: async () => {
-      const brandData = await databaseClients.Brand.query('name');
+      const brandData = await databaseClients.Brand.get();
       return brandData.sort((a, b) => a.name.localeCompare(b.name));
     }
   });
@@ -34,7 +34,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   });
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => databaseClients.User.list('email'),
+    queryFn: () => databaseClients.User.get(),
     enabled: (currentUser?.custom_role || currentUser?.role) === 'Service Manager'
   });
   const [formData, setFormData] = useState({
