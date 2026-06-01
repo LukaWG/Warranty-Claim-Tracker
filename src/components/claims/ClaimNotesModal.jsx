@@ -218,7 +218,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                     <Checkbox
                       id="alert-toggle"
                       checked={alertEnabled}
-                      OnCheckedChange={(checked) => {
+                      onCheckedChange={(checked) => {
                         setAlertEnabled(!!checked);
                         if (!checked) setSelectedAlert('Information');
                       }}
