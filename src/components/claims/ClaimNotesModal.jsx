@@ -36,6 +36,11 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     staleTime: 30000,
   });
 
+  const { data: alerts = [] } = useQuery({
+    queryKey: ['alerts'],
+    queryFn: () => databaseClients.Alert.get(),
+  });
+
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['claimNotes', claim?.id],
     queryFn: () => claim?.id ? databaseClients.ClaimNote.query('*', `claim_id=${claim.id}`) : [],
@@ -65,7 +70,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         content,
         ...(imageUrl ? { image_url: imageUrl } : {})
       });
-
+      debugger;
       // Update alert on the claim if admin user selected one
       if (isAdminUser && alert != undefined) {
         const newAlert = alert === 'none' ? '' : alert;

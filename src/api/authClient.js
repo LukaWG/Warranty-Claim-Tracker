@@ -85,7 +85,7 @@ export const authUsers = {
       body: JSON.stringify({
         email,
         name: `${first_name} ${last_name}`.trim(),
-        password: crypto.randomUUID(), // throwaway — user resets via forgot password
+        password: "password", //crypto.randomUUID(), // throwaway — user resets via forgot password
         role: platformRole,
         firstName: first_name,
         lastName: last_name,
