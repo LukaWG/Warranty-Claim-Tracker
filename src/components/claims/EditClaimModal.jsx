@@ -628,7 +628,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
           </div>
 
             {/* Alert & Resolution Section */}
-          <div className="border border-slate-200 rounded-lg p-4 space-y-4 col-span-2">
+          {/* <div className="border border-slate-200 rounded-lg p-4 space-y-4 col-span-2">
             <div className="flex items-center gap-2 mb-1">
               <AlertCircle className="h-4 w-4 text-amber-500" />
               <span className="text-sm font-medium text-slate-700">Alert & Resolution</span>
@@ -655,26 +655,8 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* <div className="space-y-2">
-                <Label>Resolution</Label>
-                <Select
-                  value={formData.alert_resolution || "none"}
-                  onValueChange={(value) => setFormData({ ...formData, alert_resolution: value === "none" ? "" : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select resolution..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No Resolution</SelectItem>
-                    {resolutions.map((resolution) => (
-                      <SelectItem key={resolution.id} value={resolution.name}>{resolution.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div> */}
             </div>
-          </div>
+          </div> */}
 
           {/* Mark as Claimed */}
           <div className="col-span-2">
