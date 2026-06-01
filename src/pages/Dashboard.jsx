@@ -7,6 +7,7 @@ import DashboardFilters from '@/components/dashboard/DashboardFilters';
 import EditClaimModal from '@/components/claims/EditClaimModal';
 import AuditHistoryModal from '@/components/claims/AuditHistoryModal';
 import ClaimNotesModal from '@/components/claims/ClaimNotesModal';
+import CreditOptionsModal from '@/components/claims/CreditOptionsModal';
 import ExportButton from '@/components/dashboard/ExportButton';
 
 import { FileText, Clock, CheckCircle, AlertCircle, XCircle, Loader, Search, Gift } from 'lucide-react';
@@ -323,6 +324,10 @@ export default function Dashboard() {
             deleteMutation.mutate(id);
           };
 
+    const handleResetFilters = () => {
+      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all' });
+    };
+
   const handleBrandTileClick = (brandName) => {
     if (brandName === 'all') {
       setFilters({ ...filters, brand: [], deadlineStatus: 'all' });
@@ -402,7 +407,7 @@ export default function Dashboard() {
 
           {/* Brand Stats Section */}
           {!['Processor', 'Site Manager'].includes(currentUser?.custom_role || currentUser?.role) && (
-            <BrandStatsSection claims={claims} allClaims={allClaims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} />
+            <BrandStatsSection claims={claims} allClaims={allClaims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} />
           )}
 
         {/* Claims Table */}
@@ -414,6 +419,7 @@ export default function Dashboard() {
           onResolutionChange={handleResolutionChange}
           onDelete={handleDelete}
           onEdit={setEditingClaim}
+          onCreditOptions={setCreditClaim}
           onViewHistory={setViewingHistory}
           onViewNotes={setViewingNotes}
           isLoading={isLoading}
@@ -426,6 +432,25 @@ export default function Dashboard() {
             open={!!editingClaim}
             onClose={() => setEditingClaim(null)}
             onSave={handleEditSave}
+          />
+        )}
+
+        {/* Credit Options Modal */}
+        {creditClaim && (
+          <CreditOptionsModal
+            claim={creditClaim}
+            open={!!creditClaim}
+            onClose={() => setCreditClaim(null)}
+            onSave={async (data) => {
+              const claim = creditClaim;
+              for (const [key, val] of Object.entries(data)) {
+                if (val !== claim[key]) {
+                  await createAuditLog(claim.id, claim.wip_number, key, claim[key], val, 'updated');
+                }
+              }
+              updateMutation.mutate({ id: claim.id, data });
+              setCreditClaim(null);
+            }}
           />
         )}
 

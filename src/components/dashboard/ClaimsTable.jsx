@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal } from "lucide-react";
+import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
@@ -24,7 +24,7 @@ const statusConfig = {
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
 };
 
-export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onViewNotes, isLoading }) {
+export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
   const [timelineClaim, setTimelineClaim] = useState(null);
@@ -451,10 +451,21 @@ const SortableHead = ({ colKey, children }) => {
                                size="icon"
                                onClick={() => onEdit(claim)}
                                className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                               title="Edit repair"
+                               title="Details"
                              >
                                <Pencil className="h-4 w-4" />
                              </Button>
+                           )}
+                           {!isProcessor && !isSiteManager && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onCreditOptions(claim)}
+                              className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
+                              title="Credit options"
+                            >
+                              <CreditCard className="h-4 w-4" />
+                            </Button>
                            )}
                            <Button
                              variant="ghost"
@@ -787,9 +798,20 @@ const SortableHead = ({ colKey, children }) => {
                                   size="icon"
                                   onClick={() => onEdit(claim)}
                                   className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                                  title="Edit repair"
+                                  title="Details"
                                 >
                                   <Pencil className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {!isProcessor && !isSiteManager && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => onCreditOptions(claim)}
+                                  className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
+                                  title="Credit options"
+                                >
+                                  <CreditCard className="h-4 w-4" />
                                 </Button>
                               )}
                               <Button

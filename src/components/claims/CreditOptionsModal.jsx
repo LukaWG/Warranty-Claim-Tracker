@@ -5,12 +5,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => base44.entities.Site.list('name')
+    queryFn: () => databaseClients.Site.list('name')
   });
 
   const selectedSite = sites.find(s => s.name === claim?.site);

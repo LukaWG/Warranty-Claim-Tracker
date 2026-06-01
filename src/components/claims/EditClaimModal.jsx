@@ -469,7 +469,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             {/* Credit Section - Collapsible */}
-            <div className="border border-slate-200 rounded-lg overflow-hidden col-span-2">
+            {/* <div className="border border-slate-200 rounded-lg overflow-hidden col-span-2">
             <button
               type="button"
               onClick={() => setCreditExpanded(!creditExpanded)}
@@ -625,7 +625,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 })()}
               </div>
             )}
-          </div>
+          </div> */}
 
             {/* Alert & Resolution Section */}
           {/* <div className="border border-slate-200 rounded-lg p-4 space-y-4 col-span-2">
