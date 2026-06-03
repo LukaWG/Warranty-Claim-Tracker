@@ -27,8 +27,6 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
-
 TODO
 
 .next/
