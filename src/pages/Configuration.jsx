@@ -131,7 +131,10 @@ export default function Configuration() {
 
 	const { data: brands = [], isLoading: brandsLoading } = useQuery({
 	  queryKey: ['brands'],
-	  queryFn: () => databaseClients.clients["Brand"].get()
+	  queryFn: async () => {
+	    const data = await databaseClients.clients["Brand"].get();
+	    return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+	  }
 	});
 
 	// const { data: users = [], isLoading: usersLoading } = useQuery({
@@ -1696,6 +1699,31 @@ export default function Configuration() {
 					</Select>
 				</div>
 				)}
+				{(editingUser.custom_role || editingUser.role) === 'Admin' && (
+					<div className="space-y-2">
+					<Label>Brand Access (Admin)</Label>
+					<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+						{brands.map(brand => (
+						<div key={brand.id} className="flex items-center gap-3">
+							<input
+							type="checkbox"
+							id={`edit-user-brand-${brand.id}`}
+							checked={(editingUser.default_brands || []).includes(brand.name)}
+							onChange={(e) => {
+								const current = editingUser.default_brands || [];
+								const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
+								setEditingUser({ ...editingUser, default_brands: updated });
+							}}
+							className="h-4 w-4 rounded border-gray-300"
+							/>
+							<label htmlFor={`edit-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+						</div>
+						))}
+						{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+					</div>
+					</div>
+				)}
 				<DialogFooter>
 					<Button type="button" variant="outline" onClick={() => setEditingUser(null)}>
 					Cancel
@@ -1705,31 +1733,6 @@ export default function Configuration() {
 					</Button>
 				</DialogFooter>
 				</form>
-			)}
-			{(editingUser.custom_role || editingUser.role) === 'Admin' && (
-				<div className="space-y-2">
-				<Label>Brand Access (Admin)</Label>
-				<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
-				<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
-					{brands.map(brand => (
-					<div key={brand.id} className="flex items-center gap-3">
-						<input
-						type="checkbox"
-						id={`edit-user-brand-${brand.id}`}
-						checked={(editingUser.default_brands || []).includes(brand.name)}
-						onChange={(e) => {
-							const current = editingUser.default_brands || [];
-							const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
-							setEditingUser({ ...editingUser, default_brands: updated });
-						}}
-						className="h-4 w-4 rounded border-gray-300"
-						/>
-						<label htmlFor={`edit-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
-					</div>
-					))}
-					{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
-				</div>
-				</div>
 			)}
 			</DialogContent>
 		</Dialog>

@@ -21,7 +21,10 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
   });
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get()
+    queryFn: async () => {
+      const data = await databaseClients.Brand.get();
+      return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    }
   });
   const { data: alerts = [] } = useQuery({
     queryKey: ['alerts'],

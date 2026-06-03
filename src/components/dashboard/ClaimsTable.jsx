@@ -104,7 +104,10 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get()
+    queryFn: async () => {
+      const data = await databaseClients.Brand.get();
+      return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    }
   });
 
   const { data: allUsers = [] } = useQuery({
