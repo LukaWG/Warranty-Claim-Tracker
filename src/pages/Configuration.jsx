@@ -60,7 +60,7 @@ export default function Configuration() {
 	const [newAlert, setNewAlert] = useState({ name: '' });
 	const [newResolution, setNewResolution] = useState({ name: '' });
 	const [newBrand, setNewBrand] = useState({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
-	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '' });
+	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '', default_brands: [] });
 	const [showUserDialog, setShowUserDialog] = useState(false);
 	const [editingUser, setEditingUser] = useState(null);
 	const [tempPassword, setTempPassword] = useState(null);
@@ -355,7 +355,8 @@ export default function Configuration() {
 		role: newUser.role,
 		first_name: newUser.first_name,
 		last_name: newUser.last_name,
-		default_site: newUser.default_site || null
+		default_site: newUser.default_site || null,
+		default_brands: newUser.default_brands || []
 		});
 	}
 	};
@@ -369,7 +370,8 @@ export default function Configuration() {
 			first_name: editingUser.first_name,
 			last_name: editingUser.last_name,
 			custom_role: editingUser.custom_role || editingUser.role,
-			default_site: editingUser.default_site || null
+			default_site: editingUser.default_site || null,
+			default_brands: ((editingUser.custom_role || editingUser.role) === 'Admin') ? (editingUser.default_brands || []) : []
 		}
 		});
 	}
@@ -1417,6 +1419,7 @@ export default function Configuration() {
 					</SelectContent>
 				</Select>
 				</div>
+				{newUser.role !== 'Admin' && (
 				<div className="space-y-2">
 				<Label>Default Branch</Label>
 				<Select
@@ -1434,6 +1437,32 @@ export default function Configuration() {
 					</SelectContent>
 				</Select>
 				</div>
+				)}
+				{newUser.role === 'Admin' && (
+					<div className="space-y-2">
+						<Label>Brand Access (Admin)</Label>
+						<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+							{brands.map(brand => (
+								<div key={brand.id} className="flex items-center gap-3">
+									<input
+										type="checkbox"
+										id={`new-user-brand-${brand.id}`}
+										checked={(newUser.default_brands || []).includes(brand.name)}
+										onChange={(e) => {
+											const current = newUser.default_brands || [];
+											const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
+											setNewUser({ ...newUser, default_brands: updated });
+										}}
+										className="h-4 w-4 rounded border-gray-300"
+									/>
+									<label htmlFor={`new-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+								</div>
+							))}
+							{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+						</div>
+					</div>
+				)}
 				<DialogFooter>
 				<Button type="button" variant="outline" onClick={() => setShowUserDialog(false)}>
 					Cancel
@@ -1648,6 +1677,7 @@ export default function Configuration() {
 					</SelectContent>
 					</Select>
 				</div>
+				{(editingUser.custom_role || editingUser.role) !== 'Admin' && (
 				<div className="space-y-2">
 					<Label>Default Branch</Label>
 					<Select
@@ -1665,6 +1695,7 @@ export default function Configuration() {
 					</SelectContent>
 					</Select>
 				</div>
+				)}
 				<DialogFooter>
 					<Button type="button" variant="outline" onClick={() => setEditingUser(null)}>
 					Cancel
@@ -1674,6 +1705,31 @@ export default function Configuration() {
 					</Button>
 				</DialogFooter>
 				</form>
+			)}
+			{(editingUser.custom_role || editingUser.role) === 'Admin' && (
+				<div className="space-y-2">
+				<Label>Brand Access (Admin)</Label>
+				<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+				<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+					{brands.map(brand => (
+					<div key={brand.id} className="flex items-center gap-3">
+						<input
+						type="checkbox"
+						id={`edit-user-brand-${brand.id}`}
+						checked={(editingUser.default_brands || []).includes(brand.name)}
+						onChange={(e) => {
+							const current = editingUser.default_brands || [];
+							const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
+							setEditingUser({ ...editingUser, default_brands: updated });
+						}}
+						className="h-4 w-4 rounded border-gray-300"
+						/>
+						<label htmlFor={`edit-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+					</div>
+					))}
+					{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+				</div>
+				</div>
 			)}
 			</DialogContent>
 		</Dialog>
