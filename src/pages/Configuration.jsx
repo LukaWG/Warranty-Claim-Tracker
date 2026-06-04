@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import { authUsers } from "@/api/authClient";
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
-// import { GetServerSideProps } from "next"
 
 export const getServerSideProps = async ({ req, res }) => {
   const session = await auth.api.getSession({
@@ -29,7 +27,6 @@ export const getServerSideProps = async ({ req, res }) => {
 	return { redirect: { destination: "/login", permanent: false } }
   }
   
-  // return { props: { user: JSON.parse(JSON.stringify(session.user)) } }
   return {
     props: {
       user: {
@@ -137,23 +134,16 @@ export default function Configuration() {
 	  }
 	});
 
-	// const { data: users = [], isLoading: usersLoading } = useQuery({
-	// 	queryKey: ['users'],
-	// 	queryFn: () => databaseClients.clients["User"].get()
-	// });
-
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
 	  queryFn: () => databaseClients.clients["PendingUserInvite"].get()
 	});
 
-	// [ ]: update deletion functions to not use base44
 	const deletePendingInviteMutation = useMutation({
 	mutationFn: (id) => databaseClients.clients["PendingUserInvite"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
 	});
 
-	// [ ] Update to use create site function in databaseClient.js
 	const createSiteMutation = useMutation({
 	mutationFn: (data) => databaseClients.clients["Site"].create(data),
 	onSuccess: () => {
@@ -170,7 +160,6 @@ export default function Configuration() {
 	}
 	});
 
-	// [ ]: update to use delete function in databaseClient.js
 	const deleteSiteMutation = useMutation({
 	mutationFn: (id) => databaseClients.clients["Site"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] })
@@ -256,40 +245,6 @@ export default function Configuration() {
 		});
 	}
 	};
-
-	// const inviteUserMutation = useMutation({
-	// mutationFn: async ({ email, role, first_name, last_name, default_site }) => {
-	// 	console.log('Inviting user:', { email, role, first_name, last_name });
-		
-	// 	// Map custom role to platform role (admin or user)
-	// 	// Only Owner has platform admin access for configuration management
-	// 	const platformRole = (role === 'Owner') ? 'admin' : 'user';
-		
-	// 	// Store pending user information for when they register
-	// 	await databaseClients.clients["PendingUserInvite"].create({
-	// 	email: email,
-	// 	custom_role: role,
-	// 	first_name: first_name,
-	// 	last_name: last_name,
-	// 	default_site: default_site || null
-	// 	});
-		
-	// 	// Invite user with platform role
-	// 	// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-	// 	// await base44.users.inviteUser(email, platformRole);
-	// 	console.log('User invited and pending info stored');
-	// },
-	// onSuccess: () => {
-	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
-	// 	setNewUser({ email: '', role: 'Processor', first_name: '', last_name: '' });
-	// 	setShowUserDialog(false);
-	// },
-	// onError: (error) => {
-	// 	console.error('Failed to invite user:', error);
-	// 	const errorMessage = error?.message || error?.toString() || 'Unknown error';
-	// 	alert(`Failed to invite user: ${errorMessage}\n\nPlease check the console for more details.`);
-	// }
-	// });
 
 	const resetUserPasswordMutation = useMutation({
 	mutationFn: async ({ id }) => {

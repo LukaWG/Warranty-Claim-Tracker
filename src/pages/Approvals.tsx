@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// import { base44 } from '@/api/base44Client';
 import { databaseClients, getData } from '@/api/databaseClient';
 
 // Redirect if user not logged in

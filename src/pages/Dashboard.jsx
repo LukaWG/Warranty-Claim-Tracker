@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BrandStatsSection from '@/components/dashboard/BrandStatsSection';
 import ClaimsTable from '@/components/dashboard/ClaimsTable';
@@ -82,7 +81,6 @@ export default function Dashboard() {
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
     queryFn: () => databaseClients.clients['WarrantyClaim'].query(), // Fetch all claims for filtering on frontend
-    // queryFn: () => base44.entities.WarrantyClaim.list('-created_date'),
     refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
@@ -90,19 +88,16 @@ export default function Dashboard() {
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
     queryFn: () => databaseClients.clients['Brand'].query('name') // Fetch brands for stats and filters
-    // queryFn: () => base44.entities.Brand.list('name')
   });
 
   const { data: allSites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: () => databaseClients.clients['Site'].query('name') // Fetch sites for filters
-    // queryFn: () => base44.entities.Site.list('name')
   });
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
     queryFn: () => databaseClients.clients['User'].query('email') // Fetch users for filters
-    // queryFn: () => base44.entities.User.list('email')
   });
 
   // Load selected brands from localStorage on mount
@@ -198,7 +193,6 @@ export default function Dashboard() {
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
     await databaseClients.clients['ClaimAudit'].create({
-    // await base44.entities.ClaimAudit.create({
       claim_id: claimId,
       wip_number: wipNumber,
       field_changed: fieldChanged,

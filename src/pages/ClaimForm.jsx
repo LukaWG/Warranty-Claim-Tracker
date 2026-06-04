@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-// import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import ClaimFormCard from '@/components/claims/ClaimFormCard';
