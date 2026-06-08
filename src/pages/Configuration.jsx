@@ -112,7 +112,24 @@ export default function Configuration() {
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
-	  queryFn: () => databaseClients.clients["Site"].get()
+	  queryFn: () => {
+		const data = databaseClients.clients["Site"].get();
+		// Convert brand rates to an array from current structure
+		const sitesWithBrandRates = data.map(site => {
+			if (site.brands && Array.isArray(site.brands)) {
+				return site; // Already in correct format
+			} else if (site.brands) {
+				// Convert from object to array
+				const brandsArray = Object.entries(site.brands).map(([brandName, rates]) => ({
+					name: brandName,
+					rates
+				}));
+				return { ...site, brands: brandsArray };
+			}
+			return site;
+		});
+		return sitesWithBrandRates;
+	  }
 	});
 
 	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
