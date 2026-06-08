@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createPageUrl } from './utils';
-import { 
-  Settings, 
-  LayoutDashboard, 
-  FileEdit, 
-  Search, 
-  BarChart3, 
-  LogOut, 
-  Menu, 
-  X, 
-  ShieldCheck, 
-  Key, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  Loader2 
+import {
+  Settings,
+  LayoutDashboard,
+  FileEdit,
+  Search,
+  BarChart3,
+  LogOut,
+  Menu,
+  X,
+  ShieldCheck,
+  Key,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -69,7 +69,6 @@ export default function Layout({ children, currentPageName }) {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [roleOverride, setRoleOverride] = useState(null);
 
   const handleLogout = async () => {
     try {
@@ -319,7 +318,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] }
   ];
 
-  const displayRole = roleOverride || currentUser?.custom_role || currentUser?.role;
+  const displayRole = currentUser?.custom_role || currentUser?.role;
   const navItems = currentUser 
     ? allNavItems.filter(item => item.roles.includes(displayRole))
     : allNavItems;
@@ -418,21 +417,6 @@ export default function Layout({ children, currentPageName }) {
 
         {/* User Profile & Logout */}
         <div className="p-4 border-t border-slate-200">
-          {currentUser && process.env.NODE_ENV === 'development' && (
-            <select
-              value={roleOverride || currentUser.custom_role || currentUser.role || ''}
-              onChange={(e) => setRoleOverride(e.target.value || null)}
-              className="w-full mb-3 px-3 py-2 rounded-lg text-xs bg-slate-100 text-slate-600 border-0 hover:bg-slate-200 cursor-pointer"
-              title="Preview as role"
-            >
-              <option value="Processor">View as: Processor</option>
-              <option value="Site Manager">View as: Site Manager</option>
-              <option value="Admin Manager">View as: Admin Manager</option>
-              <option value="Admin">View as: Admin</option>
-              <option value="Service Manager">View as: Service Manager</option>
-              <option value="Owner">View as: Owner</option>
-            </select>
-          )}
           {currentUser && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
