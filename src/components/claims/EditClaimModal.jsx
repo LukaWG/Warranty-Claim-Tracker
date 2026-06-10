@@ -8,7 +8,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
+import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
@@ -42,7 +42,8 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
 
   const [creditExpanded, setCreditExpanded] = useState(!!(claim?.credit || claim?.credit_parts || claim?.credit_labour || claim?.credit_sub_con));
 
-  const claimParts = (claim?.claim_number || '').split('-');
+  const existingParts = (claim?.claim_number || '').split('-').filter(Boolean);
+  const [claimNumbers, setClaimNumbers] = useState(existingParts.length > 0 ? existingParts : ['']);
   const [formData, setFormData] = useState({
     wip_number: claim?.wip_number || '',
     reg_number: claim?.reg_number || '',
@@ -53,9 +54,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
     site: claim?.site || '',
     brand: claim?.brand || '',
     invoice_number: claim?.invoice_number || '',
-    claim_number_1: claimParts[0] || '',
-    claim_number_2: claimParts[1] || '',
-    claim_number_3: claimParts[2] || '',
     parts: claim?.parts || 0,
     labour: claim?.labour || 0,
     sub_con: claim?.sub_con || 0,
@@ -88,8 +86,8 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const claimNumberParts = [formData.claim_number_1, formData.claim_number_2, formData.claim_number_3].filter(Boolean);
-    const { claim_number_1, claim_number_2, claim_number_3, scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = formData;
+    const claimNumberParts = claimNumbers.filter(Boolean);
+    const { scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = formData;
 
     const creditVal = (parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0);
     const originalCreditVal = parseFloat(claim?.credit) || 0;
@@ -241,28 +239,44 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             <div className="space-y-2 col-span-2">
-              <Label>Repair Number</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Part 1"
-                  value={formData.claim_number_1}
-                  onChange={(e) => setFormData({ ...formData, claim_number_1: e.target.value })}
-                />
-                <span className="text-slate-400 font-medium">-</span>
-                <Input
-                  placeholder="Part 2"
-                  value={formData.claim_number_2}
-                  onChange={(e) => setFormData({ ...formData, claim_number_2: e.target.value })}
-                />
-                <span className="text-slate-400 font-medium">-</span>
-                <Input
-                  placeholder="Part 3"
-                  value={formData.claim_number_3}
-                  onChange={(e) => setFormData({ ...formData, claim_number_3: e.target.value })}
-                />
+              <Label>Claim Number</Label>
+              <div className="space-y-2">
+                {claimNumbers.map((num, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input
+                      placeholder={`e.g. WR-12345`}
+                      value={num}
+                      onChange={(e) => {
+                        const updated = [...claimNumbers];
+                        updated[i] = e.target.value;
+                        setClaimNumbers(updated);
+                      }}
+                    />
+                    {claimNumbers.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setClaimNumbers(claimNumbers.filter((_, idx) => idx !== i))}
+                        className="text-slate-400 hover:text-red-500 transition-colors flex-shrink-0"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {claimNumbers.length < 12 && (
+                  <button
+                    type="button"
+                    onClick={() => setClaimNumbers([...claimNumbers, ''])}
+                    className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                  >
+                  <Plus className="h-4 w-4" />
+                  Add another claim number
+                </button>)}
               </div>
             </div>
 
+            <div className="space-y-2 col-span-2">
+            <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label>Parts (£)</Label>
               <div className="relative">
@@ -305,6 +319,28 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   className="pl-7"
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Sub Con (£)</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.sub_con}
+                  onChange={(e) => {
+                    const newSubCon = e.target.value;
+                    const newSubConVal = parseFloat(newSubCon) || 0;
+                    const newOriginalSubCon = newSubConVal + (parseFloat(formData.credit_sub_con) || 0);
+                    setFormData({ ...formData, sub_con: newSubCon, original_sub_con: newOriginalSubCon, total_claim_cost: updateTotal(formData.parts, formData.labour, newSubCon) });
+                  }}
+                  className="pl-7"
+                />
+              </div>
+            </div>
+
+            </div>
             </div>
 
             <div className="space-y-2">
@@ -349,26 +385,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 readOnly
                 className="bg-slate-50 cursor-not-allowed"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Sub Con (£)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.sub_con}
-                  onChange={(e) => {
-                    const newSubCon = e.target.value;
-                    const newSubConVal = parseFloat(newSubCon) || 0;
-                    const newOriginalSubCon = newSubConVal + (parseFloat(formData.credit_sub_con) || 0);
-                    setFormData({ ...formData, sub_con: newSubCon, original_sub_con: newOriginalSubCon, total_claim_cost: updateTotal(formData.parts, formData.labour, newSubCon) });
-                  }}
-                  className="pl-7"
-                />
-              </div>
             </div>
 
             {/* <div className="space-y-2">
@@ -697,7 +713,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
           {/* Mark as Claimed */}
           <div className="col-span-2">
             {(() => {
-              const canClaim = formData.invoice_number && formData.claim_number_1 && parseFloat(formData.total_claim_cost) > 0;
+              const canClaim = formData.invoice_number && claimNumbers.some(n => n.trim()) && parseFloat(formData.total_claim_cost) > 0;
               if (formData.claimed) {
                 return (
                   <div className="flex items-center gap-3">
@@ -721,8 +737,8 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   onClick={() => {
                     const updatedData = { ...formData, claimed: true, claimed_by: currentUser ? currentUser.email : '' };
                     setFormData(updatedData);
-                    const claimNumberParts = [updatedData.claim_number_1, updatedData.claim_number_2, updatedData.claim_number_3].filter(Boolean);
-                    const { claim_number_1, claim_number_2, claim_number_3, scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = updatedData;
+                    const claimNumberParts = claimNumbers.filter(Boolean);
+                    const { scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = updatedData;
                     const creditVal = (parseFloat(updatedData.credit_parts) || 0) + (parseFloat(updatedData.credit_labour) || 0) + (parseFloat(updatedData.credit_sub_con) || 0);
                     const originalCreditVal = parseFloat(claim?.credit) || 0;
                     const needsApproval = creditVal >= 100;

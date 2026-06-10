@@ -92,7 +92,7 @@ const STATUS_OPTIONS = [
   { value: 'rejected', label: 'Queried' },
 ];
 
-export default function DashboardFilters({ claims, filters, onFilterChange, allUsers = [], showClaimed, onShowClaimedChange, currentUser, allSites = [] }) {
+export default function DashboardFilters({ claims, filters, onFilterChange, allUsers = [], showClaimed, onShowClaimedChange, currentUser, allSites = [], onRepairSearchChange, onWipSearchChange }) {
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdmin = userRole === 'Admin';
   const adminSite = currentUser?.default_site;
@@ -124,6 +124,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
 
   const handleClearFilters = () => {
     onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
+    onRepairSearchChange('');
+    onWipSearchChange('');
   };
 
   const hasActiveFilters = filters.wipNum || filters.repairNum || filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
@@ -149,18 +151,18 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">WIP Number</Label>
           <Input
-            placeholder="Enter WIP number"
+            placeholder="Search WIP number"
             value={filters.wipNum}
-            onChange={(e) => onFilterChange({ ...filters, wipNum: e.target.value })}
+            onChange={(e) => onWipSearchChange(e.target.value)}
           />
         </div>
 
         <div className="space-y-2">
-          <Label className="text-xs text-slate-600">Repair Number</Label>
+          <Label className="text-xs text-slate-600">Claim Number</Label>
           <Input
-            placeholder="Enter repair number"
+            placeholder="Search claim number"
             value={filters.repairNum}
-            onChange={(e) => onFilterChange({ ...filters, repairNum: e.target.value })}
+            onChange={(e) => onRepairSearchChange(e.target.value)}
           />
         </div>
 

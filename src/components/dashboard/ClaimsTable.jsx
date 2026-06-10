@@ -454,7 +454,7 @@ const SortableHead = ({ colKey, children }) => {
                                size="icon"
                                onClick={() => onEdit(claim)}
                                className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                               title="Details"
+                               title="Claim"
                              >
                                <Pencil className="h-4 w-4" />
                              </Button>
@@ -465,7 +465,7 @@ const SortableHead = ({ colKey, children }) => {
                               size="icon"
                               onClick={() => onCreditOptions(claim)}
                               className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
-                              title="Credit options"
+                              title="Credit"
                             >
                               <CreditCard className="h-4 w-4" />
                             </Button>
@@ -475,7 +475,7 @@ const SortableHead = ({ colKey, children }) => {
                              size="icon"
                              onClick={() => onViewNotes(claim)}
                              className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                             title="Notes"
+                             title="Alerts"
                            >
                              <MessageSquare className="h-4 w-4" />
                            </Button>
@@ -801,7 +801,7 @@ const SortableHead = ({ colKey, children }) => {
                                   size="icon"
                                   onClick={() => onEdit(claim)}
                                   className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                                  title="Details"
+                                  title="Claim"
                                 >
                                   <Pencil className="h-4 w-4" />
                                 </Button>
@@ -812,7 +812,7 @@ const SortableHead = ({ colKey, children }) => {
                                   size="icon"
                                   onClick={() => onCreditOptions(claim)}
                                   className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
-                                  title="Credit options"
+                                  title="Credit"
                                 >
                                   <CreditCard className="h-4 w-4" />
                                 </Button>
@@ -822,7 +822,7 @@ const SortableHead = ({ colKey, children }) => {
                                 size="icon"
                                 onClick={() => onViewNotes(claim)}
                                 className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                                title="Notes"
+                                title="Alerts"
                                 >
                                   <MessageSquare className="h-4 w-4" />
                                 </Button>

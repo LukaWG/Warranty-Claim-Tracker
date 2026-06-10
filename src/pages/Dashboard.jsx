@@ -60,6 +60,8 @@ export default function Dashboard() {
     const [selectedBrands, setSelectedBrands] = useState(null);
     const [pendingAlert, setPendingAlert] = useState([]);
     const [showClaimed, setShowClaimed] = useState(false);
+    const [repairSearch, setRepairSearch] = useState('');
+    const [wipSearch, setWipSearch] = useState('');
 
     // CHANGING USER
     const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
@@ -162,8 +164,8 @@ export default function Dashboard() {
         }
       }
 
-      const wipNumMatch = !filters.wipNum || claim.wip_number.toLowerCase().includes(filters.wipNum.toLowerCase());
-      const repairNumMatch = !filters.repairNum || (claim.repair_number && claim.repair_number.toLowerCase().includes(filters.repairNum.toLowerCase()));
+      const wipNumMatch = !wipSearch || claim.wip_number.toLowerCase().includes(wipSearch.toLowerCase());
+      const repairNumMatch = !repairSearch || claim.claim_number?.split('-').some(part => part.toLowerCase().includes(repairSearch.toLowerCase()));
       const siteMatch = !filters.site?.length || filters.site.includes(claim.site);
       const brandMatch = !filters.brand?.length || filters.brand.includes(claim.brand);
       const userMatch = !filters.user?.length || filters.user.includes(claim.created_by) || filters.user.includes(claim.submitted_for);
@@ -422,7 +424,7 @@ export default function Dashboard() {
             return allClaims.filter(c => c.site === currentUser.default_site);
           }
           return allClaims;
-        })()} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
+        })()} onRepairSearchChange={setRepairSearch} onWipSearchChange={setWipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
 
           {/* Brand Stats Section */}
           {!['Processor', 'Site Manager'].includes(currentUser?.custom_role || currentUser?.role) && (
