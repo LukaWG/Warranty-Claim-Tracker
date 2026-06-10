@@ -33,13 +33,13 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
     return { redCount, amberCount, greenCount };
   };
-
+  
   const getStatusCounts = (claimsForBrand) => ({
     in_progress: claimsForBrand.filter(c => c.status === 'in_progress').length,
     awaiting_review: claimsForBrand.filter(c => c.status === 'awaiting_review').length,
     awaiting_approval: claimsForBrand.filter(c => c.status === 'awaiting_approval').length,
     approved: claimsForBrand.filter(c => c.status === 'approved').length,
-    queried: claimsForBrand.filter(c => c.status === 'queried').length,
+    // queried: claimsForBrand.filter(c => c.status === 'queried').length,
     rejected: claimsForBrand.filter(c => c.status === 'rejected').length,
     credit_rejected: claimsForBrand.filter(c => c.status === 'credit_rejected').length,
     claimed_info_requested: claimsForBrand.filter(c => c.status === 'claimed_info_requested').length,
@@ -79,8 +79,8 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
     { key: 'awaiting_review', label: 'Awaiting Review' },
     { key: 'awaiting_approval', label: 'Awaiting Approval' },
     { key: 'approved', label: 'Approved' },
-    { key: 'queried', label: 'Queried' },
-    { key: 'rejected', label: 'Rejected' },
+    // { key: 'queried', label: 'Queried' },
+    { key: 'rejected', label: 'Queried' },
     { key: 'credit_rejected', label: 'Credit Rejected' },
     { key: 'claimed_info_requested', label: 'Info Requested' },
     { key: 'claimed_info_received', label: 'Info Received' },

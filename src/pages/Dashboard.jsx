@@ -57,7 +57,7 @@ export default function Dashboard() {
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
     const [creditClaim, setCreditClaim] = useState(null);
-    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectedBrands, setSelectedBrands] = useState(null);
     const [pendingAlert, setPendingAlert] = useState([]);
     const [showClaimed, setShowClaimed] = useState(false);
 
@@ -102,16 +102,35 @@ export default function Dashboard() {
     queryFn: () => databaseClients.clients['User'].query('email') // Fetch users for filters
   });
 
-  // Load selected brands from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('selectedBrandTiles');
-    if (saved) {
-      setSelectedBrands(JSON.parse(saved));
-    } else if (brands.length > 0) {
-      // Default to all brands if nothing saved
-      setSelectedBrands(brands.map(b => b.id));
+  const adminBrands = (() => {
+    const userRole = currentUser?.custom_role || currentUser?.role;
+    if (userRole === 'Admin' && currentUser?.default_brands) {
+      if (typeof currentUser.default_brands === 'string') {
+        try {
+          const parsed = JSON.parse(currentUser.default_brands);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+          return null;
+        } catch (e) {
+          console.warn('Failed to parse admin brands:', currentUser.default_brands);
+          return null;
+        }
+      } else if (Array.isArray(currentUser.default_brands) && currentUser.default_brands.length > 0) {
+        return currentUser.default_brands;
+      }
     }
-  }, [brands]);
+    return null;
+  })();
+
+  // const adminSiteBrands = (() => {
+  //   const userRole = currentUser?.custom_role || currentUser?.role;
+  //   if (userRole === 'Admin' && currentUser?.default_site) {
+  //     const site = allSites.find(s => s.name === currentUser.default_site);
+  //     return site?.brands || [];
+  //   }
+  //   return null;
+  // })();
 
   // Apply filters and role-based access
     const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
@@ -138,27 +157,8 @@ export default function Dashboard() {
         if (claim.status === 'rejected') {
           return false;
         }
-        const adminBrands = currentUser?.default_brands;
-        // Check if adminBrands contains an array as a string
-        if (typeof adminBrands === 'string') {
-          try {
-            const parsed = JSON.parse(adminBrands);
-            if (Array.isArray(parsed)) {
-              if (!parsed.includes(claim.brand)) {
-                return false;
-              }
-            } else {
-              console.warn('Admin brands is not an array:', parsed);
-              return false;
-            }
-          } catch (e) {
-            console.warn('Failed to parse admin brands:', adminBrands);
-            return false;
-          }
-        } else if (Array.isArray(adminBrands) && adminBrands.length > 0) {
-          if (adminBrands && !adminBrands.includes(claim.brand)) {
-            return false;
-          }
+        if (adminBrands && !adminBrands.includes(claim.brand)) {
+          return false;
         }
       }
 
@@ -368,39 +368,22 @@ export default function Dashboard() {
     localStorage.setItem('selectedBrandTiles', JSON.stringify(newSelected));
   };
 
-  const adminBrands = (() => {
-    const userRole = currentUser?.custom_role || currentUser?.role;
-    if (userRole === 'Admin' && currentUser?.default_brands) {
-      if (typeof currentUser.default_brands === 'string') {
+
+  const activeSelectedBrands = selectedBrands ?? (() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('selectedBrandTiles');
+      if (saved) {
         try {
-          const parsed = JSON.parse(currentUser.default_brands);
-          if (Array.isArray(parsed)) {
-            return parsed;
-          } else {
-            console.warn('Admin brands is not an array:', parsed);
-            return [];
-          }
-        } catch (e) {
-          console.warn('Failed to parse admin brands:', currentUser.default_brands);
-          return [];
-        }
-      } else if (Array.isArray(currentUser.default_brands)) {
-        return currentUser.default_brands;
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) {}
       }
     }
-    return null;
+    return brands.map(b => b.id);
   })();
 
-  const adminSiteBrands = (() => {
-    const userRole = currentUser?.custom_role || currentUser?.role;
-    if (userRole === 'Admin' && currentUser?.default_site) {
-      const site = allSites.find(s => s.name === currentUser.default_site);
-      return site?.brands || [];
-    }
-    return null;
-  })();
   const visibleBrands = brands.filter(b => 
-    selectedBrands.includes(b.id) &&
+    activeSelectedBrands.includes(b.id) &&
     (adminBrands === null || adminBrands.includes(b.name))
   );
 

@@ -1669,6 +1669,20 @@ export default function Configuration() {
 					<Label>Brand Access (Admin)</Label>
 					<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+						<div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate0299">
+							<input
+							type="checkbox"
+							id={`edit-user-brand-all`}
+							checked={(editingUser.default_brands || []).length === 0}
+							onChange={(e) => {
+								if (e.target.checked) {
+								setEditingUser({ ...editingUser, default_brands: [] });
+								}
+							}}
+							className="h-4 w-4 rounded border-gray-300"
+							/>
+							<label htmlFor={`edit-user-brand-all`} className="text-sm text-slate-700 font-medium">All Brands</label>
+						</div>
 						{brands.map(brand => (
 						<div key={brand.id} className="flex items-center gap-3">
 							<input
