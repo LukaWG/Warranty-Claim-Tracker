@@ -344,7 +344,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Sidebar */}
       <aside 
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:shrink-0",
+          "fixed inset-y-0 left-0 z-50 w-52 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:shrink-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -369,6 +369,13 @@ export default function Layout({ children, currentPageName }) {
             <div className="text-sm font-medium" style={{ color: 'var(--hendy-teal)' }}>
               Warranty Repair Manager
             </div>
+            {currentUser && (
+              <div className="mt-2">
+                <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: 'var(--hendy-teal)' }}>
+                  {displayRole || 'User'}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
