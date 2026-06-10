@@ -15,6 +15,7 @@ import { databaseClients } from '@/api/databaseClient';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
+import { authClient } from '@/lib/auth-client';
 // import { GetServerSideProps } from "next"
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -42,6 +43,7 @@ export const getServerSideProps = async ({ req, res }) => {
         last_name: session.user.lastName ?? session.user.last_name ?? null,
         custom_role: session.user.customRole ?? session.user.custom_role ?? null,
         default_site: session.user.defaultSite ?? session.user.default_site ?? null,
+        default_brands: session.user.defaultBrands ?? session.user.default_brands ?? [],
         mustChangePassword: session.user.mustChangePassword ?? null,
       }
     }
@@ -75,7 +77,7 @@ export default function Dashboard() {
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser', actingUserId],
     // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.User.me() // Fetch current user
+    queryFn: () => databaseClients.User.me(), // Fetch current user
   });
 
   const { data: allClaims = [], isLoading } = useQuery({
@@ -131,14 +133,32 @@ export default function Dashboard() {
         if (managerSite && claim.site !== managerSite) return false;
       }
 
-      // Admin: hide rejected claims and restrict to their assigned site only
+      // Admin: hide rejected claims and restrict to their assigned brands only
       if (userRole === 'Admin') {
         if (claim.status === 'rejected') {
           return false;
         }
-        const adminSite = currentUser?.default_site;
-        if (adminSite && claim.site !== adminSite) {
-          return false;
+        const adminBrands = currentUser?.default_brands;
+        // Check if adminBrands contains an array as a string
+        if (typeof adminBrands === 'string') {
+          try {
+            const parsed = JSON.parse(adminBrands);
+            if (Array.isArray(parsed)) {
+              if (!parsed.includes(claim.brand)) {
+                return false;
+              }
+            } else {
+              console.warn('Admin brands is not an array:', parsed);
+              return false;
+            }
+          } catch (e) {
+            console.warn('Failed to parse admin brands:', adminBrands);
+            return false;
+          }
+        } else if (Array.isArray(adminBrands) && adminBrands.length > 0) {
+          if (adminBrands && !adminBrands.includes(claim.brand)) {
+            return false;
+          }
         }
       }
 
@@ -348,6 +368,29 @@ export default function Dashboard() {
     localStorage.setItem('selectedBrandTiles', JSON.stringify(newSelected));
   };
 
+  const adminBrands = (() => {
+    const userRole = currentUser?.custom_role || currentUser?.role;
+    if (userRole === 'Admin' && currentUser?.default_brands) {
+      if (typeof currentUser.default_brands === 'string') {
+        try {
+          const parsed = JSON.parse(currentUser.default_brands);
+          if (Array.isArray(parsed)) {
+            return parsed;
+          } else {
+            console.warn('Admin brands is not an array:', parsed);
+            return [];
+          }
+        } catch (e) {
+          console.warn('Failed to parse admin brands:', currentUser.default_brands);
+          return [];
+        }
+      } else if (Array.isArray(currentUser.default_brands)) {
+        return currentUser.default_brands;
+      }
+    }
+    return null;
+  })();
+
   const adminSiteBrands = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
     if (userRole === 'Admin' && currentUser?.default_site) {
@@ -356,10 +399,9 @@ export default function Dashboard() {
     }
     return null;
   })();
-
   const visibleBrands = brands.filter(b => 
     selectedBrands.includes(b.id) &&
-    (adminSiteBrands === null || adminSiteBrands.includes(b.name))
+    (adminBrands === null || adminBrands.includes(b.name))
   );
 
   // Calculate stats

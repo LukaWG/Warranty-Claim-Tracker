@@ -314,7 +314,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Service Manager', 'Owner'] },
     // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
-    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Owner'] }
+    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Admin Manager', 'Owner'] }
   ];
 
   const displayRole = currentUser?.custom_role || currentUser?.role;

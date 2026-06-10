@@ -8,10 +8,27 @@ const isDev = process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
 export const auth = betterAuth({
   baseURL: isDev
     ? {
-        allowedHosts: ["localhost:3000", "127.0.0.1", "192.168.*", "10.*", "172.16.*", "lukas-mbp.local:3000"],
+        allowedHosts: [
+          "localhost:*",
+          "127.0.0.1:*",
+          "192.168.*:*",
+          "10.*:*",
+          "172.16.*:*",
+          "lukas-mbp.local:*",
+        ],
         protocol: "http",
       }
     : (process.env.BETTER_AUTH_URL ?? "http://localhost:3000"),
+  trustedOrigins: isDev
+    ? [
+        "http://localhost:*",
+        "http://127.0.0.1:*",
+        "http://192.168.*:*",
+        "http://10.*:*",
+        "http://172.16.*:*",
+        "http://lukas-mbp.local:*",
+      ]
+    : [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -43,6 +60,7 @@ export const auth = betterAuth({
       lastName: { type: "string", required: false, input: true },
       customRole: { type: "string", defaultValue: "Processor", input: true },
       defaultSite: { type: "string", required: false, input: true },
+      defaultBrands: { type: "string[]", defaultValue: [], input: true },
       mustChangePassword: { type: "boolean", defaultValue: false, input: true },
     }
   }

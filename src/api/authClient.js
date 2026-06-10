@@ -31,6 +31,7 @@ export const authUsers = {
           last_name: u.lastName ?? u.last_name ?? "",
           custom_role: u.customRole ?? u.custom_role ?? "Processor",
           default_site: u.defaultSite ?? u.default_site ?? "",
+          default_brands: u.defaultBrands ?? u.default_brands ?? [],
           created_date: u.createdAt ?? u.created_date ?? null,
           must_change_password: u.mustChangePassword ?? u.must_change_password ?? false,
         }));
@@ -59,6 +60,10 @@ export const authUsers = {
       mappedData.defaultSite = data.default_site;
       delete mappedData.default_site;
     }
+    if (data.default_brands !== undefined) {
+      mappedData.defaultBrands = data.default_brands;
+      delete mappedData.default_brands;
+    }
     if (data.must_change_password !== undefined) {
       mappedData.mustChangePassword = data.must_change_password;
       delete mappedData.must_change_password;
@@ -75,7 +80,7 @@ export const authUsers = {
       body: JSON.stringify({ userId }),
     }),
 
-  invite: ({ email, first_name, last_name, custom_role, default_site }) => {
+  invite: ({ email, first_name, last_name, custom_role, default_site, default_brands }) => {
     const platformRole = ["Owner", "Service Manager", "Admin Manager", "Admin"].includes(custom_role)
       ? "admin"
       : "user";
@@ -91,6 +96,7 @@ export const authUsers = {
         lastName: last_name,
         customRole: custom_role ?? "Processor",
         defaultSite: default_site ?? null,
+        defaultBrands: default_brands ?? [],
       }),
     });
   },
