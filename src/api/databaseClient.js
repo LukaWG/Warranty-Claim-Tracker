@@ -90,48 +90,21 @@ class DatabaseClient {
         const session = await authClient.getSession();
         const loggedInEmail = session?.data?.user?.email;
 
-        if (actingUserId) {
-            const result = await this.query('*', `id=${actingUserId}`);
-            const dbUser = Array.isArray(result) ? result[0] : result;
-            if (dbUser) {
-                // If acting as a user that corresponds to the current session, merge session details
-                const isSessionUser = loggedInEmail && dbUser.email === loggedInEmail;
-                return {
-                    ...dbUser,
-                    must_change_password: isSessionUser
-                        ? (session?.data?.user?.mustChangePassword ?? session?.data?.user?.must_change_password ?? dbUser.must_change_password ?? false)
-                        : (dbUser.must_change_password ?? false),
-                    full_name: dbUser.full_name || `${dbUser.first_name || ''} ${dbUser.last_name || ''}`.trim() || 'User'
-                };
-            }
-            return dbUser;
-        }
-
-        if (loggedInEmail) {
-            const result = await this.query('*', `email=${loggedInEmail}`);
-            if (result && (Array.isArray(result) ? result.length > 0 : true)) {
-                const dbUser = Array.isArray(result) ? result[0] : result;
-                return {
-                    ...dbUser,
-                    must_change_password: session?.data?.user?.mustChangePassword ?? session?.data?.user?.must_change_password ?? dbUser.must_change_password ?? false,
-                    full_name: dbUser.full_name || `${dbUser.first_name || ''} ${dbUser.last_name || ''}`.trim() || 'User'
-                };
-            }
-            // Fallback: Map the Better Auth user details to the schema expected by the frontend
-            const authUser = session.data.user;
-            return {
-                id: authUser.id,
-                email: authUser.email,
-                first_name: authUser.firstName || authUser.name?.split(' ')[0] || 'User',
-                last_name: authUser.lastName || authUser.name?.split(' ')[1] || '',
-                full_name: authUser.name || `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() || 'User',
-                custom_role: authUser.customRole || 'Processor',
-                role: authUser.role || 'user',
-                must_change_password: authUser.mustChangePassword ?? authUser.must_change_password ?? false
-            };
-        }
-
-        return null;
+        // Map the Better Auth user details to the schema expected by the frontend
+        const authUser = session?.data?.user;
+        if (!authUser) return null;
+        return {
+            id: authUser.id,
+            email: authUser.email,
+            first_name: authUser.firstName || authUser.name?.split(' ')[0] || 'User',
+            last_name: authUser.lastName || authUser.name?.split(' ')[1] || '',
+            full_name: authUser.name || `${authUser.firstName || ''} ${authUser.lastName || ''}`.trim() || 'User',
+            custom_role: authUser.customRole || 'Processor',
+            role: authUser.role || 'user',
+            must_change_password: authUser.mustChangePassword ?? authUser.must_change_password ?? false,
+            default_brands: authUser.defaultBrands ?? authUser.default_brands ?? [],
+            default_site: authUser.defaultSite ?? authUser.default_site ?? null,
+        };
     }
 
     setTestingUser(userId) {
@@ -278,7 +251,7 @@ const dataFolder = '/data';
 
 function getJsonFilePath(fileName) {
     const path = `${dataFolder}/${fileName}.json`;
-    alert(path);
+    // alert(path);
     return path;
 }
 

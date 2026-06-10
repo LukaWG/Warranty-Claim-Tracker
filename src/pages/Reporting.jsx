@@ -41,6 +41,7 @@ export const getServerSideProps = async ({ req, res }) => {
         last_name: session.user.lastName ?? session.user.last_name ?? null,
         custom_role: session.user.customRole ?? session.user.custom_role ?? null,
         default_site: session.user.defaultSite ?? session.user.default_site ?? null,
+        defaultBrands: session.user.defaultBrands ?? [],
         mustChangePassword: session.user.mustChangePassword ?? null,
       }
     }

@@ -42,6 +42,7 @@ export const getServerSideProps = async ({ req, res }) => {
         last_name: session.user.lastName ?? session.user.last_name ?? null,
         custom_role: session.user.customRole ?? session.user.custom_role ?? null,
         default_site: session.user.defaultSite ?? session.user.default_site ?? null,
+        defaultBrands: session.user.defaultBrands ?? [],
         mustChangePassword: session.user.mustChangePassword ?? null,
       }
     }
@@ -96,6 +97,7 @@ export default function Configuration() {
 		last_name: data.last_name,
 		custom_role: data.custom_role,
 		default_site: data.default_site,
+		default_brands: data.default_brands,
 		}),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -112,23 +114,14 @@ export default function Configuration() {
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
-	  queryFn: () => {
-		const data = databaseClients.clients["Site"].get();
-		// Convert brand rates to an array from current structure
-		const sitesWithBrandRates = data.map(site => {
-			if (site.brands && Array.isArray(site.brands)) {
-				return site; // Already in correct format
-			} else if (site.brands) {
-				// Convert from object to array
-				const brandsArray = Object.entries(site.brands).map(([brandName, rates]) => ({
-					name: brandName,
-					rates
-				}));
-				return { ...site, brands: brandsArray };
-			}
-			return site;
-		});
-		return sitesWithBrandRates;
+	  queryFn: async () => {
+		const data = await databaseClients.clients["Site"].get();
+		// Convert brands from comma-separated string to array
+		const sitesWithBrands = data.map(site => ({
+			...site,
+			brands: site.brands ? site.brands.split(',').map(brand => brand.trim()).map(brand => brand.replace(/^[\s"'()[\]]+|[\s"'()[\]]+$/g, '')) : []
+		}));
+		return sitesWithBrands;
 	  }
 	});
 
@@ -491,10 +484,10 @@ export default function Configuration() {
 							<TableCell className="text-slate-600">
 								{site.brands && site.brands.length > 0 ? (
 								<div className="flex flex-wrap gap-1">
-									{<span key="all-brands" className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{site.brands.length} brands</span>
-									/* {site.brands.map(brand => (
+									{/* {<span key="all-brands" className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{site.brands.length} brands</span> */}
+									{site.brands.map(brand => (
 									<span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brand}</span>
-									))} */}
+									))}
 								</div>
 								) : '—'}
 							</TableCell>

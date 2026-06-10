@@ -101,10 +101,14 @@ export default async function authHandler(
     }
   }
 
+  const cleanedHeaders = new Headers(req.headers as HeadersInit)
+  cleanedHeaders.delete("content-length")
+  cleanedHeaders.delete("transfer-encoding")
+
   return auth.handler(
     new Request(url, {
       method: req.method,
-      headers: req.headers as HeadersInit,
+      headers: cleanedHeaders,
       body: req.method !== "GET" && req.method !== "HEAD"
         ? JSON.stringify(req.body)
         : undefined,
