@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import ChartsSection from '@/components/dashboard/ChartsSection';
 import DynamicChartsSection from '@/components/dashboard/DynamicChartsSection';

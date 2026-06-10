@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-// import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
 import { databaseClients } from '@/api/databaseClient';
 

@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';
 import HendyLogo from '@/components/layout/HendyLogo';
 import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
-// import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { authClient, useSession, signOut } from "@/lib/auth-client";

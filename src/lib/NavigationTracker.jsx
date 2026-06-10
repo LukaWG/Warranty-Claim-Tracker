@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 // import { useAuth } from './AuthContext';
-// import { base44 } from '@/api/base44Client'; // Removed Base44 dependency
 import { pagesConfig } from '@/pages.config';
 
 export default function NavigationTracker() {
@@ -34,11 +33,6 @@ export default function NavigationTracker() {
             );
             pageName = matchedKey || null;
         }
-
-        // if (isAuthenticated && pageName) {
-        //     // Removed Base44 logging - can be replaced with custom analytics if needed
-        //     console.log(`User navigated to page: ${pageName}`);
-        // }
     }, [router.asPath, null, Pages, mainPageKey]);
 
     return null;

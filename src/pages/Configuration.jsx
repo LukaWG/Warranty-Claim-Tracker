@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import { authUsers } from "@/api/authClient";
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
-// import { GetServerSideProps } from "next"
 
 export const getServerSideProps = async ({ req, res }) => {
   const session = await auth.api.getSession({
@@ -29,7 +27,6 @@ export const getServerSideProps = async ({ req, res }) => {
 	return { redirect: { destination: "/login", permanent: false } }
   }
   
-  // return { props: { user: JSON.parse(JSON.stringify(session.user)) } }
   return {
     props: {
       user: {
@@ -60,7 +57,7 @@ export default function Configuration() {
 	const [newAlert, setNewAlert] = useState({ name: '' });
 	const [newResolution, setNewResolution] = useState({ name: '' });
 	const [newBrand, setNewBrand] = useState({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
-	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '' });
+	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '', default_brands: [] });
 	const [showUserDialog, setShowUserDialog] = useState(false);
 	const [editingUser, setEditingUser] = useState(null);
 	const [tempPassword, setTempPassword] = useState(null);
@@ -131,26 +128,22 @@ export default function Configuration() {
 
 	const { data: brands = [], isLoading: brandsLoading } = useQuery({
 	  queryKey: ['brands'],
-	  queryFn: () => databaseClients.clients["Brand"].get()
+	  queryFn: async () => {
+	    const data = await databaseClients.clients["Brand"].get();
+	    return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+	  }
 	});
-
-	// const { data: users = [], isLoading: usersLoading } = useQuery({
-	// 	queryKey: ['users'],
-	// 	queryFn: () => databaseClients.clients["User"].get()
-	// });
 
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
 	  queryFn: () => databaseClients.clients["PendingUserInvite"].get()
 	});
 
-	// [ ]: update deletion functions to not use base44
 	const deletePendingInviteMutation = useMutation({
 	mutationFn: (id) => databaseClients.clients["PendingUserInvite"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
 	});
 
-	// [ ] Update to use create site function in databaseClient.js
 	const createSiteMutation = useMutation({
 	mutationFn: (data) => databaseClients.clients["Site"].create(data),
 	onSuccess: () => {
@@ -167,7 +160,6 @@ export default function Configuration() {
 	}
 	});
 
-	// [ ]: update to use delete function in databaseClient.js
 	const deleteSiteMutation = useMutation({
 	mutationFn: (id) => databaseClients.clients["Site"].delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] })
@@ -254,40 +246,6 @@ export default function Configuration() {
 	}
 	};
 
-	// const inviteUserMutation = useMutation({
-	// mutationFn: async ({ email, role, first_name, last_name, default_site }) => {
-	// 	console.log('Inviting user:', { email, role, first_name, last_name });
-		
-	// 	// Map custom role to platform role (admin or user)
-	// 	// Only Owner has platform admin access for configuration management
-	// 	const platformRole = (role === 'Owner') ? 'admin' : 'user';
-		
-	// 	// Store pending user information for when they register
-	// 	await databaseClients.clients["PendingUserInvite"].create({
-	// 	email: email,
-	// 	custom_role: role,
-	// 	first_name: first_name,
-	// 	last_name: last_name,
-	// 	default_site: default_site || null
-	// 	});
-		
-	// 	// Invite user with platform role
-	// 	// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-	// 	// await base44.users.inviteUser(email, platformRole);
-	// 	console.log('User invited and pending info stored');
-	// },
-	// onSuccess: () => {
-	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
-	// 	setNewUser({ email: '', role: 'Processor', first_name: '', last_name: '' });
-	// 	setShowUserDialog(false);
-	// },
-	// onError: (error) => {
-	// 	console.error('Failed to invite user:', error);
-	// 	const errorMessage = error?.message || error?.toString() || 'Unknown error';
-	// 	alert(`Failed to invite user: ${errorMessage}\n\nPlease check the console for more details.`);
-	// }
-	// });
-
 	const resetUserPasswordMutation = useMutation({
 	mutationFn: async ({ id }) => {
 		const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
@@ -355,7 +313,8 @@ export default function Configuration() {
 		role: newUser.role,
 		first_name: newUser.first_name,
 		last_name: newUser.last_name,
-		default_site: newUser.default_site || null
+		default_site: newUser.default_site || null,
+		default_brands: newUser.default_brands || []
 		});
 	}
 	};
@@ -369,7 +328,8 @@ export default function Configuration() {
 			first_name: editingUser.first_name,
 			last_name: editingUser.last_name,
 			custom_role: editingUser.custom_role || editingUser.role,
-			default_site: editingUser.default_site || null
+			default_site: editingUser.default_site || null,
+			default_brands: ((editingUser.custom_role || editingUser.role) === 'Admin') ? (editingUser.default_brands || []) : []
 		}
 		});
 	}
@@ -1417,6 +1377,7 @@ export default function Configuration() {
 					</SelectContent>
 				</Select>
 				</div>
+				{newUser.role !== 'Admin' && (
 				<div className="space-y-2">
 				<Label>Default Branch</Label>
 				<Select
@@ -1434,6 +1395,32 @@ export default function Configuration() {
 					</SelectContent>
 				</Select>
 				</div>
+				)}
+				{newUser.role === 'Admin' && (
+					<div className="space-y-2">
+						<Label>Brand Access (Admin)</Label>
+						<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+							{brands.map(brand => (
+								<div key={brand.id} className="flex items-center gap-3">
+									<input
+										type="checkbox"
+										id={`new-user-brand-${brand.id}`}
+										checked={(newUser.default_brands || []).includes(brand.name)}
+										onChange={(e) => {
+											const current = newUser.default_brands || [];
+											const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
+											setNewUser({ ...newUser, default_brands: updated });
+										}}
+										className="h-4 w-4 rounded border-gray-300"
+									/>
+									<label htmlFor={`new-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+								</div>
+							))}
+							{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+						</div>
+					</div>
+				)}
 				<DialogFooter>
 				<Button type="button" variant="outline" onClick={() => setShowUserDialog(false)}>
 					Cancel
@@ -1648,6 +1635,7 @@ export default function Configuration() {
 					</SelectContent>
 					</Select>
 				</div>
+				{(editingUser.custom_role || editingUser.role) !== 'Admin' && (
 				<div className="space-y-2">
 					<Label>Default Branch</Label>
 					<Select
@@ -1665,6 +1653,32 @@ export default function Configuration() {
 					</SelectContent>
 					</Select>
 				</div>
+				)}
+				{(editingUser.custom_role || editingUser.role) === 'Admin' && (
+					<div className="space-y-2">
+					<Label>Brand Access (Admin)</Label>
+					<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+						{brands.map(brand => (
+						<div key={brand.id} className="flex items-center gap-3">
+							<input
+							type="checkbox"
+							id={`edit-user-brand-${brand.id}`}
+							checked={(editingUser.default_brands || []).includes(brand.name)}
+							onChange={(e) => {
+								const current = editingUser.default_brands || [];
+								const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
+								setEditingUser({ ...editingUser, default_brands: updated });
+							}}
+							className="h-4 w-4 rounded border-gray-300"
+							/>
+							<label htmlFor={`edit-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+						</div>
+						))}
+						{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+					</div>
+					</div>
+				)}
 				<DialogFooter>
 					<Button type="button" variant="outline" onClick={() => setEditingUser(null)}>
 					Cancel
