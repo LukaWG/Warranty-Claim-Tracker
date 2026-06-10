@@ -250,10 +250,15 @@ export let siteData = [
   {
     "pid": 17,
     "name": "Gatwick",
-    "brand_hourly_rates": null,
+    "brand_hourly_rates": {
+      "Ford": 85
+    },
+    "brand_hourly_rates_2": {
+      "Ford": 95
+    },
     "active": true,
     "code": null,
-    "brands": null,
+    "brands": "[\"Ford\"]",
     "hourly_rate": null,
     "id": "69de5469cf457c193638d1e6",
     "created_date": "2026-04-14 14:51:21.545+00",

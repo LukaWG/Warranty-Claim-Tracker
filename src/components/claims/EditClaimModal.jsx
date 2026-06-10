@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 
 export default function EditClaimModal({ claim, open, onClose, onSave }) {
+  const [useRate2, setUseRate2] = useState(false);
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: () => databaseClients.Site.get()
@@ -307,7 +308,39 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             <div className="space-y-2">
+              <div className="flex items-center justify-between">
               <Label>Actual Hours</Label>
+              <div className="flex items-center gap-1 bg-slate-100 rounded-md p-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUseRate2(false);
+                    const labourVal = parseFloat(formData.labour) || 0;
+                    const rate1 = selectedSite?.brand_hourly_rates?.[formData.brand] || 0;
+                    const calculatedHours = rate1 > 0 ? Math.round((labourVal / rate1) * 100) / 100 : 0;
+                    setFormData({ ...formData, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
+                  }}
+                  className={cn(
+                    "text-xs px-2 py-0.5 rounded transition-colors", !useRate2 ? "bg-white shadow text-slate-800 font-semibold" : "text-slate-500 hover:text-slate-700")}
+                    >
+                      Rate 1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUseRate2(true);
+                    const labourVal = parseFloat(formData.labour) || 0;
+                    const rate2 = selectedSite?.brand_hourly_rates_2?.[formData.brand] || 0;
+                    const calculatedHours = rate2 > 0 ? Math.round((labourVal / rate2) * 100) / 100 : 0;
+                    setFormData({ ...formData, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
+                  }}
+                  className={cn(
+                    "text-xs px-2 py-0.5 rounded transition-colors", useRate2 ? "bg-white shadow text-slate-800 font-semibold" : "text-slate-500 hover:text-slate-700")}
+                    >
+                      Rate 2
+                    </button>
+                  </div>
+              </div>
               <Input
                 type="number"
                 step="0.1"

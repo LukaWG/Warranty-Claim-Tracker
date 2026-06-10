@@ -225,7 +225,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('wip_number') && <SortableHead colKey="wip_number">WIP Number</SortableHead>}
                       {col('reg_number') && <SortableHead colKey="reg_number">Reg No.</SortableHead>}
                       {col('invoice_number') && <SortableHead colKey="invoice_number">Invoice #</SortableHead>}
-                      {col('claim_number') && <SortableHead colKey="claim_number">Repair #</SortableHead>}
+                      {col('claim_number') && <SortableHead colKey="claim_number">Claim #</SortableHead>}
                       {col('site') && <SortableHead colKey="site">Site</SortableHead>}
                       {col('brand') && <SortableHead colKey="brand">Brand</SortableHead>}
                       {col('expected_hours') && <SortableHead colKey="expected_hours">Expected Hours</SortableHead>}
@@ -556,7 +556,7 @@ const SortableHead = ({ colKey, children }) => {
                        {col('wip_number') && <TableHead className="font-semibold text-slate-600">WIP Number</TableHead>}
                        {col('reg_number') && <TableHead className="font-semibold text-slate-600">Reg No.</TableHead>}
                        {col('invoice_number') && <TableHead className="font-semibold text-slate-600">Invoice #</TableHead>}
-                       {col('claim_number') && <TableHead className="font-semibold text-slate-600">Repair #</TableHead>}
+                       {col('claim_number') && <TableHead className="font-semibold text-slate-600">Claim #</TableHead>}
                        {col('site') && <TableHead className="font-semibold text-slate-600">Site</TableHead>}
                        {col('brand') && <TableHead className="font-semibold text-slate-600">Brand</TableHead>}
                        {col('expected_hours') && <TableHead className="font-semibold text-slate-600">Expected Hours</TableHead>}

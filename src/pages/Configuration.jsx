@@ -1459,22 +1459,18 @@ export default function Configuration() {
 					if (val !== undefined && val !== '') {
 						brandRates[brand.name] = parseFloat(val);
 					}
+					const val2 = editingSite.brand_hourly_rates_2?.[brand.name];
+					if (val2 !== undefined && val2 !== '') {
+						brandRates[brand.name] = parseFloat(val2);
+					}
 					});
 					updateSiteMutation.mutate({ id: editingSite.id, data: {
 					name: editingSite.name,
 					code: editingSite.code || null,
 					brands: editingSite.brands || [],
-					brand_hourly_rates: Object.keys(brandRates).length > 0 ? brandRates : null
+					brand_hourly_rates: Object.keys(brandRates).length > 0 ? brandRates : null,
+					brand_hourly_rates_2: Object.keys(brandRates).length > 0 ? brandRates : null
 				}});
-					// updateSiteMutation.mutate({
-					//   id: editingSite.id,
-					//   data: {
-					//     name: editingSite.name,
-					//     code: editingSite.code || null,
-					//     brands: editingSite.brands || [],
-					//     brand_hourly_rates: Object.keys(brandRates).length > 0 ? brandRates : null
-					//   }
-					// });
 				}}
 				className="space-y-4"
 				>
@@ -1528,7 +1524,13 @@ export default function Configuration() {
 				<div className="space-y-2">
 					<Label className="text-sm font-medium">Hourly Rate per Brand (£)</Label>
 					<p className="text-xs text-slate-500">Set a rate per brand. Leave blank to exclude that brand.</p>
-					<div className="space-y-2 border rounded-md p-3 bg-slate-50">
+					<div className="border rounded-md p-3 bg-slate-50">
+						<div className="flex items-center gap-3 mb-2">
+							<span className="text-xs font-medium text-slate-500 w-32 flex-shrink-0"></span>
+							<span className="text-xs font-semibold text-slate-600 flex-1 text-center">Rate 1 (£)</span>
+							<span className="text-xs font-semibold text-slate-600 flex-1 text-center">Rate 2 (£)</span>
+						</div>
+					<div className="space-y-2">
 					{brands.map(brand => (
 						<div key={brand.id} className="flex items-center gap-3">
 						<span className="text-sm text-slate-700 w-32 flex-shrink-0">{brand.name}</span>
@@ -1547,8 +1549,24 @@ export default function Configuration() {
 							})}
 							className="h-8 bg-white"
 						/>
+						<Input
+							type="number"
+							step="0.01"
+							min="0"
+							placeholder="e.g. 95.00"
+							value={editingSite.brand_hourly_rates_2?.[brand.name] ?? ''}
+							onChange={(e) => setEditingSite({
+							...editingSite,
+							brand_hourly_rates_2: {
+								...(editingSite.brand_hourly_rates_2 || {}),
+								[brand.name]: e.target.value
+							}
+							})}
+							className="h-8 bg-white"
+						/>
 						</div>
 					))}
+					</div>
 					{brands.length === 0 && (
 						<p className="text-xs text-slate-400">No brands configured yet</p>
 					)}
