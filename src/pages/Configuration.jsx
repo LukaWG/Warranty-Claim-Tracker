@@ -114,48 +114,43 @@ export default function Configuration() {
 	// GET DATA
 	const { data: sites = [], isLoading: sitesLoading } = useQuery({
 	  queryKey: ['sites'],
-	  queryFn: async () => {
-		const data = await databaseClients.clients["Site"].get();
-		// Convert brands from comma-separated string to array
-		const sitesWithBrands = data.map(site => ({
-			...site,
-			brands: site.brands ? site.brands.split(',').map(brand => brand.trim()).map(brand => brand.replace(/^[\s"'()[\]]+|[\s"'()[\]]+$/g, '')) : []
-		}));
-		return sitesWithBrands;
-	  }
+		  queryFn: async () => {
+			const sitesData = await databaseClients.Site.get();
+			return sitesData.sort((a, b) => a.name.localeCompare(b.name));
+		  }
 	});
 
 	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
 	  queryKey: ['alerts'],
-	  queryFn: () => databaseClients.clients["Alert"].get()
+	  queryFn: () => databaseClients.Alert.get()
 	});
 
 	const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
 	  queryKey: ['resolutions'],
-	  queryFn: () => databaseClients.clients["AlertResolution"].get()
+	  queryFn: () => databaseClients.AlertResolution.get()
 	});
 
 
 	const { data: brands = [], isLoading: brandsLoading } = useQuery({
 	  queryKey: ['brands'],
 	  queryFn: async () => {
-	    const data = await databaseClients.clients["Brand"].get();
+	    const data = await databaseClients.Brand.get();
 	    return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 	  }
 	});
 
 	const { data: pendingInvites = [], isLoading: pendingInvitesLoading } = useQuery({
 	  queryKey: ['pendingInvites'],
-	  queryFn: () => databaseClients.clients["PendingUserInvite"].get()
+	  queryFn: () => databaseClients.PendingUserInvite.get()
 	});
 
 	const deletePendingInviteMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["PendingUserInvite"].delete(id),
+	mutationFn: (id) => databaseClients.PendingUserInvite.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
 	});
 
 	const createSiteMutation = useMutation({
-	mutationFn: (data) => databaseClients.clients["Site"].create(data),
+	mutationFn: (data) => databaseClients.Site.create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setNewSite({ name: '', code: '' });
@@ -163,7 +158,7 @@ export default function Configuration() {
 	});
 
 	const updateSiteMutation = useMutation({
-	mutationFn: ({ id, data }) => databaseClients.clients["Site"].update(id, data),
+	mutationFn: ({ id, data }) => databaseClients.Site.update(id, data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setEditingSite(null);
@@ -171,12 +166,12 @@ export default function Configuration() {
 	});
 
 	const deleteSiteMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["Site"].delete(id),
+	mutationFn: (id) => databaseClients.Site.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] })
 	});
 
 	const createAlertMutation = useMutation({
-	mutationFn: (data) => databaseClients.clients["Alert"].create(data),
+	mutationFn: (data) => databaseClients.Alert.create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['alerts'] });
 		setNewAlert({ name: '' });
@@ -184,12 +179,12 @@ export default function Configuration() {
 	});
 
 	const deleteAlertMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["Alert"].delete(id),
+	mutationFn: (id) => databaseClients.Alert.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] })
 	});
 
 	const createResolutionMutation = useMutation({
-	mutationFn: (data) => databaseClients.clients["AlertResolution"].create(data),
+	mutationFn: (data) => databaseClients.AlertResolution.create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['resolutions'] });
 		setNewResolution({ name: '' });
@@ -197,12 +192,12 @@ export default function Configuration() {
 	});
 
 	const deleteResolutionMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["AlertResolution"].delete(id),
+	mutationFn: (id) => databaseClients.AlertResolution.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['resolutions'] })
 	});
 
 	const createBrandMutation = useMutation({
-	mutationFn: (data) => databaseClients.clients["Brand"].create(data),
+	mutationFn: (data) => databaseClients.Brand.create(data),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['brands'] });
 		setNewBrand({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
@@ -210,12 +205,12 @@ export default function Configuration() {
 	});
 
 	const updateBrandMutation = useMutation({
-	mutationFn: ({ id, data }) => databaseClients.clients["Brand"].update(id, data),
+	mutationFn: ({ id, data }) => databaseClients.Brand.update(id, data),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
 	});
 
 	const deleteBrandMutation = useMutation({
-	mutationFn: (id) => databaseClients.clients["Brand"].delete(id),
+	mutationFn: (id) => databaseClients.Brand.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
 	});
 
@@ -277,32 +272,6 @@ export default function Configuration() {
 		alert(`Failed to reset password: ${error.message || "Unknown error"}`);
 	}
 	});
-
-	// const updateUserRoleMutation = useMutation({
-	// mutationFn: ({ id, role }) => {
-	// 	return databaseClients.clients["User"].update(id, { custom_role: role });
-	// },
-	// onSuccess: () => {
-	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
-	// },
-	// onError: (error) => {
-	// 	console.error('Failed to update user role:', error);
-	// 	alert('Failed to update user role. Please try again.');
-	// }
-	// });
-
-	// const updateUserMutation = useMutation({
-	// mutationFn: ({ id, data }) => databaseClients.clients["User"].update(id, data),
-	// onSuccess: () => {
-	// 	queryClient.invalidateQueries({ queryKey: ['users'] });
-	// 	setEditingUser(null);
-	// }
-	// });
-
-	// const deleteUserMutation = useMutation({
-	// mutationFn: (id) => databaseClients.clients["User"].delete(id),
-	// onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] })
-	// });
 
 	const handleUserInvite = async (e) => {
 	e.preventDefault();

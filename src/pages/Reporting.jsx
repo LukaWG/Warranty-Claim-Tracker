@@ -92,7 +92,7 @@ export default function Reporting() {
 
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => databaseClients.clients['WarrantyClaim'].get() // Fetch all claims for filtering and stats
+    queryFn: () => databaseClients.WarrantyClaim.get() // Fetch all claims for filtering and stats
   });
 
   // Apply filters

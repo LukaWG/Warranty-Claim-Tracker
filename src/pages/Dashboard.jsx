@@ -52,7 +52,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
@@ -84,24 +84,24 @@ export default function Dashboard() {
 
   const { data: allClaims = [], isLoading } = useQuery({
     queryKey: ['claims'],
-    queryFn: () => databaseClients.clients['WarrantyClaim'].query(), // Fetch all claims for filtering on frontend
+    queryFn: () => databaseClients.WarrantyClaim.query(), // Fetch all claims for filtering on frontend
     refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => databaseClients.clients['Brand'].query('name') // Fetch brands for stats and filters
+    queryFn: () => databaseClients.Brand.query('name') // Fetch brands for stats and filters
   });
 
   const { data: allSites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => databaseClients.clients['Site'].query('name') // Fetch sites for filters
+    queryFn: () => databaseClients.Site.query('name') // Fetch sites for filters
   });
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => databaseClients.clients['User'].query('email') // Fetch users for filters
+    queryFn: () => databaseClients.User.query('email') // Fetch users for filters
   });
 
   const adminBrands = (() => {
@@ -136,14 +136,11 @@ export default function Dashboard() {
 
   // Apply filters and role-based access
     const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
-      // Processor role: only see their own rejected/awaiting_review claims
+      // Processor role: see all claims from their branch
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (userRole === 'Processor') {
-        const isOwnClaim = claim.created_by === currentUser.email || claim.submitted_for === currentUser.email;
-        const isVisible = claim.status === 'rejected';
-        if (!isOwnClaim || !isVisible) {
-          return false;
-        }
+        const processorSite = currentUser?.default_site;
+        if (processorSite && claim.site !== processorSite) return false;
       }
 
       // Site Manager: see only rejected claims for their site (awaiting_review is hidden, like Processor)
@@ -159,7 +156,7 @@ export default function Dashboard() {
         if (claim.status === 'rejected') {
           return false;
         }
-        if (adminBrands && !adminBrands.includes(claim.brand)) {
+        if (adminBrands && adminBrands.length > 0 && !adminBrands.includes(claim.brand)) {
           return false;
         }
       }
@@ -173,6 +170,7 @@ export default function Dashboard() {
       const statusMatch = !filters.status?.length || filters.status.includes(claim.status);
       const alertMatch = !filters.alert?.length || filters.alert.includes(claim.alert);
       const resolutionMatch = !filters.resolution?.length || filters.resolution.includes(claim.alert_resolution);
+      const creditMatch = !filters.hasCredit || (claim.credit != null && claim.credit > 0);
 
       let dateMatch = true;
       if (filters.dateFrom || filters.dateTo) {
@@ -210,11 +208,11 @@ export default function Dashboard() {
       }
 
       const claimedMatch = showClaimed || !claim.claimed;
-      return wipNumMatch && repairNumMatch && siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && claimedMatch;
+      return wipNumMatch && repairNumMatch && siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && claimedMatch && creditMatch;
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
-    await databaseClients.clients['ClaimAudit'].create({
+    await databaseClients.ClaimAudit.create({
       claim_id: claimId,
       wip_number: wipNumber,
       field_changed: fieldChanged,
@@ -225,7 +223,7 @@ export default function Dashboard() {
   };
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => databaseClients.clients['WarrantyClaim'].update(id, data),
+    mutationFn: ({ id, data }) => databaseClients.WarrantyClaim.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['claims'] });
       queryClient.invalidateQueries({ queryKey: ['audits'] });
@@ -330,7 +328,7 @@ export default function Dashboard() {
     };
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => databaseClients.clients['WarrantyClaim'].delete(id),
+    mutationFn: (id) => databaseClients.WarrantyClaim.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['claims'] })
   });
 
@@ -341,7 +339,7 @@ export default function Dashboard() {
           };
 
     const handleResetFilters = () => {
-      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all' });
+      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
     };
 
   const handleBrandTileClick = (brandName) => {
@@ -424,7 +422,7 @@ export default function Dashboard() {
             return allClaims.filter(c => c.site === currentUser.default_site);
           }
           return allClaims;
-        })()} onRepairSearchChange={setRepairSearch} onWipSearchChange={setWipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
+        })()} onRepairSearchChange={setRepairSearch} repairSearch={repairSearch} onWipSearchChange={setWipSearch} wipSearch={wipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
 
           {/* Brand Stats Section */}
           {!['Processor', 'Site Manager'].includes(currentUser?.custom_role || currentUser?.role) && (

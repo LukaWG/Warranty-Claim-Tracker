@@ -25,7 +25,6 @@ const DEFAULT_COLUMNS = {
   approval_status: false,
   claimed_date: false,
   claimed_by: false,
-  submitted_by: true,
 };
 
 const COLUMN_LABELS = {
@@ -49,7 +48,6 @@ const COLUMN_LABELS = {
   approval_status: 'Approval Status',
   claimed_date: 'Claimed Date',
   claimed_by: 'Claimed By',
-  submitted_by: 'Submitted By',
 };
 
 export default function ColumnVisibilityPicker({ visibleColumns, onColumnsChange, userRole }) {

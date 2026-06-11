@@ -61,7 +61,7 @@ export default function ClaimForm() {
   }, [router]);
 
   const createMutation = useMutation({
-    mutationFn: (data) => databaseClients.clients['WarrantyClaim'].create(data)
+    mutationFn: (data) => databaseClients.WarrantyClaim.create(data)
   });
 
   const handleSubmit = async (formData) => {

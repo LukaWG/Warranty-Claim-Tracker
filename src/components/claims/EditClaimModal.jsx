@@ -520,195 +520,27 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               </Popover>
             </div>
 
-            {/* Credit Section - Collapsible */}
-            {/* <div className="border border-slate-200 rounded-lg overflow-hidden col-span-2">
-            <button
+          {/* Mark as Withdrawn */}
+          {formData.status !== 'withdrawn' && (
+            <Button
               type="button"
-              onClick={() => setCreditExpanded(!creditExpanded)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors text-sm font-medium text-slate-700"
-            >
-              {(() => {
-                const totalCredit = (parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0);
-                return <span>Credit Options {totalCredit > 0 && <span className="text-slate-500 font-normal">— £{totalCredit.toFixed(2)}</span>}</span>;
-              })()}
-              {creditExpanded ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
-            </button>
-
-            {creditExpanded && (
-              <div className="p-4 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-2">
-                    <Label>Parts Credit (£)</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                      <Input
-                        type="number" step="0.01" min="0"
-                        max={formData.original_parts > 0 ? formData.original_parts : undefined}
-                        value={formData.credit_parts}
-                        onChange={(e) => {
-                          const creditVal = Math.min(parseFloat(e.target.value) || 0, formData.original_parts);
-                          const newParts = Math.max(0, formData.original_parts - creditVal);
-                          const newTotal = updateTotal(newParts, formData.labour, formData.sub_con);
-                          setFormData({ ...formData, credit_parts: e.target.value, parts: newParts, total_claim_cost: newTotal });
-                        }}
-                        className="pl-7"
-                        disabled={!formData.reg_number?.trim()}
-                        title={!formData.reg_number?.trim() ? 'Enter a Reg Number before adding credit' : ''}
-                      />
-                    </div>
-                    {formData.original_parts > 0
-                      ? <p className="text-xs text-slate-400">of £{formData.original_parts.toFixed(2)}</p>
-                      : <p className="text-xs text-amber-500">Enter Parts cost above first</p>
-                    }
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Labour Credit (£)</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                      <Input
-                        type="number" step="0.01" min="0"
-                        max={formData.original_labour > 0 ? formData.original_labour : undefined}
-                        value={formData.credit_labour}
-                        onChange={(e) => {
-                          const creditLabour = e.target.value;
-                          const creditVal = Math.min(parseFloat(creditLabour) || 0, formData.original_labour);
-                          const newLabour = Math.max(0, formData.original_labour - creditVal);
-                          const newTotal = updateTotal(formData.parts, newLabour, formData.sub_con);
-                          const hourlyRate = selectedSite?.brand_hourly_rates?.[formData.brand] || 0;
-                          const calculatedHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : formData.actual_hours;
-                          setFormData({ ...formData, credit_labour: creditLabour, labour: newLabour, total_claim_cost: newTotal, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
-                        }}
-                        className="pl-7"
-                        disabled={!formData.reg_number?.trim()}
-                        title={!formData.reg_number?.trim() ? 'Enter a Reg Number before adding credit' : ''}
-                      />
-                    </div>
-                    {formData.original_labour > 0
-                      ? <p className="text-xs text-slate-400">of £{formData.original_labour.toFixed(2)}</p>
-                      : <p className="text-xs text-amber-500">Enter Labour cost above first</p>
-                    }
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Sub Con Credit (£)</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                      <Input
-                        type="number" step="0.01" min="0"
-                        max={formData.original_sub_con > 0 ? formData.original_sub_con : undefined}
-                        value={formData.credit_sub_con}
-                        onChange={(e) => {
-                          const creditSubCon = e.target.value;
-                          const creditVal = Math.min(parseFloat(creditSubCon) || 0, formData.original_sub_con);
-                          const newSubCon = Math.max(0, formData.original_sub_con - creditVal);
-                          const newTotal = updateTotal(formData.parts, formData.labour, newSubCon);
-                          setFormData({ ...formData, credit_sub_con: creditSubCon, sub_con: newSubCon, total_claim_cost: newTotal });
-                        }}
-                        className="pl-7"
-                        disabled={!formData.reg_number?.trim()}
-                        title={!formData.reg_number?.trim() ? 'Enter a Reg Number before adding credit' : ''}
-                      />
-                    </div>
-                    {formData.original_sub_con > 0
-                      ? <p className="text-xs text-slate-400">of £{formData.original_sub_con.toFixed(2)}</p>
-                      : <p className="text-xs text-amber-500">Enter Sub Con cost above first</p>
-                    }
-                  </div>
-                </div>
-                {(() => {
-                  const totalCredit = (parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0);
-                  if (totalCredit > 0) {
-                    return <p className="text-sm font-medium text-slate-600">Total Credit: £{totalCredit.toFixed(2)}</p>;
-                  }
-                  return null;
-                })()}
-
-                {((parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0)) >= 100 && (
-                  <div className="space-y-2">
-                    <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required when credit ≥ £100)</span></Label>
-                    <Textarea
-                      placeholder="Please provide justification for this credit amount..."
-                      value={formData.credit_note}
-                      onChange={(e) => setFormData({ ...formData, credit_note: e.target.value })}
-                      required className="resize-none" rows={3}
-                    />
-                  </div>
-                )}
-
-                {claim?.approval_note && (
-                  <div className="space-y-2">
-                    <Label>Approver Note</Label>
-                    <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
-                      <p className="text-sm text-slate-700">{claim.approval_note}</p>
-                    </div>
-                  </div>
-                )}
-
-                {(() => {
-                  const creditVal = (parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0);
-                  const originalCreditVal = parseFloat(claim?.credit) || 0;
-                  const creditChangedAfterApproval = formData.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= 100;
-                  if (creditChangedAfterApproval) {
-                    return (
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
-                        <span className="text-amber-500 text-sm">⚠</span>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-amber-700">Re-approval required</span>
-                          <span className="text-xs text-amber-600">Credit figure changed — pending re-approval</span>
-                        </div>
-                      </div>
-                    );
-                  }
-                  if (creditVal >= 100 && formData.approval_status !== 'approved') {
-                    return (
-                      <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
-                        <span className="text-amber-500 text-sm">⚠</span>
-                        <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-amber-700">Credit approval pending</span>
-                          <span className="text-xs text-amber-600">
-                            Credit ≥ £100
-                            {formData.approval_status === 'rejected' && ' · Rejected'}
-                            {formData.approval_status === 'pending_approval' && ' · Awaiting approval'}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
-              </div>
-            )}
-          </div> */}
-
-            {/* Alert & Resolution Section */}
-          {/* <div className="border border-slate-200 rounded-lg p-4 space-y-4 col-span-2">
-            <div className="flex items-center gap-2 mb-1">
-              <AlertCircle className="h-4 w-4 text-amber-500" />
-              <span className="text-sm font-medium text-slate-700">Alert & Resolution</span>
+              variant="outline"
+              onClick={() => {
+                if (window.confirm('Are you sure you want to mark this claim as withdrawn?')) {
+                  onSave({ ...claim, status: 'withdrawn' });
+                }
+              }}
+              className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700"
+              >
+                Mark as Withdrawn
+              </Button>
+          )}
+          {formData.status === 'withdrawn' && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-orange-50 border border-orange-200">
+              <span className="text-orange-600 text-sm">✗</span>
+              <span className="text-sm font-medium text-orange-700">Withdrawn</span>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2 col-span-2">
-                <Label>Alert</Label>
-                <Select
-                  value={formData.alert || "none"}
-                  onValueChange={(value) => setFormData({ ...formData, alert: value === "none" ? "" : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select alert..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">No Alert</SelectItem>
-                    {alerts.filter(a => a.name !== 'Info - Post Claim').map((alert) => (
-                      <SelectItem key={alert.id} value={alert.name}>{alert.name}</SelectItem>
-                    ))}
-                    {(formData.claimed || claim?.claimed) && (
-                      <SelectItem value="Info - Post Claim">Info - Post Claim</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div> */}
+          )}
 
           {/* Mark as Claimed */}
           <div className="col-span-2">
@@ -744,9 +576,17 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     const needsApproval = creditVal >= 100;
                     const creditChangedAfterApproval = updatedData.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= 100;
                     const effectiveApprovalStatus = creditChangedAfterApproval ? 'pending_approval' : (needsApproval ? (updatedData.approval_status || 'pending_approval') : null);
+                    
+                    let newStatus;
+                    if (formData.claimed || claim?.claimed) {
+                      newStatus = 'completed';
+                    } else {
+                      newStatus = rest.status;
+                    }
+                    
                     onSave({
                       ...rest,
-                      status: 'completed',
+                      status: newStatus,
                       claim_number: claimNumberParts.join('-'),
                       expected_hours: parseFloat(updatedData.expected_hours),
                       actual_hours: updatedData.actual_hours ? parseFloat(updatedData.actual_hours) : null,

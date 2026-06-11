@@ -90,16 +90,24 @@ const STATUS_OPTIONS = [
   { value: 'awaiting_review', label: 'Awaiting Review' },
   { value: 'completed', label: 'Claimed' },
   { value: 'rejected', label: 'Queried' },
+  { value: 'withdrawn', label: 'Withdrawn' },
+  { value: 'awaiting_approval', label: 'Awaiting Approval' },
+  { value: 'approved', label: 'Approved' },
+  { value: 'credit_rejected', label: 'Credit Rejected' },
+  { value: 'claimed_info_requested', label: 'Claimed - Info Requested' },
+  { value: 'claimed_info_received', label: 'Claimed - Info Received' },
 ];
 
-export default function DashboardFilters({ claims, filters, onFilterChange, allUsers = [], showClaimed, onShowClaimedChange, currentUser, allSites = [], onRepairSearchChange, onWipSearchChange }) {
+export default function DashboardFilters({ claims, filters, onFilterChange, allUsers = [], showClaimed, onShowClaimedChange, currentUser, allSites = [], allBrands = [], wipSearch, repairSearch, onRepairSearchChange, onWipSearchChange }) {
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdmin = userRole === 'Admin';
   const adminSite = currentUser?.default_site;
 
-  const sites = isAdmin && adminSite
+  const sitesShuffled = isAdmin && adminSite
     ? [adminSite]
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
+
+  const sites = [...sitesShuffled].sort((a, b) => (a ?? "").localeCompare((b ?? "")));
 
   const userSite = currentUser?.default_site ? allSites.find(s => s.name === currentUser.default_site) : null;
   const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
@@ -122,15 +130,18 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     return email;
   };
 
+  const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'];
+
   const handleClearFilters = () => {
-    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: [], alert: [], resolution: [], dateFrom: '', dateTo: '' });
+    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     onRepairSearchChange('');
     onWipSearchChange('');
   };
 
-  const hasActiveFilters = filters.wipNum || filters.repairNum || filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
-    filters.claimedBy?.length > 0 || filters.status?.length > 0 || filters.alert?.length > 0 ||
-    filters.resolution?.length > 0 || filters.dateFrom || filters.dateTo;
+  const isDefaultStatuses = filters.status?.length === DEFAULT_STATUSES.length && DEFAULT_STATUSES.every(s => filters.status.includes(s));
+  const hasActiveFilters = filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
+    filters.claimedBy?.length > 0 || !isDefaultStatuses || filters.alert?.length > 0 ||
+    filters.resolution?.length > 0 || filters.dateFrom || filters.dateTo || wipSearch || repairSearch || filters.hasCredit;
 
   return (
     <Card className="border-0 shadow-lg bg-white p-4 mb-6">
@@ -151,8 +162,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">WIP Number</Label>
           <Input
-            placeholder="Search WIP number"
-            value={filters.wipNum}
+            placeholder="Search WIP"
+            value={wipSearch || ''}
             onChange={(e) => onWipSearchChange(e.target.value)}
           />
         </div>
@@ -160,8 +171,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">Claim Number</Label>
           <Input
-            placeholder="Search claim number"
-            value={filters.repairNum}
+            placeholder="Search claim"
+            value={repairSearch || ''}
             onChange={(e) => onRepairSearchChange(e.target.value)}
           />
         </div>
@@ -170,7 +181,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect
             placeholder="All Sites"
-            options={sites.map(s => ({ value: s, label: s }))}
+            options={sites. map(s => ({ value: s, label: s }))}
             selected={filters.site || []}
             onChange={(val) => onFilterChange({ ...filters, site: val })}
           />
@@ -254,6 +265,22 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             onChange={(e) => onFilterChange({ ...filters, dateTo: e.target.value })}
             className="h-9"
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs text-slate-600">Credit</Label>
+          <button
+            type="button"
+            onClick={() => onFilterChange({ ...filters, hasCredit: !filters.hasCredit })}
+            className={cn(
+              "flex h-9 w-full items-center justify-center rounded-md border text-sm shadow-sm font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-ring",
+              filters.hasCredit
+                ? "bg-green-600 border-green-600 text-white hover:bg-green-700"
+                : "border-input bg-transaprent text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            )}
+          >
+            {filters.hasCredit ? "Has credit ✓" : "Has Credit"}
+          </button>
         </div>
 
         {/* <div className="space-y-2 flex flex-col justify-end">

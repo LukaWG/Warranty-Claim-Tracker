@@ -118,7 +118,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         });
       }
 
-      // Move to claimed_info_requested if claim is claimed_info_requested and user is a Processor
+      // Move to claimed_info_received if claim is claimed_info_requested and user is a Processor
       if (claim.status === 'claimed_info_requested' && (userRole === 'Processor' || userRole === 'Site Manager')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
         await databaseClients.ClaimAudit.create({
@@ -242,7 +242,11 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">No Alert</SelectItem>
-                        {alerts.filter(alert => alert.active !== false).map((alert) => (
+                        {alerts.filter(a => a.active !== false && (a.name !== 'Info - Post Claim' || claim?.status === 'completed')).sort((a, b) => {
+                          if (a.name === 'Info - Post Claim') return 1;
+                          if (b.name === 'Info - Post Claim') return -1;
+                          return a.name.localeCompare(b.name);
+                        }).map((alert) => (
                           <SelectItem key={alert.id} value={alert.name}>{alert.name}</SelectItem>
                         ))}
                       </SelectContent>

@@ -95,7 +95,10 @@
         "approved",
         "completed",
         "rejected",
-        "credit_rejected"
+        "credit_rejected",
+        "claimed_info_requested",
+        "claimed_info_received",
+        "withdrawn"
       ],
       "default": "in_progress",
       "description": "Current status of the warranty claim"

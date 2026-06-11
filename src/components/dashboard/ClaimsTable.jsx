@@ -22,6 +22,9 @@ const statusConfig = {
   awaiting_review: { label: "Awaiting Review", className: "bg-amber-50 border-amber-200 text-amber-700" },
   completed: { label: "Claimed", className: "bg-teal-50 border-teal-200", style: { color: '#56C4B7' } },
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
+  claimed_info_requested: { label: "Claimed - Info Requested", className: "bg-purple-50 border-purple-200 text-purple-700" },
+  claimed_info_received: { label: "Claimed - Info Received", className: "bg-orange-50 border-orange-200 text-orange-700" },
+  withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
 export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
@@ -244,7 +247,6 @@ const SortableHead = ({ colKey, children }) => {
                       {col('claimed_by') && <SortableHead colKey="claimed_by">Claimed By</SortableHead>}
                       {/* {col('alert') && <SortableHead colKey="alert">Alert</SortableHead>} */}
                       {/* {col('resolution') && <SortableHead colKey="resolution">Resolution</SortableHead>} */}
-                      {col('submitted_by') && <SortableHead colKey="submitted_by">Submitted By</SortableHead>}
                       <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
                       </TableRow>
                  </TableHeader>
@@ -434,18 +436,6 @@ const SortableHead = ({ colKey, children }) => {
                             {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                             </TableCell>
                             )}
-                            
-                            {col('submitted_by') && (
-                            <TableCell>
-                        <div className="flex items-center gap-2 text-slate-600">
-                          <User className="h-4 w-4 text-slate-400" />
-                          <div className="flex flex-col">
-                            <span className="text-sm">{getUserName(claim.submitted_for || claim.created_by)}</span>
-                            <span className="text-xs text-slate-400">{formatDate(claim.created_date)}</span>
-                          </div>
-                        </div>
-                      </TableCell>
-                      )}
                       <TableCell onClick={(e) => e.stopPropagation()}>
                          <div className="flex items-center gap-1">
                            {!isProcessor && !isSiteManager && (
@@ -573,7 +563,6 @@ const SortableHead = ({ colKey, children }) => {
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
                        {col('claimed_by') && !isProcessor && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
-                       {col('submitted_by') && <TableHead className="font-semibold text-slate-600">Submitted By</TableHead>}
                        <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
                      </TableRow>
                    </TableHeader>
@@ -782,17 +771,6 @@ const SortableHead = ({ colKey, children }) => {
                            {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                            </TableCell>
                            )}
-                           {col('submitted_by') && (
-                         <TableCell>
-                           <div className="flex items-center gap-2 text-slate-600">
-                             <User className="h-4 w-4 text-slate-400" />
-                             <div className="flex flex-col">
-                               <span className="text-sm">{getUserName(claim.submitted_for || claim.created_by)}</span>
-                               <span className="text-xs text-slate-400">{formatDate(claim.created_date)}</span>
-                             </div>
-                           </div>
-                         </TableCell>
-                         )}
                          <TableCell onClick={e => e.stopPropagation()}>
                             <div className="flex items-center gap-1">
                               {!isProcessor && !isSiteManager && (

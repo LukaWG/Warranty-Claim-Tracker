@@ -51,7 +51,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
       credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
       credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
       credit: creditVal || null,
-      credit_note: creditVal >= 100 ? creditNote : null,
+      credit_note: creditVal > 0 ? creditNote : null,
       approval_status: effectiveApprovalStatus,
       parts: newParts || null,
       labour: newLabour || null,
@@ -127,9 +127,9 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
             <p className="text-sm font-medium text-slate-600">Total Credit: £{totalCredit.toFixed(2)}</p>
           )}
 
-          {totalCredit >= 100 && (
+          {totalCredit > 0 && (
             <div className="space-y-2">
-              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required when credit ≥ £100)</span></Label>
+              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required for any credit)</span></Label>
               <Textarea
                 placeholder="Please provide justification for this credit amount..."
                 value={creditNote}
@@ -183,12 +183,14 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <span title={totalCredit > 0 && !creditNote.trim() ? "Credit note is required to save credit" : undefined}>
           <Button
             onClick={handleSave}
-            disabled={totalCredit >= 100 && !creditNote.trim()}
+            disabled={totalCredit > 0 && !creditNote.trim()}
           >
             Save Credit
           </Button>
+          </span>
         </DialogFooter>
       </DialogContent>
     </Dialog>

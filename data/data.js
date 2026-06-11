@@ -469,6 +469,17 @@ export let alertData = [
     "created_by_id": "69dcb7f71c8b4dbf14d4ffff",
     "created_by": "wsmith@hendy-group.com",
     "is_sample": false
+  },
+  {
+    "pid": 4,
+    "name": "Info - Post Claim",
+    "active": true,
+    "id": "69ddeb8b1c8b4dbf14d50000",
+    "created_date": "2026-04-14 07:23:51.913+00",
+    "updated_date": "2026-04-14 07:23:51.913+00",
+    "created_by_id": "69dcb7f71c8b4dbf14d4ffff",
+    "created_by": "lwilson-green@hendy-group.com",
+    "is_sample": false
   }
 ]
 ];
@@ -844,7 +855,7 @@ export let claimAuditData = [
     "created_date": "2026-05-06 11:42:29.117+00",
     "updated_date": "2026-05-06 11:42:29.117+00",
     "created_by_id": "69de371b5596465ed57bba72",
-    "created_by": "owilliams@hendy-group.com",
+    "created_by": "test2@example.com",
     "is_sample": false
   },
   {
@@ -3258,7 +3269,7 @@ export let warrantyClaimData = [
     "actual_hours": null,
     "alert": "Action",
     "submitted_for": null,
-    "credit": null,
+    "credit": 100,
     "brand": "Ford",
     "invoice_number": null,
     "expected_hours": 3.18,

@@ -67,7 +67,7 @@ export default function Approvals() {
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ['pendingApprovals'],
-    queryFn: () => databaseClients.clients['WarrantyClaim'].query('*', 'approval_status=pending_approval')
+    queryFn: () => databaseClients.WarrantyClaim.query('*', 'approval_status=pending_approval')
   });
   
   
@@ -87,19 +87,19 @@ export default function Approvals() {
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
-    queryFn: () => databaseClients.clients['User'].get()
+    queryFn: () => databaseClients.User.get()
   });
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {
       const claim = claims.find(c => c.id === id);
-      await databaseClients.clients['WarrantyClaim'].update(id, {
+      await databaseClients.WarrantyClaim.update(id, {
         approval_status: 'approved',
         reg_number: claim?.reg_number || 'UNKNOWN',
         approval_note: approvalNotes[id] || ''
       });
       if (claim) {
-        await databaseClients.clients['ClaimAudit'].create({
+        await databaseClients.ClaimAudit.create({
           claim_id: id,
           wip_number: claim.wip_number,
           field_changed: 'approval_status',
@@ -115,13 +115,13 @@ export default function Approvals() {
   const rejectMutation = useMutation({
     mutationFn: async (id) => {
       const claim = claims.find(c => c.id === id);
-      await databaseClients.clients['WarrantyClaim'].update(id, { 
+      await databaseClients.WarrantyClaim.update(id, { 
         approval_status: 'rejected',
         reg_number: claim?.reg_number || 'UNKNOWN',
         approval_note: approvalNotes[id] || ''
       });
       if (claim) {
-        await databaseClients.clients['ClaimAudit'].create({
+        await databaseClients.ClaimAudit.create({
           claim_id: id,
           wip_number: claim.wip_number,
           field_changed: 'approval_status',
