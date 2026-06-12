@@ -536,7 +536,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     
                     onSave({
                       ...rest,
-                      status: newStatus,
+                      status: 'completed',
                       claim_number: claimNumberParts.join('-'),
                       expected_hours: parseFloat(updatedData.expected_hours),
                       actual_hours: updatedData.actual_hours ? parseFloat(updatedData.actual_hours) : null,

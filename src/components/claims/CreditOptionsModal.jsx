@@ -30,6 +30,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
 
   const handleSave = () => {
+    const limitForApproval = 0;
     const creditVal = totalCredit;
     const newParts = Math.max(0, originalParts - (parseFloat(creditParts) || 0));
     const newLabour = Math.max(0, originalLabour - (parseFloat(creditLabour) || 0));
@@ -40,8 +41,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
 
     const originalCreditVal = parseFloat(claim?.credit) || 0;
-    const needsApproval = creditVal >= 100;
-    const creditChangedAfterApproval = claim?.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= 100;
+    const needsApproval = creditVal >= limitForApproval;
+    const creditChangedAfterApproval = claim?.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= limitForApproval;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
       : (needsApproval ? (claim?.approval_status || 'pending_approval') : null);
@@ -153,7 +154,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
           {(() => {
             const originalCreditVal = parseFloat(claim?.credit) || 0;
-            const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= 100;
+            const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= 0;
             if (creditChangedAfterApproval) {
               return (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
@@ -165,14 +166,14 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                 </div>
               );
             }
-            if (totalCredit >= 100 && claim?.approval_status !== 'approved') {
+            if (totalCredit >= 0 && claim?.approval_status !== 'approved') {
               return (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
                   <span className="text-amber-500 text-sm">⚠</span>
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-amber-700">Credit approval pending</span>
                     <span className="text-xs text-amber-600">
-                      Credit ≥ £100
+                      Credit ≥ £0
                       {claim?.approval_status === 'rejected' && ' · Rejected'}
                       {claim?.approval_status === 'pending_approval' && ' · Awaiting approval'}
                     </span>

@@ -52,7 +52,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received', 'withdrawn'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
@@ -167,7 +167,24 @@ export default function Dashboard() {
       const brandMatch = !filters.brand?.length || filters.brand.includes(claim.brand);
       const userMatch = !filters.user?.length || filters.user.includes(claim.created_by) || filters.user.includes(claim.submitted_for);
       const claimedByMatch = !filters.claimedBy?.length || filters.claimedBy.includes(claim.claimed_by);
-      const statusMatch = !filters.status?.length || filters.status.includes(claim.status);
+
+      // Map filter values to their corresponding status values
+      const getStatusMatches = (filterStatuses) => {
+        const statusMap = {
+          'awaiting_review': ['awaiting_review', 'claimed_info_received'],
+          'rejected': ['rejected', 'claimed_info_requested'],
+          'in_progress': ['in_progress'],
+          'awaiting_approval': ['awaiting_approval'],
+          'approved': ['approved'],
+          'completed': ['completed'],
+          'credit_rejected': ['credit_rejected'],
+          'withdrawn': ['withdrawn']
+        };
+        const matchingStatuses = filterStatuses.flatMap(fs => statusMap[fs] || [fs]);
+        return matchingStatuses.includes(claim.status);
+      };
+
+      const statusMatch = !filters.status?.length || getStatusMatches(filters.status);
       const alertMatch = !filters.alert?.length || filters.alert.includes(claim.alert);
       const resolutionMatch = !filters.resolution?.length || filters.resolution.includes(claim.alert_resolution);
       const creditMatch = !filters.hasCredit || (claim.credit != null && claim.credit > 0);
@@ -208,7 +225,7 @@ export default function Dashboard() {
       }
 
       const claimedMatch = showClaimed || !claim.claimed;
-      return wipNumMatch && repairNumMatch && siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && claimedMatch && creditMatch;
+      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch;
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
@@ -339,7 +356,7 @@ export default function Dashboard() {
           };
 
     const handleResetFilters = () => {
-      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received', 'withdrawn'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
+      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
     };
 
   const handleBrandTileClick = (brandName) => {

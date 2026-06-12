@@ -24,7 +24,7 @@ const statusConfig = {
   completed: { label: "Claimed", className: "bg-teal-50 border-teal-200", style: { color: '#56C4B7' } },
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
   claimed_info_requested: { label: "Queried", className: "bg-purple-50 border-purple-200 text-purple-700" },
-  claimed_info_received: { label: "Claimed - Info Received", className: "bg-orange-50 border-orange-200 text-orange-700" },
+  claimed_info_received: { label: "Info Received", className: "bg-orange-50 border-orange-200 text-orange-700" },
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
@@ -429,11 +429,13 @@ const SortableHead = ({ colKey, children }) => {
                           <Badge variant="outline" className={`text-xs border font-medium ${
                             claim.approval_status === 'approved' ? 'bg-green-50 border-green-200 text-green-700' :
                             claim.approval_status === 'rejected' ? 'bg-red-50 border-red-200 text-red-700' :
+                            claim.approval_status === 'credited' ? 'bg-teal-50 border-teal-200 text-teal-700' :
                             'bg-amber-50 border-amber-200 text-amber-700'
                           }`}>
                             {claim.approval_status === 'pending_approval' && 'Pending'}
                             {claim.approval_status === 'approved' && 'Approved'}
                             {claim.approval_status === 'rejected' && 'Rejected'}
+                            {claim.approval_status === 'credited' && 'Credited'}
                           </Badge>
                         ) : (
                           <span className="text-sm text-slate-400">—</span>
@@ -756,11 +758,13 @@ const SortableHead = ({ colKey, children }) => {
                                  <Badge variant="outline" className={`text-xs border font-medium ${
                                    claim.approval_status === 'approved' ? 'bg-green-50 border-green-200 text-green-700' :
                                    claim.approval_status === 'rejected' ? 'bg-red-50 border-red-200 text-red-700' :
+                                   claim.approval_status === 'credited' ? 'bg-teal-50 border-teal-200 text-teal-700' :
                                    'bg-amber-50 border-amber-200 text-amber-700'
                                  }`}>
                                  {claim.approval_status === 'pending_approval' && 'Pending'}
                                  {claim.approval_status === 'approved' && 'Approved'}
                                  {claim.approval_status === 'rejected' && 'Rejected'}
+                                 {claim.approval_status === 'credited' && 'Credited'}
                                  </Badge>
                                  ) : (
                                  <span className="text-sm text-slate-400">—</span>
