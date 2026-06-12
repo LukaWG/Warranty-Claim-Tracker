@@ -226,7 +226,6 @@ const SortableHead = ({ colKey, children }) => {
                 <TableHeader>
                    <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
                       {col('wip_number') && <SortableHead colKey="wip_number">WIP Number</SortableHead>}
-                      {col('reg_number') && <SortableHead colKey="reg_number">Reg No.</SortableHead>}
                       {col('invoice_number') && <SortableHead colKey="invoice_number">Invoice #</SortableHead>}
                       {col('claim_number') && <SortableHead colKey="claim_number">Claim #</SortableHead>}
                       {col('site') && <SortableHead colKey="site">Site</SortableHead>}
@@ -267,11 +266,6 @@ const SortableHead = ({ colKey, children }) => {
                             <span className={`text-slate-300 transition-transform duration-150 ${expandedRows.has(claim.id) ? 'rotate-90' : ''}`}>›</span>
                             {claim.wip_number}
                           </div>
-                        </TableCell>
-                      )}
-                      {col('reg_number') && (
-                        <TableCell className="text-slate-600">
-                          {claim.reg_number || "—"}
                         </TableCell>
                       )}
                       {col('invoice_number') && (
@@ -544,7 +538,6 @@ const SortableHead = ({ colKey, children }) => {
                    <TableHeader>
                      <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
                        {col('wip_number') && <TableHead className="font-semibold text-slate-600">WIP Number</TableHead>}
-                       {col('reg_number') && <TableHead className="font-semibold text-slate-600">Reg No.</TableHead>}
                        {col('invoice_number') && <TableHead className="font-semibold text-slate-600">Invoice #</TableHead>}
                        {col('claim_number') && <TableHead className="font-semibold text-slate-600">Claim #</TableHead>}
                        {col('site') && <TableHead className="font-semibold text-slate-600">Site</TableHead>}
@@ -582,11 +575,6 @@ const SortableHead = ({ colKey, children }) => {
                                <span className={`text-slate-300 transition-transform duration-150 ${expandedRowsFs.has(claim.id) ? 'rotate-90' : ''}`}>›</span>
                                {claim.wip_number}
                              </div>
-                           </TableCell>
-                         )}
-                         {col('reg_number') && (
-                           <TableCell className="text-slate-600">
-                             {claim.reg_number || "—"}
                            </TableCell>
                          )}
                          {col('invoice_number') && (

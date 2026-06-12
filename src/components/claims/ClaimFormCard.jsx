@@ -39,7 +39,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   });
   const [formData, setFormData] = useState({
     wip_number: '',
-    reg_number: '',
     expected_hours: '',
     last_clocking_date: null,
     scanned_date: new Date(),
@@ -91,7 +90,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       setSubmitted(false);
       setFormData({
         wip_number: '',
-        reg_number: '',
         expected_hours: '',
         last_clocking_date: null,
         scanned_date: new Date(),
@@ -163,20 +161,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     placeholder="Enter WIP number"
                     value={formData.wip_number}
                     onChange={(e) => setFormData({ ...formData, wip_number: e.target.value })}
-                    required
-                    className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="reg_number" className="text-sm font-medium text-slate-700">
-                    Vehicle Registration <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="reg_number"
-                    placeholder="e.g. AB12 CDE"
-                    value={formData.reg_number}
-                    onChange={(e) => setFormData({ ...formData, reg_number: e.target.value.toUpperCase() })}
                     required
                     className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
                   />

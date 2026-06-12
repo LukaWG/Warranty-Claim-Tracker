@@ -208,16 +208,6 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
         </div>
 
         <div className="space-y-2">
-          <Label className="text-xs text-slate-600">Claimed By</Label>
-          <MultiSelect
-            placeholder="All Users"
-            options={claimedByEmails.map(e => ({ value: e, label: getUserName(e) }))}
-            selected={filters.claimedBy || []}
-            onChange={(val) => onFilterChange({ ...filters, claimedBy: val })}
-          />
-        </div>
-
-        <div className="space-y-2">
           <Label className="text-xs text-slate-600">Status</Label>
           <MultiSelect
             placeholder="All Statuses"

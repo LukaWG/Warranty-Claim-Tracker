@@ -46,7 +46,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
   const [claimNumbers, setClaimNumbers] = useState(existingParts.length > 0 ? existingParts : ['']);
   const [formData, setFormData] = useState({
     wip_number: claim?.wip_number || '',
-    reg_number: claim?.reg_number || '',
     expected_hours: claim?.expected_hours || '',
     last_clocking_date: claim?.last_clocking_date ? new Date(claim.last_clocking_date) : null,
     scanned_date: claim?.scanned_date ? new Date(claim.scanned_date) : null,
@@ -151,16 +150,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               <Input
                 value={formData.wip_number}
                 onChange={(e) => setFormData({ ...formData, wip_number: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Reg Number *</Label>
-              <Input
-                value={formData.reg_number}
-                onChange={(e) => setFormData({ ...formData, reg_number: e.target.value.toUpperCase() })}
-                placeholder="e.g. AB12 CDE"
                 required
               />
             </div>
@@ -387,24 +376,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               />
             </div>
 
-            {/* <div className="space-y-2">
-              <Label>Credit (£)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                <Input
-                type="number"
-                step="0.01"
-                min="0"
-                value={formData.credit}
-                onChange={(e) => setFormData({ ...formData, credit: e.target.value })}
-                className="pl-7"
-                disabled={!formData.reg_number?.trim()}
-                title={!formData.reg_number?.trim() ? 'Enter a Reg Number before adding credit' : ''}
-                />
-              </div>
-            </div>
-
-            {(parseFloat(formData.credit) || 0) >= 100 && (
+            {/* {(parseFloat(formData.credit) || 0) >= 100 && (
               <div className="space-y-2 col-span-2">
                 <Label>
                   Credit Note <span className="text-red-500">*</span>
@@ -519,28 +491,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 </PopoverContent>
               </Popover>
             </div>
-
-          {/* Mark as Withdrawn */}
-          {formData.status !== 'withdrawn' && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                if (window.confirm('Are you sure you want to mark this claim as withdrawn?')) {
-                  onSave({ ...claim, status: 'withdrawn' });
-                }
-              }}
-              className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700"
-              >
-                Mark as Withdrawn
-              </Button>
-          )}
-          {formData.status === 'withdrawn' && (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-orange-50 border border-orange-200">
-              <span className="text-orange-600 text-sm">✗</span>
-              <span className="text-sm font-medium text-orange-700">Withdrawn</span>
-            </div>
-          )}
 
           {/* Mark as Claimed */}
           <div className="col-span-2">

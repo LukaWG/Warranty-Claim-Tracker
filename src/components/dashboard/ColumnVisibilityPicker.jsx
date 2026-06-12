@@ -6,7 +6,6 @@ import { Settings } from "lucide-react";
 
 const DEFAULT_COLUMNS = {
   wip_number: true,
-  reg_number: true,
   invoice_number: true,
   claim_number: true,
   site: true,
@@ -29,7 +28,6 @@ const DEFAULT_COLUMNS = {
 
 const COLUMN_LABELS = {
   wip_number: 'WIP Number',
-  reg_number: 'Reg No.',
   invoice_number: 'Invoice #',
   claim_number: 'Claim #',
   site: 'Site',

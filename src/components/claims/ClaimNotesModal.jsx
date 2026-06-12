@@ -21,6 +21,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const [alertEnabled, setAlertEnabled] = useState(false);
   const [attachedImage, setAttachedImage] = useState(null); // { file, previewUrl }
   const [isUploading, setIsUploading] = useState(false);
+  const [withdrawNote, setWithdrawNote] = useState('');
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
   // const { user } = useAuth();
@@ -49,6 +51,28 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminUser = ADMIN_ROLES.includes(userRole);
+  const isProcessor = userRole === 'Processor';
+
+  const handleWithdraw = async () => {
+    if (!withdrawNote.trim()) return;
+    setIsWithdrawing(true);
+    await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn' });
+    await databaseClients.entities.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${withdrawNote}` });
+    await databaseClients.entities.ClaimAudit.create({
+      claim_id: claim.id,
+      wip_number: claim.wip_number,
+      field_changed: 'status',
+      old_value: claim.status || '',
+      new_value: 'withdrawn',
+      change_type: 'status_changed'
+    });
+    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+    queryClient.invalidateQueries({ queryKey: ['claims'] });
+    setWithdrawNote('');
+    setIsWithdrawing(false);
+    if (onStatusUpdate) onStatusUpdate();
+    onClose();
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -298,6 +322,30 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
               </div>
             </form>
           </div>
+
+          {/* Withdraw Section - Processors only, not if already withdrawn */}
+          {isProcessor && claim?.status !== 'withdrawn' && (
+            <div className="border-b pb-6">
+              <Label className="text-sm font-medium mb-2 block text-orange-700">Mark as Withdrawn</Label>
+              <div className="space-y-3">
+                <Textarea
+                  placeholder="Mandatory: explain why this claim is being withdrawn..."
+                  value={withdrawNote}
+                  onChange={(e) => setWithdrawNote(e.target.value)}
+                  className="min-h-20 border-orange-200 focus:border-orange-400"
+                />
+                <Button
+                  type="button"
+                  disabled={!withdrawNote.trim() || isWithdrawing}
+                  onClick={handleWithdraw}
+                  className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 bg-transparent border"
+                  variant="outline"
+                >
+                  {isWithdrawing ? 'Withdrawing...' : 'Mark as Withdrawn'}
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Notes List */}
           <div>

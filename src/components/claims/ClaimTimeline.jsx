@@ -154,8 +154,8 @@ export default function ClaimTimeline({ claim, open, onClose }) {
           </div>
         ) : (
           <div className="pt-2">
-            {audits.map((audit, i) => (
-              <TimelineItem key={audit.id} audit={audit} isLast={i === audits.length - 1} />
+            {audits.filter(a => a.field_changed !== 'note_added').map((audit, i, arr) => (
+              <TimelineItem key={audit.id} audit={audit} isLast={i === arr.length - 1} />
             ))}
           </div>
         )}
