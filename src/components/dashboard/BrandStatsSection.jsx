@@ -48,25 +48,28 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
   const brandStats = brands
     .map(brand => {
-      const claimsForBrand = claims.filter(c => c.brand === brand.name && c.status !== 'completed');
+      const claimsForBrand = claims.filter(c => c.brand === brand.name && !['completed', 'claimed_info_requested', 'claimed_info_received', ].includes(c.status));
+      const claimsForBrandCount = allClaims.filter(c => c.brand === brand.name);
+      const claimsForBrandsAllStatuses = allClaims.filter(c => c.brand === brand.name);
       const totalExpectedHours = claimsForBrand.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
       return {
         brand,
-        count: claimsForBrand.length,
+        count: claimsForBrandCount.length,
         totalExpectedHours,
         colorCounts: getColorCounts(brand, claimsForBrand),
-        statusCounts: getStatusCounts(claimsForBrand),
+        statusCounts: getStatusCounts(claimsForBrandsAllStatuses),
         claims: claimsForBrand
       };
     })
     .sort((a, b) => b.count - a.count);
 
   // Calculate All Brands stats
-  const allBrandsClaims = claims.filter(c => c.status !== 'completed');
+  const allBrandsClaims = claims.filter(c => !['completed', 'claimed_info_received', 'claimed_info_requested'].includes(c.status));
+  const allBrandsClaimsCount = allClaims;
   const allBrandsTotalExpectedHours = allBrandsClaims.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
-  const allBrandsStatusCounts = getStatusCounts(allBrandsClaims);
+  const allBrandsStatusCounts = getStatusCounts(allClaims);
   const allBrandsColorCounts = brands.reduce((acc, brand) => {
-    const claimsForBrand = claims.filter(c => c.brand === brand.name && c.status !== 'completed');
+    const claimsForBrand = claims.filter(c => c.brand === brand.name && !['completed', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
     const counts = getColorCounts(brand, claimsForBrand);
     return {
       redCount: acc.redCount + counts.redCount,
@@ -149,14 +152,17 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   // Site breakdown when a brand is selected
   if (activeBrandFilter && activeBrandFilter !== 'all') {
     const activeBrandObj = brands.find(b => b.name === activeBrandFilter);
-    const brandClaims = claims.filter(c => c.brand === activeBrandFilter && c.status !== 'completed');
+    const brandClaims = claims.filter(c => c.brand === activeBrandFilter && !['completed', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
+    const brandClaimsCount = allClaims.filter(c => c.brand === activeBrandFilter);
     const sites = [...new Set(brandClaims.map(c => c.site).filter(Boolean))].sort();
 
     const siteStats = sites.map(site => {
       const siteClaims = brandClaims.filter(c => c.site === site);
+      const siteClaimsCount = brandClaimsCount.filter(c => c.site === site);
+      const siteClaimsAllStatuses = brandClaimsCount.filter(c => c.site === site);
       const siteTotalHours = siteClaims.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
       const colorCounts = activeBrandObj ? getColorCounts(activeBrandObj, siteClaims) : { redCount: 0, amberCount: 0, greenCount: 0 };
-      return { site, count: siteClaims.length, totalExpectedHours: siteTotalHours, colorCounts, statusCounts: getStatusCounts(siteClaims) };
+      return { site, count: siteClaimsCount.length, totalExpectedHours: siteTotalHours, colorCounts, statusCounts: getStatusCounts(siteClaimsAllStatuses) };
     });
 
     return (
@@ -208,7 +214,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
       >
         <TileContent
           title="All Brands"
-          count={allBrandsClaims.length}
+          count={allBrandsClaimsCount.length}
           totalExpectedHours={allBrandsTotalExpectedHours}
           statusCounts={allBrandsStatusCounts}
           colorCounts={allBrandsColorCounts}

@@ -52,7 +52,7 @@ export const getServerSideProps = async ({ req, res }) => {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received', 'withdrawn'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
@@ -339,7 +339,7 @@ export default function Dashboard() {
           };
 
     const handleResetFilters = () => {
-      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
+      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected', 'claimed_info_requested', 'claimed_info_received', 'withdrawn'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
     };
 
   const handleBrandTileClick = (brandName) => {

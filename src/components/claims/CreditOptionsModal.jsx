@@ -80,6 +80,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                   value={creditParts}
                   onChange={(e) => setCreditParts(e.target.value)}
                   className="pl-7"
+                  disabled={originalParts <= 0}
                 />
               </div>
               {originalParts > 0
@@ -97,6 +98,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                   value={creditLabour}
                   onChange={(e) => setCreditLabour(e.target.value)}
                   className="pl-7"
+                  disabled={originalLabour <= 0}
                 />
               </div>
               {originalLabour > 0
@@ -114,6 +116,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                   value={creditSubCon}
                   onChange={(e) => setCreditSubCon(e.target.value)}
                   className="pl-7"
+                  disabled={originalSubCon <= 0}
                 />
               </div>
               {originalSubCon > 0

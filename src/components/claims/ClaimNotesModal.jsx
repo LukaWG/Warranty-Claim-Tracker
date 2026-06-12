@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, User, Paperclip, X, ImageIcon } from 'lucide-react';
+import { MessageSquare, User, Paperclip, X, ChevronDown } from 'lucide-react';
 import { format } from 'date-fns';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -17,11 +17,11 @@ const ADMIN_ROLES = ['Owner', 'Admin', 'Service Manager', 'Admin Manager'];
 
 export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
   const [newNote, setNewNote] = useState('');
-  const [selectedAlert, setSelectedAlert] = useState('Information');
+  const [selectedAlert, setSelectedAlert] = useState('Queried');
   const [alertEnabled, setAlertEnabled] = useState(false);
   const [attachedImage, setAttachedImage] = useState(null); // { file, previewUrl }
   const [isUploading, setIsUploading] = useState(false);
-  const [withdrawNote, setWithdrawNote] = useState('');
+  const [showWithdraw, setShowWithdraw] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
@@ -54,10 +54,10 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const isProcessor = userRole === 'Processor';
 
   const handleWithdraw = async () => {
-    if (!withdrawNote.trim()) return;
+    if (!newNote.trim()) return;
     setIsWithdrawing(true);
     await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn' });
-    await databaseClients.entities.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${withdrawNote}` });
+    await databaseClients.entities.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}` });
     await databaseClients.entities.ClaimAudit.create({
       claim_id: claim.id,
       wip_number: claim.wip_number,
@@ -68,7 +68,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     });
     queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
     queryClient.invalidateQueries({ queryKey: ['claims'] });
-    setWithdrawNote('');
+    setNewNote('');
+    setShowWithdraw(false);
     setIsWithdrawing(false);
     if (onStatusUpdate) onStatusUpdate();
     onClose();
@@ -94,31 +95,51 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         content,
         ...(imageUrl ? { image_url: imageUrl } : {})
       });
-      debugger;
+      
+      // Fetch fresh claim data to avoid acting on stale status from props
+      const freshClaims = await databaseClients.WarrantyClaim.filter({id: claim.id });
+      const freshClaim = freshClaims?.[0] || claim;
+      const currentStatus = freshClaim.status || claim.status;
+      const currentAlert = freshClaim.alert || claim.alert;
+
       // Update alert on the claim if admin user selected one
       if (isAdminUser && alert != undefined) {
         const newAlert = alert === 'none' ? '' : alert;
-        if (newAlert !== (claim.alert || '')) {
+
+        // If alert is unchanged but still active, reset status back to rejected (Queried)
+        if (newAlert && newAlert === (currentAlert || '') && currentStatus !== 'rejected') {
+          await databaseClients.WarrantyClaim.update(claim.id, { status: 'rejected' });
+          await databaseClients.ClaimAudit.create({
+            claim_id: claim.id,
+            wip_number: claim.wip_number,
+            field_changed: 'status',
+            old_value: currentStatus || '',
+            new_value: 'rejected',
+            change_type: 'status_changed'
+          });
+        }
+
+        if (newAlert !== (currentAlert || '')) {
           // Apply same status logic as the edit/alert change flow
           const newStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested' : 
-            (claim.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
+            (freshClaim.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
 
           await databaseClients.WarrantyClaim.update(claim.id, { alert: newAlert, status: newStatus });
           await databaseClients.ClaimAudit.create({
             claim_id: claim.id,
             wip_number: claim.wip_number,
             field_changed: 'alert',
-            old_value: claim.alert || '',
+            old_value: currentAlert || '',
             new_value: newAlert,
             change_type: 'updated'
           });
 
-          if (claim.status !== newStatus) {
+          if (currentStatus !== newStatus) {
             await databaseClients.ClaimAudit.create({
               claim_id: claim.id,
               wip_number: claim.wip_number,
               field_changed: 'status',
-              old_value: claim.status,
+              old_value: currentStatus,
               new_value: newStatus,
               change_type: 'status_changed'
             });
@@ -130,7 +151,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
       // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (claim.status === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+      if (currentStatus === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'awaiting_review' });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -143,7 +164,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       }
 
       // Move to claimed_info_received if claim is claimed_info_requested and user is a Processor
-      if (claim.status === 'claimed_info_requested' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+      if (currentStatus === 'claimed_info_requested' && (userRole === 'Processor' || userRole === 'Site Manager')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -212,19 +233,36 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )}
           
-          {/* Add Note Section */}
+          {/* Add Note/Withdraw Section */}
           <div className="border-b pb-6">
-            <Label className="text-sm font-medium mb-2 block">Add Note</Label>
-            <form onSubmit={handleAddNote} className="space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <Label className="text-sm font-medium block">Add Note</Label>
+
+              {isProcessor && claim?.status !== 'withdrawn' && (
+                <button
+                  type="button"
+                  onClick={() => setShowWithdraw(!showWithdraw)}
+                  className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
+                >
+                  Withdraw <ChevronDown className={`h-3 w-3 transition-transform ${showWithdraw ? 'rotate-180' : ''}`} />
+                </button>
+              )}
+            </div>
+
+              {showWithdraw && (
+                <p className="text-xs text-slate-400 mb-3 pb-3 border-b">Withdraw explanation (required)</p>
+              )}
+
+            <form onSubmit={showWithdraw ? (e) => { e.preventDefault(); handleWithdraw(); } : handleAddNote} className="space-y-3">
               <Textarea
-                placeholder="Enter your note..."
+                placeholder={showWithdraw ? "Explain why this claim is being withdrawn..." : "Enter your note..."}
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
                 className="min-h-24"
               />
 
               {/* Image attachment preview */}
-              {attachedImage && (
+              {attachedImage && !showWithdraw && (
                 <div className="relative inline-block">
                   <img
                     src={attachedImage.previewUrl}
@@ -241,7 +279,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                 </div>
               )}
 
-              {isAdminUser && (
+              {!showWithdraw && isAdminUser && !claim?.claimed && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Checkbox
@@ -262,11 +300,11 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                       onValueChange={(value) => setSelectedAlert(value)}
                     >
                       <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="No Alert" />
+                        <SelectValue placeholder="Resolved" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">No Alert</SelectItem>
-                        {alerts.filter(a => a.active !== false && (a.name !== 'Info - Post Claim' || claim?.status === 'completed')).sort((a, b) => {
+                        <SelectItem value="none">Resolved</SelectItem>
+                        {alerts.filter(a => a.active !== false && a.name !== 'Action' && a.name !== 'Credit' && (a.name !== 'Info - Post Claim' || claim?.status === 'completed')).sort((a, b) => {
                           if (a.name === 'Info - Post Claim') return 1;
                           if (b.name === 'Info - Post Claim') return -1;
                           return a.name.localeCompare(b.name);
@@ -281,23 +319,27 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
               <div className="flex items-center justify-between">
                 <div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-slate-500"
-                  >
-                    <Paperclip className="h-4 w-4 mr-1" />
-                    Attach Screenshot
-                  </Button>
+                  {!showWithdraw && (
+                    <>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="text-slate-500"
+                      >
+                        <Paperclip className="h-4 w-4 mr-1" />
+                        Attach Screenshot
+                      </Button>
+                    </>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -305,6 +347,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                     variant="outline"
                     onClick={() => {
                       setNewNote('');
+                      setShowWithdraw(false);
                       removeAttachment();
                       onClose();
                     }}
@@ -313,39 +356,19 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                   </Button>
                   <Button
                     type="submit"
-                    disabled={(!newNote.trim() && !attachedImage) || addNoteMutation.isPending || isUploading}
-                    className="bg-blue-600 hover:bg-blue-700"
+                    disabled={!newNote.trim() || (showWithdraw ? isWithdrawing : (addNoteMutation.isPending || isUploading))}
+                    className={showWithdraw ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"}
                   >
-                    {isUploading ? 'Uploading...' : addNoteMutation.isPending ? 'Adding...' : 'Add Note'}
+                    {showWithdraw ? (
+                      isWithdrawing ? "Withdrawing..." : "Confirm Withdrawal"
+                    ) : (
+                      isUploading ? "Uploading..." : addNoteMutation.isPending ? "Adding..." : "Add Note"
+                    )}
                   </Button>
                 </div>
               </div>
             </form>
           </div>
-
-          {/* Withdraw Section - Processors only, not if already withdrawn */}
-          {isProcessor && claim?.status !== 'withdrawn' && (
-            <div className="border-b pb-6">
-              <Label className="text-sm font-medium mb-2 block text-orange-700">Mark as Withdrawn</Label>
-              <div className="space-y-3">
-                <Textarea
-                  placeholder="Mandatory: explain why this claim is being withdrawn..."
-                  value={withdrawNote}
-                  onChange={(e) => setWithdrawNote(e.target.value)}
-                  className="min-h-20 border-orange-200 focus:border-orange-400"
-                />
-                <Button
-                  type="button"
-                  disabled={!withdrawNote.trim() || isWithdrawing}
-                  onClick={handleWithdraw}
-                  className="w-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 bg-transparent border"
-                  variant="outline"
-                >
-                  {isWithdrawing ? 'Withdrawing...' : 'Mark as Withdrawn'}
-                </Button>
-              </div>
-            </div>
-          )}
 
           {/* Notes List */}
           <div>

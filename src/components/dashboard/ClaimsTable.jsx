@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { Clock, FileText, AlertCircle, MapPin, User, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
@@ -22,7 +23,7 @@ const statusConfig = {
   awaiting_review: { label: "Awaiting Review", className: "bg-amber-50 border-amber-200 text-amber-700" },
   completed: { label: "Claimed", className: "bg-teal-50 border-teal-200", style: { color: '#56C4B7' } },
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
-  claimed_info_requested: { label: "Claimed - Info Requested", className: "bg-purple-50 border-purple-200 text-purple-700" },
+  claimed_info_requested: { label: "Queried", className: "bg-purple-50 border-purple-200 text-purple-700" },
   claimed_info_received: { label: "Claimed - Info Received", className: "bg-orange-50 border-orange-200 text-orange-700" },
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
@@ -120,7 +121,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const isProcessor = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';
   const isSiteManager = currentUser?.custom_role === 'Site Manager' || currentUser?.role === 'Site Manager';
-  const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner';
+  const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner' || currentUser?.custom_role === 'Admin Manager' || currentUser?.role === 'Admin Manager';
 
 const SortableHead = ({ colKey, children }) => {
     const active = sortConfig.key === colKey;
@@ -240,6 +241,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('last_clocking_date') && <SortableHead colKey="last_clocking_date">Last Clocking</SortableHead>}
                       {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
                       {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
+                      <TableHead classMame="font-semibold text-slate-600 w-10"></TableHead>
                       {col('status') && <SortableHead colKey="status">Status</SortableHead>}
                       {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
@@ -321,7 +323,20 @@ const SortableHead = ({ colKey, children }) => {
                       )}
                       {col('credit') && (
                         <TableCell className="text-slate-600">
-                          {claim.credit ? `£${claim.credit.toFixed(2)}` : "—"}
+                          {claim.credit ? (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="underline decoration-dotted cursor-help">£{claim.credit.toFixed(2)}</span>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs space-y-1">
+                                  {claim.credit_parts > 0 && <div>Parts: £{claim.credit_parts.toFixed(2)}</div>}
+                                  {claim.credit_labour > 0 && <div>Labour: £{claim.credit_labour.toFixed(2)}</div>}
+                                  {claim.credit_sub_con > 0 && <div>Sub Con: £{claim.credit_sub_con.toFixed(2)}</div>}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          ) : "-"}
                         </TableCell>
                       )}
                       {col('total_claim_cost') && (
@@ -390,6 +405,12 @@ const SortableHead = ({ colKey, children }) => {
                         })() : "—"}
                         </TableCell>
                         )}
+                        <TableCell>
+                          <div
+                            className={`h-3 w-3 rounded-full ${claim.claimed ? 'bg-green-500' : 'bg-red-500'}`}
+                            title={claim.claimed ? 'Claimed' : 'Not yet claimed'}
+                          />
+                        </TableCell>
                         {col('status') && (
                         <TableCell>
                          <Badge 
@@ -432,7 +453,7 @@ const SortableHead = ({ colKey, children }) => {
                             )}
                       <TableCell onClick={(e) => e.stopPropagation()}>
                          <div className="flex items-center gap-1">
-                           {!isProcessor && !isSiteManager && (
+                           {!isProcessor && !isSiteManager && !claim.claimed && (
                              <Button
                                variant="ghost"
                                size="icon"
@@ -443,7 +464,7 @@ const SortableHead = ({ colKey, children }) => {
                                <Pencil className="h-4 w-4" />
                              </Button>
                            )}
-                           {!isProcessor && !isSiteManager && (
+                           {!isProcessor && !isSiteManager && !claim.claimed && (
                             <Button
                               variant="ghost"
                               size="icon"
@@ -454,6 +475,7 @@ const SortableHead = ({ colKey, children }) => {
                               <CreditCard className="h-4 w-4" />
                             </Button>
                            )}
+                           {!claim.claimed && (
                            <Button
                              variant="ghost"
                              size="icon"
@@ -463,6 +485,7 @@ const SortableHead = ({ colKey, children }) => {
                            >
                              <MessageSquare className="h-4 w-4" />
                            </Button>
+                           )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -552,6 +575,7 @@ const SortableHead = ({ colKey, children }) => {
                        {col('last_clocking_date') && <TableHead className="font-semibold text-slate-600">Last Clocking</TableHead>}
                        {col('scanned_date') && <TableHead className="font-semibold text-slate-600">Scanned Date</TableHead>}
                        {col('manufacturer_deadline') && <TableHead className="font-semibold text-slate-600">Mfr Deadline</TableHead>}
+                       <TableHead className="font-semibold text-slate-600 w-10"></TableHead>
                        {col('status') && <TableHead className="font-semibold text-slate-600">Status</TableHead>}
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
@@ -630,7 +654,20 @@ const SortableHead = ({ colKey, children }) => {
                          )}
                          {col('credit') && (
                            <TableCell className="text-slate-600">
-                             {claim.credit ? `£${claim.credit.toFixed(2)}` : "—"}
+                          {claim.credit ? (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="underline decoration-dotted cursor-help">£{claim.credit.toFixed(2)}</span>
+                                </TooltipTrigger>
+                                <TooltipContent className="text-xs space-y-1">
+                                  {claim.credit_parts > 0 && <div>Parts: £{claim.credit_parts.toFixed(2)}</div>}
+                                  {claim.credit_labour > 0 && <div>Labour: £{claim.credit_labour.toFixed(2)}</div>}
+                                  {claim.credit_sub_con > 0 && <div>Sub Con: £{claim.credit_sub_con.toFixed(2)}</div>}
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          ) : "-"}
                            </TableCell>
                          )}
                          {col('total_claim_cost') && (
@@ -696,6 +733,12 @@ const SortableHead = ({ colKey, children }) => {
                            })() : "—"}
                          </TableCell>
                          )}
+                        <TableCell>
+                          <div
+                            className={`h-3 w-3 rounded-full ${claim.claimed ? 'bg-green-500' : 'bg-red-500'}`}
+                            title={claim.claimed ? 'Claimed' : 'Not yet claimed'}
+                          />
+                        </TableCell>
                          {col('status') && (
                          <TableCell>
                            <Badge 
@@ -761,7 +804,7 @@ const SortableHead = ({ colKey, children }) => {
                            )}
                          <TableCell onClick={e => e.stopPropagation()}>
                             <div className="flex items-center gap-1">
-                              {!isProcessor && !isSiteManager && (
+                              {!isProcessor && !isSiteManager && !claim.claimed && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -772,7 +815,7 @@ const SortableHead = ({ colKey, children }) => {
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               )}
-                              {!isProcessor && !isSiteManager && (
+                              {!isProcessor && !isSiteManager && !claim.claimed && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -783,6 +826,7 @@ const SortableHead = ({ colKey, children }) => {
                                   <CreditCard className="h-4 w-4" />
                                 </Button>
                               )}
+                              {!claim.claimed && (
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -792,6 +836,7 @@ const SortableHead = ({ colKey, children }) => {
                                 >
                                   <MessageSquare className="h-4 w-4" />
                                 </Button>
+                              )}
                                 <Button
                                   variant="ghost"
                                   size="icon"
