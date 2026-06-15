@@ -43,7 +43,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
     const originalCreditVal = parseFloat(claim?.credit) || 0;
     const needsApproval = creditVal >= CREDIT_APPROVAL_LIMIT;
-    const creditChangedAfterApproval = claim?.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
+    const creditChangedAfterApproval = (claim?.approval_status === 'approved' || claim?.approval_status === 'rejected') && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
       : (needsApproval ? (claim?.approval_status || 'pending_approval') : null);
@@ -174,7 +174,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                   <div className="flex flex-col">
                     <span className="text-xs font-semibold text-amber-700">Credit approval pending</span>
                     <span className="text-xs text-amber-600">
-                      Credit ≥ £0
+                      Credit ≥ £{CREDIT_APPROVAL_LIMIT}
                       {claim?.approval_status === 'rejected' && ' · Rejected'}
                       {claim?.approval_status === 'pending_approval' && ' · Awaiting approval'}
                     </span>
