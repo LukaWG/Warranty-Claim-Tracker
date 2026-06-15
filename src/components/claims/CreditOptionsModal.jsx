@@ -46,7 +46,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     const creditChangedAfterApproval = (claim?.approval_status === 'approved' || claim?.approval_status === 'rejected') && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
-      : (needsApproval ? (claim?.approval_status || 'pending_approval') : null);
+      : (needsApproval ? (claim?.approval_status || 'pending_approval') : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) ? 'credited' : null);
 
     onSave({
       credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
