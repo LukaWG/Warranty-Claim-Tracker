@@ -328,7 +328,7 @@ export default function Dashboard() {
           changes.push({ field: key, oldValue: claim[key], newValue: data[key] });
         }
       });
-
+      debugger;
       for (const change of changes) {
           await createAuditLog(
             claim.id, 
