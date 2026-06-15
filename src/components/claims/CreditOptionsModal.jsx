@@ -46,7 +46,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     const creditChangedAfterApproval = (claim?.approval_status === 'approved' || claim?.approval_status === 'rejected') && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
-      : (needsApproval ? (claim?.approval_status || 'pending_approval') : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) ? 'credited' : null);
+      : (needsApproval ? (claim?.approval_status || 'pending_approval') : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) ? 'approved' : null);
 
     onSave({
       credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
@@ -134,7 +134,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
           {totalCredit > 0 && (
             <div className="space-y-2">
-              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required for any credit)</span></Label>
+              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required for credit {">="} {CREDIT_APPROVAL_LIMIT})</span></Label>
               <Textarea
                 placeholder="Please provide justification for this credit amount..."
                 value={creditNote}
@@ -155,7 +155,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
           {(() => {
             const originalCreditVal = parseFloat(claim?.credit) || 0;
-            const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= 0;
+            const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= CREDIT_APPROVAL_LIMIT;
             if (creditChangedAfterApproval) {
               return (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
@@ -167,7 +167,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                 </div>
               );
             }
-            if (totalCredit >= 0 && claim?.approval_status !== 'approved') {
+            if (totalCredit >= CREDIT_APPROVAL_LIMIT && claim?.approval_status !== 'approved') {
               return (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
                   <span className="text-amber-500 text-sm">⚠</span>
