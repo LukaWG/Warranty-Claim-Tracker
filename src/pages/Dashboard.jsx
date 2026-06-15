@@ -324,7 +324,7 @@ export default function Dashboard() {
       const changes = [];
 
       Object.keys(data).forEach(key => {
-        if (data[key] != claim[key]) {
+        if (data[key] != claim[key] && (!(!claim[key] && !data[key]))) {
           changes.push({ field: key, oldValue: claim[key], newValue: data[key] });
         }
       });
