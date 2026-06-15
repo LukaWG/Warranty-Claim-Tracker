@@ -188,7 +188,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          {claim?.approval_status === 'approved' || (claim.creditVal > 0 && claim.creditVal < CREDIT_APPROVAL_LIMIT) && (
+          {(claim?.approval_status === 'approved' || (claim.creditVal > 0 && claim.creditVal < CREDIT_APPROVAL_LIMIT)) && (
             <Button
               variant="outline"
               className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
