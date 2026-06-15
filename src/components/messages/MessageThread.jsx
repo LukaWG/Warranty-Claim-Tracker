@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { Reply, MessageCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
+import { databaseClients } from '@/api/databaseClient';
 
 function MessageBubble({ message, isOwn }) {
   return (
@@ -28,7 +28,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const handleSendReply = async () => {
     if (!replyBody.trim()) return;
     setSending(true);
-    await base44.entities.Message.create({
+    await databaseClients.Message.create({
       claim_id: rootMessage.claim_id,
       wip_number: rootMessage.wip_number,
       target_site: rootMessage.target_site,

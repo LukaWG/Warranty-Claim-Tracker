@@ -48,15 +48,18 @@ import ClaimForm from './pages/ClaimForm';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import Reporting from './pages/Reporting';
+import Messages from './pages/Messages';
 import Configuration from './pages/Configuration';
 import __Layout from './Layout.jsx';
 
+console.log('__Layout:', __Layout);
 
 export const PAGES = {
     "ClaimForm": ClaimForm,
     "Dashboard": Dashboard,
     "Home": Home,
     "Reporting": Reporting,
+    "Messages": Messages,
     "Configuration": Configuration,
 }
 

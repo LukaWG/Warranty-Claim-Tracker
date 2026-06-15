@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { PenSquare, MessageCircle, ChevronRight, Eye } from 'lucide-react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ComposeMessageModal from '@/components/messages/ComposeMessageModal';
 import MessageThread from '@/components/messages/MessageThread';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function Messages() {
   const queryClient = useQueryClient();
@@ -19,7 +19,7 @@ export default function Messages() {
 
   const { data: rawUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me()
+    queryFn: () => databaseClients.User.me()
   });
   const currentUser = rawUser && roleOverride ? { ...rawUser, custom_role: roleOverride } : rawUser;
   const userRole = currentUser?.custom_role || currentUser?.role;
@@ -28,19 +28,19 @@ export default function Messages() {
 
   const { data: allMessages = [], isLoading } = useQuery({
     queryKey: ['messages'],
-    queryFn: () => base44.entities.Message.list('-created_date', 500),
+    queryFn: () => databaseClients.Message.get(),
     refetchInterval: 30000
   });
 
   const { data: readReceipts = [] } = useQuery({
     queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => base44.entities.MessageRead.filter({ reader_email: currentUser.email }),
+    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
     enabled: !!currentUser?.email,
     refetchInterval: 30000
   });
 
   const markReadMutation = useMutation({
-    mutationFn: ({ messageId }) => base44.entities.MessageRead.create({ message_id: messageId, reader_email: currentUser.email }),
+    mutationFn: ({ messageId }) => databaseClients.MessageRead.create({ message_id: messageId, reader_email: currentUser.email }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] })
   });
 

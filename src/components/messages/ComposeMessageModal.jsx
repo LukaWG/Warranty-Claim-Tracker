@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function ComposeMessageModal({ open, onClose, onSent, currentUser, prefilledClaim = null }) {
   const [subject, setSubject] = useState('');
@@ -16,7 +16,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
 
   const { data: claims = [] } = useQuery({
     queryKey: ['claims-for-messages'],
-    queryFn: () => base44.entities.WarrantyClaim.list('-created_date', 200),
+    queryFn: () => databaseClients.WarrantyClaim.get(),
     enabled: open
   });
 
@@ -25,7 +25,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
   const handleSend = async () => {
     if (!selectedClaim || !body.trim()) return;
     setSending(true);
-    await base44.entities.Message.create({
+    await databaseClients.Message.create({
       claim_id: selectedClaim.id,
       wip_number: selectedClaim.wip_number,
       target_site: selectedClaim.site,
