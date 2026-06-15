@@ -324,20 +324,20 @@ export default function Dashboard() {
       const changes = [];
 
       Object.keys(data).forEach(key => {
-        if (data[key] !== claim[key]) {
+        if (data[key] != claim[key]) {
           changes.push({ field: key, oldValue: claim[key], newValue: data[key] });
         }
       });
 
       for (const change of changes) {
-        await createAuditLog(
-          claim.id, 
-          claim.wip_number, 
-          change.field, 
-          change.oldValue, 
-          change.newValue, 
-          'updated'
-        );
+          await createAuditLog(
+            claim.id, 
+            claim.wip_number, 
+            change.field, 
+            change.oldValue, 
+            change.newValue, 
+            'updated'
+          );
       }
 
       updateMutation.mutate({ id: claim.id, data });
