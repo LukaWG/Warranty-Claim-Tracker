@@ -82,8 +82,8 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   }, { redCount: 0, amberCount: 0, greenCount: 0 });
 
   const otherStatusLabels = [
-    { key: 'in_progress', label: 'In Progress'},
-    { key: 'awaiting_review', label: 'Awaiting Review'},
+    // { key: 'in_progress', label: 'In Progress'},
+    // { key: 'awaiting_review', label: 'Awaiting Review'},
     { key: 'claimed_info_received', label: 'Info Received'},
     { key: 'awaiting_approval', label: 'Awaiting Approval' },
     { key: 'approved', label: 'Approved' },

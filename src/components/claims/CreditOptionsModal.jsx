@@ -13,6 +13,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     queryFn: () => databaseClients.Site.list('name')
   });
 
+  const CREDIT_APPROVAL_LIMIT = 100;
+
   const selectedSite = sites.find(s => s.name === claim?.site);
 
   const originalParts = (parseFloat(claim?.parts) || 0) + (parseFloat(claim?.credit_parts) || 0);
@@ -30,7 +32,6 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
 
   const handleSave = () => {
-    const limitForApproval = 0;
     const creditVal = totalCredit;
     const newParts = Math.max(0, originalParts - (parseFloat(creditParts) || 0));
     const newLabour = Math.max(0, originalLabour - (parseFloat(creditLabour) || 0));
@@ -41,8 +42,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
     const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
 
     const originalCreditVal = parseFloat(claim?.credit) || 0;
-    const needsApproval = creditVal >= limitForApproval;
-    const creditChangedAfterApproval = claim?.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= limitForApproval;
+    const needsApproval = creditVal >= CREDIT_APPROVAL_LIMIT;
+    const creditChangedAfterApproval = claim?.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
       : (needsApproval ? (claim?.approval_status || 'pending_approval') : null);
@@ -187,10 +188,10 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          <span title={totalCredit > 0 && !creditNote.trim() ? "Credit note is required to save credit" : undefined}>
+          <span title={totalCredit > CREDIT_APPROVAL_LIMIT && !creditNote.trim() ? "Credit note is required to save credit" : undefined}>
           <Button
             onClick={handleSave}
-            disabled={totalCredit > 0 && !creditNote.trim()}
+            disabled={totalCredit > CREDIT_APPROVAL_LIMIT && !creditNote.trim()}
           >
             Save Credit
           </Button>
