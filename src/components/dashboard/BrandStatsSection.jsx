@@ -36,7 +36,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   
   const getStatusCounts = (claimsForBrand) => ({
     in_progress: claimsForBrand.filter(c => c.status === 'in_progress').length,
-    awaiting_review: claimsForBrand.filter(c => c.status === 'awaiting_review').length + claimsForBrand.filter(c => c.status === 'claimed_info_received').length,
+    awaiting_review: claimsForBrand.filter(c => c.status === 'awaiting_review').length,
     total_active: claimsForBrand.filter(c => c.status === 'in_progress').length + claimsForBrand.filter(c => c.status === 'awaiting_review').length,
     awaiting_approval: claimsForBrand.filter(c => c.status === 'awaiting_approval').length,
     approved: claimsForBrand.filter(c => c.status === 'approved').length,
@@ -82,8 +82,8 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   }, { redCount: 0, amberCount: 0, greenCount: 0 });
 
   const otherStatusLabels = [
-    // { key: 'in_progress', label: 'In Progress'},
-    // { key: 'awaiting_review', label: 'Awaiting Review'},
+    { key: 'in_progress', label: 'In Progress'},
+    { key: 'awaiting_review', label: 'Awaiting Review'},
     { key: 'claimed_info_received', label: 'Info Received'},
     { key: 'awaiting_approval', label: 'Awaiting Approval' },
     { key: 'approved', label: 'Approved' },
