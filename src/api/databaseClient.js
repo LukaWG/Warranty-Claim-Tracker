@@ -170,7 +170,7 @@ class DatabaseClients {
   constructor() {
     const fileNames = [
       'Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote',
-      'PendingUserInvite', 'User', 'WarrantyClaim', 'Site',
+      'PendingUserInvite', 'User', 'WarrantyClaim', 'Site', 'Message', 'MessageRead',
     ];
     fileNames.forEach((name) => {
       this[name] = new DatabaseClient(name);

@@ -1,18 +1,18 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function UnreadBadge({ currentUser }) {
   const { data: messages = [] } = useQuery({
     queryKey: ['messages-unread', currentUser?.email],
-    queryFn: () => base44.entities.Message.list('-created_date', 200),
+    queryFn: () => databaseClients.Message.get(),
     enabled: !!currentUser?.email,
     refetchInterval: 30000
   });
 
   const { data: readReceipts = [] } = useQuery({
     queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => base44.entities.MessageRead.filter({ reader_email: currentUser.email }),
+    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
     enabled: !!currentUser?.email,
     refetchInterval: 30000
   });
