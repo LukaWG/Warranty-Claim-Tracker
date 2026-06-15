@@ -15,8 +15,10 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Loader2
+  Loader2,
+  MessageSquare
 } from 'lucide-react';
+import { UnreadBadge } from '@/components/messages/UnreadBadge';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';
@@ -314,6 +316,7 @@ export default function Layout({ children, currentPageName }) {
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Service Manager', 'Owner'] },
     // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Site Manager', 'Service Manager', 'Admin', 'Admin Manager', 'Owner'] },
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Admin Manager', 'Owner'] }
   ];
 
@@ -415,6 +418,9 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Icon className={cn("h-5 w-5", isActive ? "text-white" : "text-slate-500")} />
                   {item.label}
+                  {item.name === 'Messages' && currentUser && (
+                    <UnreadBadge currentUser={currentUser} />
+                  )}
                 </Link>
               );
             })}
