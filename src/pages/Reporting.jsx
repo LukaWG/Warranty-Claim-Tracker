@@ -136,10 +136,10 @@ export default function Reporting() {
   const totalClaimed = claims.filter(c => c.claimed).length;
   const nonActionableClaims = claims.filter(c => c.alert_resolution === 'Non-actionable').length;
   const totalHours = claims.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
-  const totalParts = claims.reduce((sum, c) => sum + (c.parts || 0), 0);
-  const totalLabour = claims.reduce((sum, c) => sum + (c.labour || 0), 0);
-  const totalSubCon = claims.reduce((sum, c) => sum + (c.sub_con || 0), 0);
-  const totalClaimCost = claims.reduce((sum, c) => sum + (c.total_claim_cost || 0), 0);
+  const totalParts = claims.reduce((sum, c) => sum + (c.approval_status !== 'pending_approval' ? (c.parts || 0) : 0), 0);
+  const totalLabour = claims.reduce((sum, c) => sum + (c.approval_status !== 'pending_approval' ? (c.labour || 0) : 0), 0);
+  const totalSubCon = claims.reduce((sum, c) => sum + (c.approval_status !== 'pending_approval' ? (c.sub_con || 0) : 0), 0);
+  const totalClaimCost = claims.reduce((sum, c) => sum + (c.approval_status !== 'pending_approval' ? (c.total_claim_cost || 0) : 0), 0);
 
   return (
     <div className="min-h-screen bg-slate-50">

@@ -323,7 +323,7 @@ const SortableHead = ({ colKey, children }) => {
                       )}
                       {col('credit') && (
                         <TableCell className="text-slate-600">
-                          {claim.credit ? (
+                          {claim.credit && claim.approval_status !== 'pending_approval' ? (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -336,12 +336,17 @@ const SortableHead = ({ colKey, children }) => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
+                          ) : claim.approval_status === 'pending_approval' ? (
+                            <span className="text-slate-400">-</span>
+                          )
                           ) : "-"}
                         </TableCell>
                       )}
                       {col('total_claim_cost') && (
                         <TableCell className="text-slate-600 font-medium">
-                          {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
+                          {claim.total_claim_cost && claim.approval_status !== 'pending_approval' ? `£${claim.total_claim_cost.toFixed(2)}` : claim.approval_status === 'pending_approval' ? (
+                            <span className="text-slate-400">—</span>
+                          ) : "—"}
                         </TableCell>
                       )}
                       {col('last_clocking_date') && (
@@ -656,7 +661,7 @@ const SortableHead = ({ colKey, children }) => {
                          )}
                          {col('credit') && (
                            <TableCell className="text-slate-600">
-                          {claim.credit ? (
+                          {claim.credit && claim.approval_status !== 'pending_approval' ? (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -669,12 +674,16 @@ const SortableHead = ({ colKey, children }) => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
+                          ) : claim.approval_status === 'pending_approval' ? (
+                              <span className="text-slate-400">—</span>
                           ) : "-"}
                            </TableCell>
                          )}
                          {col('total_claim_cost') && (
                            <TableCell className="text-slate-600 font-medium">
-                             {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
+                             {claim.total_claim_cost && claim.approval_status !== 'pending_approval' ? `£${claim.total_claim_cost.toFixed(2)}` : claim.approval_status === 'pending_approval' ? (
+                               <span className="text-slate-400">—</span>
+                             ) : "—"}
                            </TableCell>
                          )}
                          {col('last_clocking_date') && (

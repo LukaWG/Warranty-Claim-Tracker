@@ -286,7 +286,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const costByDate = {};
         claims.forEach(claim => {
           const date = claim.created_date.split('T')[0];
-          if (last30DaysCost.includes(date)) {
+          if (last30DaysCost.includes(date) && claim.approval_status !== 'pending_approval') {
             costByDate[date] = (costByDate[date] || 0) + (claim.total_claim_cost || 0);
           }
         });
@@ -355,7 +355,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const siteCostTotals = {};
         const siteCostCounts = {};
         claims.forEach(claim => {
-          if (claim.site) {
+          if (claim.site && claim.approval_status !== 'pending_approval') {
             siteCostTotals[claim.site] = (siteCostTotals[claim.site] || 0) + (claim.total_claim_cost || 0);
             siteCostCounts[claim.site] = (siteCostCounts[claim.site] || 0) + 1;
           }
@@ -374,7 +374,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const brandCostTotals = {};
         const brandCostCounts = {};
         claims.forEach(claim => {
-          if (claim.brand) {
+          if (claim.brand && claim.approval_status !== 'pending_approval') {
             brandCostTotals[claim.brand] = (brandCostTotals[claim.brand] || 0) + (claim.total_claim_cost || 0);
             brandCostCounts[claim.brand] = (brandCostCounts[claim.brand] || 0) + 1;
           }
@@ -398,7 +398,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const partsByDate = {};
         claims.forEach(claim => {
           const date = claim.created_date.split('T')[0];
-          if (last30DaysParts.includes(date)) {
+          if (last30DaysParts.includes(date) && claim.approval_status !== 'pending_approval') {
             partsByDate[date] = (partsByDate[date] || 0) + (claim.parts || 0);
           }
         });
@@ -421,7 +421,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const labourByDate = {};
         claims.forEach(claim => {
           const date = claim.created_date.split('T')[0];
-          if (last30DaysLabour.includes(date)) {
+          if (last30DaysLabour.includes(date) && claim.approval_status !== 'pending_approval') {
             labourByDate[date] = (labourByDate[date] || 0) + (claim.labour || 0);
           }
         });
@@ -444,7 +444,7 @@ export default function DynamicChartsSection({ claims, allClaims, customCharts =
         const subconByDate = {};
         claims.forEach(claim => {
           const date = claim.created_date.split('T')[0];
-          if (last30DaysSubcon.includes(date)) {
+          if (last30DaysSubcon.includes(date) && claim.approval_status !== 'pending_approval') {
             subconByDate[date] = (subconByDate[date] || 0) + (claim.sub_con || 0);
           }
         });
