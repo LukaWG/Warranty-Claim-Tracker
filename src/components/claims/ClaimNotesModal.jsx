@@ -57,8 +57,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     if (!newNote.trim()) return;
     setIsWithdrawing(true);
     await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn' });
-    await databaseClients.entities.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}` });
-    await databaseClients.entities.ClaimAudit.create({
+    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}` });
+    await databaseClients.ClaimAudit.create({
       claim_id: claim.id,
       wip_number: claim.wip_number,
       field_changed: 'status',
