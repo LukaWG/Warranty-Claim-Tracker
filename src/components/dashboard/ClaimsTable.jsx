@@ -338,7 +338,6 @@ const SortableHead = ({ colKey, children }) => {
                             </TooltipProvider>
                           ) : claim.approval_status === 'pending_approval' ? (
                             <span className="text-slate-400">-</span>
-                          )
                           ) : "-"}
                         </TableCell>
                       )}
