@@ -21,7 +21,7 @@ const DEFAULT_COLUMNS = {
   scanned_date: false,
   manufacturer_deadline: true,
   status: true,
-  approval_status: false,
+  approval_status: true,
   claimed_date: false,
   claimed_by: false,
 };
