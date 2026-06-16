@@ -18,7 +18,7 @@ import {
   Loader2,
   MessageSquare
 } from 'lucide-react';
-import { UnreadBadge } from '@/components/messages/UnreadBadge';
+import UnreadBadge from '@/components/messages/UnreadBadge';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';

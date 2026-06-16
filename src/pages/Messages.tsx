@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@/lib/AuthContext';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,15 +12,13 @@ import { databaseClients } from '@/api/databaseClient';
 
 export default function Messages() {
   const queryClient = useQueryClient();
-  const { roleOverride } = useAuth();
   const [composeOpen, setComposeOpen] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
 
-  const { data: rawUser } = useQuery({
+  const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => databaseClients.User.me()
   });
-  const currentUser = rawUser && roleOverride ? { ...rawUser, custom_role: roleOverride } : rawUser;
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdmin = ['Admin Manager', 'Service Manager', 'Owner', 'Admin'].includes(userRole);
   const userSite = currentUser?.default_site;
