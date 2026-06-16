@@ -46,7 +46,7 @@ export default function Messages() {
     mutationFn: ({ messageId }) => databaseClients.MessageRead.create({
        message_id: messageId,
        reader_email: currentUser.email,
-       reader_name: currentUser.full_name || currentUser.email,
+       reader_name: (currentUser.firstName + ' ' + currentUser.lastName) || currentUser.email,
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
