@@ -20,11 +20,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  webpack(config, { isServer }) {
-    config.resolve.alias['@'] = path.resolve(__dirname, './src')
-    config.resolve.alias['@vercel/turbopack-ecmascript-runtime/browser/dev/hmr-client/hmr-client.ts'] = stubPath
-    return config
-  },
 };
 
 export default nextConfig;
