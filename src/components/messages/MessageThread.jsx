@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
-import { Reply, MessageCircle } from 'lucide-react';
+import { Reply, MessageCircle, CheckCheck } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 
-function MessageBubble({ message, isOwn }) {
+function MessageBubble({ message, isOwn, readers }) {
   return (
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
       <div className={`max-w-[80%] rounded-xl px-4 py-2.5 ${isOwn ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-800'}`}>
@@ -16,11 +16,19 @@ function MessageBubble({ message, isOwn }) {
       <span className="text-xs text-slate-400 px-1">
         {message.sender_name || message.sender_email} · {format(new Date(message.created_date), 'dd/MM/yyyy HH:mm')}
       </span>
+      {isOwn && readers.length > 0 && (
+        <div className="flex items-center gap-1 px-1">
+          <CheckCheck className="h-3 w-3 text-teal-500" />
+          <span className="text-xs text-teal-600">
+            Read by {readers.map(r => r.reader_name || r.reader_email).join(', ')}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function MessageThread({ rootMessage, replies, currentUser, onReply }) {
+export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [] }) {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const queryClient = useQueryClient();
@@ -56,13 +64,17 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         <Badge variant="outline" className="text-xs bg-slate-50">{rootMessage.target_site}</Badge>
       </div>
       <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
-        {allMessages.map(msg => (
+        {allMessages.map(msg => {
+          const readers = allReadReceipts.filter(r => r.message_id === msg.id && r.reader_email !== msg.sender_email);
+          return (          
           <MessageBubble
             key={msg.id}
             message={msg}
             isOwn={msg.sender_email === currentUser?.email}
+            readers={readers}
           />
-        ))}
+        );
+      })}
       </div>
       <div className="flex gap-2 pt-2 border-t border-slate-100">
         <Textarea

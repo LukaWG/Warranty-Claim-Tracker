@@ -9,6 +9,10 @@
     "reader_email": {
       "type": "string",
       "description": "Email of the user who read the message"
+    },
+    "reader_name": {
+      "type": "string",
+      "description": "Display name of the user who read the message"
     }
   },
   "required": [

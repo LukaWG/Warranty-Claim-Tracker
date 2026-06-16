@@ -36,9 +36,22 @@ export default function Messages() {
     refetchInterval: 30000
   });
 
+  const { data: allReadReceipts = [] } = useQuery({
+    queryKey: ['message-reads-all'],
+    queryFn: () => databaseClients.MessageRead.get(),
+    refetchInterval: 3000
+  });
+
   const markReadMutation = useMutation({
-    mutationFn: ({ messageId }) => databaseClients.MessageRead.create({ message_id: messageId, reader_email: currentUser.email }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] })
+    mutationFn: ({ messageId }) => databaseClients.MessageRead.create({
+       message_id: messageId,
+       reader_email: currentUser.email,
+       reader_name: currentUser.full_name || currentUser.email,
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
+      queryClient.invalidateQuereis({ queryKey: ['message-reads-all', currentUser?.email] });
+    }
   });
 
   const readIds = new Set(readReceipts.map(r => r.message_id));
@@ -154,6 +167,7 @@ export default function Messages() {
               rootMessage={selectedThread}
               replies={getReplies(selectedThread.id)}
               currentUser={currentUser}
+              allReadReceipts={allReadReceipts}
               onReply={() => {
                 queryClient.invalidateQueries({ queryKey: ['messages'] });
               }}
