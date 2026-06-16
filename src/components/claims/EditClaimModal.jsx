@@ -335,6 +335,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
               <Label>Actual Hours</Label>
+              {!!selectedSite?.brand_hourly_rates_2?.[formData.brand] && (
               <div className="flex items-center gap-1 bg-slate-100 rounded-md p-0.5">
                 <button
                   type="button"
@@ -351,7 +352,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                       Rate 1
                 </button>
                 <button
-                  type="button"
+                  type="button" disabled={!selectedSite?.brand_hourly_rates_2?.[formData.brand]}
                   onClick={() => {
                     setUseRate2(true);
                     const labourVal = parseFloat(formData.labour) || 0;
@@ -365,6 +366,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                       Rate 2
                     </button>
                   </div>
+              )}
               </div>
               <Input
                 type="number"
