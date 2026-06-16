@@ -1422,23 +1422,24 @@ export default function Configuration() {
 				<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					const brandRates = {};
+					const brandRates1 = {};
+					const brandRates2 = {};
 					brands.forEach(brand => {
-					const val = editingSite.brand_hourly_rates?.[brand.name];
-					if (val !== undefined && val !== '') {
-						brandRates[brand.name] = parseFloat(val);
+					const val1 = editingSite.brand_hourly_rates_1?.[brand.name];
+					if (val1 !== undefined && val1 !== '') {
+						brandRates1[brand.name] = parseFloat(val1);
 					}
 					const val2 = editingSite.brand_hourly_rates_2?.[brand.name];
 					if (val2 !== undefined && val2 !== '') {
-						brandRates[brand.name] = parseFloat(val2);
+						brandRates2[brand.name] = parseFloat(val2);
 					}
 					});
 					updateSiteMutation.mutate({ id: editingSite.id, data: {
 					name: editingSite.name,
 					code: editingSite.code || null,
 					brands: editingSite.brands || [],
-					brand_hourly_rates: Object.keys(brandRates).length > 0 ? brandRates : null,
-					brand_hourly_rates_2: Object.keys(brandRates).length > 0 ? brandRates : null
+					brand_hourly_rates_1: Object.keys(brandRates1).length > 0 ? brandRates1 : null,
+					brand_hourly_rates_2: Object.keys(brandRates2).length > 0 ? brandRates2 : null
 				}});
 				}}
 				className="space-y-4"
@@ -1508,11 +1509,11 @@ export default function Configuration() {
 							step="0.01"
 							min="0"
 							placeholder="e.g. 85.00"
-							value={editingSite.brand_hourly_rates?.[brand.name] ?? ''}
+							value={editingSite.brand_hourly_rates_1?.[brand.name] ?? ''}
 							onChange={(e) => setEditingSite({
 							...editingSite,
-							brand_hourly_rates: {
-								...(editingSite.brand_hourly_rates || {}),
+							brand_hourly_rates_1: {
+								...(editingSite.brand_hourly_rates_1 || {}),
 								[brand.name]: e.target.value
 							}
 							})}
