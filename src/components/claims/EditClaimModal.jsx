@@ -300,7 +300,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     const newLabour = e.target.value;
                     const newLabourVal = parseFloat(newLabour) || 0;
                     const newTotal = updateTotal(formData.parts, newLabour, formData.sub_con);
-                    const hourlyRate = selectedSite?.brand_hourly_rates?.[formData.brand] || 0;
+                    const hourlyRate = selectedSite?.brand_hourly_rates_1?.[formData.brand] || 0;
                     const calculatedHours = hourlyRate > 0 ? Math.round((newLabourVal / hourlyRate) * 100) / 100 : 0;
                     const newOriginalLabour = newLabourVal + (parseFloat(formData.credit_labour) || 0);
                     setFormData({ ...formData, labour: newLabour, original_labour: newOriginalLabour, total_claim_cost: newTotal, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
@@ -341,7 +341,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   onClick={() => {
                     setUseRate2(false);
                     const labourVal = parseFloat(formData.labour) || 0;
-                    const rate1 = selectedSite?.brand_hourly_rates?.[formData.brand] || 0;
+                    const rate1 = selectedSite?.brand_hourly_rates_1?.[formData.brand] || 0;
                     const calculatedHours = rate1 > 0 ? Math.round((labourVal / rate1) * 100) / 100 : 0;
                     setFormData({ ...formData, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
                   }}
