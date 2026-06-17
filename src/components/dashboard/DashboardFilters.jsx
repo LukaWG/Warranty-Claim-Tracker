@@ -110,6 +110,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
 
   const sites = [...sitesShuffled].sort((a, b) => (a ?? "").localeCompare((b ?? "")));
+  console.log(sites);
 
   const { data: completeAllBrands = [] } = useQuery({
     queryKey: ['completeAllBrands'],
@@ -191,7 +192,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect
             placeholder="All Sites"
-            options={sites.map(s => ({ value: s, label: s }))}
+            options={sites.map(s => ({ value: s, label: allSites.find(site => site.id === s) }))}
             selected={filters.site || []}
             onChange={(val) => onFilterChange({ ...filters, site: val })}
           />
