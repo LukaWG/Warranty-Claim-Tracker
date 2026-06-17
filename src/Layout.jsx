@@ -86,22 +86,8 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  // CHANGING USER
-  const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
-
-  useEffect(() => {
-    const handleActingUserChanged = () => {
-      setActingUserId(databaseClients.User.getActingUserId());
-    };
-
-    window.addEventListener('acting-user-changed', handleActingUserChanged);
-    return () => window.removeEventListener('acting-user-changed', handleActingUserChanged);
-  }, []);
-
-  // END CHANGING USER
-
   const { data: currentUser } = useQuery({
-    queryKey: ['currentUser', actingUserId],
+    queryKey: ['currentUser'],
     // [ ] Sort user logic and get current user here. For now just getting me manually
     queryFn: () => databaseClients.User.me(),
     staleTime: 30000,
