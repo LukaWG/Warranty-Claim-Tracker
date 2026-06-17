@@ -177,7 +177,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 </SelectTrigger>
                 <SelectContent>
                   {sites.map((site) => (
-                    <SelectItem key={site.id} value={site.name}>
+                    <SelectItem key={site.id} value={site.id}>
                       {site.name}
                     </SelectItem>
                   ))}

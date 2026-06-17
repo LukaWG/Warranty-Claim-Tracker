@@ -19,6 +19,11 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
     queryFn: () => databaseClients.Brand.get()
   });
 
+  const { data: sites = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => databaseClients.Site.get()
+  });
+
   const { data: claims = [] } = useQuery({
     queryKey: ['claims-for-messages'],
     queryFn: () => databaseClients.WarrantyClaim.get(),
@@ -65,7 +70,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
                 <SelectContent>
                   {claims.map(c => (
                     <SelectItem key={c.id} value={c.id}>
-                      {c.wip_number} — {c.site} {c.brand ? `(${brands.find(b => b.id === c.brand)?.name})` : ''}
+                      {c.wip_number} — {sites.find(s => s.id === c.site)?.name} {c.brand ? `(${brands.find(b => b.id === c.brand)?.name})` : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -74,7 +79,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
           )}
           {selectedClaim && (
             <div className="px-3 py-2 rounded-md bg-slate-50 border border-slate-200 text-sm text-slate-600">
-              Sending to all processors at <strong>{selectedClaim.site}</strong> re WIP <strong>{selectedClaim.wip_number}</strong>
+              Sending to all processors at <strong>{sites.find(s => s.id === selectedClaim.site)?.name}</strong> re WIP <strong>{selectedClaim.wip_number}</strong>
             </div>
           )}
           <div className="space-y-2">

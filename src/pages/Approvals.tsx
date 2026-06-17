@@ -45,6 +45,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 export default function Approvals() {
   const queryClient = useQueryClient();
   const [approvalNotes, setApprovalNotes] = useState({});
+
+  const { data: brands = [] } = useQuery({
+    queryKey: ['brands'],
+    queryFn: () => databaseClients.Brand.get()
+  })
+
+  const { data: sites = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => databaseClients.Site.get()
+  })
   
   
     // const [claims, setPendingApprovals] = useState([]);
@@ -197,12 +207,12 @@ export default function Approvals() {
                         <p className="text-xs text-slate-400 uppercase tracking-wide">Site</p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                          <p className="font-medium text-slate-700">{claim.site}</p>
+                          <p className="font-medium text-slate-700">{sites.find(site => site.id === claim.site)?.name}</p>
                         </div>
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-wide">Brand</p>
-                        <p className="font-medium text-slate-700 mt-0.5">{claim.brand || '—'}</p>
+                        <p className="font-medium text-slate-700 mt-0.5">{brands.find(brand => brand.id === claim.brand)?.name || '—'}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 uppercase tracking-wide">Invoice #</p>

@@ -108,9 +108,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const sitesShuffled = isAdmin && adminSite
     ? [adminSite]
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
-
-  const sites = [...sitesShuffled].sort((a, b) => (a ?? "").localeCompare((b ?? "")));
-  console.log(sites);
+  console.log(sitesShuffled);
+  const sites = [...sitesShuffled].sort((a, b) => (allSites.find(site => site.id === a)?.name ?? "").localeCompare((allSites.find(site => site.id === b)?.name ?? "")));
 
   const { data: completeAllBrands = [] } = useQuery({
     queryKey: ['completeAllBrands'],
@@ -123,8 +122,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   // const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const brands = (userSite?.brands?.length > 0)
-    ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id))
-    : allBrandsInClaims;
+    ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
+    : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));
 
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
@@ -192,7 +191,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect
             placeholder="All Sites"
-            options={sites.map(s => ({ value: s, label: allSites.find(site => site.id === s) }))}
+            options={sites.map(s => ({ value: s, label: allSites.find(site => site.id === s)?.name }))}
             selected={filters.site || []}
             onChange={(val) => onFilterChange({ ...filters, site: val })}
           />

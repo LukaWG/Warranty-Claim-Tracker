@@ -42,6 +42,11 @@ export default function Messages() {
     refetchInterval: 3000
   });
 
+  const { data: sites = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => databaseClients.Site.get()
+  });
+
   const markReadMutation = useMutation({
     mutationFn: ({ messageId }) => databaseClients.MessageRead.create({
        message_id: messageId,
@@ -142,7 +147,7 @@ export default function Messages() {
                           {msg.subject || `WIP ${msg.wip_number}`}
                         </span>
                         <Badge variant="outline" className="text-xs shrink-0">{msg.wip_number}</Badge>
-                        <Badge variant="outline" className="text-xs shrink-0 bg-slate-50">{msg.target_site}</Badge>
+                        <Badge variant="outline" className="text-xs shrink-0 bg-slate-50">{sites.find(site => site.id === msg.target_site)?.name}</Badge>
                       </div>
                       <p className="text-xs text-slate-400 truncate">
                         {msg.sender_name || msg.sender_email} · {format(new Date(msg.created_date), 'dd/MM/yyyy HH:mm')}

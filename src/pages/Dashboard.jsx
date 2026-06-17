@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   const { data: allSites = [] } = useQuery({
     queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.query('name') // Fetch sites for filters
+    queryFn: () => databaseClients.Site.get() // Fetch sites for filters
   });
 
   const { data: allUsers = [] } = useQuery({

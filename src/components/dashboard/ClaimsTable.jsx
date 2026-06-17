@@ -114,6 +114,11 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     }
   });
 
+  const { data: allSites = [] } = useQuery({
+    queryKey: ['allSites'],
+    queryFn: () => databaseClients.Site.get()
+  })
+
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
     queryFn: () => databaseClients.User.get()
@@ -284,7 +289,7 @@ const SortableHead = ({ colKey, children }) => {
                         <TableCell>
                           <div className="flex items-center gap-2 text-slate-600">
                             <MapPin className="h-4 w-4 text-slate-400" />
-                            {claim.site}
+                            {allSites.find(site => site.id === claim.site)?.name}
                           </div>
                         </TableCell>
                       )}

@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { Reply, MessageCircle, CheckCheck } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 
 function MessageBubble({ message, isOwn, readers }) {
@@ -32,6 +32,11 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const queryClient = useQueryClient();
+
+  const { data: sites = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => databaseClients.Site.get()
+  })
 
   const handleSendReply = async () => {
     if (!replyBody.trim()) return;
@@ -61,7 +66,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         <MessageCircle className="h-4 w-4 text-slate-400" />
         <span className="text-sm font-medium text-slate-700">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
         <Badge variant="outline" className="text-xs">{rootMessage.wip_number}</Badge>
-        <Badge variant="outline" className="text-xs bg-slate-50">{rootMessage.target_site}</Badge>
+        <Badge variant="outline" className="text-xs bg-slate-50">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
       </div>
       <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
         {allMessages.map(msg => {

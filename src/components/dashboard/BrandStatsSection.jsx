@@ -12,6 +12,12 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
     queryKey: ['allBrands'],
     queryFn: () => databaseClients.Brand.get()
   })
+
+  const { data: allSites = [] } = useQuery({
+    queryKey: ['allSites'],
+    queryFn: () => databaseClients.Site.get()
+  })
+
   const getColorCounts = (brand, claimsForBrand) => {
     const now = new Date();
     let redCount = 0, amberCount = 0, greenCount = 0;
@@ -197,7 +203,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
               transition={{ duration: 0.4, delay: index * 0.05 }}
             >
               <TileContent
-                title={stat.site}
+                title={allSites.find(site => site.id === stat.site)?.name}
                 count={stat.count}
                 totalExpectedHours={stat.totalExpectedHours}
                 statusCounts={stat.statusCounts}
