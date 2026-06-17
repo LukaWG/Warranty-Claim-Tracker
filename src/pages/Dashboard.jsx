@@ -64,7 +64,7 @@ export default function Dashboard() {
     const [wipSearch, setWipSearch] = useState('');
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
-    queryKey: ['currentUser', actingUserId],
+    queryKey: ['currentUser'],
     // [ ] Sort user logic and get current user here. For now just getting me manually
     queryFn: () => databaseClients.User.me(), // Fetch current user
   });

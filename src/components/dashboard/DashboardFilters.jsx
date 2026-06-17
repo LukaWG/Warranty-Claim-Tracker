@@ -116,7 +116,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     queryFn: () => databaseClients.Brand.get()
   })
 
-  const userSite = currentUser?.default_site ? allSites.find(s => s.name === currentUser.default_site) : null;
+  const userSite = currentUser?.default_site ? allSites.find(s => s.id === currentUser.default_site) : null;
   // const allBrandsInClaims = [...new Set(completeAllBrands.filter(b => b.id === claims.map(c => c.brand).filter(Boolean)).name)];
   const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
@@ -191,7 +191,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect
             placeholder="All Sites"
-            options={sites. map(s => ({ value: s, label: s }))}
+            options={sites.map(s => ({ value: s, label: s }))}
             selected={filters.site || []}
             onChange={(val) => onFilterChange({ ...filters, site: val })}
           />
