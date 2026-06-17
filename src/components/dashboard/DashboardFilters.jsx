@@ -108,7 +108,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const sitesShuffled = isAdmin && adminSite
     ? [adminSite]
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
-  console.log(sitesShuffled);
+  
   const sites = [...sitesShuffled].sort((a, b) => (allSites.find(site => site.id === a)?.name ?? "").localeCompare((allSites.find(site => site.id === b)?.name ?? "")));
 
   const { data: completeAllBrands = [] } = useQuery({
