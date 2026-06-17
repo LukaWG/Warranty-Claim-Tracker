@@ -52,8 +52,6 @@ import Messages from './pages/Messages';
 import Configuration from './pages/Configuration';
 import __Layout from './Layout.jsx';
 
-console.log('__Layout:', __Layout);
-
 export const PAGES = {
     "ClaimForm": ClaimForm,
     "Dashboard": Dashboard,

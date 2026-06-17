@@ -24,7 +24,6 @@ export default async function authHandler(
   res: NextApiResponse
 ) {
   const host = req.headers.host || "localhost:3000"
-  console.log(`[Auth API] Incoming request: ${req.method} ${req.url} from host: ${host}`)
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http"
   
   // Reconstruct full URL so Better Auth can parse it
@@ -92,8 +91,7 @@ export default async function authHandler(
           updatedAt: new Date()
         },
       });
-
-      console.log(`[Admin Password Reset] Successfully reset password for user ID: ${userId}`);
+      
       return res.status(200).json({ success: true, message: "Password updated successfully" });
     } catch (err: any) {
       console.error("[Admin Password Reset Error]:", err);

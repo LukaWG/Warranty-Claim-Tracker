@@ -63,19 +63,6 @@ export default function Dashboard() {
     const [repairSearch, setRepairSearch] = useState('');
     const [wipSearch, setWipSearch] = useState('');
 
-    // CHANGING USER
-    const [actingUserId, setActingUserId] = useState(() => databaseClients.User.getActingUserId());
-
-    useEffect(() => {
-      const handleUserChanged = () => {
-        setActingUserId(databaseClients.User.getActingUserId());
-      };
-
-      window.addEventListener('acting-user-changed', handleUserChanged);
-      return () => window.removeEventListener('acting-user-changed', handleUserChanged);
-    }, []);
-    // END CHANGING USER
-
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser', actingUserId],
     // [ ] Sort user logic and get current user here. For now just getting me manually

@@ -125,8 +125,6 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id))
     : allBrandsInClaims;
 
-  console.log(allBrandsInClaims);
-
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
   const alerts = [...new Set(claims.map(c => c.alert).filter(Boolean))];

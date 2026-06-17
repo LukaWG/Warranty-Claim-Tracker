@@ -46,8 +46,6 @@ export default function LoginPage() {
     setLoading(true)
     setError("")
 
-    console.log("Attempting email login with:", { email, password, callbackUrl })
-
     const { error } = await signIn.email({
       email,
       password,
