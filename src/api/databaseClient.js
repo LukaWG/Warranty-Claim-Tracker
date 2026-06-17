@@ -1,4 +1,5 @@
-import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData } from '../../data/data.js';
+import { FileImage } from 'lucide-react';
+import { siteData, alertData, alertResolutionData, brandData, claimAuditData, claimNoteData, pendingUserInviteData, userData, warrantyClaimData, message, messageRead } from '../../data/data.js';
 import { authClient } from '../lib/auth-client';
 
 const TEMP_USER_DETAILS = {
@@ -246,7 +247,7 @@ class SiteClient extends DatabaseClient {
 class DatabaseClients {
     constructor() {
         this.clients = {};
-        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'User', 'WarrantyClaim', 'Site'];
+        const fileNames = ['Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote', 'PendingUserInvite', 'User', 'WarrantyClaim', 'Site', 'Message', 'MessageRead'];
 
         fileNames.forEach((fileName) => {
             const client = fileName === 'Site' ? new SiteClient() : new DatabaseClient(fileName);
@@ -296,6 +297,12 @@ function readJsonFile(fileName) {
   }
   else if (fileName === 'User') {
     return userData[0];
+  }
+  else if (fileName === 'Message') {
+    return message[0];
+  }
+  else if (fileName === 'MessageRead') {
+    return messageRead[0];
   }
   else {
     throw new Error(`Unknown file name: ${fileName}`);

@@ -7137,3 +7137,7 @@ export let userData = [[
     "default_site": null
   }
 ]]
+
+export let message = [[]];
+
+export let messageRead = [[]];

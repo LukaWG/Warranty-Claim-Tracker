@@ -186,7 +186,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
             All Brands
           </button>
           <span className="text-slate-300">/</span>
-          <span className="text-sm font-semibold text-slate-800">{allBrands.filter(b => b.id === activeBrandFilter)[0].name}</span>
+          <span className="text-sm font-semibold text-slate-800">{allBrands.find(b => b.id === activeBrandFilter)?.name}</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {siteStats.map((stat, index) => (

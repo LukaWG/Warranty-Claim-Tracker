@@ -2,13 +2,22 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { format } from 'date-fns';
+import { useQuery } from '@tanstack/react-query';
+import { databaseClients } from '@/api/databaseClient';
 
 export default function ExportButton({ claims, filters }) {
+
+  const { data: brands = [] } = useQuery({
+    queryKey: ['brands'],
+    queryFn: databaseClients.Brand.get()
+  });
+
   const handleExport = () => {
     // Prepare CSV data
     const headers = [
       'WIP Number',
       'Site',
+      'Brand',
       'Expected Hours',
       'Last Clocking Date',
       'Scanned Date',
@@ -24,6 +33,7 @@ export default function ExportButton({ claims, filters }) {
     const rows = claims.map(claim => [
       claim.wip_number,
       claim.site,
+      brands.find(b => b.id === claim.brand).name,
       claim.expected_hours,
       claim.last_clocking_date ? format(new Date(claim.last_clocking_date), 'yyyy-MM-dd') : '',
       claim.scanned_date ? format(new Date(claim.scanned_date), 'yyyy-MM-dd') : '',

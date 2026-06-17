@@ -14,6 +14,11 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
   const [selectedClaimId, setSelectedClaimId] = useState(prefilledClaim?.id || '');
   const [sending, setSending] = useState(false);
 
+  const { data: brands = [] } = useQuery({
+    queryKey: ['brands'],
+    queryFn: () => databaseClients.Brand.get()
+  });
+
   const { data: claims = [] } = useQuery({
     queryKey: ['claims-for-messages'],
     queryFn: () => databaseClients.WarrantyClaim.get(),
@@ -60,7 +65,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
                 <SelectContent>
                   {claims.map(c => (
                     <SelectItem key={c.id} value={c.id}>
-                      {c.wip_number} — {c.site} {c.brand ? `(${c.brand})` : ''}
+                      {c.wip_number} — {c.site} {c.brand ? `(${brands.find(b => b.id === c.brand)?.name})` : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>

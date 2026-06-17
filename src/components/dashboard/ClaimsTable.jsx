@@ -290,7 +290,7 @@ const SortableHead = ({ colKey, children }) => {
                       )}
                       {col('brand') && (
                         <TableCell className="text-slate-600">
-                          {brands.filter(b => b.id === claim.brand)[0]?.name || "—"}
+                          {brands.find(b => b.id === claim.brand)?.name || "—"}
                         </TableCell>
                       )}
                       {col('expected_hours') && (
@@ -627,7 +627,7 @@ const SortableHead = ({ colKey, children }) => {
                          )}
                          {col('brand') && (
                            <TableCell className="text-slate-600">
-                             {brands.filter(b => b.id === claim.brand)[0]?.name || "—"}
+                             {brands.find(b => b.id === claim.brand)?.name || "—"}
                            </TableCell>
                          )}
                          {col('expected_hours') && (

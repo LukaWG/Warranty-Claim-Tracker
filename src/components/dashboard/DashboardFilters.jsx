@@ -119,7 +119,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const userSite = currentUser?.default_site ? allSites.find(s => s.name === currentUser.default_site) : null;
   // const allBrandsInClaims = [...new Set(completeAllBrands.filter(b => b.id === claims.map(c => c.brand).filter(Boolean)).name)];
   const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
-  const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.filter(b => b.id === id)[0]);
+  const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   // const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const brands = (userSite?.brands?.length > 0)
     ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id))

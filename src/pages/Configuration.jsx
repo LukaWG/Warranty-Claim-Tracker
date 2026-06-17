@@ -455,7 +455,7 @@ export default function Configuration() {
 								<div className="flex flex-wrap gap-1">
 									{/* {<span key="all-brands" className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{site.brands.length} brands</span> */}
 									{site.brands.map(brand => (
-									<span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brands.filter(b => b.id === brand)[0].name}</span>
+									<span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brands.find(b => b.id === brand).name}</span>
 									))}
 								</div>
 								) : '—'}
