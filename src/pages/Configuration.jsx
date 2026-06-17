@@ -455,7 +455,7 @@ export default function Configuration() {
 								<div className="flex flex-wrap gap-1">
 									{/* {<span key="all-brands" className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{site.brands.length} brands</span> */}
 									{site.brands.map(brand => (
-									<span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brand}</span>
+									<span key={brand} className="inline-block text-xs bg-slate-100 text-slate-700 rounded px-2 py-0.5">{brands.filter(b => b.id === brand)[0].name}</span>
 									))}
 								</div>
 								) : '—'}
@@ -1466,7 +1466,7 @@ export default function Configuration() {
 					<p className="text-xs text-slate-500">Select which brands are available at this site.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50">
 					{brands.map(brand => {
-						const isChecked = (editingSite.brands || []).includes(brand.name);
+						const isChecked = (editingSite.brands || []).includes(brand.id);
 						return (
 						<div key={brand.id} className="flex items-center gap-3">
 							<input
@@ -1476,8 +1476,8 @@ export default function Configuration() {
 							onChange={(e) => {
 								const current = editingSite.brands || [];
 								const updated = e.target.checked
-								? [...current, brand.name]
-								: current.filter(b => b !== brand.name);
+								? [...current, brand.id]
+								: current.filter(b => b !== brand.id);
 								setEditingSite({ ...editingSite, brands: updated });
 							}}
 							className="h-4 w-4 rounded border-gray-300"
@@ -1509,12 +1509,12 @@ export default function Configuration() {
 							step="0.01"
 							min="0"
 							placeholder="e.g. 85.00"
-							value={editingSite.brand_hourly_rates_1?.[brand.name] ?? ''}
+							value={editingSite.brand_hourly_rates_1?.[brand.id] ?? ''}
 							onChange={(e) => setEditingSite({
 							...editingSite,
 							brand_hourly_rates_1: {
 								...(editingSite.brand_hourly_rates_1 || {}),
-								[brand.name]: e.target.value
+								[brand.id]: e.target.value
 							}
 							})}
 							className="h-8 bg-white"
@@ -1524,12 +1524,12 @@ export default function Configuration() {
 							step="0.01"
 							min="0"
 							placeholder="e.g. 95.00"
-							value={editingSite.brand_hourly_rates_2?.[brand.name] ?? ''}
+							value={editingSite.brand_hourly_rates_2?.[brand.id] ?? ''}
 							onChange={(e) => setEditingSite({
 							...editingSite,
 							brand_hourly_rates_2: {
 								...(editingSite.brand_hourly_rates_2 || {}),
-								[brand.name]: e.target.value
+								[brand.id]: e.target.value
 							}
 							})}
 							className="h-8 bg-white"
