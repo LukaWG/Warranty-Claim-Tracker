@@ -214,7 +214,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
             </motion.div>
           ))}
           {siteStats.length === 0 && (
-            <div className="col-span-full text-center py-8 text-slate-400 text-sm">No in-progress claims for {activeBrandFilter}</div>
+            <div className="col-span-full text-center py-8 text-slate-400 text-sm">No in-progress claims for {allBrands.find(brand => brand.id === activeBrandFilter)?.name}</div>
           )}
         </div>
       </div>

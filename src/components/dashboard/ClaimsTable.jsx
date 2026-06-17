@@ -34,6 +34,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const [timelineClaim, setTimelineClaim] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
+  const [brandsLoading, setBrandsLoading] = useState(false);
+  const [sitesLoading, setSitesLoading] = useState(false);
 
   const toggleRow = (id) => setExpandedRows(prev => {
     const next = new Set(prev);
@@ -342,14 +344,14 @@ const SortableHead = ({ colKey, children }) => {
                               </Tooltip>
                             </TooltipProvider>
                           ) : claim.approval_status === 'pending_approval' ? (
-                            <span className="text-slate-400">-</span>
+                            <span>—</span>
                           ) : "—"}
                         </TableCell>
                       )}
                       {col('total_claim_cost') && (
                         <TableCell className="text-slate-600 font-medium">
                           {claim.total_claim_cost && claim.approval_status !== 'pending_approval' ? `£${claim.total_claim_cost.toFixed(2)}` : claim.approval_status === 'pending_approval' ? (
-                            <span className="text-slate-400">—</span>
+                            <span>—</span>
                           ) : "—"}
                         </TableCell>
                       )}
