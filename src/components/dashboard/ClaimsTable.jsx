@@ -241,7 +241,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('last_clocking_date') && <SortableHead colKey="last_clocking_date">Last Clocking</SortableHead>}
                       {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
                       {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
-                      <TableHead classMame="font-semibold text-slate-600 w-10"></TableHead>
+                      <TableHead className="font-semibold text-slate-600 w-10"></TableHead>
                       {col('status') && <SortableHead colKey="status">Status</SortableHead>}
                       {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
@@ -290,7 +290,7 @@ const SortableHead = ({ colKey, children }) => {
                       )}
                       {col('brand') && (
                         <TableCell className="text-slate-600">
-                          {claim.brand || "—"}
+                          {brands.filter(b => b.id === claim.brand)[0]?.name || "—"}
                         </TableCell>
                       )}
                       {col('expected_hours') && (
@@ -338,7 +338,7 @@ const SortableHead = ({ colKey, children }) => {
                             </TooltipProvider>
                           ) : claim.approval_status === 'pending_approval' ? (
                             <span className="text-slate-400">-</span>
-                          ) : "-"}
+                          ) : "—"}
                         </TableCell>
                       )}
                       {col('total_claim_cost') && (
@@ -361,7 +361,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('manufacturer_deadline') && (
                       <TableCell>
                         {claim.manufacturer_deadline ? (() => {
-                          const brand = brands.find(b => b.name === claim.brand);
+                          const brand = brands.find(b => b.id === claim.brand);
                           const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
 
                           let bgColor = 'bg-slate-100';
@@ -627,7 +627,7 @@ const SortableHead = ({ colKey, children }) => {
                          )}
                          {col('brand') && (
                            <TableCell className="text-slate-600">
-                             {claim.brand || "—"}
+                             {brands.filter(b => b.id === claim.brand)[0]?.name || "—"}
                            </TableCell>
                          )}
                          {col('expected_hours') && (
@@ -675,7 +675,7 @@ const SortableHead = ({ colKey, children }) => {
                             </TooltipProvider>
                           ) : claim.approval_status === 'pending_approval' ? (
                               <span className="text-slate-400">—</span>
-                          ) : "-"}
+                          ) : "—"}
                            </TableCell>
                          )}
                          {col('total_claim_cost') && (
@@ -698,7 +698,7 @@ const SortableHead = ({ colKey, children }) => {
                          {col('manufacturer_deadline') && (
                          <TableCell>
                            {claim.manufacturer_deadline ? (() => {
-                             const brand = brands.find(b => b.name === claim.brand);
+                             const brand = brands.find(b => b.id === claim.brand);
                              const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
 
                              let bgColor = 'bg-slate-100';

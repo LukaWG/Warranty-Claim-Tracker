@@ -1,3 +1,4 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,7 @@ import { Filter, X, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { databaseClients } from "@/api/databaseClient"
 
 function MultiSelect({ label, options, selected, onChange, placeholder }) {
   const [open, setOpen] = useState(false);
@@ -109,11 +111,21 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
 
   const sites = [...sitesShuffled].sort((a, b) => (a ?? "").localeCompare((b ?? "")));
 
+  const { data: completeAllBrands = [] } = useQuery({
+    queryKey: ['completeAllBrands'],
+    queryFn: () => databaseClients.Brand.get()
+  })
+
   const userSite = currentUser?.default_site ? allSites.find(s => s.name === currentUser.default_site) : null;
-  const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
+  // const allBrandsInClaims = [...new Set(completeAllBrands.filter(b => b.id === claims.map(c => c.brand).filter(Boolean)).name)];
+  const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
+  const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.filter(b => b.id === id)[0]);
+  // const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const brands = (userSite?.brands?.length > 0)
-    ? allBrandsInClaims.filter(b => userSite.brands.includes(b))
+    ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id))
     : allBrandsInClaims;
+
+  console.log(allBrandsInClaims);
 
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
@@ -191,7 +203,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Brand</Label>
           <MultiSelect
             placeholder="All Brands"
-            options={brands.map(b => ({ value: b, label: b }))}
+            options={brands.map(b => ({ value: b?.id, label: b?.name }))}
             selected={filters.brand || []}
             onChange={(val) => onFilterChange({ ...filters, brand: val })}
           />

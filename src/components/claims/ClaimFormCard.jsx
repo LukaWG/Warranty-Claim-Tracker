@@ -102,7 +102,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   };
 
   const handleLastClockingSelect = (date) => {
-    const selectedBrand = brands.find(b => b.name === formData.brand);
+    const selectedBrand = brands.find(b => b.id === formData.brand);
     const deadlineDays = selectedBrand?.manufacturer_deadline_days;
     let deadline = formData.manufacturer_deadline;
     if (deadlineDays && date) {
@@ -240,7 +240,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                   <Select 
                     value={formData.brand} 
                     onValueChange={(value) => {
-                      const selectedBrand = brands.find(b => b.name === value);
+                      const selectedBrand = brands.find(b => b.id === value);
                       const deadlineDays = selectedBrand?.manufacturer_deadline_days;
                       const deadline = deadlineDays && formData.last_clocking_date ? (() => {
                         const date = new Date(formData.last_clocking_date);
@@ -258,10 +258,10 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                       {(() => {
                         const selectedSite = sites.find(s => s.name === formData.site);
                         const siteBrands = selectedSite?.brands?.length > 0
-                          ? brands.filter(b => selectedSite.brands.includes(b.name))
+                          ? brands.filter(b => selectedSite.brands.includes(b.id))
                           : brands;
                         return siteBrands.map((brand) => (
-                          <SelectItem key={brand.id} value={brand.name}>
+                          <SelectItem key={brand.id} value={brand.id}>
                             {brand.name}
                           </SelectItem>
                         ));
@@ -316,7 +316,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                 </div>
 
                 {formData.manufacturer_deadline && (() => {
-                  const selectedBrand = brands.find(b => b.name === formData.brand);
+                  const selectedBrand = brands.find(b => b.id === formData.brand);
                   const daysRemaining = Math.ceil((new Date(formData.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
                   
                   let bgColor = 'bg-slate-100';

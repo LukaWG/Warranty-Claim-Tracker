@@ -134,7 +134,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
           {totalCredit > 0 && (
             <div className="space-y-2">
-              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required for credit {">="} {CREDIT_APPROVAL_LIMIT})</span></Label>
+              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal"></span></Label>
               <Textarea
                 placeholder="Please provide justification for this credit amount..."
                 value={creditNote}
@@ -197,10 +197,10 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
               Mark as Credited
             </Button>
           )}
-          <span title={totalCredit > CREDIT_APPROVAL_LIMIT && !creditNote.trim() ? "Credit note is required to save credit" : undefined}>
+          <span title={!creditNote.trim() ? "Credit note is required to save credit" : undefined}>
           <Button
             onClick={handleSave}
-            disabled={totalCredit > CREDIT_APPROVAL_LIMIT && !creditNote.trim()}
+            disabled={!creditNote.trim()}
           >
             Save Credit
           </Button>

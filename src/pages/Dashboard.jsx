@@ -125,15 +125,6 @@ export default function Dashboard() {
     return null;
   })();
 
-  // const adminSiteBrands = (() => {
-  //   const userRole = currentUser?.custom_role || currentUser?.role;
-  //   if (userRole === 'Admin' && currentUser?.default_site) {
-  //     const site = allSites.find(s => s.name === currentUser.default_site);
-  //     return site?.brands || [];
-  //   }
-  //   return null;
-  // })();
-
   // Apply filters and role-based access
     const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
       // Processor role: see all claims from their branch
@@ -202,7 +193,7 @@ export default function Dashboard() {
 
       let deadlineStatusMatch = true;
       if (filters.deadlineStatus && filters.deadlineStatus !== 'all') {
-        const brand = brands.find(b => b.name === claim.brand);
+        const brand = brands.find(b => b.id === claim.brand);
         if (!claim.manufacturer_deadline) {
           deadlineStatusMatch = false;
         } else {
@@ -401,7 +392,7 @@ export default function Dashboard() {
 
   const visibleBrands = brands.filter(b => 
     activeSelectedBrands.includes(b.id) &&
-    (adminBrands === null || adminBrands.includes(b.name))
+    (adminBrands === null || adminBrands.includes(b.id))
   );
 
   // Calculate stats

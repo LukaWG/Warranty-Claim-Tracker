@@ -3,8 +3,15 @@ import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import TrafficLightIcon from './TrafficLightIcon';
 import { ArrowLeft } from 'lucide-react';
+import { databaseClients } from '@/api/databaseClient';
+import { useQuery } from '@tanstack/react-query';
 
 export default function BrandStatsSection({ claims, allClaims, brands, onBrandTileClick, activeBrandFilter, onDeadlineStatusFilter, onSiteFilter, onResetFilters }) {
+
+  const {data: allBrands = [] } = useQuery({
+    queryKey: ['allBrands'],
+    queryFn: () => databaseClients.Brand.get()
+  })
   const getColorCounts = (brand, claimsForBrand) => {
     const now = new Date();
     let redCount = 0, amberCount = 0, greenCount = 0;
@@ -49,10 +56,10 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
   const brandStats = brands
     .map(brand => {
-      const claimsForBrand = claims.filter(c => c.brand === brand.name && !['completed', 'claimed_info_requested', 'claimed_info_received', ].includes(c.status));
-      const claimsForBrandCount = claims.filter(c => c.brand === brand.name && !['ccompleted', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
-      const claimsForBrandsAllStatuses = claims.filter(c => c.brand === brand.name && !['completed'].includes(c.status));
-      const claimsForHours = claims.filter(c => c.brand === brand.name && ['in_progress', 'awaiting_review'].includes(c.status));
+      const claimsForBrand = claims.filter(c => c.brand === brand.id && !['completed', 'claimed_info_requested', 'claimed_info_received', ].includes(c.status));
+      const claimsForBrandCount = claims.filter(c => c.brand === brand.id && !['ccompleted', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
+      const claimsForBrandsAllStatuses = claims.filter(c => c.brand === brand.id && !['completed'].includes(c.status));
+      const claimsForHours = claims.filter(c => c.brand === brand.id && ['in_progress', 'awaiting_review'].includes(c.status));
       const totalExpectedHours = claimsForHours.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
       return {
         brand,
@@ -72,7 +79,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   const allBrandsTotalExpectedHours = allBrandsClaimsForHours.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
   const allBrandsStatusCounts = getStatusCounts(allClaims.filter(c => !['completed'].includes(c.status)));
   const allBrandsColorCounts = brands.reduce((acc, brand) => {
-    const claimsForBrand = allClaims.filter(c => c.brand === brand.name && !['completed'].includes(c.status));
+    const claimsForBrand = allClaims.filter(c => c.brand === brand.id && !['completed'].includes(c.status));
     const counts = getColorCounts(brand, claimsForBrand);
     return {
       redCount: acc.redCount + counts.redCount,
@@ -153,7 +160,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
   // Site breakdown when a brand is selected
   if (activeBrandFilter && activeBrandFilter !== 'all') {
-    const activeBrandObj = brands.find(b => b.name === activeBrandFilter);
+    const activeBrandObj = brands.find(b => b.id === activeBrandFilter);
     const brandClaims = claims.filter(c => c.brand === activeBrandFilter && !['completed', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
     const brandClaimsCount = allClaims.filter(c => c.brand === activeBrandFilter && !['completed'].includes(c.status));
     const sites = [...new Set(brandClaims.map(c => c.site).filter(Boolean))].sort();
@@ -179,7 +186,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
             All Brands
           </button>
           <span className="text-slate-300">/</span>
-          <span className="text-sm font-semibold text-slate-800">{activeBrandFilter}</span>
+          <span className="text-sm font-semibold text-slate-800">{allBrands.filter(b => b.id === activeBrandFilter)[0].name}</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {siteStats.map((stat, index) => (
@@ -240,7 +247,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
           totalExpectedHours={stat.totalExpectedHours}
           statusCounts={stat.statusCounts}
           colorCounts={stat.colorCounts}
-          onTileClick={() => onBrandTileClick(stat.brand.name)}
+          onTileClick={() => onBrandTileClick(stat.brand.id)}
           onDeadlineClick={onDeadlineStatusFilter}
         />
 

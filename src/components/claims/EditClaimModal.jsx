@@ -190,7 +190,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               <Select 
                 value={formData.brand} 
                 onValueChange={(value) => {
-                  const selectedBrand = brands.find(b => b.name === value);
+                  const selectedBrand = brands.find(b => b.id === value);
                   const deadlineDays = selectedBrand?.manufacturer_deadline_days;
                   const deadline = deadlineDays ? (() => {
                     const date = new Date();
@@ -207,10 +207,10 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   {(() => {
                     const selectedSite = sites.find(s => s.name === formData.site);
                     const siteBrands = selectedSite?.brands?.length > 0
-                      ? brands.filter(b => selectedSite.brands.includes(b.name))
+                      ? brands.filter(b => selectedSite.brands.includes(b.id))
                       : brands;
                     return siteBrands.map((brand) => (
-                      <SelectItem key={brand.id} value={brand.name}>
+                      <SelectItem key={brand.id} value={brand.id}>
                         {brand.name}
                       </SelectItem>
                     ));
@@ -377,32 +377,6 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                 className="bg-slate-50 cursor-not-allowed"
               />
             </div>
-
-            {/* {(parseFloat(formData.credit) || 0) >= 100 && (
-              <div className="space-y-2 col-span-2">
-                <Label>
-                  Credit Note <span className="text-red-500">*</span>
-                  <span className="text-xs text-slate-400 font-normal ml-1">(required when credit ≥ £100)</span>
-                </Label>
-                <Textarea
-                  placeholder="Please provide justification for this credit amount..."
-                  value={formData.credit_note}
-                  onChange={(e) => setFormData({ ...formData, credit_note: e.target.value })}
-                  required
-                  className="resize-none"
-                  rows={3}
-                />
-              </div>
-            )}
-
-            {claim?.approval_note && (
-              <div className="space-y-2 col-span-2">
-                <Label>Approver Note</Label>
-                <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
-                  <p className="text-sm text-slate-700">{claim.approval_note}</p>
-                </div>
-              </div>
-            )} */}
 
             <div className="space-y-2">
               <Label>Total Claim Cost (£)</Label>
