@@ -34,8 +34,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const [timelineClaim, setTimelineClaim] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
-  const [brandsLoading, setBrandsLoading] = useState(false);
-  const [sitesLoading, setSitesLoading] = useState(false);
 
   const toggleRow = (id) => setExpandedRows(prev => {
     const next = new Set(prev);
@@ -112,14 +110,15 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryKey: ['brands'],
     queryFn: async () => {
       const data = await databaseClients.Brand.get();
-      return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      const sorted = data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      return sorted;
     }
   });
 
   const { data: allSites = [] } = useQuery({
     queryKey: ['allSites'],
     queryFn: () => databaseClients.Site.get()
-  })
+  });
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ['allUsers'],
