@@ -197,7 +197,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     </SelectTrigger>
                     <SelectContent>
                       {sites.map((site) => (
-                        <SelectItem key={site.id} value={site.name}>
+                        <SelectItem key={site.id} value={site.id}>
                           {site.name}
                         </SelectItem>
                       ))}
@@ -256,7 +256,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     </SelectTrigger>
                     <SelectContent>
                       {(() => {
-                        const selectedSite = sites.find(s => s.name === formData.site);
+                        const selectedSite = sites.find(s => s.id === formData.site);
                         const siteBrands = selectedSite?.brands?.length > 0
                           ? brands.filter(b => selectedSite.brands.includes(b.id))
                           : brands;
