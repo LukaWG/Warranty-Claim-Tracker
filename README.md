@@ -23,5 +23,3 @@ A web application for managing warranty repair claims across multiple brands and
 ## Getting help
 
 If something isn't working as expected, raise an issue on the [GitHub Issues page](../../issues) or contact the development team directly.
-
-For developer and setup documentation, see [DEVELOPER.md](DEVELOPER.md).
