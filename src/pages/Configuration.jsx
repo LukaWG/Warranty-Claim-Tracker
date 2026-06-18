@@ -1496,13 +1496,17 @@ export default function Configuration() {
 					<Label className="text-sm font-medium">Hourly Rate per Brand (£)</Label>
 					<p className="text-xs text-slate-500">Set a rate per brand. Leave blank to exclude that brand.</p>
 					<div className="border rounded-md p-3 bg-slate-50">
+						{(editingSite.brands || []).length === 0 ? (
+							<p className="text-xs text-slate-400">No brands selected above</p>
+						) : (
+						<>
 						<div className="flex items-center gap-3 mb-2">
 							<span className="text-xs font-medium text-slate-500 w-32 flex-shrink-0"></span>
 							<span className="text-xs font-semibold text-slate-600 flex-1 text-center">Rate 1 (£)</span>
 							<span className="text-xs font-semibold text-slate-600 flex-1 text-center">Rate 2 (£)</span>
 						</div>
 					<div className="space-y-2">
-					{brands.map(brand => (
+					{brands.filter(brand => (editingSite.brands || []).includes(brand.id)).map(brand => (
 						<div key={brand.id} className="flex items-center gap-3">
 						<span className="text-sm text-slate-700 w-32 flex-shrink-0">{brand.name}</span>
 						<Input
@@ -1538,8 +1542,7 @@ export default function Configuration() {
 						</div>
 					))}
 					</div>
-					{brands.length === 0 && (
-						<p className="text-xs text-slate-400">No brands configured yet</p>
+					</>
 					)}
 					</div>
 				</div>
