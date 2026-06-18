@@ -31,6 +31,7 @@ const statusConfig = {
 export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
+  const [mounted, setMounted] = useState(false);
   const [timelineClaim, setTimelineClaim] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
@@ -80,6 +81,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
         setVisibleColumns(DEFAULT_COLUMNS);
       }
     }
+    setMounted(true);
   }, []);
 
   const handleColumnsChange = (newColumns) => {
@@ -201,7 +203,7 @@ const SortableHead = ({ colKey, children }) => {
                </div>
              </div>
              <div className="flex items-center gap-2">
-               <ColumnVisibilityPicker visibleColumns={visibleColumns} onColumnsChange={handleColumnsChange} userRole={currentUser?.custom_role || currentUser?.role} />
+               <ColumnVisibilityPicker visibleColumns={mounted ? visibleColumns : DEFAULT_COLUMNS} onColumnsChange={handleColumnsChange} userRole={currentUser?.custom_role || currentUser?.role} />
                <Button
                  variant="ghost"
                  size="icon"

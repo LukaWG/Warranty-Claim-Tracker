@@ -226,12 +226,12 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         </DialogHeader>
 
         <div className="space-y-6">
-          {requireNote && (
+          {/* {requireNote && (
             <div className="flex items-center gap-2 px-4 py-3 rounded-md bg-amber-50 border border-amber-200">
               <span className="text-amber-500">!</span>
               <p className="text-sm text-amber-700 font-medium">Please add a note explaining this alert before it is saved.</p>
             </div>
-          )}
+          )} */}
           
           {/* Add Note/Withdraw Section */}
           <div className="border-b pb-6">

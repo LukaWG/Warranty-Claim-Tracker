@@ -11,19 +11,19 @@ const DEFAULT_COLUMNS = {
   site: true,
   brand: true,
   expected_hours: true,
-  actual_hours: true,
+  actual_hours: false,
   parts: true,
   labour: true,
-  sub_con: true,
-  credit: true,
+  sub_con: false,
+  credit: false,
   total_claim_cost: true,
-  last_clocking_date: true,
-  scanned_date: true,
+  last_clocking_date: false,
+  scanned_date: false,
   manufacturer_deadline: true,
   status: true,
-  approval_status: true,
-  claimed_date: true,
-  claimed_by: true,
+  approval_status: false,
+  claimed_date: false,
+  claimed_by: false,
 };
 
 const COLUMN_LABELS = {
@@ -81,7 +81,7 @@ export default function ColumnVisibilityPicker({ visibleColumns, onColumnsChange
           title="Customize columns"
         >
           <Settings className="h-4 w-4" />
-          Columns ({visibleCount})
+          <span suppressHydrationWarning>Columns ({visibleCount})</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0">
