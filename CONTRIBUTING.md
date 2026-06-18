@@ -8,7 +8,7 @@ This document covers local setup, architecture, and conventions for contributors
 
 - Node.js 22.12.0+
 - PostgreSQL database
-- A `.env.local` file with the required environment variables (see below)
+- A `.env` file with the required environment variables (see below)
 
 ---
 
@@ -46,7 +46,7 @@ When restoring production behaviour, revert those three files.
 
 ## Architecture
 
-Next.js 15 app using the **Pages Router** (`src/pages/`). Migrated from Vite + React Router — see `MIGRATION_SUMMARY.md` for details.
+Next.js 15 app using the **Pages Router** (`src/pages/`).
 
 ### Folder structure
 
