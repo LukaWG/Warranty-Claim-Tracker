@@ -1,5 +1,14 @@
 import { authClient } from '../lib/auth-client';
 
+const TEMP_USER_DETAILS = {
+    id: "671657357168713517685713485",
+    email: "lwilson-green@hendy-group.com",
+    firstName: "Luka",
+    lastName: "Wilson-Green",
+    customRole: "Owner",
+    role: "Owner"
+};
+
 // ---------------------------------------------------------------------------
 // Config — set NEXT_PUBLIC_API_URL in your .env.local
 // ---------------------------------------------------------------------------
@@ -28,6 +37,7 @@ let actingUserId = loadActingUserId();
 // Internal fetch helper
 // ---------------------------------------------------------------------------
 async function apiFetch(path, options = {}) {
+  console.log(`[API FETCH URL] ${API_BASE}${path}`);
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
@@ -66,6 +76,7 @@ class DatabaseClient {
 
   // PUT /<collection>/<id>
   async update(id, data) {
+    console.log(data);
     return apiFetch(`/${this.fileName}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -129,8 +140,17 @@ class DatabaseClient {
   async me() {
     if (this.fileName !== 'User') throw new Error('me() is only available on the User client');
     const session = await authClient.getSession();
-    const authUser = session?.data?.user;
+
+    var authUser;
+    authUser = session?.data?.user;
+
+    // TEMP map auth user to one user while database not running
+    if (!authUser) {
+        authUser = TEMP_USER_DETAILS;
+    };
+
     if (!authUser) return null;
+      
     return {
       id:                  authUser.id,
       email:               authUser.email,

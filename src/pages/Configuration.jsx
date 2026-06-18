@@ -1425,13 +1425,14 @@ export default function Configuration() {
 					const brandRates1 = {};
 					const brandRates2 = {};
 					brands.forEach(brand => {
-					const val1 = editingSite.brand_hourly_rates_1?.[brand.name];
+					const val1 = editingSite.brand_hourly_rates_1?.[brand.id];
+					console.log(brand);
 					if (val1 !== undefined && val1 !== '') {
-						brandRates1[brand.name] = parseFloat(val1);
+						brandRates1[brand.id] = parseFloat(val1);
 					}
-					const val2 = editingSite.brand_hourly_rates_2?.[brand.name];
+					const val2 = editingSite.brand_hourly_rates_2?.[brand.id];
 					if (val2 !== undefined && val2 !== '') {
-						brandRates2[brand.name] = parseFloat(val2);
+						brandRates2[brand.id] = parseFloat(val2);
 					}
 					});
 					updateSiteMutation.mutate({ id: editingSite.id, data: {

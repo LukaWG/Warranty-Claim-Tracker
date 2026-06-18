@@ -104,7 +104,7 @@ class DatabaseClient {
         if (!authUser) {
             authUser = TEMP_USER_DETAILS;
         };
-
+        
         if (!authUser) return null;
         return {
             id: authUser.id,

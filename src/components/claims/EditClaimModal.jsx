@@ -42,7 +42,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
 
   const [creditExpanded, setCreditExpanded] = useState(!!(claim?.credit || claim?.credit_parts || claim?.credit_labour || claim?.credit_sub_con));
 
-  const existingParts = (claim?.claim_number || '').split('-').filter(Boolean);
+  const existingParts = (claim?.claim_number || '').split(' & ').filter(Boolean);
   const [claimNumbers, setClaimNumbers] = useState(existingParts.length > 0 ? existingParts : ['']);
   const [formData, setFormData] = useState({
     wip_number: claim?.wip_number || '',
@@ -76,7 +76,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
     alert_resolution: claim?.alert_resolution || '',
   });
 
-  const selectedSite = sites.find(s => s.name === formData.site);
+  const selectedSite = sites.find(s => s.id === claim?.site || '');
 
   const updateTotal = (parts, labour, subCon) => {
     const total = (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
@@ -85,7 +85,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const claimNumberParts = claimNumbers.filter(Boolean);
+    const claimNumberParts = claimNumbers.map(num => num.replace(/&/g, '')).filter(Boolean);
     const { scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = formData;
 
     const creditVal = (parseFloat(formData.credit_parts) || 0) + (parseFloat(formData.credit_labour) || 0) + (parseFloat(formData.credit_sub_con) || 0);
@@ -107,7 +107,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
     onSave({
       ...rest,
       status: newStatus,
-      claim_number: claimNumberParts.join('-'),
+      claim_number: claimNumberParts.join(' & '),
       expected_hours: parseFloat(formData.expected_hours),
       actual_hours: formData.actual_hours ? parseFloat(formData.actual_hours) : null,
       parts: formData.parts ? parseFloat(formData.parts) : null,
