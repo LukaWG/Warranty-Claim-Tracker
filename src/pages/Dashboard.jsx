@@ -102,7 +102,7 @@ export default function Dashboard() {
           }
           return null;
         } catch (e) {
-          console.warn('Failed to parse admin brands:', currentUser.default_brands);
+          console.warn('Failed to parse admin brands:', currentUser.default_brands);  
           return null;
         }
       } else if (Array.isArray(currentUser.default_brands) && currentUser.default_brands.length > 0) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import TrafficLightIcon from './TrafficLightIcon';
@@ -7,6 +7,8 @@ import { databaseClients } from '@/api/databaseClient';
 import { useQuery } from '@tanstack/react-query';
 
 export default function BrandStatsSection({ claims, allClaims, brands, onBrandTileClick, activeBrandFilter, onDeadlineStatusFilter, onSiteFilter, onResetFilters }) {
+
+  const [brandsLoading, setBrandsLoading] = useState(false);
 
   const {data: allBrands = [] } = useQuery({
     queryKey: ['allBrands'],

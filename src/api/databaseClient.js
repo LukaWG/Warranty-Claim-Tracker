@@ -7,7 +7,8 @@ const TEMP_USER_DETAILS = {
     email: "lwilson-green@hendy-group.com",
     firstName: "Luka",
     lastName: "Wilson-Green",
-    customRole: "Owner"
+    customRole: "Owner",
+    role: "Owner"
 };
 
 const ACTING_USER_STORAGE_KEY = 'actingUserId';
