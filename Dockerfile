@@ -15,6 +15,8 @@ COPY . .
 
 ARG AUTH_DATABASE_URL=postgresql://build:build@localhost/build
 ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
+ARG BETTER_AUTH_SECRET=build-time-placeholder
+ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
 RUN npx prisma generate
 RUN npm run build
 
