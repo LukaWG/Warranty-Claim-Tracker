@@ -19,7 +19,7 @@ services:
     depends_on:
       - db
     environment:
-      - AUTH_DATABASE_URL=${AUTH_DATABASE_URL}
+      - AUTH_DATABASE_URL=postgresql://adminuser:Password@db:5432/warranty_claim_tracker
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL}
 
