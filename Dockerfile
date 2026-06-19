@@ -9,12 +9,10 @@ RUN npm install --legacy-peer-deps
 
 # Build the application
 FROM base AS builder
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# DATABASE_URL is required by prisma generate but no real connection is made at build time
-ARG DATABASE_URL=postgresql://build:build@localhost/build
-ENV DATABASE_URL=$DATABASE_URL
 ARG AUTH_DATABASE_URL=postgresql://build:build@localhost/build
 ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
 RUN npx prisma generate
@@ -26,7 +24,6 @@ ENV NODE_ENV=production
 
 RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nodejs nextjs
 
-# Copy public assets only if the directory exists in the source repository
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
