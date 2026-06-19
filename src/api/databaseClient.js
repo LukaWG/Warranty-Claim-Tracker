@@ -4,7 +4,6 @@ import { authClient } from '../lib/auth-client';
 // Config — set NEXT_PUBLIC_API_URL in your .env.local
 // ---------------------------------------------------------------------------
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
-
 const ACTING_USER_STORAGE_KEY = 'actingUserId';
 
 function loadActingUserId() {

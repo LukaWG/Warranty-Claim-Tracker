@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from "./prisma"
 
 const isDev = process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
+const tunnelUrl = process.env.TUNNEL_URL || ''
 
 export const auth = betterAuth({
   baseURL: isDev
@@ -15,6 +16,7 @@ export const auth = betterAuth({
           "10.*:*",
           "172.16.*:*",
           "lukas-mbp.local:*",
+          tunnelUrl,
         ],
         protocol: "http",
       }
@@ -27,6 +29,7 @@ export const auth = betterAuth({
         "http://10.*:*",
         "http://172.16.*:*",
         "http://lukas-mbp.local:*",
+          tunnelUrl,
       ]
     : [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
   database: prismaAdapter(prisma, {
