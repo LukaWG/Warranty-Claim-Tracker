@@ -15,6 +15,8 @@ COPY . .
 # DATABASE_URL is required by prisma generate but no real connection is made at build time
 ARG DATABASE_URL=postgresql://build:build@localhost/build
 ENV DATABASE_URL=$DATABASE_URL
+ARG AUTH_DATABASE_URL=postgresql://build:build@localhost/build
+ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
 RUN npx prisma generate
 RUN npm run build
 
