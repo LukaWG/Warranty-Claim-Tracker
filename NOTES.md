@@ -4,6 +4,4 @@ NOTE:
  -  {C:\Users\wilsl\.local\bin\claude.exe}
 
 CHANGES made to run on Hendy laptop:
- -  Changed databaseclint back to old file (new file is now called databaseClientNew.js)
- -  Line 41, App.jsx commented out navigate to log in page
  -  Comment out auth Auth.ts and wrote mock functions to allow app to run

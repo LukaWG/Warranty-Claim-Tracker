@@ -1,14 +1,5 @@
 import { authClient } from '../lib/auth-client';
 
-const TEMP_USER_DETAILS = {
-    id: "671657357168713517685713485",
-    email: "lwilson-green@hendy-group.com",
-    firstName: "Luka",
-    lastName: "Wilson-Green",
-    customRole: "Owner",
-    role: "Owner"
-};
-
 // ---------------------------------------------------------------------------
 // Config — set NEXT_PUBLIC_API_URL in your .env.local
 // ---------------------------------------------------------------------------
@@ -143,11 +134,6 @@ class DatabaseClient {
 
     var authUser;
     authUser = session?.data?.user;
-
-    // TEMP map auth user to one user while database not running
-    if (!authUser) {
-        authUser = TEMP_USER_DETAILS;
-    };
 
     if (!authUser) return null;
       
