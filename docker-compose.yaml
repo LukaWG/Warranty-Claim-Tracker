@@ -16,6 +16,12 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      - AUTH_DATABASE_URL=${AUTH_DATABASE_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
 
   watchtower:
     image: containrrr/watchtower
