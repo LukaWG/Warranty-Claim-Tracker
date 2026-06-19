@@ -12,6 +12,8 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# DATABASE_URL is required by prisma generate but no real connection is made at build time
+ENV DATABASE_URL=postgresql://adminuser:Password@192.168.1.144:51214/warranty-claim-tracker
 RUN npx prisma generate && npm run build
 
 # Production image
