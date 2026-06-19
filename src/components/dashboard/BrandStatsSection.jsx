@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
-import { motion, AnimatePresence } from "framer-motion";
-import TrafficLightIcon from './TrafficLightIcon';
+import { motion } from "framer-motion";
 import { ArrowLeft } from 'lucide-react';
 import { databaseClients } from '@/api/databaseClient';
 import { useQuery } from '@tanstack/react-query';

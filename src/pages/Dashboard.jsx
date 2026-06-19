@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BrandStatsSection from '@/components/dashboard/BrandStatsSection';
 import ClaimsTable from '@/components/dashboard/ClaimsTable';
@@ -9,13 +9,10 @@ import ClaimNotesModal from '@/components/claims/ClaimNotesModal';
 import CreditOptionsModal from '@/components/claims/CreditOptionsModal';
 import ExportButton from '@/components/dashboard/ExportButton';
 
-import { FileText, Clock, CheckCircle, AlertCircle, XCircle, Loader, Search, Gift } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
-import { authClient } from '@/lib/auth-client';
 // import { GetServerSideProps } from "next"
 
 export const getServerSideProps = async ({ req, res }) => {
@@ -23,7 +20,7 @@ export const getServerSideProps = async ({ req, res }) => {
     headers: new Headers(req.headers),
   })
 
-  if (!session) {
+if (!session) {
     return { redirect: { destination: "/login", permanent: false } }
   }
 

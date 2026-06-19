@@ -1,3 +1,6 @@
+//TODO:
+//  BUG When approving/rejecting a credit request the claim stays on the page.
+
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { databaseClients, getData } from '@/api/databaseClient';
+import { databaseClients } from '@/api/databaseClient';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"

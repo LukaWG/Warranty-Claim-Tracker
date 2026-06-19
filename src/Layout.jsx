@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { createPageUrl } from './utils';
 import {
   Settings,
   LayoutDashboard,
   FileEdit,
-  Search,
-  BarChart3,
   LogOut,
   Menu,
   X,
@@ -26,7 +24,7 @@ import HendyLogo from '@/components/layout/HendyLogo';
 import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
-import { authClient, useSession, signOut } from "@/lib/auth-client";
+import { authClient, signOut } from "@/lib/auth-client";
 import { authUsers } from '@/api/authClient';
 import { useRouter } from "next/router";
 import {

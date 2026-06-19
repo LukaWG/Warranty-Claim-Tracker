@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Clock, TrendingUp, AlertTriangle, Users } from 'lucide-react';
-import { differenceInDays, startOfWeek, startOfMonth, format, parseISO, isValid } from 'date-fns';
+import { differenceInDays, startOfWeek, startOfMonth, format, isValid } from 'date-fns';
 
 const HENDY_BLUE = '#222b57';
 const HENDY_TEAL = '#56C4B7';

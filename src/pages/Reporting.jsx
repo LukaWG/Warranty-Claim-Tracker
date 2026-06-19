@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import ChartsSection from '@/components/dashboard/ChartsSection';
-import DynamicChartsSection from '@/components/dashboard/DynamicChartsSection';
 import DashboardFilters from '@/components/dashboard/DashboardFilters';
-import StatsCard from '@/components/dashboard/StatsCard';
 import ExportButton from '@/components/dashboard/ExportButton';
 import ExportChartsButton from '@/components/dashboard/ExportChartsButton';
 import CustomizeReportingModal from '@/components/reporting/CustomizeReportingModal';
-import { BarChart3, FileText, Clock, CheckCircle, XCircle, AlertCircle, Loader, Settings2, Wrench, Package, PoundSterling, HardHat, Search, Gift } from 'lucide-react';
+import { BarChart3, Settings2 } from 'lucide-react';
 import LagTimeSection from '@/components/reporting/LagTimeSection';
 import { Button } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';

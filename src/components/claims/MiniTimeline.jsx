@@ -2,10 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from "date-fns";
 import { databaseClients } from '@/api/databaseClient';
-import { TableRow, TableCell } from "@/components/ui/table";
 import { 
-  CheckCircle2, AlertCircle, MessageSquare, FileEdit, PlusCircle, 
-  Clock, ArrowRightLeft, GitCommitHorizontal 
+  CheckCircle2, AlertCircle, MessageSquare, FileEdit, PlusCircle, ArrowRightLeft 
 } from "lucide-react";
 
 const statusLabels = {
