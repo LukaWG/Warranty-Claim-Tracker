@@ -17,4 +17,4 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           push: true
-          tags: yourusername/yourrepo:latest
+          tags: lukawg/warranty-repair-tracker:latest

@@ -12,7 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   nextapp:
-    image: lukawg/Warranty-Claim-Tracker:latest
+    image: lukawg/warranty-repair-tracker:latest
     ports:
       - "3000:3000"
     restart: unless-stopped
