@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:22-slim AS base
 
 WORKDIR /app
 
@@ -22,8 +22,7 @@ RUN npm run build
 FROM base AS runner
 ENV NODE_ENV=production
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nodejs nextjs
 
 # Copy public assets only if the directory exists in the source repository
 COPY --from=builder /app/.next/standalone ./
