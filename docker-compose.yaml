@@ -11,17 +11,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  nextapp:
-    image: lukawg/warranty-repair-tracker:latest
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
-    depends_on:
-      - db
-    env_file:
-      - .env
-    environment:
-      - AUTH_DATABASE_URL=postgresql://adminuser:Password@db:5432/warranty_claim_tracker
+  # nextapp:
+  #   image: lukawg/warranty-repair-tracker:latest
+  #   ports:
+  #     - "3000:3000"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - db
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - AUTH_DATABASE_URL=postgresql://adminuser:Password@db:5432/warranty_claim_tracker
 
   # watchtower:
   #   image: containrrr/watchtower

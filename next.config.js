@@ -10,13 +10,11 @@ if (!fs.existsSync(stubPath)) {
   fs.writeFileSync(stubPath, 'export const connect = () => {};');
 }
 
-const tunnelUrl = process.env.TUNNEL_URL;
-
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
-  allowedDevOrigins: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost', tunnelUrl],
-  // allowedHosts: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost', tunnelUrl],
+  allowedDevOrigins: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
+  // allowedHosts: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
   eslint: {
     ignoreDuringBuilds: true,
   },
