@@ -18,11 +18,12 @@ npm run typecheck     # tsc check via jsconfig.json (lenient)
 
 This repo has local-only modifications to run without a live database or auth service:
 
-- **Auth is mocked** — `src/lib/auth.ts` contains stub functions instead of the real Better Auth config.
+- **Auth is mocked** — `src/lib/auth.ts` contains a stub instead of the real Better Auth config. `auth.api.getSession()` always returns a mock Owner session, and `auth.handler()` serves mock JSON for all `/api/auth/*` endpoints, so any login credentials succeed.
+- **Middleware bypassed** — `middleware.ts` allows all requests (the mock never issues a session cookie, so the original cookie check would redirect-loop). Original code is commented in the file.
 - **Database client** points to JSON files — `src/api/databaseClient.js` is the active file; `databaseClientNew.js` is the Prisma-backed version (inactive locally).
 - `_app.jsx` (or `App.jsx`) has the redirect-to-login navigation commented out.
 
-When restoring production behaviour, revert these three changes.
+When restoring production behaviour, revert these four changes.
 
 ## Architecture
 
