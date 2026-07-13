@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BrandStatsSection from '@/components/dashboard/BrandStatsSection';
 import ClaimsTable from '@/components/dashboard/ClaimsTable';
@@ -59,6 +60,13 @@ export default function Dashboard() {
     const [showClaimed, setShowClaimed] = useState(false);
     const [repairSearch, setRepairSearch] = useState('');
     const [wipSearch, setWipSearch] = useState('');
+
+    const router = useRouter();
+    useEffect(() => {
+      if (!router.isReady) return;
+      const wip = typeof router.query.wip === 'string' ? router.query.wip : '';
+      if (wip) setWipSearch(wip);
+    }, [router.isReady, router.query.wip]);
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
@@ -355,6 +363,21 @@ export default function Dashboard() {
     });
   };
 
+  const handleStatusFilter = (statusKey) => {
+    const statusMap = {
+      'in_progress': ['in_progress'],
+      'awaiting_review': ['awaiting_review'],
+      'total_active': ['in_progress', 'awaiting_review'],
+      'claimed_info_received': ['in_progress', 'awaiting_review'],
+      'awaiting_approval': ['awaiting_approval'],
+      'approved': ['approved'],
+      'rejected': ['rejected'],
+      'credit_rejected': ['credit_rejected'],
+    };
+    const statuses = statusMap[statusKey] || [statusKey];
+    setFilters(f => ({ ...f, status: statuses }));
+  }
+
   const handleSaveSelectedBrands = (newSelected) => {
     setSelectedBrands(newSelected);
     localStorage.setItem('selectedBrandTiles', JSON.stringify(newSelected));
@@ -374,9 +397,19 @@ export default function Dashboard() {
     return brands.map(b => b.id);
   })();
 
+  const siteBrandRestriction = (() => {
+    const userRole = currentUser?.custom_role || currentUser?.role;
+    if (['Processor', 'Site Manager'].includes(userRole) && currentUser?.default_site) {
+      const userSite = allSites.find(s => s.name === currentUser.default_site);
+      return userSite?.brands || null;
+    }
+    return null;
+  })();
+
   const visibleBrands = brands.filter(b => 
     activeSelectedBrands.includes(b.id) &&
-    (adminBrands === null || adminBrands.includes(b.id))
+    (adminBrands === null || adminBrands.includes(b.id)) &&
+    (siteBrandRestriction === null || siteBrandRestriction.includes(b.id))
   );
 
   // Calculate stats
@@ -416,9 +449,10 @@ export default function Dashboard() {
           return allClaims;
         })()} onRepairSearchChange={setRepairSearch} repairSearch={repairSearch} onWipSearchChange={setWipSearch} wipSearch={wipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
 
-          {/* Brand Stats Section */}
-          {!['Processor', 'Site Manager'].includes(currentUser?.custom_role || currentUser?.role) && (
-            <BrandStatsSection claims={claims} allClaims={allClaims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} />
+          {/* Brand Stats Section 
+              Only show if user is NOT  a Processor or Site Manager */}
+          {currentUser?.customRole !== 'Processor' && currentUser?.customRole !== 'Site Manager' && (
+            <BrandStatsSection claims={claims} allClaims={claims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} onStatusFilter={handleStatusFilter} />
           )}
 
         {/* Claims Table */}

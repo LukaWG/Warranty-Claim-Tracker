@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { format } from 'date-fns';
-import { PenSquare, MessageCircle, ChevronRight, Eye } from 'lucide-react';
+import { PenSquare, MessageCircle, ChevronRight, Eye, Filter, X } from 'lucide-react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ComposeMessageModal from '@/components/messages/ComposeMessageModal';
 import MessageThread from '@/components/messages/MessageThread';
 import { databaseClients } from '@/api/databaseClient';
@@ -14,6 +15,9 @@ export default function Messages() {
   const queryClient = useQueryClient();
   const [composeOpen, setComposeOpen] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
+  const [filterSite, setFilterSite] = useState('');
+  const [filterBrand, setFilterBrand] = useState('');
+  const [filterUnread, setFilterUnread] = useState(false);
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -47,6 +51,17 @@ export default function Messages() {
     queryFn: () => databaseClients.Site.get()
   });
 
+  const { data: allClaims = [] } = useQuery({
+    queryKey: ['claims-for-messages'],
+    queryFn: () => databaseClients.WarrantyClaim.get(),
+  })
+
+  const claimsByWip = React.useMemo(() => {
+    const map = {};
+    allClaims.forEach(c => { if (c.wip_number) map[c.wip_number] = c; });
+    return map;
+  }, [allClaims]);
+
   const markReadMutation = useMutation({
     mutationFn: ({ messageId }) => databaseClients.MessageRead.create({
        message_id: messageId,
@@ -61,21 +76,45 @@ export default function Messages() {
 
   const readIds = new Set(readReceipts.map(r => r.message_id));
 
-  // Root messages (not replies)
-  const rootMessages = allMessages.filter(m => !m.is_reply);
-
-  // Visible threads based on role
-  const visibleThreads = rootMessages.filter(m => {
-    if (isAdmin) return true; // admins see all
-    return m.target_site === userSite; // processors see their site's messages
-  });
-
   const getReplies = (rootId) => allMessages.filter(m => m.parent_message_id === rootId);
 
   const isThreadUnread = (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
     return allInThread.some(m => m.sender_email !== currentUser?.email && !readIds.has(m.id));
   };
+
+  // Root messages (not replies)
+  const rootMessages = allMessages.filter(m => !m.is_reply);
+
+  // Visible threads based on role
+  const roleFilteredThreads = rootMessages.filter(m => {
+    if (isAdmin) return true;
+    return m.target_site === userSite;
+  });
+
+  const siteName = (id) => sites.find(site => site.id === id)?.name || id;
+
+  // Derive unique sites and brands for filter dropdowns
+  const availableSites = useMemo(() =>
+    [...new Set(roleFilteredThreads.map(m => m.target_site).filter(Boolean))]
+      .sort((a, b) => String(siteName(a)).localeCompare(String(siteName(b)))),
+    [roleFilteredThreads, sites]
+  );
+
+  const availableBrands = useMemo(() =>
+    [...new Set(roleFilteredThreads.map(m => claimsByWip[m.wip_number]?.brands).filter(Boolean))].sort(),
+    [roleFilteredThreads, claimsByWip]
+  );
+
+  // Apply filters
+  const visibleThreads = roleFilteredThreads.filter(m => {
+    if (filterSite && m.target_site !== filterSite) return false;
+    if (filterBrand && claimsByWip[m.wip_number]?.brand !== filterBrand) return false;
+    if (filterUnread && !isThreadUnread(m)) return false;
+    return true;
+  });
+
+  const activeFilters = [filterSite, filterBrand, filterUnread].filter(Boolean).length;
 
   const markThreadRead = async (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
@@ -109,6 +148,50 @@ export default function Messages() {
           )}
         </div>
 
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <div className="flex items-center gap-1 text-slate-500 text-sm">
+            <Filter className="h-4 w-4" />
+            <span>Filter:</span>
+          </div>
+          {isAdmin && availableSites.length > 1 && (
+            <Select value={filterSite} onValueChange={setFilterSite}>
+              <SelectTrigger className="h-8 w-36 text-xs">
+                <SelectValue placeholder="All sites" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All sites</SelectItem>
+                {availableSites.map(s => <SelectItem key={s} value={s}>{siteName(s)}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+          {availableBrands.length > 0 && (
+            <Select value={filterBrand} onValueChange={setFilterBrand}>
+              <SelectTrigger className="h-8 w-36 text-xs">
+                <SelectValue placeholder="All brands" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={null}>All brands</SelectItem>
+                {availableBrands.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
+          <button
+            onClick={() => setFilterUnread(v => !v)}
+            className={`h-8 px-3 rounded-md border text-xs font-medium transition-colors ${filterUnread ? 'bg-red-50 border-red-300 text-red-700' : 'bg-white border-slate-200 text-slate-200 text-slate-600 hover:bg-slate-50'}`}
+          >
+            Unread only
+          </button>
+          {activeFilters > 0 && (
+            <button
+              onClick={() => { setFilterSite(''); setFilterBrand(''); setFilterUnread(false);}}
+              className="h-8 px-2 rounded-md text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
+            >
+              <X className="h-3 w-3" /> Clear
+            </button>
+          )}
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
@@ -127,7 +210,7 @@ export default function Messages() {
           <Card className="border-0 shadow-xl bg-white">
             <CardHeader className="border-b border-slate-100 pb-4">
               <CardTitle className="text-lg font-semibold text-slate-800">
-                {isAdmin ? 'All Threads' : `Messages for ${userSite}`}
+                {isAdmin ? 'All Threads' : `Messages for ${siteName(userSite) || 'your site'}`}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 divide-y divide-slate-100">
@@ -176,6 +259,7 @@ export default function Messages() {
               onReply={() => {
                 queryClient.invalidateQueries({ queryKey: ['messages'] });
               }}
+              onGoToRepair={() => setSelectedThread(null)}
             />
           </DialogContent>
         </Dialog>

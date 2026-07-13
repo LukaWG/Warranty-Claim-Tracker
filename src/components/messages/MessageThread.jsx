@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
-import { Reply, MessageCircle, CheckCheck } from 'lucide-react';
+import { Reply, MessageCircle, CheckCheck, Paperclip, X, ExternalLink } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { useRouter } from 'next/router';
+import { createPageUrl } from '@/utils';
 
 function MessageBubble({ message, isOwn, readers }) {
   return (
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
       <div className={`max-w-[80%] rounded-xl px-4 py-2.5 ${isOwn ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-800'}`}>
         <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.body}</p>
+        {message.image_urls?.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {message.image_urls.map((url, i) => (
+              <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                <img src={url} alt="" className="h-20 w-20 object-cover rounded-md border border-white/20 hover:opacity-90 transition-opactity" />
+              </a>
+            ))}
+            </div>
+        )}
       </div>
       <span className="text-xs text-slate-400 px-1">
         {message.sender_name || message.sender_email} · {format(new Date(message.created_date), 'dd/MM/yyyy HH:mm')}
@@ -28,10 +39,30 @@ function MessageBubble({ message, isOwn, readers }) {
   );
 }
 
-export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [] }) {
+export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [], onGoToRepair }) {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const handleImageAdd = (e) => {
+    const files = Array.from(e.target.files);
+    setImageFiles(prev => [...prev, ...files]);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target.result]);
+      reader.readAsDataURL(f);
+    });
+    e.target.value = '';
+  };
+
+  const removeImage = (idx) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== idx));
+    setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  };
 
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
@@ -41,18 +72,30 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const handleSendReply = async () => {
     if (!replyBody.trim()) return;
     setSending(true);
-    await databaseClients.Message.create({
-      claim_id: rootMessage.claim_id,
-      wip_number: rootMessage.wip_number,
-      target_site: rootMessage.target_site,
-      subject: rootMessage.subject,
-      body: replyBody.trim(),
-      sender_email: currentUser.email,
-      sender_name: currentUser.full_name || currentUser.email,
-      parent_message_id: rootMessage.id,
-      is_reply: true
-    });
+    const senderName = currentUser.full_name || currentUser.email;
+    const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
+    await Promise.all([
+      databaseClients.Message.create({
+        claim_id: rootMessage.claim_id,
+        wip_number: rootMessage.wip_number,
+        target_site: rootMessage.target_site,
+        subject: rootMessage.subject,
+        body: replyBody.trim(),
+        sender_email: currentUser.email,
+        sender_name: senderName,
+        parent_message_id: rootMessage.id,
+        is_reply: true,
+        image_urls: uploadedUrls
+      }),
+      databaseClients.ClaimNote.create({
+        claim_id: rootMessage.claim_id,
+        content: `[Message Reply] ${rootMessage.subject}\n\n${replyBody.trim()}\n\n- ${senderName}`,
+        image_url: uploadedUrls[0] || undefined
+      })
+    ]);
     setReplyBody('');
+    setImageFiles([]);
+    setImagePreviews([]);
     setSending(false);
     queryClient.invalidateQueries({ queryKey: ['messages'] });
     onReply?.();
@@ -67,6 +110,18 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         <span className="text-sm font-medium text-slate-700">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
         <Badge variant="outline" className="text-xs">{rootMessage.wip_number}</Badge>
         <Badge variant="outline" className="text-xs bg-slate-50">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
+        <Button 
+        size="sm" 
+        variant="outline" 
+        className="ml-auto h-7 text-xs gap-1" 
+        onClick={ () => {
+          router.push(`${createPageUrl('Dashboard')}?wip=${encodeURIComponent(rootMessage.wip_number)}`);
+          onGoToRepair?.();
+        }}
+      >
+        <ExternalLink className="h-3 w-3" />
+        Go to Repair
+      </Button>
       </div>
       <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
         {allMessages.map(msg => {
@@ -81,7 +136,20 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         );
       })}
       </div>
-      <div className="flex gap-2 pt-2 border-t border-slate-100">
+      <div className="pt-2 border-t border-slate-100 space-y-2">
+        {imagePreviews.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {imagePreviews.map((src, idx) => (
+              <div key={idx} className="relative">
+                <img src={src} alt="" className="h-14 w-14 object-cover rounded-md border border-slate-200" />
+                <button onClick={() => removeImage(idx)} className="absolute -top-1.5 -right-1.5 bg-white rounded-full border border-slate-200 p-0.5 hover:bg-red-50">
+                  <X className="h-3 w-3 text-slate-500" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex gap-2">
         <Textarea
           placeholder="Write a reply..."
           value={replyBody}
@@ -89,9 +157,16 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
           rows={2}
           className="resize-none text-sm"
         />
-        <Button size="icon" className="self-end h-9 w-9 shrink-0" onClick={handleSendReply} disabled={!replyBody.trim() || sending}>
+        <div className="flex flex-col gap-1 self-end">
+            <Button size="icon" variant="outline" className="h-9 w-9 shrink-0" onClick={() => fileInputRef.current?.click()}>
+              <Paperclip className="h-4 w-4" />
+            </Button>
+        <Button size="icon" className="h-9 w-9 shrink-0" onClick={handleSendReply} disabled={!replyBody.trim() || sending}>
           <Reply className="h-4 w-4" />
         </Button>
+        </div>
+        </div>
+        <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageAdd} />
       </div>
     </div>
   );
