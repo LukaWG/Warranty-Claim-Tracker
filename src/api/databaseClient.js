@@ -67,6 +67,24 @@ class DatabaseClient {
     return apiFetch(`/${this.fileName}`);
   }
 
+  // GET /<collection> sorted by a field, limited to `limit` records.
+  // orderBy: "field" for ascending, "-field" for descending (e.g. "-created_date")
+  async list(orderBy = '', limit) {
+    const data = await apiFetch(`/${this.fileName}`);
+    if (orderBy) {
+      const desc = orderBy.startsWith('-');
+      const field = desc ? orderBy.slice(1) : orderBy;
+      data.sort((a, b) => {
+        const av = a[field], bv = b[field];
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+        return desc ? -cmp : cmp;
+      });
+    }
+    return Number.isInteger(limit) && limit > 0 ? data.slice(0, limit) : data;
+  }
+
   // PUT /<collection>/<id>
   async update(id, data) {
     console.log(data);
