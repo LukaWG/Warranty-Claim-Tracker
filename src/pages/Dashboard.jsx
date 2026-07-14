@@ -119,11 +119,12 @@ export default function Dashboard() {
 
   // Apply filters and role-based access
     const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
-      // Processor role: see all claims from their branch
+      // Processor role: see all claims from their branch except awaiting_review
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (userRole === 'Processor') {
         const processorSite = currentUser?.default_site;
         if (processorSite && claim.site !== processorSite) return false;
+        if (claim.status === 'awaiting_review' || claim.status === 'claim_info_received') return false;
       }
 
       // Site Manager: see only rejected claims for their site (awaiting_review is hidden, like Processor)
@@ -134,9 +135,9 @@ export default function Dashboard() {
         if (managerSite && claim.site !== managerSite) return false;
       }
 
-      // Admin: hide rejected claims and restrict to their assigned brands only
+      // Admin: hide truly rejected claims (no alert) but show queried claims (rejected with alert, or claimed_info_requested)
       if (userRole === 'Admin') {
-        if (claim.status === 'rejected') {
+        if (claim.status === 'rejected' && !claim.alert) {
           return false;
         }
         if (adminBrands && adminBrands.length > 0 && !adminBrands.includes(claim.brand)) {
