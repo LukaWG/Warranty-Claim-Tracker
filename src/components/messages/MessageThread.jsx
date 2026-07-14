@@ -64,6 +64,20 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
     setImagePreviews(prev => prev.filter((_, i) => i !== idx));
   };
 
+  const handlePaste = (e) => {
+    const items = Array.from(e.clipboardData?.items || []);
+    const imageItems = items.filter(item => item.type.startsWith('image/'));
+    if (imageItems.length === 0) return;
+    imageItems.forEach(item => {
+      const file = item.getAsFile();
+      if (!file) return;
+      setImageFiles(prev => [...prev, file]);
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target.result]);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: () => databaseClients.Site.get()
@@ -154,6 +168,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
           placeholder="Write a reply..."
           value={replyBody}
           onChange={e => setReplyBody(e.target.value)}
+          onPaste={handlePaste}
           rows={2}
           className="resize-none text-sm"
         />
