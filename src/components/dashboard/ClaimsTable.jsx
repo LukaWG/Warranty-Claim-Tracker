@@ -23,7 +23,7 @@ const statusConfig = {
   completed: { label: "Claimed", className: "bg-teal-50 border-teal-200", style: { color: '#56C4B7' } },
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
   claimed_info_requested: { label: "Queried", className: "bg-purple-50 border-purple-200 text-purple-700" },
-  claimed_info_received: { label: "Info Received", className: "bg-orange-50 border-orange-200 text-orange-700" },
+  claimed_info_received: { label: "Awaiting Review", className: "bg-orange-50 border-orange-200 text-orange-700" },
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
@@ -424,13 +424,25 @@ const SortableHead = ({ colKey, children }) => {
                         </TableCell>
                         {col('status') && (
                         <TableCell>
-                         <Badge 
-                           variant="outline" 
-                           className={`${statusConfig[claim.status]?.className} border font-medium`}
-                           style={statusConfig[claim.status]?.style}
-                         >
-                           {statusConfig[claim.status]?.label}
-                         </Badge>
+                          <div className="flex items-center gap-1.5">
+                            <Badge 
+                              variant="outline" 
+                              className={`${statusConfig[claim.status]?.className} border font-medium`}
+                              style={statusConfig[claim.status]?.style}
+                            >
+                              {statusConfig[claim.status]?.label}
+                            </Badge>
+                            {claim.site_responded && claim.status === 'in_progress' && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
+                                  </Tooltip>
+                              </TooltipProvider>
+                              )}
+                              </div>
                         </TableCell>
                         )}
 
@@ -758,6 +770,7 @@ const SortableHead = ({ colKey, children }) => {
                         </TableCell>
                          {col('status') && (
                          <TableCell>
+                          <div className="flex items-center gap-1.5">
                            <Badge 
                              variant="outline" 
                              className={`${statusConfig[claim.status]?.className} border font-medium`}
@@ -765,6 +778,17 @@ const SortableHead = ({ colKey, children }) => {
                            >
                              {statusConfig[claim.status]?.label}
                            </Badge>
+                           {claim.site_responded && claim.status === 'in_progress' && (
+                             <TooltipProvider>
+                               <Tooltip>
+                                 <TooltipTrigger asChild>
+                                   <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
+                                 </TooltipTrigger>
+                                 <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
+                                 </Tooltip>
+                                 </TooltipProvider>
+                                 )}
+                                 </div>
                          </TableCell>
                          )}
                          {col('approval_status') && (

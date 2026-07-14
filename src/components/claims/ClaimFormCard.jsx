@@ -160,8 +160,12 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     id="wip_number"
                     placeholder="Enter WIP number"
                     value={formData.wip_number}
-                    onChange={(e) => setFormData({ ...formData, wip_number: e.target.value })}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, ''); //Remove non-numeric characters
+                      setFormData({ ...formData, wip_number: val });
+                    }}
                     required
+                    inputMode="numeric"
                     className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
                   />
                 </div>

@@ -6,7 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MessageSquare, User, Paperclip, X, ChevronDown } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { MessageSquare, User, Paperclip, X, ChevronDown, Send } from 'lucide-react';
 import { format } from 'date-fns';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -16,6 +17,7 @@ const ADMIN_ROLES = ['Owner', 'Admin', 'Service Manager', 'Admin Manager'];
 
 
 export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
+  const [activeTab, setActiveTab] = useState('note'); // 'note' | 'message'
   const [newNote, setNewNote] = useState('');
   const [selectedAlert, setSelectedAlert] = useState('Queried');
   const [alertEnabled, setAlertEnabled] = useState(false);
@@ -23,6 +25,13 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const [isUploading, setIsUploading] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  // Message state
+  const [msgSubject, setMsgSubject] = useState('');
+  const [msgBody, setMsgBody] = useState('');
+  const [msgSending, setMsgSending] = useState(false);
+  const [msgImageFiles, setMsgImageFiles] = useState([]);
+  const [msgImagePreviews, setMsgImagePreviews] = useState([]);
+  const msgFileInputRef = useRef(null);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
   // const { user } = useAuth();
@@ -108,7 +117,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
         // If alert is unchanged but still active, reset status back to rejected (Queried)
         if (newAlert && newAlert === (currentAlert || '') && currentStatus !== 'rejected') {
-          await databaseClients.WarrantyClaim.update(claim.id, { status: 'rejected' });
+          await databaseClients.WarrantyClaim.update(claim.id, { status: 'rejected', site_responded: false });
           await databaseClients.ClaimAudit.create({
             claim_id: claim.id,
             wip_number: claim.wip_number,
@@ -124,7 +133,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
           const newStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested' : 
             (freshClaim.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
 
-          await databaseClients.WarrantyClaim.update(claim.id, { alert: newAlert, status: newStatus });
+          await databaseClients.WarrantyClaim.update(claim.id, { alert: newAlert, status: newStatus, site_responded: false });
           await databaseClients.ClaimAudit.create({
             claim_id: claim.id,
             wip_number: claim.wip_number,
@@ -149,16 +158,16 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         }
       }
 
-      // Move to awaiting_review if claim is rejected and user is a Processor or Site Manager
+      // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Processor or Site Manager
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (currentStatus === 'rejected' && (userRole === 'Processor' || userRole === 'Site Manager')) {
-        await databaseClients.WarrantyClaim.update(claim.id, { status: 'awaiting_review' });
+      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+        await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress', site_responded: true });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
           wip_number: claim.wip_number,
           field_changed: 'status',
-          old_value: 'rejected',
-          new_value: 'awaiting_review',
+          old_value: currentStatus,
+          new_value: 'in_progress',
           change_type: 'status_changed'
         });
       }
@@ -215,6 +224,59 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     addNoteMutation.mutate({ content: newNote || ' ', imageUrl, alert: isAdminUser && alertEnabled ? selectedAlert : undefined });
   };
 
+  const handleMsgImageAdd = (e) => {
+    const files = Array.from(e.target.files);
+    setMsgImageFiles(prev => [...prev, ...files]);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = (ev) => setMsgImagePreviews(prev => [...prev, ev.target.result]);
+      reader.readAsDataURL(f);
+    });
+    e.target.value = '';
+  };
+
+  const removeMsgImage = (idx) => {
+    setMsgImageFiles(prev => prev.filter((_, i) => i !== idx));
+    setMsgImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSendMessage = async () => {
+    if (!msgBody.trim() || !claim) return;
+    setMsgSending(true);
+    const senderName = currentUser.full_name || currentUser.email;
+    const subject = msgSubject.trim() || `Re: WIP ${claim.wip_number}`;
+    const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
+    await Promise.all([
+      databaseClients.Message.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        target_site: claim.site,
+        subject,
+        body: msgBody.trim(),
+        sender_email: currentUser.email,
+        sender_name: senderName,
+        is_reply: false,
+        // @ts-ignore
+        image_urls: uploadedUrls
+      }),
+      databaseClients.ClaimNote.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        content: msgBody.trim(),
+        // @ts-ignore
+        image_urls: uploadedUrls,
+      })
+    ]);
+    queryClient.invalidateQueries({ queryKey: ['messages'] });
+    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+    setMsgBody('');
+    setMsgSubject('');
+    setMsgImageFiles([]);
+    setMsgImagePreviews([]);
+    setMsgSending(false);
+    setActiveTab('note'); // Switch back to the note tab after sending
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -232,8 +294,84 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
               <p className="text-sm text-amber-700 font-medium">Please add a note explaining this alert before it is saved.</p>
             </div>
           )} */}
+
+          {/* Tab switcher */}
+          <div className="flex gap-1 pg-1 bg-slate-100 rounded-lg w-fit">
+            <button
+              onClick={() => setActiveTab('note')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${(activeTab === 'note' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}`}
+            >
+              Note
+            </button>
+            <button
+              onClick={() => setActiveTab('message')}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Admin' : 'Site'}
+              </button>
+          </div>
+
+          {/* Message form */}
+          {activeTab === 'message' && (
+            <div className="border-b pb-6 space-y-3">
+              <div className="px-3 py-2 rounded-md bg-slate-50 border border-slate-200 text-sm text-slate-600">
+                {isProcessor
+                ? <>Sending to the <strong>admin team</strong> re WIP <strong>{claim?.wip_number}</strong></>
+                : <>Sending to all processors at <strong>{claim?.site}</strong> re WIP <strong>{claim?.wip_number}</strong></>
+                }
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Subject</Label>
+                <Input
+                  placeholder={`Re: WIP ${claim?.wip_number}`}
+                  value={msgSubject}
+                  onChange={(e) => setMsgSubject(e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="text-sm font-medium mb-1 block">Message <span className="text-red-500">*</span></Label>
+                <Textarea
+                  placeholder="Write your message..."
+                  value={msgBody}
+                  onChange={(e) => setMsgBody(e.target.value)}
+                  className="min-h-24 resize-none"
+                />
+              </div>
+              {msgImagePreviews.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {msgImagePreviews.map((src, idx) => (
+                    <div key={idx} className="relative">
+                      <img
+                        src={src}
+                        alt=""
+                        className="h-16 w-16 object-cover rounded-md border border-slate-200"
+                      />
+                      <button onClick={() => removeMsgImage(idx)} className="absolute -top-1.5 -right-1.5 bg-white rounded-full border border-slate-200 p-0.5 hover:bg-red-50">
+                        <X className="h-3 w-3 text-slate-500" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <input ref={msgFileInputRef} type="file" accept="image/*" hidden multiple onChange={handleMsgImageAdd} />
+              <div className="flex items-center justify-between">
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => msgFileInputRef.current?.click()}>
+                  <Paperclip className="h-4 w-4" /> Attach Images
+                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" onClick={() => { setMsgBody(''); setMsgSubject(''); setMsgImageFiles([]); setMsgImagePreviews([]); onClose(); }}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSendMessage} disabled={!msgBody.trim() || msgSending} style={{ backgroundColor: 'var(--hendy-blue)' }}>
+                    {msgSending ? 'Sending...' : 'Send Message'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Add Note/Withdraw Section */}
+          {activeTab === 'note' && (
           <div className="border-b pb-6">
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm font-medium block">Add Note</Label>
@@ -369,6 +507,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
               </div>
             </form>
           </div>
+          )}
 
           {/* Notes List */}
           <div>

@@ -1216,7 +1216,11 @@ export default function Configuration() {
 								<Button
 									variant="ghost"
 									size="icon"
-									onClick={() => setEditingUser(user)}
+									onClick={() => {
+										// Normalize legacy default_site values that stored the site name instead of its id
+										const legacySite = user.default_site ? sites.find(s => s.name === user.default_site) : null;
+										setEditingUser(legacySite ? { ...user, default_site: legacySite.id } : user);
+									}}
 									className="h-8 w-8 text-slate-400 hover:text-slate-600 hover:bg-slate-50"
 									title="Edit user"
 								>
@@ -1369,7 +1373,7 @@ export default function Configuration() {
 					<SelectContent>
 					<SelectItem value="__none__">No default branch</SelectItem>
 					{sites.map((site) => (
-						<SelectItem key={site.id} value={site.name}>{site.name}</SelectItem>
+						<SelectItem key={site.id} value={site.id}>{site.name}</SelectItem>
 					))}
 					</SelectContent>
 				</Select>
@@ -1650,7 +1654,7 @@ export default function Configuration() {
 					<SelectContent>
 						<SelectItem value="__none__">No default branch</SelectItem>
 						{sites.map((site) => (
-						<SelectItem key={site.id} value={site.name}>{site.name}</SelectItem>
+						<SelectItem key={site.id} value={site.id}>{site.name}</SelectItem>
 						))}
 					</SelectContent>
 					</Select>

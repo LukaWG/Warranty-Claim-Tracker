@@ -104,6 +104,11 @@
       "default": "in_progress",
       "description": "Current status of the warranty claim"
     },
+    "site_responded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the site has responded to a queried claim (shows interaction indicator)"
+    },
     "claimed": {
       "type": "boolean",
       "default": false,

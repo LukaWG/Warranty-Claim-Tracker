@@ -400,7 +400,7 @@ export default function Dashboard() {
   const siteBrandRestriction = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
     if (['Processor', 'Site Manager'].includes(userRole) && currentUser?.default_site) {
-      const userSite = allSites.find(s => s.name === currentUser.default_site);
+      const userSite = allSites.find(s => s.id === currentUser.default_site || s.name === currentUser.default_site);
       return userSite?.brands || null;
     }
     return null;

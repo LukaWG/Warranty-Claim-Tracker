@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { databaseClients } from '@/api/databaseClient';
 import { useQuery } from '@tanstack/react-query';
 
-export default function BrandStatsSection({ claims, allClaims, brands, onBrandTileClick, activeBrandFilter, onDeadlineStatusFilter, onSiteFilter, onResetFilters }) {
+export default function BrandStatsSection({ claims, allClaims, brands, onBrandTileClick, activeBrandFilter, onDeadlineStatusFilter, onSiteFilter, onResetFilters, onStatusFilter }) {
 
   const [brandsLoading, setBrandsLoading] = useState(false);
 
@@ -105,7 +105,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
     { key: 'credit_rejected', label: 'Credit Rejected' },
   ];
 
-  const TileContent = ({ title, count, totalExpectedHours, statusCounts, colorCounts, onTileClick, onDeadlineClick }) => (
+  const TileContent = ({ title, count, totalExpectedHours, statusCounts, colorCounts, onTileClick, onDeadlineClick, onStatusClick }) => (
     <Card
       className="border-0 shadow-lg bg-white overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
       onClick={onTileClick}
@@ -138,7 +138,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
         <div className="space-y-1 mb-3">
           {otherStatusLabels.map(({ key, label }) =>
             statusCounts[key] > 0 ? (
-              <div key={key} className="flex items-center justify-between">
+              <div key={key} className="flex items-center justify-between hover:bg-slate-50 rounded px-1 -mx-1 cursor-pointer transition-colors" onClick={(e) => { e.stopPropagation(); onStatusClick?.(key); }}>
                 <span className="text-xs text-slate-400">{label}</span>
                 <span className="text-xs font-semibold text-slate-600">{statusCounts[key]}</span>
               </div>
@@ -211,6 +211,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
                 colorCounts={stat.colorCounts}
                 onTileClick={() => onSiteFilter && onSiteFilter(stat.site)}
                 onDeadlineClick={onDeadlineStatusFilter}
+                onStatusClick={onStatusFilter}
               />
             </motion.div>
           ))}
@@ -237,6 +238,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
           colorCounts={allBrandsColorCounts}
           onTileClick={() => onBrandTileClick('all')}
           onDeadlineClick={onDeadlineStatusFilter}
+          onStatusClick={onStatusFilter}
         />
               
       </motion.div>
@@ -256,6 +258,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
           colorCounts={stat.colorCounts}
           onTileClick={() => onBrandTileClick(stat.brand.id)}
           onDeadlineClick={onDeadlineStatusFilter}
+          onStatusClick={onStatusFilter}
         />
 
         </motion.div>

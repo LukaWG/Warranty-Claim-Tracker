@@ -89,13 +89,13 @@ function MultiSelect({ label, options, selected, onChange, placeholder }) {
 const STATUS_OPTIONS = [
   { value: 'in_progress', label: 'In Progress' },
   { value: 'awaiting_review', label: 'Awaiting Review' },
-  { value: 'awaiting_approval', label: 'Awaiting Approval' },
-  { value: 'approved', label: 'Approved' },
+  // { value: 'awaiting_approval', label: 'Awaiting Approval' },
+  // { value: 'approved', label: 'Approved' },
   { value: 'completed', label: 'Claimed' },
   { value: 'rejected', label: 'Queried' },
-  { value: 'credit_rejected', label: 'Credit Rejected' },
+  // { value: 'credit_rejected', label: 'Credit Rejected' },
   // { value: 'claimed_info_requested', label: 'Awaiting Review' },
-  { value: 'claimed_info_received', label: 'Info Received' },
+  // { value: 'claimed_info_received', label: 'Info Received' },
   { value: 'withdrawn', label: 'Withdrawn' },
 ];
 
@@ -139,7 +139,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     return email;
   };
 
-  const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'];
+  const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'rejected'];
 
   const handleClearFilters = () => {
     onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });

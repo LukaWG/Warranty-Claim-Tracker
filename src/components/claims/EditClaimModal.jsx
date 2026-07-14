@@ -147,8 +147,11 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               <Label>WIP Number *</Label>
               <Input
                 value={formData.wip_number}
-                onChange={(e) => setFormData({ ...formData, wip_number: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, wip_number: 
+                  e.target.value.replace(/\D/g, '') // Remove non-numeric characters
+                 })}
                 required
+                inputMode="numeric"
               />
             </div>
 

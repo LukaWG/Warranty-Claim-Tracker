@@ -38,6 +38,13 @@
       "type": "boolean",
       "default": false,
       "description": "Whether this is a reply to another message"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Attached image URLs"
     }
   },
   "required": [

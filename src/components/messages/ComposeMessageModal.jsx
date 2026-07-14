@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { Paperclip, X } from 'lucide-react';
 
 export default function ComposeMessageModal({ open, onClose, onSent, currentUser, prefilledClaim = null }) {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [selectedClaimId, setSelectedClaimId] = useState(prefilledClaim?.id || '');
   const [sending, setSending] = useState(false);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const handleImageAdd = (e) => {
+    const files = Array.from(e.target.files);
+    setImageFiles(prev => [...prev, ...files]);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target.result]);
+      reader.readAsDataURL(f);
+    });
+    e.target.value = '';
+  };
+
+  const removeImage = (idx) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== idx));
+    setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  };
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
@@ -35,20 +55,34 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
   const handleSend = async () => {
     if (!selectedClaim || !body.trim()) return;
     setSending(true);
-    await databaseClients.Message.create({
-      claim_id: selectedClaim.id,
-      wip_number: selectedClaim.wip_number,
-      target_site: selectedClaim.site,
-      subject: subject.trim() || `Re: WIP ${selectedClaim.wip_number}`,
-      body: body.trim(),
-      sender_email: currentUser.email,
-      sender_name: currentUser.full_name || currentUser.email,
-      is_reply: false
-    });
+    const msgSubject = subject.trim() || `Re: WIP ${selectedClaim.wip_number}`;
+    const senderName = currentUser.full_name || currentUser.email;
+    // Upload any attached images first and get their URLs
+    // TODO: Implement image upload logic here and get the uploaded image URLs
+    await Promise.all([
+      databaseClients.Message.create({
+        claim_id: selectedClaim.id,
+        wip_number: selectedClaim.wip_number,
+        target_site: selectedClaim.site,
+        subject: msgSubject,
+        body: body.trim(),
+        sender_email: currentUser.email,
+        sender_name: senderName,
+        is_reply: false,
+        image_urls: [] // Replace with actual uploaded image URLs
+      }),
+      databaseClients.ClaimNote.create({
+        claim_id: selectedClaim.id,
+        content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n- ${senderName}`,
+        image_urls: [] // Replace with actual uploaded image URLs
+      })
+    ]);
     setSending(false);
     setBody('');
     setSubject('');
     setSelectedClaimId('');
+    setImageFiles([]);
+    setImagePreviews([]);
     onSent?.();
     onClose();
   };
@@ -100,6 +134,23 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
               className="resize-none"
             />
           </div>
+          {/* Image attachments */}
+          {imagePreviews.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {imagePreviews.map((src, idx) => (
+                <div key={idx} className="relative">
+                  <img src={src} alt="" className="h-16 w-16 object-cover rounded-md border border-slate-200" />
+                  <button onClick={() => removeImage(idx)} className="absolute -top-1.5 -right-1.5 bg-white rounded-full border border-slate-200 p-0.5 hover:bg-red-50">
+                    <X className="h-3 w-3 text-slate-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <input ref={fileInputRef} type="file" accept="image/*" multiple classname="hidden" onChange={handleImageAdd} />
+          <Button variant="outline" size="sm" className="w-fit gap-2" onClick={() => fileInputRef.current?.click()}>
+            <Paperclip className="h-4 w-4" /> Attach Images
+          </Button>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Cancel</Button>
