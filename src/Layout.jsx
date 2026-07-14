@@ -354,7 +354,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
             <div className="text-xs text-slate-500 mb-1">EST. 1859</div>
             <div className="text-sm font-medium" style={{ color: 'var(--hendy-teal)' }}>
-              Warranty Repair Manager
+              Group Warranty Portal
             </div>
             {currentUser && (
               <div className="mt-2">
