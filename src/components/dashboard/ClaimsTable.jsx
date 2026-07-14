@@ -248,7 +248,6 @@ const SortableHead = ({ colKey, children }) => {
                       {col('last_clocking_date') && <SortableHead colKey="last_clocking_date">Last Clocking</SortableHead>}
                       {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
                       {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
-                      <TableHead className="font-semibold text-slate-600 w-10"></TableHead>
                       {col('status') && <SortableHead colKey="status">Status</SortableHead>}
                       {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
@@ -416,12 +415,6 @@ const SortableHead = ({ colKey, children }) => {
                         })() : "—"}
                         </TableCell>
                         )}
-                        <TableCell>
-                          <div
-                            className={`h-3 w-3 rounded-full ${claim.claimed ? 'bg-green-500' : 'bg-red-500'}`}
-                            title={claim.claimed ? 'Claimed' : 'Not yet claimed'}
-                          />
-                        </TableCell>
                         {col('status') && (
                         <TableCell>
                           <div className="flex items-center gap-1.5">
@@ -600,7 +593,6 @@ const SortableHead = ({ colKey, children }) => {
                        {col('last_clocking_date') && <TableHead className="font-semibold text-slate-600">Last Clocking</TableHead>}
                        {col('scanned_date') && <TableHead className="font-semibold text-slate-600">Scanned Date</TableHead>}
                        {col('manufacturer_deadline') && <TableHead className="font-semibold text-slate-600">Mfr Deadline</TableHead>}
-                       <TableHead className="font-semibold text-slate-600 w-10"></TableHead>
                        {col('status') && <TableHead className="font-semibold text-slate-600">Status</TableHead>}
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
@@ -762,12 +754,6 @@ const SortableHead = ({ colKey, children }) => {
                            })() : "—"}
                          </TableCell>
                          )}
-                        <TableCell>
-                          <div
-                            className={`h-3 w-3 rounded-full ${claim.claimed ? 'bg-green-500' : 'bg-red-500'}`}
-                            title={claim.claimed ? 'Claimed' : 'Not yet claimed'}
-                          />
-                        </TableCell>
                          {col('status') && (
                          <TableCell>
                           <div className="flex items-center gap-1.5">
