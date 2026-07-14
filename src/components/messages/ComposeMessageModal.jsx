@@ -89,11 +89,11 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>New Message</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-2">
+        <div className="space-y-4 py-2 flex-1 min-h-0 overflow-y-auto pr-1">
           {!prefilledClaim && (
             <div className="space-y-2">
               <Label>Claim / WIP Number <span className="text-red-500">*</span></Label>

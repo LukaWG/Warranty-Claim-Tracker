@@ -146,157 +146,21 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  const handleForcedPasswordChange = async (e) => {
-    e.preventDefault();
-    setForcedError("");
-
-    if (forcedNewPassword.length < 8) {
-      setForcedError("New password must be at least 8 characters long.");
-      return;
-    }
-
-    if (forcedNewPassword !== forcedConfirmPassword) {
-      setForcedError("New passwords do not match.");
-      return;
-    }
-
-    setForcedLoading(true);
-    try {
-      const res = await authClient.changePassword({
-        currentPassword: forcedCurrentPassword,
-        newPassword: forcedNewPassword,
-        revokeOtherSessions: false,
-      });
-
-      if (res?.error) {
-        throw new Error(res.error.message || "Failed to update password.");
-      }
-
-      await authUsers.updateMe({ must_change_password: false });
-      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    } catch (err) {
-      console.error("Forced password change failed:", err);
-      setForcedError(err.message || "Failed to update password. Please check your temporary password.");
-    } finally {
-      setForcedLoading(false);
-    }
-  };
-
   if (isAuthPage) {
     return <>{children}</>;
   }
 
-  if (currentUser?.must_change_password === true) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#1e2548] to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Decorative background gradients */}
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#56C4B7]/10 blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#222b57]/30 blur-[120px] pointer-events-none" />
+  const { data: pendingApprovals = [] } = useQuery({
+    queryKey: ['pending-approvals', currentUser?.email],
+    queryFn: () => databaseClients.WarrantyClaim.filter({ approval_status: 'pending_approval' }),
+    enabled: !!currentUser?.email,
+    refetchInterval: 30000,
+  });
 
-        <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10 text-white">
-          <div className="text-center mb-8">
-            <div className="text-3xl font-extrabold tracking-wider text-white mb-1">
-              HENDY
-            </div>
-            <div className="text-xs text-slate-400 mb-4 font-medium tracking-widest">EST. 1859</div>
-            <h2 className="text-xl font-semibold tracking-tight text-white mb-2">
-              Update Your Password
-            </h2>
-            <p className="text-sm text-slate-300">
-              For security, you must update your temporary password before you can access the system.
-            </p>
-          </div>
-
-          <form onSubmit={handleForcedPasswordChange} className="space-y-4">
-            {forcedError && (
-              <div className="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-200 text-sm font-medium leading-relaxed">
-                {forcedError}
-              </div>
-            )}
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Temporary Password
-              </label>
-              <div className="relative">
-                <input
-                  type={forcedShowPasswords ? "text" : "password"}
-                  value={forcedCurrentPassword}
-                  onChange={(e) => setForcedCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#56C4B7] focus:border-transparent transition-all pr-10 text-sm"
-                  placeholder="Enter temporary password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setForcedShowPasswords(!forcedShowPasswords)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
-                >
-                  {forcedShowPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                New Password
-              </label>
-              <input
-                type={forcedShowPasswords ? "text" : "password"}
-                value={forcedNewPassword}
-                onChange={(e) => setForcedNewPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-slate-950/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#56C4B7] focus:border-transparent transition-all text-sm"
-                placeholder="At least 8 characters"
-                required
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Confirm New Password
-              </label>
-              <input
-                type={forcedShowPasswords ? "text" : "password"}
-                value={forcedConfirmPassword}
-                onChange={(e) => setForcedConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-slate-950/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#56C4B7] focus:border-transparent transition-all text-sm"
-                placeholder="Re-enter new password"
-                required
-              />
-            </div>
-
-            <div className="pt-2">
-              <Button
-                type="submit"
-                disabled={forcedLoading}
-                className="w-full bg-[#56C4B7] hover:bg-[#45b2a5] text-slate-950 font-semibold py-2.5 h-auto transition-colors flex items-center justify-center gap-2"
-              >
-                {forcedLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Lock className="h-4 w-4" />
-                )}
-                Save Password & Continue
-              </Button>
-            </div>
-          </form>
-
-          <div className="mt-6 pt-6 border-t border-white/10 text-center">
-            <button
-              onClick={handleLogout}
-              className="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2 mx-auto font-medium"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out from Account
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const pendingApprovalsCount = pendingApprovals.length;
   
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Site Manager', 'Owner'] },
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Site Manager', 'Admin', 'Admin Manager', 'Owner'] },
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Owner'] },
     // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Owner'] },
@@ -404,6 +268,11 @@ export default function Layout({ children, currentPageName }) {
                   {item.label}
                   {item.name === 'Messages' && currentUser && (
                     <UnreadBadge currentUser={currentUser} />
+                  )}
+                  {item.name === 'Approvals' && pendingApprovalsCount > 0 && (
+                    <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full text-white text-xs font-bold px-1" style={{backgroundColor: 'var(--hendy-teal)'}}>
+                      {pendingApprovalsCount > 99 ? '99+' : pendingApprovalsCount}
+                    </span>
                   )}
                 </Link>
               );

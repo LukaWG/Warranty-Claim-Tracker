@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,14 @@ export default function Messages() {
   const [filterSite, setFilterSite] = useState('');
   const [filterBrand, setFilterBrand] = useState('');
   const [filterUnread, setFilterUnread] = useState(false);
+  const [filterWip, setFilterWip] = useState('');
+
+  const router = useRouter();
+  useEffect(() => {
+    if (!router.isReady) return;
+    const wip = typeof router.query.wip === 'string' ? router.query.wip : '';
+    if (wip) setFilterWip(wip);
+  }, [router.isReady, router.query.wip]);
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
@@ -111,10 +120,18 @@ export default function Messages() {
     if (filterSite && m.target_site !== filterSite) return false;
     if (filterBrand && claimsByWip[m.wip_number]?.brand !== filterBrand) return false;
     if (filterUnread && !isThreadUnread(m)) return false;
+    if (filterWip && !m.wip_number?.toLowerCase().includes(filterWip.toLowerCase())) return false;
     return true;
   });
 
-  const activeFilters = [filterSite, filterBrand, filterUnread].filter(Boolean).length;
+  const activeFilters = [filterSite, filterBrand, filterUnread, filterWip].filter(Boolean).length;
+
+  // Auto-open thread when arriving from dashboard with a WIP filter
+  React.useEffect(() => {
+    if (filterWip && visibleThreads.length === 1 && !selectedThread) {
+      handleOpenThread(visibleThreads[0])
+    }
+  }, [filterWip, visibleThreads.length]);
 
   const markThreadRead = async (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
@@ -133,19 +150,17 @@ export default function Messages() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="flex items-start justify-between mb-8">
-          <div>
+        <div className="flex items-start justify-between mb-8 gap-4">
+          <div className="flex-1">
             <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--hendy-blue)' }}>
               MESSAGES
             </h1>
             <p className="text-slate-500">Claim-related communications</p>
           </div>
-          {isAdmin && (
-            <Button onClick={() => setComposeOpen(true)} className="flex items-center gap-2" style={{ backgroundColor: 'var(--hendy-blue)' }}>
+            <Button onClick={() => setComposeOpen(true)} className="flex items-center gap-2 flex-shrink-0" style={{ backgroundColor: 'var(--hendy-blue)' }}>
               <PenSquare className="h-4 w-4" />
-              New Message
+              <span className="hidden sm:inline">New Message</span>
             </Button>
-          )}
         </div>
 
         {/* Filters */}
@@ -184,7 +199,7 @@ export default function Messages() {
           </button>
           {activeFilters > 0 && (
             <button
-              onClick={() => { setFilterSite(''); setFilterBrand(''); setFilterUnread(false);}}
+              onClick={() => { setFilterSite(''); setFilterBrand(''); setFilterUnread(false); setFilterWip(''); }}
               className="h-8 px-2 rounded-md text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
             >
               <X className="h-3 w-3" /> Clear
@@ -223,7 +238,7 @@ export default function Messages() {
                     className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer transition-colors"
                     onClick={() => handleOpenThread(msg)}
                   >
-                    <div className={`h-2 w-2 rounded-full shrink-0 ${unread ? 'bg-blue-500' : 'bg-transparent'}`} />
+                    <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: unread ? 'var(--hendy-teal)' : 'transparent' }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className={`text-sm ${unread ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>

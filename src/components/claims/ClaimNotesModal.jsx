@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, User, Paperclip, X, ChevronDown, Send } from 'lucide-react';
+import { MessageSquare, User, Paperclip, X, ChevronDown, Send, Undo2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -25,6 +25,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const [isUploading, setIsUploading] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const[isUndoingWithdrawl, setIsUndoingWithdrawal] = useState(false);
   // Message state
   const [msgSubject, setMsgSubject] = useState('');
   const [msgBody, setMsgBody] = useState('');
@@ -63,7 +64,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const isProcessor = userRole === 'Processor';
   const isSiteUser = userRole === 'Processor' || userRole === 'Site Manager';
   const isQueried = !!claim?.alert || claim?.status === 'claimed_info_requested';
-  const canAddNote = isAdminUser || !isSiteUser || isQueried;
+  const isWithdrawn = claim?.status === 'withdrawn';
+  const canAddNote = isAdminUser || !isSiteUser || isQueried || isWithdrawn;
 
   // If user can't add notes, default to message tab
   useEffect (() => {
@@ -91,6 +93,27 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     if (onStatusUpdate) onStatusUpdate();
     onClose();
   }
+
+  const handleUndoWithdrawal = async () => {
+    if (!newNote.trim()) return;
+    setIsUndoingWithdrawal(true);
+    await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress' });
+    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawal Undone] ${newNote}` });
+    await databaseClients.ClaimNote.create({
+      claim_id: claim.id,
+      wip_number: claim.wip_number,
+      field_changed: 'status',
+      old_value: 'withdrawn',
+      new_value: 'in_progress',
+      change_type: 'status_changed'
+    });
+    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+    queryClient.invalidateQueries({ queryKey: ['claims'] });
+    setNewNote('');
+    setIsUndoingWithdrawal(false);
+    if (onStatusUpdate) onStatusUpdate();
+    onClose();
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -248,6 +271,45 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     e.target.value = '';
   };
 
+  const msgTextareaRef = useRef(null);
+  const noteTextareaRef = useRef(null);
+
+  const handleMsgPaste = async (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type?.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          setMsgImageFiles(prev => [...prev, file]);
+          const reader = new FileReader();
+          reader.onload = (ev) => setMsgImagePreviews(prev => [...prev, ev.target.result]);
+          reader.readAsDataURL(file);
+        }
+        break;
+      }
+    }
+  };
+
+  const handleNotePaste = async (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type?.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          const previewUrl = URL.createObjectURL(file);
+          setAttachedImage({ file, previewUrl });
+        }
+        break;
+      }
+    }
+  };
+
   const removeMsgImage = (idx) => {
     setMsgImageFiles(prev => prev.filter((_, i) => i !== idx));
     setMsgImagePreviews(prev => prev.filter((_, i) => i !== idx));
@@ -292,7 +354,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -300,7 +362,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex-1 min-h-0 overflow-y-auto pr-1">
           {/* {requireNote && (
             <div className="flex items-center gap-2 px-4 py-3 rounded-md bg-amber-50 border border-amber-200">
               <span className="text-amber-500">!</span>
@@ -308,23 +370,106 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )} */}
 
-          {/* Tab switcher - Note tab only shown when canAddNote, Message tab always shown */}
+          {/* Tab switcher - Note tab only shown when canAddNote, Message tab hidden for site users when claim is queried */}
           <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-fit">
-          {canAddNote && (
+            {canAddNote && (
               <button
                 onClick={() => setActiveTab('note')}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${(activeTab === 'note' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}`}
               >
                 Note
               </button>
-          )}
+            )}
+            {!isSiteUser || !isQueried ? (
               <button
                 onClick={() => setActiveTab('message')}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Admin' : 'Site'}
                 </button>
+              ) : null}
             </div>
+
+          {/* Note form - Admin users always see it, site users only when alert exists */}
+          {activeTab === 'note' && (isAdminUser || isQueried || isWithdrawn) && (
+            <div className="border-b pb-6 space-y-3">
+              <form onSubmit={handleAddNote} className="space-y-3">
+                <Textarea
+                  ref={noteTextareaRef}
+                  placeholder="Enter your note..."
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  onPaste={handleNotePaste}
+                  className="min-h-24"
+                />
+
+                {attachedImage && (
+                  <div className="relative inline-block">
+                    <img src={attachedImage.previewUrl} alt="Attachment preview" className="max-h-32 rounded-lg border border-slate-200 object-contain" />
+                    <button type="button" onClick={removeAttachment} className="absolute -top-2 -right-2 bg-white border border-slate-200 rounded-full p-0.5 text-slate-500 hover:text-red-500 shadow-sm">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+
+                {isAdminUser && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="alert-toggle"
+                      checked={alertEnabled}
+                      onCheckedChange={(checked) => {
+                        setAlertEnabled(!!checked);
+                        if (!checked) setSelectedAlert('Information');
+                      }}
+                    />
+                    <label htmlFor="alert-toggle" className="text-xs text-slate-500 cursor-pointer select-none">
+                      Update alert status
+                    </label>
+                  </div>
+                  {alertEnabled && (
+                    <Select value={selectedAlert} onValueChange={(val) => setSelectedAlert(val)}>
+                      <SelectTrigger className="h-9 text-sm">
+                        <SelectValue placeholder="Resolved" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Resolved</SelectItem>
+                        {alerts.filter(a => a.active !== false && a.name !== 'Action' && a.name !== 'Credit' && (a.name !== 'Info - Post Claim' || claim?.claimed)).sort((a, b) => {
+                          if (a.name === 'Info - Post Claim') return 1;
+                          if (b.name === 'Info - Post Claim') return -1;
+                          return a.name.localeCompare(b.name);
+                        }).map((alert) => (
+                          <SelectItem key={alert.id} value={alert.name}>{alert.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                )}
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                    <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className="text-slate-500">
+                      <Paperclip className="h-4 w-4 mr-1" /> Attach Screenshot
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={() => { setNewNote(''); setShowWithdraw(false); removeAttachment(); onClose(); }}>
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={!newNote.trim() || (addNoteMutation.isPending || isUploading)}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {isUploading ? 'Uploading...' : addNoteMutation.isPending ? 'Adding...' : 'Add Note'}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
 
           {/* Message form */}
           {activeTab === 'message' && (
@@ -346,9 +491,11 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
               <div>
                 <Label className="text-sm font-medium mb-1 block">Message <span className="text-red-500">*</span></Label>
                 <Textarea
+                  ref={msgTextareaRef}
                   placeholder="Write your message..."
                   value={msgBody}
                   onChange={(e) => setMsgBody(e.target.value)}
+                  onPaste={handleMsgPaste}
                   className="min-h-24 resize-none"
                 />
               </div>
@@ -385,142 +532,64 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )}
           
-          {/* Add Note/Withdraw Section */}
-          {canAddNote && activeTab === 'note' && (
-          <div className="border-b pb-6">
-            <div className="flex items-center justify-between mb-2">
-              <Label className="text-sm font-medium block">Add Note</Label>
+          {/* Withdrawal Actions - Subtle header style for site users */}
+          {isSiteUser && claim?.status !== 'completed' && claim?.status !== 'claimed_info_received' && (
+          <div className="border-b pb-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-700">
+                {claim?.status === 'withdrawn' ? 'Undo Withdrawal' : 'Withdraw Claim'}
+              </span>
 
-              {isProcessor && claim?.status !== 'withdrawn' && (
+              {claim?.status !== 'withdrawn' && (
                 <button
                   type="button"
-                  onClick={() => setShowWithdraw(!showWithdraw)}
+                  onClick={() => {
+                    setShowWithdraw(!showWithdraw);
+                    setActiveTab('note');
+                  }}
                   className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1"
                 >
-                  Withdraw <ChevronDown className={`h-3 w-3 transition-transform ${showWithdraw ? 'rotate-180' : ''}`} />
+                  {showWithdraw ? 'Hide' : 'Show'} <ChevronDown className={`h-3 w-3 transition-transform ${showWithdraw ? 'rotate-180' : ''}`} />
                 </button>
               )}
             </div>
 
-              {showWithdraw && (
-                <p className="text-xs text-slate-400 mb-3 pb-3 border-b">Withdraw explanation (required)</p>
-              )}
+            {(claim?.status === 'withdrawn' || showWithdraw) && (
+            <div className="mt-3 space-y-3">
+              <p className="text-xs text-slate-400">
+              {claim?.status === 'withdrawn' ? 'Add a note to undo withdrawal (required)' : 'Withdraw explanation (required)'}
+              </p>
 
-            <form onSubmit={showWithdraw ? (e) => { e.preventDefault(); handleWithdraw(); } : handleAddNote} className="space-y-3">
-              <Textarea
-                placeholder={showWithdraw ? "Explain why this claim is being withdrawn..." : "Enter your note..."}
-                value={newNote}
-                onChange={(e) => setNewNote(e.target.value)}
-                className="min-h-24"
-              />
+              <form onSubmit={claim?.status === 'withdrawn' ? (e) => { e.preventDefault(); handleUndoWithdrawal(); } : (e) => { e.preventDefault(); handleWithdraw(); } } className="space-y-3">
+                <Textarea
+                  placeholder={claim?.status === 'withdrawn' ? "Explain why you're undoing the withdrawal..." : "Explain why this claim is being withdrawn..."}
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  className="min-h-24"
+                />
 
-              {/* Image attachment preview */}
-              {attachedImage && !showWithdraw && (
-                <div className="relative inline-block">
-                  <img
-                    src={attachedImage.previewUrl}
-                    alt="Attachment preview"
-                    className="max-h-32 rounded-lg border border-slate-200 object-contain"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeAttachment}
-                    className="absolute -top-2 -right-2 bg-white border border-slate-200 rounded-full p-0.5 text-slate-500 hover:text-red-500 shadow-sm"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
-
-              {!showWithdraw && isAdminUser && !claim?.claimed && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="alert-toggle"
-                      checked={alertEnabled}
-                      onCheckedChange={(checked) => {
-                        setAlertEnabled(!!checked);
-                        if (!checked) setSelectedAlert('Information');
-                      }}
-                    />
-                    <label htmlFor="alert-toggle" className="text-xs text-slate-500 cursor-pointer select-none">
-                      Update alert status
-                    </label>
-                  </div>
-                  {alertEnabled && (
-                    <Select
-                      value={selectedAlert}
-                      onValueChange={(value) => setSelectedAlert(value)}
-                    >
-                      <SelectTrigger className="h-9 text-sm">
-                        <SelectValue placeholder="Resolved" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Resolved</SelectItem>
-                        {alerts.filter(a => a.active !== false && a.name !== 'Action' && a.name !== 'Credit' && (a.name !== 'Info - Post Claim' || claim?.status === 'completed')).sort((a, b) => {
-                          if (a.name === 'Info - Post Claim') return 1;
-                          if (b.name === 'Info - Post Claim') return -1;
-                          return a.name.localeCompare(b.name);
-                        }).map((alert) => (
-                          <SelectItem key={alert.id} value={alert.name}>{alert.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                </div>
-              )}
-
-              <div className="flex items-center justify-between">
-                <div>
-                  {!showWithdraw && (
-                    <>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleFileChange}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="text-slate-500"
-                      >
-                        <Paperclip className="h-4 w-4 mr-1" />
-                        Attach Screenshot
-                      </Button>
-                    </>
-                  )}
-                </div>
-                <div className="flex gap-2">
+              <div className="flex items-center justify-end gap-2">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => {
                       setNewNote('');
                       setShowWithdraw(false);
-                      removeAttachment();
-                      onClose();
                     }}
                   >
                     Cancel
                   </Button>
                   <Button
                     type="submit"
-                    disabled={!newNote.trim() || (showWithdraw ? isWithdrawing : (addNoteMutation.isPending || isUploading))}
-                    className={showWithdraw ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"}
+                    disabled={!newNote.trim() || (claim?.status === 'withdrawn' ? isUndoingWithdrawl : isWithdrawing)}
+                    className="bg-orange-600 hover:bg-orange-700"
                   >
-                    {showWithdraw ? (
-                      isWithdrawing ? "Withdrawing..." : "Confirm Withdrawal"
-                    ) : (
-                      isUploading ? "Uploading..." : addNoteMutation.isPending ? "Adding..." : "Add Note"
-                    )}
+                    {claim?.status === 'withdrawn' ? (isUndoingWithdrawl ? 'Restoring...' : 'Undo Withdrawal') : (isWithdrawing? 'Withdrawing...' : 'Confirm Withdrawal')}
                   </Button>
                 </div>
-              </div>
             </form>
+            </div>
+            )}
           </div>
           )}
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
 import MiniTimeline from '@/components/claims/MiniTimeline';
+import { createPageUrl } from '@/utils';
+import { useRouter } from 'next/router';
 
 const statusConfig = {
   in_progress: { label: "In Progress", className: "bg-blue-50 border-blue-200", style: { color: '#222b57' } },
@@ -35,6 +37,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [roleDefaultApplied, setRoleDefaultApplied] = useState(false);
+
+  const router = useRouter();
 
   // const { user: currentUser } = useAuth();
     const { data: currentUser } = useQuery({
@@ -85,7 +89,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const { data: readReceipts = [] } = useQuery({
     queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => base44.entities.MessageRead.filter({ reader_email: currentUser.email }),
+    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
     enabled: !!currentUser?.email,
     refetchInterval: 30000
   });
@@ -338,7 +342,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('labour') && <SortableHead colKey="labour">Labour</SortableHead>}
                       {col('sub_con') && <SortableHead colKey="sub_con">Sub Con</SortableHead>}
                       {col('credit') && <SortableHead colKey="credit">Credit</SortableHead>}
-                      {col('total_claim_cost') && <SortableHead colKey="total_claim_cost">Total Cost</SortableHead>}
+                      {col('total_claim_cost') && <SortableHead colKey="total_claim_cost">Total</SortableHead>}
                       {col('last_clocking_date') && <SortableHead colKey="last_clocking_date">Last Clocking</SortableHead>}
                       {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
                       {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
@@ -402,13 +406,13 @@ const SortableHead = ({ colKey, children }) => {
                         </TableCell>
                       )}
                       {col('actual_hours') && (
-                        <TableCell className="text-slate-600">
+                        <TableCell className={cn("text-slate-600", claim.actual_hours && claim.expected_hours && claim.actual_hours > claim.expected_hours ? "bg-green-100 text-green-700 rounded px-2" : claim.actual_hours && claim.expected_hours && claim.actual_hours < claim.expected_hours ? "bg-red-100 text-red-700 rounded px-2" : "")}>
                           {claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"}
                         </TableCell>
                       )}
                       {col('parts') && (
                         <TableCell className="text-slate-600">
-                          {claim.parts ? `£${claim.parts.toFixed(2)}` : "—"}
+                           {claim.parts ? `£${claim.parts.toFixed(2)}` : "—"}
                         </TableCell>
                       )}
                       {col('labour') && (
@@ -423,7 +427,7 @@ const SortableHead = ({ colKey, children }) => {
                       )}
                       {col('credit') && (
                         <TableCell className="text-slate-600">
-                          {claim.credit && claim.approval_status !== 'pending_approval' ? (
+                          {claim.credit && claim.approval_status === 'credited' ? (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -436,16 +440,12 @@ const SortableHead = ({ colKey, children }) => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                          ) : claim.approval_status === 'pending_approval' ? (
-                            <span>—</span>
                           ) : "—"}
                         </TableCell>
                       )}
                       {col('total_claim_cost') && (
                         <TableCell className="text-slate-600 font-medium">
-                          {claim.total_claim_cost && claim.approval_status !== 'pending_approval' ? `£${claim.total_claim_cost.toFixed(2)}` : claim.approval_status === 'pending_approval' ? (
-                            <span>—</span>
-                          ) : "—"}
+                          {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
                         </TableCell>
                       )}
                       {col('last_clocking_date') && (
@@ -589,6 +589,24 @@ const SortableHead = ({ colKey, children }) => {
                           >
                             <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
+                          {unreadClaimIds.has(claim.id) && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                              <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 hover:bg-teal-50"
+                                  style={{ color: 'var(--hendy-teal)' }}
+                                  onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
+                                >
+                                  <Mail className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                                <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
                           {isServiceManager && (
                             <Button
                               variant="ghost"
@@ -665,7 +683,7 @@ const SortableHead = ({ colKey, children }) => {
                        {col('labour') && <TableHead className="font-semibold text-slate-600">Labour</TableHead>}
                        {col('sub_con') && <TableHead className="font-semibold text-slate-600">Sub Con</TableHead>}
                        {col('credit') && <TableHead className="font-semibold text-slate-600">Credit</TableHead>}
-                       {col('total_claim_cost') && <TableHead className="font-semibold text-slate-600">Total Cost</TableHead>}
+                       {col('total_claim_cost') && <TableHead className="font-semibold text-slate-600">Total</TableHead>}
                        {col('last_clocking_date') && <TableHead className="font-semibold text-slate-600">Last Clocking</TableHead>}
                        {col('scanned_date') && <TableHead className="font-semibold text-slate-600">Scanned Date</TableHead>}
                        {col('manufacturer_deadline') && <TableHead className="font-semibold text-slate-600">Mfr Deadline</TableHead>}
@@ -726,9 +744,9 @@ const SortableHead = ({ colKey, children }) => {
                            </TableCell>
                          )}
                          {col('actual_hours') && (
-                           <TableCell className="text-slate-600">
-                             {claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"}
-                           </TableCell>
+                          <TableCell className={cn("text-slate-600", claim.actual_hours && claim.expected_hours && claim.actual_hours > claim.expected_hours ? "bg-green-100 text-green-700 rounded px-2" : claim.actual_hours && claim.expected_hours && claim.actual_hours < claim.expected_hours ? "bg-red-100 text-red-700 rounded px-2" : "")}>
+                            {claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"}
+                          </TableCell>
                          )}
                          {col('parts') && (
                            <TableCell className="text-slate-600">
@@ -747,7 +765,7 @@ const SortableHead = ({ colKey, children }) => {
                          )}
                          {col('credit') && (
                            <TableCell className="text-slate-600">
-                          {claim.credit && claim.approval_status !== 'pending_approval' ? (
+                            {claim.credit && claim.approval_status === 'credited' ? (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
@@ -760,16 +778,12 @@ const SortableHead = ({ colKey, children }) => {
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                          ) : claim.approval_status === 'pending_approval' ? (
-                              <span className="text-slate-400">—</span>
                           ) : "—"}
                            </TableCell>
                          )}
                          {col('total_claim_cost') && (
                            <TableCell className="text-slate-600 font-medium">
-                             {claim.total_claim_cost && claim.approval_status !== 'pending_approval' ? `£${claim.total_claim_cost.toFixed(2)}` : claim.approval_status === 'pending_approval' ? (
-                               <span className="text-slate-400">—</span>
-                             ) : "—"}
+                             {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
                            </TableCell>
                          )}
                          {col('last_clocking_date') && (
@@ -933,6 +947,24 @@ const SortableHead = ({ colKey, children }) => {
                               >
                                 <GitCommitHorizontal className="h-4 w-4" />
                               </Button>
+                              {unreadClaimIds.has(claim.id) && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                  <Button
+                                     variant="ghost"
+                                     size="icon"
+                                     className="h-8 w-8 hover:bg-teal-50"
+                                     style={{ color: 'var(--hendy-teal)' }}
+                                     onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
+                                   >
+                                     <Mail className="h-4 w-4" />
+                                   </Button>
+                                </TooltipTrigger>
+                                    <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
                               {isServiceManager && (
                                 <Button
                                   variant="ghost"

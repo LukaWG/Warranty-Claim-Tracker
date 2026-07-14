@@ -101,6 +101,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
     setSending(true);
     const senderName = currentUser.full_name || currentUser.email;
     const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
+    alert("Image upload not implemented - message will be sent without the image");
     await Promise.all([
       databaseClients.Message.create({
         claim_id: rootMessage.claim_id,

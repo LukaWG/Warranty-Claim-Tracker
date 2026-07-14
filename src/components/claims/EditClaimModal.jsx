@@ -283,6 +283,10 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     const newOriginalParts = newPartsVal + (parseFloat(formData.credit_parts) || 0);
                     setFormData({ ...formData, parts: newParts, original_parts: newOriginalParts, total_claim_cost: updateTotal(newParts, formData.labour, formData.sub_con) });
                   }}
+                  onBlur={(e) => {
+                    const val = parseFloat(e.target.value);
+                    if (!isNaN(val)) setFormData(prev => ({ ...prev, parts: val.toFixed(2) }))
+                  }}
                   className="pl-7"
                 />
               </div>
@@ -306,6 +310,10 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     const newOriginalLabour = newLabourVal + (parseFloat(formData.credit_labour) || 0);
                     setFormData({ ...formData, labour: newLabour, original_labour: newOriginalLabour, total_claim_cost: newTotal, actual_hours: calculatedHours > 0 ? calculatedHours : '' });
                   }}
+                  onBlur={(e) => {
+                    const val = parseFloat(e.target.value);
+                    if (!isNaN(val)) setFormData(prev => ({ ...prev, labour: val.toFixed(2) }))
+                  }}
                   className="pl-7"
                 />
               </div>
@@ -324,6 +332,10 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                     const newSubConVal = parseFloat(newSubCon) || 0;
                     const newOriginalSubCon = newSubConVal + (parseFloat(formData.credit_sub_con) || 0);
                     setFormData({ ...formData, sub_con: newSubCon, original_sub_con: newOriginalSubCon, total_claim_cost: updateTotal(formData.parts, formData.labour, newSubCon) });
+                  }}
+                  onBlur={(e) => {
+                    const val = parseFloat(e.target.value);
+                    if (!isNaN(val)) setFormData(prev => ({ ...prev, sub_con: val.toFixed(2) }))
                   }}
                   className="pl-7"
                 />
@@ -380,14 +392,14 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             </div>
 
             <div className="space-y-2">
-              <Label>Total Claim Cost (£)</Label>
+              <Label>Total Repair (£)</Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
                 <Input
                   type="number"
                   step="0.01"
                   min="0"
-                  value={formData.total_claim_cost}
+                  value={parseFloat(formData.total_claim_cost || 0).toFixed(2)}
                   readOnly
                   className="pl-7 bg-slate-50 cursor-not-allowed"
                 />
@@ -410,11 +422,16 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={formData.last_clocking_date}
-                    onSelect={(date) => setFormData({ ...formData, last_clocking_date: date })}
-                  />
+                  <Calendar mode="single" selected={formData.last_clocking_date} onSelect={(date) => {
+                    const selectedBrand = brands.find(b => b.id === formData.brand);
+                    const deadlineDays = selectedBrand?.manufacturer_deadline_days;
+                    const deadline = deadlineDays && date ? (() => {
+                      const newDate = new Date(date);
+                      newDate.setDate(newDate.getDate() + deadlineDays);
+                      return newDate;
+                    })() : formData.manufacturer_deadline;
+                    setFormData({ ...formData, last_clocking_date: date, manufacturer_deadline: deadline });
+                  }} />
                 </PopoverContent>
               </Popover>
             </div>

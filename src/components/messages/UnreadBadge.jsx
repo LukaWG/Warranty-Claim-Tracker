@@ -38,7 +38,7 @@ export default function UnreadBadge({ currentUser }) {
   if (unreadCount === 0) return null;
 
   return (
-    <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold px-1">
+    <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full text-white text-xs font-bold px-1" style={{backgroundColor: 'var(--hendy-teal)'}}>
       {unreadCount > 99 ? '99+' : unreadCount}
     </span>
   );

@@ -324,6 +324,25 @@ export default function Dashboard() {
           );
       }
 
+      // If alert changed (and is actually provided in the form data), apply status logic
+      const alertChanged = 'alert' in data && data.alert !== claim.alert;
+      if (alertChanged) {
+        const newAlert = data.alert;
+        const alertNewStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested'
+          : (data.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
+        // Override status with alert-driven value
+        data = { ...data, status: alertNewStatus };
+      }
+
+      // If resolution changed (and is actually provided in the form data), apply status logic
+      const resolutionChanged = 'alert_resolution' in data && data.alert_resolution !== claim.alert_resolution;
+      if (resolutionChanged && !alertChanged) {
+        const resolution = data.alert_resolution;
+        const newStatus = data.claimed ? 'completed'
+          : (resolution === 'Non-actionable' ? 'completed' : (resolution ? 'in_progress' : (data.alert ? 'rejected' : data.status)));
+        data = { ...data, status: newStatus };
+      }
+
       updateMutation.mutate({ id: claim.id, data });
       setEditingClaim(null);
     };

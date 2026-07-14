@@ -17,9 +17,10 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
   const selectedSite = sites.find(s => s.name === claim?.site);
 
-  const originalParts = (parseFloat(claim?.parts) || 0) + (parseFloat(claim?.credit_parts) || 0);
-  const originalLabour = (parseFloat(claim?.labour) || 0) + (parseFloat(claim?.credit_labour) || 0);
-  const originalSubCon = (parseFloat(claim?.sub_con) || 0) + (parseFloat(claim?.credit_sub_con) || 0);
+  // Current values in the database (before credit reduction is applied)
+  const currentParts = parseFloat(claim?.parts) || 0;
+  const currentLabour = parseFloat(claim?.labour) || 0;
+  const currentSubCon = parseFloat(claim?.sub_con) || 0;
 
   const [creditParts, setCreditParts] = useState(claim?.credit_parts || 0);
   const [creditLabour, setCreditLabour] = useState(claim?.credit_labour || 0);
@@ -33,13 +34,6 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
   const handleSave = () => {
     const creditVal = totalCredit;
-    const newParts = Math.max(0, originalParts - (parseFloat(creditParts) || 0));
-    const newLabour = Math.max(0, originalLabour - (parseFloat(creditLabour) || 0));
-    const newSubCon = Math.max(0, originalSubCon - (parseFloat(creditSubCon) || 0));
-    const newTotal = updateTotal(newParts, newLabour, newSubCon);
-
-    const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
-    const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
 
     const originalCreditVal = parseFloat(claim?.credit) || 0;
     const needsApproval = creditVal >= CREDIT_APPROVAL_LIMIT;
@@ -48,6 +42,17 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
       ? 'pending_approval'
       : (needsApproval ? (claim?.approval_status || 'pending_approval') : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) ? 'approved' : null);
 
+    // Only update the actual figures when status is set to 'credited'
+    // Otherwise, just store the credit values without reducing parts/labour/sub_con
+    const shouldUpdateFigures = effectiveApprovalStatus === 'credited';
+    
+    const newParts = shouldUpdateFigures ? Math.max(0, currentParts - (parseFloat(creditParts) || 0)) : currentParts;
+    const newLabour = shouldUpdateFigures ? Math.max(0, currentLabour - (parseFloat(creditLabour) || 0)) : currentLabour;
+    const newSubCon = shouldUpdateFigures ? Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0)) : currentSubCon;
+    const newTotal = shouldUpdateFigures ? updateTotal(newParts, newLabour, newSubCon) : updateTotal(currentParts, currentLabour, currentSubCon);
+    const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
+    const actualHours = hourlyRate > 0 && shouldUpdateFigures ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
+
     onSave({
       credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
       credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
@@ -55,10 +60,10 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
       credit: creditVal || null,
       credit_note: creditVal > 0 ? creditNote : null,
       approval_status: effectiveApprovalStatus,
-      parts: newParts || null,
-      labour: newLabour || null,
-      sub_con: newSubCon || null,
-      total_claim_cost: newTotal || null,
+      parts: (shouldUpdateFigures && newParts > 0) ? newParts : (currentParts > 0 ? currentParts : null),
+      labour: (shouldUpdateFigures && newLabour > 0) ? newLabour : (currentLabour > 0 ? currentLabour : null),
+      sub_con: (shouldUpdateFigures && newSubCon > 0) ? newSubCon : (currentSubCon > 0 ? currentSubCon : null),
+      total_claim_cost: (shouldUpdateFigures && newTotal > 0) ? newTotal : (updateTotal(currentParts, currentLabour, currentSubCon) > 0 ? updateTotal(currentParts, currentLabour, currentSubCon) : null),
       actual_hours: actualHours || null,
     });
   };
@@ -78,15 +83,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
                 <Input
                   type="number" step="0.01" min="0"
-                  max={originalParts > 0 ? originalParts : undefined}
+                  max={currentParts > 0 ? currentParts : undefined}
                   value={creditParts}
                   onChange={(e) => setCreditParts(e.target.value)}
                   className="pl-7"
-                  disabled={originalParts <= 0}
+                  disabled={currentParts <= 0}
                 />
               </div>
-              {originalParts > 0
-                ? <p className="text-xs text-slate-400">of £{originalParts.toFixed(2)}</p>
+              {currentParts > 0
+                ? <p className="text-xs text-slate-400">of £{currentParts.toFixed(2)}</p>
                 : <p className="text-xs text-amber-500">No parts cost recorded</p>
               }
             </div>
@@ -96,15 +101,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
                 <Input
                   type="number" step="0.01" min="0"
-                  max={originalLabour > 0 ? originalLabour : undefined}
+                  max={currentLabour > 0 ? currentLabour : undefined}
                   value={creditLabour}
                   onChange={(e) => setCreditLabour(e.target.value)}
                   className="pl-7"
-                  disabled={originalLabour <= 0}
+                  disabled={currentLabour <= 0}
                 />
               </div>
-              {originalLabour > 0
-                ? <p className="text-xs text-slate-400">of £{originalLabour.toFixed(2)}</p>
+              {currentLabour > 0
+                ? <p className="text-xs text-slate-400">of £{currentLabour.toFixed(2)}</p>
                 : <p className="text-xs text-amber-500">No labour cost recorded</p>
               }
             </div>
@@ -114,15 +119,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
                 <Input
                   type="number" step="0.01" min="0"
-                  max={originalSubCon > 0 ? originalSubCon : undefined}
+                  max={currentSubCon > 0 ? currentSubCon : undefined}
                   value={creditSubCon}
                   onChange={(e) => setCreditSubCon(e.target.value)}
                   className="pl-7"
-                  disabled={originalSubCon <= 0}
+                  disabled={currentSubCon <= 0}
                 />
               </div>
-              {originalSubCon > 0
-                ? <p className="text-xs text-slate-400">of £{originalSubCon.toFixed(2)}</p>
+              {currentSubCon > 0
+                ? <p className="text-xs text-slate-400">of £{currentSubCon.toFixed(2)}</p>
                 : <p className="text-xs text-amber-500">No sub con cost recorded</p>
               }
             </div>
@@ -188,13 +193,34 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          {claim?.approval_status === 'approved' && (
+          {(claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval') && totalCredit > 0 && (
             <Button
               variant="outline"
               className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
-              onClick={() => onSave({ approval_status: 'credited' })}
+              onClick={() => {
+                const creditVal = totalCredit;
+                const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
+                const newLabour = Math.max(0, currentLabour - (parseFloat(creditLabour) || 0));
+                const newSubCon = Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0));
+                const newTotal = updateTotal(newParts, newLabour, newSubCon);
+                const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
+                const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
+                onSave({
+                  approval_status: 'credited',
+                  credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
+                  credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
+                  credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
+                  credit: creditVal || null,
+                  parts: newParts > 0 ? newParts : null,
+                  labour: newLabour > 0 ? newLabour : null,
+                  sub_con: newSubCon > 0 ? newSubCon : null,
+                  total_claim_cost: newTotal > 0 ? newTotal : null,
+                  actual_hours: actualHours || null,
+                });
+              }
+            }
             >
-              Mark as Credited
+              Apply Credit (£{totalCredit.toFixed(2)})
             </Button>
           )}
           <span title={!creditNote.trim() ? "Credit note is required to save credit" : undefined}>
