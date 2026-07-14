@@ -296,12 +296,12 @@ export default function Layout({ children, currentPageName }) {
   }
   
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Site Manager', 'Service Manager', 'Owner'] },
-    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Service Manager', 'Owner'] },
-    // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
-    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Service Manager', 'Owner'] },
-    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Site Manager', 'Service Manager', 'Admin', 'Admin Manager', 'Owner'] },
-    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Service Manager', 'Admin Manager', 'Owner'] }
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Site Manager', 'Owner'] },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Owner'] },
+    // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Owner'] },
+    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Owner'] },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Site Manager', 'Admin', 'Admin Manager', 'Owner'] },
+    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Admin Manager', 'Owner'] }
   ];
 
   const displayRole = currentUser?.custom_role || currentUser?.role;
@@ -359,7 +359,7 @@ export default function Layout({ children, currentPageName }) {
             {currentUser && (
               <div className="mt-2">
                 <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: 'var(--hendy-teal)' }}>
-                  {displayRole || 'User'}
+                  {displayRole === "Processor" ? 'Site' : displayRole || 'User'}
                 </span>
               </div>
             )}

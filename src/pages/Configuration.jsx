@@ -1200,11 +1200,10 @@ export default function Configuration() {
 								disabled={updateUserRoleMutation.isPending}
 								className="h-8 px-2 rounded border border-input bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-								<option value="Processor">Processor</option>
+								<option value="Processor">Site</option>
 								<option value="Site Manager">Site Manager</option>
 								<option value="Admin">Admin</option>
 								<option value="Admin Manager">Admin Manager</option>
-								<option value="Service Manager">Service Manager</option>
 								<option value="Owner">Owner</option>
 								</select>
 							</TableCell>
@@ -1351,11 +1350,10 @@ export default function Configuration() {
 					<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-					<SelectItem value="Processor">Processor</SelectItem>
+					<SelectItem value="Processor">Site</SelectItem>
 					<SelectItem value="Site Manager">Site Manager</SelectItem>
 					<SelectItem value="Admin">Admin</SelectItem>
 					<SelectItem value="Admin Manager">Admin Manager</SelectItem>
-					<SelectItem value="Service Manager">Service Manager</SelectItem>
 					<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 				</Select>
@@ -1632,11 +1630,10 @@ export default function Configuration() {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="Processor">Processor</SelectItem>
+						<SelectItem value="Processor">Site</SelectItem>
 						<SelectItem value="Site Manager">Site Manager</SelectItem>
 						<SelectItem value="Admin">Admin</SelectItem>
 						<SelectItem value="Admin Manager">Admin Manager</SelectItem>
-						<SelectItem value="Service Manager">Service Manager</SelectItem>
 						<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 					</Select>
