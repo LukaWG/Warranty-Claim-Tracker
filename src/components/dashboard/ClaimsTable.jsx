@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { cn } from "@/lib/utils";
-import ColumnVisibilityPicker, { DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
+import ColumnVisibilityPicker, { DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
 import MiniTimeline from '@/components/claims/MiniTimeline';
 
@@ -34,61 +34,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const [timelineClaim, setTimelineClaim] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
-
-  const toggleRow = (id) => setExpandedRows(prev => {
-    const next = new Set(prev);
-    next.has(id) ? next.delete(id) : next.add(id);
-    return next;
-  });
-
-  const [expandedRowsFs, setExpandedRowsFs] = useState(new Set());
-  const toggleRowFs = (id) => setExpandedRowsFs(prev => {
-    const next = new Set(prev);
-    next.has(id) ? next.delete(id) : next.add(id);
-    return next;
-  });
-
-  const handleSort = (key) => {
-    setSortConfig(prev =>
-      prev.key === key
-        ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
-        : { key, direction: 'asc' }
-    );
-  };
-
-  const sortedClaims = React.useMemo(() => {
-    if (!sortConfig.key) return claims;
-    return [...claims].sort((a, b) => {
-      let aVal = a[sortConfig.key];
-      let bVal = b[sortConfig.key];
-      if (aVal == null) return 1;
-      if (bVal == null) return -1;
-      if (typeof aVal === 'string') aVal = aVal.toLowerCase();
-      if (typeof bVal === 'string') bVal = bVal.toLowerCase();
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }, [claims, sortConfig]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('claimsTableColumns');
-    if (saved) {
-      try {
-        setVisibleColumns(JSON.parse(saved));
-      } catch {
-        setVisibleColumns(DEFAULT_COLUMNS);
-      }
-    }
-    setMounted(true);
-  }, []);
-
-  const handleColumnsChange = (newColumns) => {
-    setVisibleColumns(newColumns);
-    localStorage.setItem('claimsTableColumns', JSON.stringify(newColumns));
-  };
-
-  const col = (key) => visibleColumns[key];
+  const [roleDefaultApplied, setRoleDefaultApplied] = useState(false);
 
   // const { user: currentUser } = useAuth();
     const { data: currentUser } = useQuery({
@@ -125,6 +71,84 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryKey: ['allUsers'],
     queryFn: () => databaseClients.User.get()
   });
+
+  const toggleRow = (id) => setExpandedRows(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const [expandedRowsFs, setExpandedRowsFs] = useState(new Set());
+  const toggleRowFs = (id) => setExpandedRowsFs(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const handleSort = (key) => {
+    setSortConfig(prev =>
+      prev.key === key
+        ? { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+        : { key, direction: 'asc' }
+    );
+  };
+
+  const QUERIED_STATUSES = ['rejected', 'claimed_info_requested'];
+
+  const sortedClaims = React.useMemo(() => {
+    const isSiteRole = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor' || currentUser?.custome_role === 'Site Manager' || currentUser?.role === 'Site Manager';
+
+    const baseList = (isSiteRole && !sortConfig.key) ? [...claims].sort((a, b) => {
+      const aQueried = QUERIED_STATUSES.includes(a.status) ? 0 : 1;
+      const bQueried = QUERIED_STATUSES.includes(b.status) ? 0 : 1;
+      return aQueried - bQueried
+    })
+    : claims;
+
+    if (!sortConfig.key) return baseList;
+    return [...claims].sort((a, b) => {
+      let aVal = a[sortConfig.key];
+      let bVal = b[sortConfig.key];
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
+      if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+      if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }, [claims, sortConfig, currentUser]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('claimsTableColumns');
+    if (saved) {
+      try {
+        setVisibleColumns(JSON.parse(saved));
+      } catch {
+        setVisibleColumns(DEFAULT_COLUMNS);
+      }
+    }
+    setMounted(true);
+  }, []);
+
+  const handleColumnsChange = (newColumns) => {
+    setVisibleColumns(newColumns);
+    localStorage.setItem('claimsTableColumns', JSON.stringify(newColumns));
+  };
+
+  const col = (key) => visibleColumns[key];
+
+  // Apply role-specific default columns once user loads (only if no saved preference)
+  useEffect(() => {
+    if (!currentUser || roleDefaultApplied) return;
+    setRoleDefaultApplied(true);
+    const saved = localStorage.getItem('claimsTableColumns');
+    if (saved) return; // user has a saved preference, don't override
+    const role = currentUser.custom_role || currentUser.role;
+    if (role === 'Processor' || role === 'Site Manager') {
+      setVisibleColumns(SITE_DEFAULT_COLUMNS);
+    }
+  }, [currentUser, roleDefaultApplied])
 
   const isProcessor = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';
   const isSiteManager = currentUser?.custom_role === 'Site Manager' || currentUser?.role === 'Site Manager';
@@ -177,6 +201,42 @@ const SortableHead = ({ colKey, children }) => {
   const formatDateTime = (dateString) => {
     if (!dateString) return "—";
     return format(new Date(dateString), "dd/MM/yyyy HH:mm");
+  };
+
+  const getStatusDays = (claim) => {
+    const trackStatuses = [...QUERIED_STATUSES, 'awaiting_review', 'claimed_info_received'];
+    if (!trackStatuses.includes(claim.status)) return null;
+    const since = claim.updated_date || claim.created_date;
+    if (!since) return null;
+    return Math.floor((new Date() - new Date(since)) / (1000 * 60 * 60 * 24));
+  };
+
+  const StatusBadge = ({ claim }) => {
+    const days = getStatusDays(claim);
+    return (
+      <div className="flex items-center gap-1.5">
+        <Badge
+          variant="outline"
+          className={`${statusConfig[claim.status]?.className} border font-medium whitespace-nowrap min-w-[120px] justify-center`}
+          style={statusConfig[claim.status]?.style}
+        >
+          {statusConfig[claim.status]?.label}
+          {days !== null && (
+            <span className="ml-1 opacity-75">· {days}d</span>
+          )}
+        </Badge>
+        {claim.site_responded && claim.status === 'in_progress' && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
+              </TooltipTrigger>
+              <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -417,25 +477,7 @@ const SortableHead = ({ colKey, children }) => {
                         )}
                         {col('status') && (
                         <TableCell>
-                          <div className="flex items-center gap-1.5">
-                            <Badge 
-                              variant="outline" 
-                              className={`${statusConfig[claim.status]?.className} border font-medium`}
-                              style={statusConfig[claim.status]?.style}
-                            >
-                              {statusConfig[claim.status]?.label}
-                            </Badge>
-                            {claim.site_responded && claim.status === 'in_progress' && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
-                                  </Tooltip>
-                              </TooltipProvider>
-                              )}
-                              </div>
+                          <StatusBadge claim={claim} />
                         </TableCell>
                         )}
 
@@ -755,27 +797,9 @@ const SortableHead = ({ colKey, children }) => {
                          </TableCell>
                          )}
                          {col('status') && (
-                         <TableCell>
-                          <div className="flex items-center gap-1.5">
-                           <Badge 
-                             variant="outline" 
-                             className={`${statusConfig[claim.status]?.className} border font-medium`}
-                             style={statusConfig[claim.status]?.style}
-                           >
-                             {statusConfig[claim.status]?.label}
-                           </Badge>
-                           {claim.site_responded && claim.status === 'in_progress' && (
-                             <TooltipProvider>
-                               <Tooltip>
-                                 <TooltipTrigger asChild>
-                                   <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
-                                 </TooltipTrigger>
-                                 <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
-                                 </Tooltip>
-                                 </TooltipProvider>
-                                 )}
-                                 </div>
-                         </TableCell>
+                          <TableCell>
+                            <StatusBadge claim={claim} />
+                          </TableCell>
                          )}
                          {col('approval_status') && (
                                  <TableCell>

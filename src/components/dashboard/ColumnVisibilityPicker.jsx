@@ -4,6 +4,28 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Settings } from "lucide-react";
 
+const SITE_DEFAULT_COLUMNS = {
+  wip_number: true,
+  invoice_number: true,
+  claim_number: true,
+  site: false,
+  brand: true,
+  expected_hours: true,
+  actual_hours: true,
+  parts: false,
+  labour: false,
+  sub_con: false,
+  credit: false,
+  total_claim_cost: false,
+  last_clocking_date: true,
+  scanned_date: false,
+  manufacturer_deadline: true,
+  status: true,
+  approval_status: false,
+  claimed_date: false,
+  claimed_by: false,
+};
+
 const DEFAULT_COLUMNS = {
   wip_number: true,
   invoice_number: true,
@@ -134,4 +156,4 @@ export default function ColumnVisibilityPicker({ visibleColumns, onColumnsChange
   );
 }
 
-export { DEFAULT_COLUMNS, COLUMN_LABELS };
+export { DEFAULT_COLUMNS, COLUMN_LABELS, SITE_DEFAULT_COLUMNS };
