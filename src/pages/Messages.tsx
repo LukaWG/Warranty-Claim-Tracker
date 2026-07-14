@@ -223,7 +223,7 @@ export default function Messages() {
                     className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 cursor-pointer transition-colors"
                     onClick={() => handleOpenThread(msg)}
                   >
-                    <div className={`h-2 w-2 rounded-full shrink-0 ${unread ? 'bg-red-500' : 'bg-transparent'}`} />
+                    <div className={`h-2 w-2 rounded-full shrink-0 ${unread ? 'bg-blue-500' : 'bg-transparent'}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className={`text-sm ${unread ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>
@@ -260,6 +260,7 @@ export default function Messages() {
                 queryClient.invalidateQueries({ queryKey: ['messages'] });
               }}
               onGoToRepair={() => setSelectedThread(null)}
+              onMarkUnread={() => setSelectedThread(null)}
             />
           </DialogContent>
         </Dialog>

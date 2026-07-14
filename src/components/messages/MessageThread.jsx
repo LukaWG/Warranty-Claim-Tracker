@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
-import { Reply, MessageCircle, CheckCheck, Paperclip, X, ExternalLink } from 'lucide-react';
+import { Reply, MessageCircle, CheckCheck, Paperclip, X, ExternalLink, MailOpen } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { useRouter } from 'next/router';
@@ -39,7 +39,7 @@ function MessageBubble({ message, isOwn, readers }) {
   );
 }
 
-export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [], onGoToRepair }) {
+export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [], onGoToRepair, onMarkUnread }) {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
@@ -47,6 +47,19 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const handleMarkUnread = async () => {
+    const allMessages = [rootMessage, ...replies];
+    const myReceipts = allReadReceipts.filter(r => 
+      r.reader_email === currentUser?.email &&
+      allMessages.some(m => m.id === r.message_id)
+    );
+    await Promise.all(myReceipts.map(r => databaseClients.MessageRead.delete(r.id)));
+    queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
+    queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
+    queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
+    onMarkUnread?.();
+  };
 
   const handleImageAdd = (e) => {
     const files = Array.from(e.target.files);
@@ -124,18 +137,31 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         <span className="text-sm font-medium text-slate-700">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
         <Badge variant="outline" className="text-xs">{rootMessage.wip_number}</Badge>
         <Badge variant="outline" className="text-xs bg-slate-50">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
-        <Button 
-        size="sm" 
-        variant="outline" 
-        className="ml-auto h-7 text-xs gap-1" 
-        onClick={ () => {
-          router.push(`${createPageUrl('Dashboard')}?wip=${encodeURIComponent(rootMessage.wip_number)}`);
-          onGoToRepair?.();
-        }}
-      >
-        <ExternalLink className="h-3 w-3" />
-        Go to Repair
-      </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-xs gap-1 text-slate-500"
+            onClick={handleMarkUnread}
+            title="Mark as unread"
+          >
+            <MailOpen className="h-3 w-3" />
+            Mark unread
+          </Button>
+        
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="h-7 text-xs gap-1" 
+            onClick={ () => {
+              router.push(`${createPageUrl('Dashboard')}?wip=${encodeURIComponent(rootMessage.wip_number)}`);
+              onGoToRepair?.();
+            }}
+          >
+            <ExternalLink className="h-3 w-3" />
+            Go to Repair
+          </Button>
+        </div>
       </div>
       <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
         {allMessages.map(msg => {

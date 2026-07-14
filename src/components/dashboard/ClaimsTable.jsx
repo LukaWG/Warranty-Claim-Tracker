@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard } from "lucide-react";
+import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard, Mail } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
@@ -71,6 +71,40 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryKey: ['allUsers'],
     queryFn: () => databaseClients.User.get()
   });
+
+  const userRole = currentUser?.custom_role || currentUser?.role;
+  const isAdminRole = ['Admin Manager', 'Service Manager', 'Owner', 'Admin'].includes(userRole);
+  const userSite = currentUser?.default_site;
+
+  const { data: allMessages = [] } = useQuery({
+    queryKey: ['messages-unread', currentUser?.email],
+    queryFn: () => databaseClients.Message.list('-created_date', 200),
+    enabled: !!currentUser?.email,
+    refetchInterval: 30000
+  });
+
+  const { data: readReceipts = [] } = useQuery({
+    queryKey: ['message-reads', currentUser?.email],
+    queryFn: () => base44.entities.MessageRead.filter({ reader_email: currentUser.email }),
+    enabled: !!currentUser?.email,
+    refetchInterval: 30000
+  });
+
+  // Build set of claim IDs that have unread messages for this user
+  const unreadClaimIds = useMemo(() => {
+    if (!currentUser?.email) return new Set();
+    const readIds = new Set(readReceipts.map(r => r.message_id));
+    const claimIds = new Set();
+    allMessages.forEach(m => {
+      if (m.sender_email === currentUser.email) return;
+      if (!isAdminRole && m.target_site !== userSite) return;
+      if (!readIds.has(m.id)) {
+        claimIds.add(m.claim_id);
+      }
+    });
+    return claimIds;
+  }, [allMessages, readReceipts, currentUser, isAdminRole, userSite]);
+
 
   const toggleRow = (id) => setExpandedRows(prev => {
     const next = new Set(prev);
@@ -231,7 +265,7 @@ const SortableHead = ({ colKey, children }) => {
               <TooltipTrigger asChild>
                 <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
               </TooltipTrigger>
-              <TooltipContent className="text-xs">Site has responded to query</TooltipContent>
+              <TooltipContent className="text-xs">Note has been added to this claim</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}

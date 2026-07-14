@@ -36,7 +36,10 @@ async function apiFetch(path, options = {}) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error ?? `API error ${res.status}`);
   }
-  return res.json();
+  // DELETE returns 204 with an empty body; res.json() would throw on it
+  if (res.status === 204) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 // ---------------------------------------------------------------------------

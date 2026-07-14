@@ -3,6 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 
 export default function UnreadBadge({ currentUser }) {
+  const userRole = currentUser?.custom_role || currentUser?.role;
+  const isAdmin = ['Admin Manager', 'Service Manager', 'Owner', 'Admin'].includes(userRole);
+  const userSite = currentUser?.default_site;
+
   const { data: messages = [] } = useQuery({
     queryKey: ['messages-unread', currentUser?.email],
     queryFn: () => databaseClients.Message.get(),
@@ -17,15 +21,19 @@ export default function UnreadBadge({ currentUser }) {
     refetchInterval: 30000
   });
 
-  const userSite = currentUser?.default_site;
   const readIds = new Set(readReceipts.map(r => r.message_id));
 
-  // Count messages for this user's site that are unread and not sent by them
-  const unreadCount = messages.filter(m =>
-    m.target_site === userSite &&
-    m.sender_email !== currentUser?.email &&
-    !readIds.has(m.id)
-  ).length;
+  // Only count root messages (not replies) - same logic as Messages page
+  const rootMessages = messages.filter(m => !m.is_reply);
+
+  const unreadCount = rootMessages.filter(m => {
+    if (m.sender_email === currentUser?.email) return false;
+    // Admins see all messages; site users only see their site
+    if (!isAdmin && m.target_site !== userSite) return false;
+    // Check if the whole thread has any unread message
+    const threadMessages = messages.filter(tm => tm.id === m.id || tm.parent_message_id === m.id)
+    return threadMessages.some(tm => tm.sender_email !== currentUser?.email && !readIds.has(tm.id));
+  }).length;
 
   if (unreadCount === 0) return null;
 

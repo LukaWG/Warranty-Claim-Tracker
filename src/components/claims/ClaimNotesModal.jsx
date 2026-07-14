@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { databaseClients } from '@/api/databaseClient';
 // import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -61,6 +61,14 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminUser = ADMIN_ROLES.includes(userRole);
   const isProcessor = userRole === 'Processor';
+  const isSiteUser = userRole === 'Processor' || userRole === 'Site Manager';
+  const isQueried = !!claim?.alert || claim?.status === 'claimed_info_requested';
+  const canAddNote = isAdminUser || !isSiteUser || isQueried;
+
+  // If user can't add notes, default to message tab
+  useEffect (() => {
+    if (!canAddNote) setActiveTab('message');
+  }, [canAddNote]);
 
   const handleWithdraw = async () => {
     if (!newNote.trim()) return;
@@ -156,6 +164,11 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
 
         }
+      }
+
+      // Set site_responded flag when any user adds a note to an in_progress claim (shows orange alert icon)
+      if (currentStatus === 'in_progress') {
+        await databaseClients.WarrantyClaim.update(claim.id, { site_responded: true });
       }
 
       // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Processor or Site Manager
@@ -295,21 +308,23 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )} */}
 
-          {/* Tab switcher */}
-          <div className="flex gap-1 pg-1 bg-slate-100 rounded-lg w-fit">
-            <button
-              onClick={() => setActiveTab('note')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${(activeTab === 'note' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}`}
-            >
-              Note
-            </button>
-            <button
-              onClick={() => setActiveTab('message')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+          {/* Tab switcher - Note tab only shown when canAddNote, Message tab always shown */}
+          <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-fit">
+          {canAddNote && (
+              <button
+                onClick={() => setActiveTab('note')}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${(activeTab === 'note' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700')}`}
               >
-                <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Admin' : 'Site'}
+                Note
               </button>
-          </div>
+          )}
+              <button
+                onClick={() => setActiveTab('message')}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Admin' : 'Site'}
+                </button>
+            </div>
 
           {/* Message form */}
           {activeTab === 'message' && (
@@ -371,7 +386,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
           )}
           
           {/* Add Note/Withdraw Section */}
-          {activeTab === 'note' && (
+          {canAddNote && activeTab === 'note' && (
           <div className="border-b pb-6">
             <div className="flex items-center justify-between mb-2">
               <Label className="text-sm font-medium block">Add Note</Label>
