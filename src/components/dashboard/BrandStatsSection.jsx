@@ -105,26 +105,27 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
     { key: 'credit_rejected', label: 'Credit Rejected' },
   ];
 
-  const TileContent = ({ title, count, totalExpectedHours, statusCounts, colorCounts, onTileClick, onDeadlineClick, onStatusClick }) => (
+  const TileContent = ({ title, count, totalExpectedHours, statusCounts, colorCounts, onTileClick, onDeadlineClick, onStatusClick, isAllBrands = false }) => (
     <Card
-      className="border-0 shadow-lg bg-white overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+      className={`border-0 shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer ${isAllBrands ? 'text-white' : 'bg-white'}`}
+      style={isAllBrands ? { backgroundColor: 'var(--hendy-blue)' } : {}}
       onClick={onTileClick}
     >
       <div className="p-5">
         {/* Header */}
-        <p className="text-sm font-medium text-slate-500 mb-3">{title}</p>
+        <p className={`text-sm font-medium mb-3 ${isAllBrands ? 'text-blue-200' : 'text-slate-500'}`}>{title}</p>
 
         {/* Prominent: Hours + Total Active */}
         <div className="flex items-end gap-3 mb-3">
           <div>
-            <p className="text-4xl font-extrabold leading-none" style={{ color: 'var(--hendy-blue)' }}>
-              {totalExpectedHours.toFixed(1)}<span className="text-xl font-semibold text-slate-400">h</span>
+            <p className={`text-4xl font-extrabold leading-none ${isAllBrands ? 'text-white' : ''}`} style={!isAllBrands ? { color: 'var(--hendy-blue)' } : {}}>
+              {totalExpectedHours.toFixed(1)}<span className={`text-xl font-semibold ${isAllBrands ? 'text-blue-300' : 'text-slate-400'}`}>h</span>
             </p>
-            <p className="text-xs font-medium text-slate-400 mt-0.5">hours in progress</p>
+            <p className={`text-xs font-medium mt-0.5 ${isAllBrands ? 'text-blue-300' : 'text-slate-400'}`}>hours in progress</p>
           </div>
           <div className="ml-auto text-right">
-            <p className="text-2xl font-bold text-slate-700">{statusCounts.in_progress}</p>
-            <p className="text-xs text-slate-400">total active</p>
+            <p className={`text-2xl font-bold ${isAllBrands ? 'text-white' : 'text-slate-700'}`}>{statusCounts.in_progress}</p>
+            <p className={`text-xs ${isAllBrands ? 'text-blue-300' : 'text-slate-400'}`}>total active</p>
           </div>
         </div>
 
@@ -138,9 +139,9 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
         <div className="space-y-1 mb-3">
           {otherStatusLabels.map(({ key, label }) =>
             statusCounts[key] > 0 ? (
-              <div key={key} className="flex items-center justify-between hover:bg-slate-50 rounded px-1 -mx-1 cursor-pointer transition-colors" onClick={(e) => { e.stopPropagation(); onStatusClick?.(key); }}>
-                <span className="text-xs text-slate-400">{label}</span>
-                <span className="text-xs font-semibold text-slate-600">{statusCounts[key]}</span>
+              <div key={key} className={`flex items-center justify-between rounded px-1 -mx-1 cursor-pointer transition-colors ${isAllBrands ? 'hover:bg-white/10' : 'hover:bg-slate-50'}`} onClick={(e) => { e.stopPropagation(); onStatusClick?.(key); }}>
+                <span className={`text-xs ${isAllBrands ? 'text-blue-200' : 'text-slate-400'}`}>{label}</span>
+                <span className={`text-xs font-semibold ${isAllBrands ? 'text-white' : 'text-slate-600'}`}>{statusCounts[key]}</span>
               </div>
             ) : null
           )}
@@ -148,17 +149,17 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
         {/* Traffic light counts */}
         <div className="grid grid-cols-3 gap-2 mt-2">
-          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Red'); }} className="bg-red-50 px-2 py-1.5 rounded text-center hover:bg-red-100 transition-colors cursor-pointer">
-            <p className="text-sm font-bold text-red-700">{colorCounts.redCount}</p>
-            <p className="text-xs text-red-500">Red</p>
+          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Red'); }} className={`px-2 py-1.5 rounded text-center transition-colors cursor-pointer ${isAllBrands ? 'bg-red-500/30 hover:bg-red-500/50' : 'bg-red-50 hover:bg-red-100'}`}>
+            <p className={`text-sm font-bold ${isAllBrands ? 'text-red-200' : 'text-red-700'}`}>{colorCounts.redCount}</p>
+            <p className={`text-xs ${isAllBrands ? 'text-red-300' : 'text-red-500'}`}>Red</p>
           </div>
-          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Amber'); }} className="bg-amber-50 px-2 py-1.5 rounded text-center hover:bg-amber-100 transition-colors cursor-pointer">
-            <p className="text-sm font-bold text-amber-700">{colorCounts.amberCount}</p>
-            <p className="text-xs text-amber-500">Amber</p>
+          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Amber'); }} className={`px-2 py-1.5 rounded text-center transition-colors cursor-pointer ${isAllBrands ? 'bg-amber-500/30 hover:bg-amber-500/50' : 'bg-amber-50 hover:bg-amber-100'}`}>
+            <p className={`text-sm font-bold ${isAllBrands ? 'text-amber-200' : 'text-amber-700'}`}>{colorCounts.amberCount}</p>
+            <p className={`text-xs ${isAllBrands ? 'text-amber-300' : 'text-amber-500'}`}>Amber</p>
           </div>
-          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Green'); }} className="bg-green-50 px-2 py-1.5 rounded text-center hover:bg-green-100 transition-colors cursor-pointer">
-            <p className="text-sm font-bold text-green-700">{colorCounts.greenCount}</p>
-            <p className="text-xs text-green-500">Green</p>
+          <div onClick={(e) => { e.stopPropagation(); onDeadlineClick('Green'); }} className={`px-2 py-1.5 rounded text-center transition-colors cursor-pointer ${isAllBrands ? 'bg-green-500/30 hover:bg-green-500/50' : 'bg-green-50 hover:bg-green-100'}`}>
+            <p className={`text-sm font-bold ${isAllBrands ? 'text-green-200' : 'text-green-700'}`}>{colorCounts.greenCount}</p>
+            <p className={`text-xs ${isAllBrands ? 'text-green-300' : 'text-green-500'}`}>Green</p>
           </div>
         </div>
       </div>
@@ -239,6 +240,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
           onTileClick={() => onBrandTileClick('all')}
           onDeadlineClick={onDeadlineStatusFilter}
           onStatusClick={onStatusFilter}
+          isAllBrands={true}
         />
               
       </motion.div>
