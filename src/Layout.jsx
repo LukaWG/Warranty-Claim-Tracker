@@ -160,12 +160,12 @@ export default function Layout({ children, currentPageName }) {
   const pendingApprovalsCount = pendingApprovals.length;
   
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Admin Manager', 'Owner'] },
-    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Admin Manager', 'Administrator', 'Owner'] },
-    // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Owner'] },
-    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Owner'] },
-    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Admin Manager', 'Owner'] },
-    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Admin Manager', 'Owner'] }
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Group Manager', 'Administrator', 'Owner'] },
+    // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Group Manager', 'Owner'] },
+    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Group Manager', 'Owner'] },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
+    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Group Manager', 'Owner'] }
   ];
 
   const displayRole = currentUser?.custom_role || currentUser?.role;

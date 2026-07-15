@@ -1202,7 +1202,7 @@ export default function Configuration() {
 								>
 								<option value="Location">Location</option>
 								<option value="Administrator">Administrator</option>
-								<option value="Admin Manager">Admin Manager</option>
+								<option value="Group Manager">Group Manager</option>
 								<option value="Owner">Owner</option>
 								</select>
 							</TableCell>
@@ -1351,7 +1351,7 @@ export default function Configuration() {
 					<SelectContent>
 					<SelectItem value="Location">Location</SelectItem>
 					<SelectItem value="Administrator">Administrator</SelectItem>
-					<SelectItem value="Admin Manager">Admin Manager</SelectItem>
+					<SelectItem value="Group Manager">Group Manager</SelectItem>
 					<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 				</Select>
@@ -1630,7 +1630,7 @@ export default function Configuration() {
 					<SelectContent>
 						<SelectItem value="Location">Location</SelectItem>
 						<SelectItem value="Administrator">Administrator</SelectItem>
-						<SelectItem value="Admin Manager">Admin Manager</SelectItem>
+						<SelectItem value="Group Manager">Group Manager</SelectItem>
 						<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 					</Select>

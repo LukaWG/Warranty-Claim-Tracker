@@ -5710,8 +5710,8 @@ export let userData = [[
     "id": "69de371b5596465ed57bba77",
     "email": "testuser4@example.com",
     "first_name": "Test",
-    "last_name": "Admin Manager",
-    "custom_role": "Admin Manager",
+    "last_name": "Group Manager",
+    "custom_role": "Group Manager",
     "default_site": null
   },
   {

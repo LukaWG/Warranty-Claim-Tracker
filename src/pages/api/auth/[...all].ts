@@ -42,7 +42,7 @@ export default async function authHandler(
 
       const isRequesterAdmin = 
         session.user.role === "admin" || 
-        ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(session.user.customRole);
+        ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(session.user.customRole);
 
       if (!isRequesterAdmin) {
         return res.status(403).json({ message: "Forbidden: Administrator privileges required" });

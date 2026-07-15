@@ -30,7 +30,7 @@ export default function Home() {
 
         if (role === 'Location') {
           router.replace(createPageUrl('ClaimForm'));
-        } else if (role === 'Admin Manager') {
+        } else if (role === 'Group Manager') {
           router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Administrator') {
           router.replace(createPageUrl('Dashboard'));

@@ -52,7 +52,7 @@ export const authUsers = {
       delete mappedData.custom_role;
 
       // Keep platform role in sync
-      mappedData.role = ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(data.custom_role)
+      mappedData.role = ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(data.custom_role)
         ? "admin"
         : "user";
     }
@@ -81,7 +81,7 @@ export const authUsers = {
     }),
 
   invite: ({ email, first_name, last_name, custom_role, default_site, default_brands }) => {
-    const platformRole = ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(custom_role)
+    const platformRole = ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(custom_role)
       ? "admin"
       : "user";
 
