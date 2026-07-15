@@ -1,0 +1,34 @@
+# One-shot Job that creates/updates the Better Auth tables in Postgres.
+# Run it once after the first deploy, and again after any prisma/schema.prisma
+# change. Jobs are immutable, so delete the old one before re-running:
+#
+#   kubectl delete job db-push -n warranty-claim-tracker --ignore-not-found
+#   kubectl apply -f k8s/db-push-job.yaml
+#   kubectl logs -n warranty-claim-tracker job/db-push -f
+#
+# (Intentionally NOT in kustomization.yaml — apply it manually.)
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-push
+  namespace: warranty-claim-tracker
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: warranty-claim-tracker-db-push
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: db-push
+        image: lukawg/warranty-repair-tracker:latest
+        imagePullPolicy: Always
+        command: ["npx", "prisma", "db", "push", "--skip-generate"]
+        env:
+        - name: AUTH_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: warranty-claim-tracker-secrets
+              key: auth-database-url

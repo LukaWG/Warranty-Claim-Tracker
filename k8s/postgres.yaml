@@ -1,0 +1,78 @@
+# In-cluster PostgreSQL for Better Auth (users/sessions).
+# If you already run Postgres outside the cluster, delete this file from
+# kustomization.yaml and point `auth-database-url` in the Secret at it instead.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: warranty-claim-tracker
+  labels:
+    app: postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: warranty-claim-tracker
+  labels:
+    app: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        ports:
+        - name: postgres
+          containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "adminuser"
+        - name: POSTGRES_DB
+          value: "warranty_claim_tracker"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: warranty-claim-tracker-secrets
+              key: postgres-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-U", "adminuser", "-d", "warranty_claim_tracker"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi

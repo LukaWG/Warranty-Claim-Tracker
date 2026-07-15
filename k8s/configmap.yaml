@@ -1,0 +1,12 @@
+# Non-sensitive runtime configuration.
+# NOTE: NEXT_PUBLIC_* values are NOT here — they are baked into the image at
+# build time (see Dockerfile build args). Changing them requires a rebuild.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: warranty-claim-tracker-config
+  namespace: warranty-claim-tracker
+data:
+  # Public URL users reach the app on (scheme + host). Better Auth uses this
+  # for cookies/redirects; it must match the ingress host.
+  better-auth-url: "http://warranty.local"

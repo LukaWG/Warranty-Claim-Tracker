@@ -35,3 +35,6 @@ TODO
 .next/
 /src/generated/prisma
 .antigravitycli/
+
+# Real k8s secret (copy of k8s/secret.example.yaml with real values)
+k8s/secret.yaml

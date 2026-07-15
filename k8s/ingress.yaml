@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: warranty-claim-tracker
+  namespace: warranty-claim-tracker
+spec:
+  # K3s ships Traefik by default. On a cluster with ingress-nginx, change
+  # this to `nginx`.
+  ingressClassName: traefik
+  rules:
+  # Set to your local DNS name (e.g. warranty.local). An empty host matches
+  # any hostname/IP that reaches the ingress controller.
+  - host: ""
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: warranty-claim-tracker
+            port:
+              number: 80

@@ -18,3 +18,9 @@ coverage
 *.swo
 *~
 .eslintcache
+k8s
+.github
+.claude
+Dockerfile
+docker-compose.yaml
+*.md

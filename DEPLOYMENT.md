@@ -1,147 +1,216 @@
-# Warranty Claim Tracker - Kubernetes Deployment Guide
+# Deployment Guide
 
-This project has been successfully converted from Vite/React Router to **Next.js** with **Kubernetes deployment** support.
+How to build, deploy, and update the Warranty Claim Tracker with Docker — either
+with plain Docker Compose on a single host, or on Kubernetes (K3s recommended
+for a single local server).
 
-## Changes Made
+## Architecture
 
-### Build Tool Migration: Vite → Next.js
-
-- ✅ Converted from Vite to Next.js 14
-- ✅ Replaced React Router with Next.js App Router
-- ✅ Updated all route imports (`useRouter`, `useNavigate`, `Link`) to Next.js equivalents
-- ✅ Created Next.js page structure (`_app.jsx`, `pages/`)
-- ✅ Configured `next.config.js` with root base path `/`
-
-### Deployment: Kubernetes
-
-- ✅ Created `Dockerfile` for containerization
-- ✅ Added Kubernetes manifests in `k8s/` directory
-- ✅ Set up GitHub Actions workflow for automated Docker builds
-- ✅ Configured health checks, resource limits, and rolling updates
-
-## Quick Start
-
-### Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Visit http://localhost:3000
+```text
+Browser ──> Ingress / host port ──> Next.js app (port 3000, this repo)
+                                      ├─> PostgreSQL (Better Auth users/sessions, Prisma)
+                                      └─(browser fetches directly)─> Data API (port 5001, separate service)
 ```
 
-### Build & Test Locally
+Two external dependencies:
+
+- **PostgreSQL** — stores Better Auth users/sessions. Included in both the
+  compose file and the k8s manifests.
+- **Data API (`NEXT_PUBLIC_API_URL`, port 5001)** — the claims/sites/brands
+  backend that `src/api/databaseClient.js` calls. It is **not in this repo**
+  and is called **directly from the user's browser**, so its URL must be
+  reachable from user machines, not just from inside the cluster.
+
+## ⚠️ Before deploying: revert the local-dev mocks
+
+This repo carries local-only modifications (see `CLAUDE.md`). For a real
+deployment, restore production behaviour:
+
+1. `middleware.ts` — restore the commented-out cookie check (currently allows
+   all requests unauthenticated).
+2. `src/lib/auth.ts` — make sure the real Better Auth config is active (it
+   currently is; the mock is commented out at the bottom).
+3. `src/api/databaseClient.js` — confirm the right data layer is active
+   (`databaseClientNew.js` is the Prisma-backed version).
+4. `src/pages/_app.jsx` — re-enable the commented-out `AuthProvider` wrapper.
+
+## Environment variables
+
+**Build-time (baked into the JS bundle — changing them requires rebuilding the image):**
+
+| Variable | Purpose | Example |
+|---|---|---|
+| `NEXT_PUBLIC_BASE_PATH` | Base path for internal navigation | `/` |
+| `NEXT_PUBLIC_API_URL` | Data API URL, **as reachable from user browsers** | `http://192.168.1.144:5001` |
+| `NEXT_PUBLIC_APP_URL` | Public URL of the app itself | `http://warranty.local` |
+| `NEXT_PUBLIC_ENABLE_MICROSOFT_SSO` | Show the SSO login button | `false` |
+| `NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO` | Skip login form, go straight to SSO | `false` |
+
+**Runtime (set on the container — compose `environment:` or the k8s Secret/ConfigMap):**
+
+| Variable | Purpose |
+|---|---|
+| `AUTH_DATABASE_URL` | Postgres connection string for Better Auth/Prisma |
+| `BETTER_AUTH_SECRET` | Session signing secret — generate with `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | Public URL users reach the app on (must match ingress host) |
+| `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` / `MICROSOFT_TENANT_ID` | Only if SSO is enabled |
+
+## Build the image
 
 ```bash
-# Build for production
-npm run build
+docker build \
+  --build-arg NEXT_PUBLIC_API_URL=http://192.168.1.144:5001 \
+  --build-arg NEXT_PUBLIC_APP_URL=http://warranty.local \
+  -t lukawg/warranty-repair-tracker:latest .
 
-# Start production server
-npm start
-
-# Visit http://localhost:3000
+docker push lukawg/warranty-repair-tracker:latest
 ```
 
-### Docker Build & Run
+CI does this automatically: `.github/workflows/deploy.yml` builds and pushes
+`lukawg/warranty-repair-tracker:latest` (plus a `:<git-sha>` tag) on every push
+to `main`. Set the `NEXT_PUBLIC_*` values as repository **variables** and the
+Docker Hub credentials as **secrets** in GitHub.
+
+## Option A — Docker Compose (single host)
+
+`docker-compose.yaml` runs Postgres + the app. Secrets are read from `.env`
+(`BETTER_AUTH_SECRET` is required, `POSTGRES_PASSWORD` defaults to `Password`).
 
 ```bash
-# Build Docker image
-docker build -t warranty-claim-tracker:latest .
+# 1. Start everything (builds the image locally)
+docker compose up -d --build
 
-# Run container
-docker run -p 3000:3000 warranty-claim-tracker:latest
+# 2. Create the auth tables (first run, and after any prisma/schema.prisma change)
+docker compose --profile setup run --rm db-push
 
-# Visit http://localhost:3000
+# App: http://<host>:3000   Postgres: <host>:51214
 ```
 
-## Kubernetes Deployment
+**To update:** pull the latest code and `docker compose up -d --build`.
+If instead you deploy pre-built images from Docker Hub, uncomment the
+`watchtower` service — it polls the registry and auto-restarts the app when a
+new `latest` image is pushed.
 
-See [k8s/README.md](./k8s/README.md) for detailed deployment instructions.
+## Option B — Kubernetes
 
-### Quick Deploy
+Manifests live in `k8s/`. They deploy: namespace, ConfigMap, Postgres
+(StatefulSet + 5Gi PVC + ClusterIP service), the app (2 replicas, rolling
+update, probes), a ClusterIP service, and an Ingress.
+
+### First-time setup
 
 ```bash
-# Apply all Kubernetes resources
+# 0. On a fresh local server, install K3s (see notes below)
+
+# 1. Namespace
+kubectl apply -f k8s/namespace.yaml
+
+# 2. Secrets — see k8s/secret.example.yaml for the full command
+kubectl create secret generic warranty-claim-tracker-secrets \
+  -n warranty-claim-tracker \
+  --from-literal=postgres-password='<strong-password>' \
+  --from-literal=auth-database-url='postgresql://adminuser:<strong-password>@postgres:5432/warranty_claim_tracker' \
+  --from-literal=better-auth-secret="$(openssl rand -base64 32)"
+
+# 3. Set the public URL in k8s/configmap.yaml (better-auth-url), then deploy
 kubectl apply -k k8s/
 
-# Verify deployment
+# 4. Wait for Postgres, then create the auth tables
+kubectl rollout status statefulset/postgres -n warranty-claim-tracker
+kubectl apply -f k8s/db-push-job.yaml
+kubectl logs -n warranty-claim-tracker job/db-push -f
+
+# 5. Verify
 kubectl get all -n warranty-claim-tracker
+kubectl logs -n warranty-claim-tracker -l app=warranty-claim-tracker -f
 ```
 
-### Port Forward for Testing
+### Access
+
+Point a local DNS name (e.g. `warranty.local`) at the server's IP; the ingress
+serves it on port 80. For quick testing without DNS:
 
 ```bash
-# Option 1: Port forward to service (recommended)
 kubectl port-forward -n warranty-claim-tracker svc/warranty-claim-tracker 3000:80
-
-# Option 2: Port forward directly to a pod
-kubectl port-forward -n warranty-claim-tracker <pod-name> 3000:3000
-
-# Visit http://localhost:3000
+# http://localhost:3000
 ```
 
-## GitHub Actions Workflow
+### Updating the app
 
-The `.github/workflows/k8s-deploy.yml` workflow:
-1. Builds and pushes Docker image to GitHub Container Registry
-2. Deploys to Kubernetes on successful build (for `main` branch)
-3. Monitors rollout status
-
-**Setup Required:**
-- Add `KUBE_CONFIG` secret to GitHub repository (base64-encoded kubeconfig)
-- Update `k8s/deployment.yaml` image reference if using different registry
-
-## Project Structure
-
-```
-├── src/
-│   ├── pages/           # Next.js pages
-│   │   ├── _app.jsx     # Global app wrapper
-│   │   ├── index.jsx    # Home redirect
-│   │   ├── 404.jsx      # 404 page
-│   │   └── *.jsx        # Route pages
-│   ├── components/      # React components
-│   ├── lib/             # Libraries and utilities
-│   └── api/             # API clients
-├── public/              # Static assets
-├── k8s/                 # Kubernetes manifests
-├── Dockerfile           # Container image definition
-├── next.config.js       # Next.js configuration
-└── package.json         # Dependencies
+```bash
+# Push a new image (or let CI do it), then:
+kubectl rollout restart deployment/warranty-claim-tracker -n warranty-claim-tracker
+kubectl rollout status  deployment/warranty-claim-tracker -n warranty-claim-tracker
 ```
 
-## Important Notes
+`imagePullPolicy: Always` + the `latest` tag means a restart pulls the newest
+image. For controlled rollbacks, deploy by sha tag instead:
 
-- All routes use `/Warranty-Claim-Tracker` base path (configurable via `NEXT_PUBLIC_BASE_PATH`)
-- React Router imports have been replaced with Next.js routing
-- Static export is disabled for server-side rendering in Kubernetes
-- The app runs on port 3000 by default
+```bash
+kubectl set image deployment/warranty-claim-tracker \
+  warranty-claim-tracker=lukawg/warranty-repair-tracker:<git-sha> \
+  -n warranty-claim-tracker
+# Roll back:
+kubectl rollout undo deployment/warranty-claim-tracker -n warranty-claim-tracker
+```
 
-## Environment Variables
+If `prisma/schema.prisma` changed, re-run the db-push job (delete first — Jobs
+are immutable):
 
-- `NEXT_PUBLIC_BASE_PATH`: Base path for the application (default: `/Warranty-Claim-Tracker`)
-- `NODE_ENV`: Set to `production` in Kubernetes deployments
-- `PORT`: Server port (default: 3000)
+```bash
+kubectl delete job db-push -n warranty-claim-tracker --ignore-not-found
+kubectl apply -f k8s/db-push-job.yaml
+```
+
+### Updating configuration
+
+- **Runtime config** (`BETTER_AUTH_URL`, secrets): edit the ConfigMap/Secret,
+  then `kubectl rollout restart deployment/warranty-claim-tracker -n warranty-claim-tracker`.
+- **`NEXT_PUBLIC_*` values**: rebuild and push the image with new build args,
+  then restart the deployment. Editing the ConfigMap does nothing for these.
+
+### Scaling
+
+```bash
+kubectl scale deployment warranty-claim-tracker -n warranty-claim-tracker --replicas=3
+```
+
+### K3s notes (single local server)
+
+```bash
+curl -sfL https://get.k3s.io | sh -
+mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config && sudo chown "$USER:$USER" ~/.kube/config
+```
+
+- K3s ships **Traefik** as the ingress controller; `k8s/ingress.yaml` already
+  uses `ingressClassName: traefik`. Change it to `nginx` on clusters running
+  ingress-nginx.
+- To use a locally built image without a registry:
+  `docker save lukawg/warranty-repair-tracker:latest | sudo k3s ctr images import -`
+  and set `imagePullPolicy: IfNotPresent` in `k8s/deployment.yaml`.
 
 ## Troubleshooting
 
-### Build Issues
-- Ensure Node.js 18+ is installed: `node --version`
-- Clear cache: `rm -rf .next node_modules && npm install`
+```bash
+kubectl describe pod -n warranty-claim-tracker <pod-name>   # stuck pods, image pull errors
+kubectl get events -n warranty-claim-tracker --sort-by=.lastTimestamp
+kubectl logs -n warranty-claim-tracker -l app=warranty-claim-tracker --tail=100
+kubectl exec -it -n warranty-claim-tracker postgres-0 -- psql -U adminuser warranty_claim_tracker
+```
 
-### Runtime Issues
-- Check logs: `npm run build && npm start`
-- Verify environment variables in `next.config.js`
+Common issues:
 
-### Kubernetes Issues
-- See [k8s/README.md](./k8s/README.md) troubleshooting section
-- Check pod logs: `kubectl logs -n warranty-claim-tracker <pod-name>`
+- **Login fails / redirects loop** — `BETTER_AUTH_URL` must exactly match the
+  URL in the browser address bar (scheme, host, port).
+- **Data never loads but login works** — `NEXT_PUBLIC_API_URL` is wrong or the
+  data API isn't reachable *from the user's browser*. Check the browser dev
+  tools network tab; remember this value is baked in at build time.
+- **`relation "user" does not exist`** — the db-push job hasn't been run.
 
-## References
+## Cleanup
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Kubernetes Documentation](https://kubernetes.io/docs)
-- [Docker Documentation](https://docs.docker.com)
+```bash
+kubectl delete -k k8s/          # keeps the PVC (Postgres data)
+kubectl delete namespace warranty-claim-tracker   # deletes everything including data
+docker compose down             # compose: add -v to also delete Postgres data
+```
