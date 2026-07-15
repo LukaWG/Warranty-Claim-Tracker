@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "user" ADD COLUMN     "custom_role" TEXT DEFAULT 'Processor',
+ALTER TABLE "user" ADD COLUMN     "custom_role" TEXT DEFAULT 'Location',
 ADD COLUMN     "default_site" TEXT,
 ADD COLUMN     "first_name" TEXT,
 ADD COLUMN     "last_name" TEXT;

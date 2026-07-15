@@ -98,7 +98,7 @@ export default function Dashboard() {
 
   const adminBrands = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
-    if (userRole === 'Admin' && currentUser?.default_brands) {
+    if (userRole === 'Administrator' && currentUser?.default_brands) {
       if (typeof currentUser.default_brands === 'string') {
         try {
           const parsed = JSON.parse(currentUser.default_brands);
@@ -119,16 +119,16 @@ export default function Dashboard() {
 
   // Apply filters and role-based access
     const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
-      // Processor role: see all claims from their branch except awaiting_review
+      // Location role: see all claims from their branch except awaiting_review
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (userRole === 'Processor') {
-        const processorSite = currentUser?.default_site;
-        if (processorSite && claim.site !== processorSite) return false;
+      if (userRole === 'Location') {
+        const locationSite = currentUser?.default_site;
+        if (locationSite && claim.site !== locationSite) return false;
         if (claim.status === 'awaiting_review' || claim.status === 'claim_info_received') return false;
       }
 
       // Admin: hide truly rejected claims (no alert) but show queried claims (rejected with alert, or claimed_info_requested)
-      if (userRole === 'Admin') {
+      if (userRole === 'Administrator') {
         if (claim.status === 'rejected' && !claim.alert) {
           return false;
         }
@@ -291,7 +291,7 @@ export default function Dashboard() {
 
   const handleEditSave = async (data) => {
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (userRole === 'Processor') {
+      if (userRole === 'Location') {
         setEditingClaim(null);
         return;
       }
@@ -411,7 +411,7 @@ export default function Dashboard() {
 
   const siteBrandRestriction = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
-    if (['Processor'].includes(userRole) && currentUser?.default_site) {
+    if (['Location'].includes(userRole) && currentUser?.default_site) {
       const userSite = allSites.find(s => s.id === currentUser.default_site || s.name === currentUser.default_site);
       return userSite?.brands || null;
     }
@@ -457,15 +457,15 @@ export default function Dashboard() {
         {/* Filters */}
         <DashboardFilters claims={(() => {
           const userRole = currentUser?.custom_role || currentUser?.role;
-          if ((userRole === 'Admin') && currentUser?.default_site) {
+          if ((userRole === 'Administrator') && currentUser?.default_site) {
             return allClaims.filter(c => c.site === currentUser.default_site);
           }
           return allClaims;
         })()} onRepairSearchChange={setRepairSearch} repairSearch={repairSearch} onWipSearchChange={setWipSearch} wipSearch={wipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
 
           {/* Brand Stats Section 
-              Only show if user is NOT  a Processor */}
-          {currentUser?.customRole !== 'Processor' && (
+              Only show if user is NOT  a Location */}
+          {currentUser?.customRole !== 'Location' && (
             <BrandStatsSection claims={claims} allClaims={claims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} onStatusFilter={handleStatusFilter} />
           )}
 

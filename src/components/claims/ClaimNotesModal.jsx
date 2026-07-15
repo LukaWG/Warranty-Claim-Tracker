@@ -13,7 +13,7 @@ import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 
-const ADMIN_ROLES = ['Owner', 'Admin', 'Service Manager', 'Admin Manager'];
+const ADMIN_ROLES = ['Owner', 'Administrator', 'Service Manager', 'Admin Manager'];
 
 
 export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
@@ -61,8 +61,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminUser = ADMIN_ROLES.includes(userRole);
-  const isProcessor = userRole === 'Processor';
-  const isSiteUser = userRole === 'Processor';
+  const isProcessor = userRole === 'Location';
+  const isSiteUser = userRole === 'Location';
   const isQueried = !!claim?.alert || claim?.status === 'claimed_info_requested';
   const isWithdrawn = claim?.status === 'withdrawn';
   const canAddNote = isAdminUser || !isSiteUser || isQueried || isWithdrawn;
@@ -194,9 +194,9 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         await databaseClients.WarrantyClaim.update(claim.id, { site_responded: true });
       }
 
-      // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Processor
+      // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Location
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Processor')) {
+      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Location')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress', site_responded: true });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -208,8 +208,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         });
       }
 
-      // Move to claimed_info_received if claim is claimed_info_requested and user is a Processor
-      if (currentStatus === 'claimed_info_requested' && (userRole === 'Processor')) {
+      // Move to claimed_info_received if claim is claimed_info_requested and user is a Location
+      if (currentStatus === 'claimed_info_requested' && (userRole === 'Location')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -385,7 +385,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                 onClick={() => setActiveTab('message')}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Admin' : 'Site'}
+                  <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Administrator' : 'Site'}
                 </button>
               ) : null}
             </div>

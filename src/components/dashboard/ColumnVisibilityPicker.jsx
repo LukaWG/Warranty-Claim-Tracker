@@ -71,7 +71,7 @@ const COLUMN_LABELS = {
 };
 
 export default function ColumnVisibilityPicker({ visibleColumns, onColumnsChange, userRole }) {
-  const isProcessor = userRole === 'Processor';
+  const isProcessor = userRole === 'Location';
 
   const availableColumns = Object.entries(COLUMN_LABELS).filter(([key]) => {
     if (isProcessor && key === 'claimed_by') return false;

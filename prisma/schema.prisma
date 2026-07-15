@@ -23,7 +23,7 @@ model user {
   accounts      account[]
   firstName     String? @map("first_name")
   lastName      String? @map("last_name")
-  customRole    String?   @default("Processor") @map("custom_role")
+  customRole    String?   @default("Location") @map("custom_role")
   defaultSite   String?   @map("default_site")
   defaultBrands String[]  @default([]) @map("default_brands")
   mustChangePassword Boolean? @default(false) @map("must_change_password")

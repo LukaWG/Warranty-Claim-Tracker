@@ -29,7 +29,7 @@ export const authUsers = {
           ...u,
           first_name: u.firstName ?? u.first_name ?? "",
           last_name: u.lastName ?? u.last_name ?? "",
-          custom_role: u.customRole ?? u.custom_role ?? "Processor",
+          custom_role: u.customRole ?? u.custom_role ?? "Location",
           default_site: u.defaultSite ?? u.default_site ?? "",
           default_brands: u.defaultBrands ?? u.default_brands ?? [],
           created_date: u.createdAt ?? u.created_date ?? null,
@@ -52,7 +52,7 @@ export const authUsers = {
       delete mappedData.custom_role;
 
       // Keep platform role in sync
-      mappedData.role = ["Owner", "Service Manager", "Admin Manager", "Admin"].includes(data.custom_role)
+      mappedData.role = ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(data.custom_role)
         ? "admin"
         : "user";
     }
@@ -81,7 +81,7 @@ export const authUsers = {
     }),
 
   invite: ({ email, first_name, last_name, custom_role, default_site, default_brands }) => {
-    const platformRole = ["Owner", "Service Manager", "Admin Manager", "Admin"].includes(custom_role)
+    const platformRole = ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(custom_role)
       ? "admin"
       : "user";
 
@@ -94,7 +94,7 @@ export const authUsers = {
         role: platformRole,
         firstName: first_name,
         lastName: last_name,
-        customRole: custom_role ?? "Processor",
+        customRole: custom_role ?? "Location",
         defaultSite: default_site ?? null,
         defaultBrands: default_brands ?? [],
       }),

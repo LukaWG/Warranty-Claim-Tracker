@@ -160,11 +160,11 @@ export default function Layout({ children, currentPageName }) {
   const pendingApprovalsCount = pendingApprovals.length;
   
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Admin', 'Admin Manager', 'Owner'] },
-    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Admin Manager', 'Admin', 'Owner'] },
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Admin Manager', 'Owner'] },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Admin Manager', 'Administrator', 'Owner'] },
     // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Owner'] },
-    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Admin', 'Admin Manager', 'Owner'] },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Admin Manager', 'Owner'] },
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Admin Manager', 'Owner'] }
   ];
 
@@ -223,7 +223,7 @@ export default function Layout({ children, currentPageName }) {
             {currentUser && (
               <div className="mt-2">
                 <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: 'var(--hendy-teal)' }}>
-                  {displayRole === "Processor" ? 'Site' : displayRole || 'User'}
+                  {displayRole || 'User'}
                 </span>
               </div>
             )}
@@ -236,7 +236,7 @@ export default function Layout({ children, currentPageName }) {
             MENU
           </div>
           <div className="space-y-1">
-            {/* {displayRole !== 'Processor' && ( // Search repairs button
+            {/* {displayRole !== 'Location' && ( // Search repairs button
               <button
                 onClick={() => {
                   setSearchOpen(true);

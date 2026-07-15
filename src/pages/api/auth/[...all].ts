@@ -42,10 +42,10 @@ export default async function authHandler(
 
       const isRequesterAdmin = 
         session.user.role === "admin" || 
-        ["Owner", "Service Manager", "Admin Manager", "Admin"].includes(session.user.customRole);
+        ["Owner", "Service Manager", "Admin Manager", "Administrator"].includes(session.user.customRole);
 
       if (!isRequesterAdmin) {
-        return res.status(403).json({ message: "Forbidden: Admin privileges required" });
+        return res.status(403).json({ message: "Forbidden: Administrator privileges required" });
       }
 
       const { userId, newPassword } = req.body;
@@ -94,7 +94,7 @@ export default async function authHandler(
       
       return res.status(200).json({ success: true, message: "Password updated successfully" });
     } catch (err: any) {
-      console.error("[Admin Password Reset Error]:", err);
+      console.error("[Administrator Password Reset Error]:", err);
       return res.status(500).json({ message: err.message || "Failed to update password" });
     }
   }

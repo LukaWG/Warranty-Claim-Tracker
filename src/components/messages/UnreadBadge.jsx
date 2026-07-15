@@ -4,7 +4,7 @@ import { databaseClients } from '@/api/databaseClient';
 
 export default function UnreadBadge({ currentUser }) {
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const isAdmin = ['Admin Manager', 'Service Manager', 'Owner', 'Admin'].includes(userRole);
+  const isAdmin = ['Admin Manager', 'Service Manager', 'Owner', 'Administrator'].includes(userRole);
   const userSite = currentUser?.default_site;
 
   const { data: messages = [] } = useQuery({

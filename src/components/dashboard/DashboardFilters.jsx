@@ -101,7 +101,7 @@ const STATUS_OPTIONS = [
 
 export default function DashboardFilters({ claims, filters, onFilterChange, allUsers = [], showClaimed, onShowClaimedChange, currentUser, allSites = [], allBrands = [], wipSearch, repairSearch, onRepairSearchChange, onWipSearchChange }) {
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const isAdmin = userRole === 'Admin';
+  const isAdmin = userRole === 'Administrator';
   const adminSite = currentUser?.default_site;
 
   const sitesShuffled = isAdmin && adminSite

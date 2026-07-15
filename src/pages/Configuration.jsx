@@ -58,7 +58,7 @@ export default function Configuration() {
 	const [newAlert, setNewAlert] = useState({ name: '' });
 	const [newResolution, setNewResolution] = useState({ name: '' });
 	const [newBrand, setNewBrand] = useState({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
-	const [newUser, setNewUser] = useState({ email: '', role: 'Processor', first_name: '', last_name: '', default_site: '', default_brands: [] });
+	const [newUser, setNewUser] = useState({ email: '', role: 'Location', first_name: '', last_name: '', default_site: '', default_brands: [] });
 	const [showUserDialog, setShowUserDialog] = useState(false);
 	const [editingUser, setEditingUser] = useState(null);
 	const [tempPassword, setTempPassword] = useState(null);
@@ -78,7 +78,7 @@ export default function Configuration() {
 		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site }),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
-		setNewUser({ email: "", role: "Processor", first_name: "", last_name: "", default_site: "" });
+		setNewUser({ email: "", role: "Location", first_name: "", last_name: "", default_site: "" });
 		setShowUserDialog(false);
 	},
 	onError: (error) => alert(`Failed to add user: ${error.message}`),
@@ -308,7 +308,7 @@ export default function Configuration() {
 			last_name: editingUser.last_name,
 			custom_role: editingUser.custom_role || editingUser.role,
 			default_site: editingUser.default_site || null,
-			default_brands: ((editingUser.custom_role || editingUser.role) === 'Admin') ? (editingUser.default_brands || []) : []
+			default_brands: ((editingUser.custom_role || editingUser.role) === 'Administrator') ? (editingUser.default_brands || []) : []
 		}
 		});
 	}
@@ -1187,7 +1187,7 @@ export default function Configuration() {
 							</TableCell>
 							<TableCell>
 								<select
-								value={user.custom_role || user.role || 'Processor'}
+								value={user.custom_role || user.role || 'Location'}
 								onChange={(e) => {
 									const newRole = e.target.value;
 									if (window.confirm(`Change ${user.email}'s role to ${newRole}?`)) {
@@ -1200,8 +1200,8 @@ export default function Configuration() {
 								disabled={updateUserRoleMutation.isPending}
 								className="h-8 px-2 rounded border border-input bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-								<option value="Processor">Site</option>
-								<option value="Admin">Admin</option>
+								<option value="Location">Location</option>
+								<option value="Administrator">Administrator</option>
 								<option value="Admin Manager">Admin Manager</option>
 								<option value="Owner">Owner</option>
 								</select>
@@ -1349,14 +1349,14 @@ export default function Configuration() {
 					<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-					<SelectItem value="Processor">Site</SelectItem>
-					<SelectItem value="Admin">Admin</SelectItem>
+					<SelectItem value="Location">Location</SelectItem>
+					<SelectItem value="Administrator">Administrator</SelectItem>
 					<SelectItem value="Admin Manager">Admin Manager</SelectItem>
 					<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 				</Select>
 				</div>
-				{newUser.role !== 'Admin' && (
+				{newUser.role !== 'Administrator' && (
 				<div className="space-y-2">
 				<Label>Default Branch</Label>
 				<Select
@@ -1375,10 +1375,10 @@ export default function Configuration() {
 				</Select>
 				</div>
 				)}
-				{newUser.role === 'Admin' && (
+				{newUser.role === 'Administrator' && (
 					<div className="space-y-2">
-						<Label>Brand Access (Admin)</Label>
-						<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+						<Label>Brand Access (Administrator)</Label>
+						<p className="text-xs text-slate-500">Select which brands this Administrator can see. Leave empty for all brands.</p>
 						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
 							{brands.map(brand => (
 								<div key={brand.id} className="flex items-center gap-3">
@@ -1628,14 +1628,14 @@ export default function Configuration() {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="Processor">Site</SelectItem>
-						<SelectItem value="Admin">Admin</SelectItem>
+						<SelectItem value="Location">Location</SelectItem>
+						<SelectItem value="Administrator">Administrator</SelectItem>
 						<SelectItem value="Admin Manager">Admin Manager</SelectItem>
 						<SelectItem value="Owner">Owner</SelectItem>
 					</SelectContent>
 					</Select>
 				</div>
-				{(editingUser.custom_role || editingUser.role) !== 'Admin' && (
+				{(editingUser.custom_role || editingUser.role) !== 'Administrator' && (
 				<div className="space-y-2">
 					<Label>Default Branch</Label>
 					<Select
@@ -1654,10 +1654,10 @@ export default function Configuration() {
 					</Select>
 				</div>
 				)}
-				{(editingUser.custom_role || editingUser.role) === 'Admin' && (
+				{(editingUser.custom_role || editingUser.role) === 'Administrator' && (
 					<div className="space-y-2">
-					<Label>Brand Access (Admin)</Label>
-					<p className="text-xs text-slate-500">Select which brands this Admin can see. Leave empty for all brands.</p>
+					<Label>Brand Access (Administrator)</Label>
+					<p className="text-xs text-slate-500">Select which brands this Administrator can see. Leave empty for all brands.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
 						<div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate0299">
 							<input

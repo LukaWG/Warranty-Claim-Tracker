@@ -28,11 +28,11 @@ export default function Home() {
         const user = await databaseClients.User.me();
         const role = user?.custom_role || user?.role;
 
-        if (role === 'Processor') {
+        if (role === 'Location') {
           router.replace(createPageUrl('ClaimForm'));
         } else if (role === 'Admin Manager') {
           router.replace(createPageUrl('Dashboard'));
-        } else if (role === 'Admin') {
+        } else if (role === 'Administrator') {
           router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Service Manager') {
           router.replace(createPageUrl('Dashboard'));
