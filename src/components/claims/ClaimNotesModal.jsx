@@ -13,7 +13,7 @@ import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 
-const ADMIN_ROLES = ['Owner', 'Administrator', 'Service Manager', 'Admin Manager'];
+const ADMIN_ROLES = ['Owner', 'Administrator', 'Service Manager', 'Group Manager'];
 
 
 export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
@@ -25,7 +25,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const [isUploading, setIsUploading] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
-  const[isUndoingWithdrawl, setIsUndoingWithdrawal] = useState(false);
+  const [isUndoingWithdrawl, setIsUndoingWithdrawal] = useState(false);
+  const [withdrawImage, setWithdrawImage] = useState(null); // { file, previewUrl }
   // Message state
   const [msgSubject, setMsgSubject] = useState('');
   const [msgBody, setMsgBody] = useState('');
@@ -72,11 +73,37 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     if (!canAddNote) setActiveTab('message');
   }, [canAddNote]);
 
+  const removeWithdrawImage = () => {
+    if (withdrawImage?.previewUrl) URL.revokeObjectURL(withdrawImage.previewUrl);
+    setWithdrawImage(null);
+  };
+
+  const handleWithdrawPaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type?.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          const previewUrl = URL.createObjectURL(file);
+          setWithdrawImage({ file, previewUrl });
+        }
+        break;
+      }
+    }
+  };
+
   const handleWithdraw = async () => {
     if (!newNote.trim()) return;
     setIsWithdrawing(true);
+    let imageUrl = null;
+    if (withdrawImage?.file) {
+      const result = {file_url: ''} // TODO implement file upload
+      imageUrl = result.file_url;
+    }
     await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn' });
-    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}` });
+    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}`, ...(imageUrl ? { image_url: imageUrl } : {}) });
     await databaseClients.ClaimAudit.create({
       claim_id: claim.id,
       wip_number: claim.wip_number,
@@ -90,6 +117,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     setNewNote('');
     setShowWithdraw(false);
     setIsWithdrawing(false);
+    removeWithdrawImage();
     if (onStatusUpdate) onStatusUpdate();
     onClose();
   }
@@ -358,7 +386,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            Claim Notes
+            Message Centre
           </DialogTitle>
         </DialogHeader>
 
@@ -565,8 +593,28 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                   placeholder={claim?.status === 'withdrawn' ? "Explain why you're undoing the withdrawal..." : "Explain why this claim is being withdrawn..."}
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
+                  onPaste={handleWithdrawPaste}
                   className="min-h-24"
                 />
+
+                {withdrawImage && (
+                  <div className="relative inline-block">
+                    <img src={withdrawImage.previewUrl} alt="Attachment preview" className="max-h-32 rounded-lg border border-slate-200 object-contain" />
+                    <button type="button" onClick={removeWithdrawImage} className="absolute -top-2 -right-2 bg-white border border-slate-200 rounded-full p-0.5 text-slate-500 hover:text-red-500 shadow-sm">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                  // <div className="relative">
+                  //     <img
+                  //       src={src}
+                  //       alt=""
+                  //       className="h-16 w-16 object-cover rounded-md border border-slate-200"
+                  //     />
+                  //     <button onClick={() => removeMsgImage(idx)} className="absolute -top-1.5 -right-1.5 bg-white rounded-full border border-slate-200 p-0.5 hover:bg-red-50">
+                  //       <X className="h-3 w-3 text-slate-500" />
+                  //     </button>
+                  //   </div>
+                )}
 
               <div className="flex items-center justify-end gap-2">
                   <Button
@@ -575,6 +623,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                     onClick={() => {
                       setNewNote('');
                       setShowWithdraw(false);
+                      removeWithdrawImage();
                     }}
                   >
                     Cancel
