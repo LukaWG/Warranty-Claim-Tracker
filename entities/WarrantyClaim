@@ -134,6 +134,14 @@
     "submitted_for": {
       "type": "string",
       "description": "Email of the user this claim was submitted for"
+    },
+    "is_campaign": {
+      "type": "boolean",
+      "description": "Whether this is a Safety Recall / Service Campaign claim"
+    },
+    "campaign_reference": {
+      "type": "string",
+      "description": "Campaign reference number or description for Safety Recall / Service Campaign claims"
     }
   },
   "required": [

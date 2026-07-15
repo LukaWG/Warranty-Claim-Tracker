@@ -141,15 +141,15 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'rejected'];
 
   const handleClearFilters = () => {
-    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, resolution: [], dateFrom: '', dateTo: '', hasCredit: false, isCampaign: false });
     onRepairSearchChange('');
     onWipSearchChange('');
   };
 
   const isDefaultStatuses = filters.status?.length === DEFAULT_STATUSES.length && DEFAULT_STATUSES.every(s => filters.status.includes(s));
   const hasActiveFilters = filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
-    filters.claimedBy?.length > 0 || !isDefaultStatuses ||
-    filters.resolution?.length > 0 || filters.dateFrom || filters.dateTo || wipSearch || repairSearch || filters.hasCredit;
+    filters.claimedBy?.length > 0 || !isDefaultStatuses || filters.resolution?.length > 0 || filters.dateFrom || 
+    filters.dateTo || wipSearch || repairSearch || filters.hasCredit || filters.isCampaign;
 
   return (
     <Card className="border-0 shadow-lg bg-white p-4 mb-6">
@@ -261,18 +261,23 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           </button>
         </div>
 
-        {/* <div className="space-y-2 flex flex-col justify-end">
-          <div className="flex items-center gap-2 h-9">
-            <Checkbox
-              id="show-claimed-filter"
-              checked={showClaimed}
-              onCheckedChange={onShowClaimedChange}
-            />
-            <label htmlFor="show-claimed-filter" className="text-xs text-slate-600 cursor-pointer whitespace-nowrap">
-              Show Claimed
-            </label>
-          </div>
-        </div> */}
+        <div className="space-y-2">
+          <Label className="text-xs text-slate-600">Campaign</Label>
+          <button
+            type="button"
+            onClick={() => onFilterChange({ ...filters, isCampaign: !filters.isCampaign })}
+            className={cn(
+              "flex h-9 w-full items-center justify-center rounded-md border text-sm shadow-sm font-medium transition-colors",
+              filters.isCampaign
+                ? "bg-[#222b57] border-[#222b57] text-white hover:bg-[#1a2144]"
+                : "border-input bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            )}
+            
+          >
+            {filters.isCampaign ? "Campaign ✓" : "Campaign"}
+          </button>
+        </div>
+
       </div>
     </Card>
   );

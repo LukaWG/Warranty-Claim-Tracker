@@ -50,7 +50,7 @@ if (!session) {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], resolution: [], dateFrom: '', dateTo: '', hasCredit: false, isCampaign: false });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
@@ -163,6 +163,7 @@ export default function Dashboard() {
       const statusMatch = !filters.status?.length || getStatusMatches(filters.status);
       const resolutionMatch = !filters.resolution?.length || filters.resolution.includes(claim.alert_resolution);
       const creditMatch = !filters.hasCredit || (claim.credit != null && claim.credit > 0);
+      const campaignMatch = !filters.isCampaign || claim.is_campaign === true;
 
       let dateMatch = true;
       if (filters.dateFrom || filters.dateTo) {
@@ -200,7 +201,7 @@ export default function Dashboard() {
       }
 
       const claimedMatch = showClaimed || !claim.claimed;
-      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch;
+      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch && campaignMatch;
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {

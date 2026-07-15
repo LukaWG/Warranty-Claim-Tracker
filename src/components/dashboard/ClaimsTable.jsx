@@ -349,6 +349,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
                       {col('claimed_by') && <SortableHead colKey="claimed_by">Claimed By</SortableHead>}
+                      {col('is_campaign') && <TableHead className="font-semibold text-slate-600">Campaign</TableHead>}
                       <TableHead className="font-semibold text-slate-600 min-w-[200px]">Actions</TableHead>
                       </TableRow>
                  </TableHeader>
@@ -542,6 +543,14 @@ const SortableHead = ({ colKey, children }) => {
                             {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                             </TableCell>
                             )}
+                           {col('is_campaign') && (
+                            <TableCell className="text-slate-600">
+                              {claim.is_campaign
+                              ? <span className="font-medium" style={{ color: 'var(--hendy-blue)' }}>Yes</span>
+                              : <span className="text-slate-400">No</span>
+                              }
+                            </TableCell>
+                           )}
                       <TableCell onClick={(e) => e.stopPropagation()} className="whitespace-nowrap">
                          <div className="flex items-center gap-1">
                            {!isProcessor && (
@@ -688,6 +697,7 @@ const SortableHead = ({ colKey, children }) => {
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
                        {col('claimed_by') && !isProcessor && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
+                       {col('is_campaign') && <TableHead className="font-semibold text-slate-600">Campaign</TableHead>}
                        <TableHead className="font-semibold text-slate-600 min-w-[200px]">Actions</TableHead>
                      </TableRow>
                    </TableHeader>
@@ -705,10 +715,10 @@ const SortableHead = ({ colKey, children }) => {
                            <TableCell className="font-medium text-slate-800">
                              <div className="flex items-center gap-1.5">
                                <span className={`text-slate-300 transition-transform duration-150 ${expandedRowsFs.has(claim.id) ? 'rotate-90' : ''}`}>›</span>
-                               {claim.wip_number}
-                             </div>
-                           </TableCell>
-                         )}
+                                {claim.wip_number}
+                              </div>
+                            </TableCell>
+                          )}
                          {col('invoice_number') && (
                            <TableCell className="text-slate-600">
                              {claim.invoice_number || "—"}
@@ -899,6 +909,14 @@ const SortableHead = ({ colKey, children }) => {
                            <TableCell className="text-slate-600">
                            {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                            </TableCell>
+                           )}
+                           {col('is_campaign') && (
+                            <TableCell className="text-slate-600">
+                              {claim.is_campaign
+                              ? <span className="font-medium" style={{ color: 'var(--hendy-blue)' }}>Yes</span>
+                              : <span className="text-slate-400">No</span>
+                              }
+                            </TableCell>
                            )}
                          <TableCell onClick={e => e.stopPropagation()} className="whitespace-nowrap">
                             <div className="flex items-center gap-1">

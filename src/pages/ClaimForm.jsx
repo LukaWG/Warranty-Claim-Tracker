@@ -74,6 +74,13 @@ export default function ClaimForm() {
       new_value: claim.status || 'in_progress',
       change_type: 'created'
     });
+    if (claim.is_campaign) {
+      const noteContent = `Safety Recall / Service Campaign${claim.campaign_reference ? `: ${claim.campaign_reference}` : ''}`;
+      await databaseClients.ClaimNote.create({
+        claim_id: claim.id,
+        content: noteContent,
+      });
+    }
 
   };
 

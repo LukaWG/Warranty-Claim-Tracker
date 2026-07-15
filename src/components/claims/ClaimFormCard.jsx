@@ -7,7 +7,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
-import { CalendarIcon, Send, CheckCircle2 } from "lucide-react";
+import { CalendarIcon, Send, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from '@tanstack/react-query';
@@ -45,7 +46,9 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     site: currentUser?.default_site || '',
     brand: '',
     manufacturer_deadline: null,
-    submitting_as: ''
+    submitting_as: '',
+    is_campaign: false,
+    campaign_reference: ''
   });
 
   // Auto-populate site when currentUser loads
@@ -96,7 +99,9 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
         site: '',
         brand: '',
         manufacturer_deadline: null,
-        submitting_as: ''
+        submitting_as: '',
+        is_campaign: false,
+        campaign_reference: ''
       });
     }, 2000);
   };
@@ -366,6 +371,28 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     </div>
                   );
                 })()}
+
+                <div className="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="campaign-toggle"
+                      checked={!!formData.is_campaign}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_campaign: !!checked, campaign_reference: checked ? prev.campaign_reference: '' }))}
+                    />
+                    <label htmlFor="campaign-toggle" className="text-sm font-medium text-slate-700 cursor-pointer select-none flex items-center gap-1.5">
+                      <AlertTriangle className="h-4 w-4" style={{ color: 'var(--hendy-blue)'}} />
+                      Safety Recall / Service Campaign (no scanned upload)
+                    </label>
+                  </div>
+                  {formData.is_campaign && (
+                    <Input
+                      placeholder="Enter campaign reference number or description"
+                      value={formData.campaign_reference}
+                      onChange={(e) => setFormData(prev => ({ ...prev, campaign_reference: e.target.value }))}
+                      className="h-10 border-slate-300 focus:border-purple-500 focus:ring-purple-500"
+                    />
+                  )}
+                </div>
 
                 <Button
                   type="submit"
