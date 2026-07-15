@@ -126,7 +126,6 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
 
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
-  const alerts = [...new Set(claims.map(c => c.alert).filter(Boolean))];
   const resolutions = [...new Set(claims.map(c => c.alert_resolution).filter(Boolean))];
 
   const getUserName = (email) => {
@@ -142,14 +141,14 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'rejected'];
 
   const handleClearFilters = () => {
-    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    onFilterChange({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: DEFAULT_STATUSES, resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     onRepairSearchChange('');
     onWipSearchChange('');
   };
 
   const isDefaultStatuses = filters.status?.length === DEFAULT_STATUSES.length && DEFAULT_STATUSES.every(s => filters.status.includes(s));
   const hasActiveFilters = filters.site?.length > 0 || filters.brand?.length > 0 || filters.user?.length > 0 ||
-    filters.claimedBy?.length > 0 || !isDefaultStatuses || filters.alert?.length > 0 ||
+    filters.claimedBy?.length > 0 || !isDefaultStatuses ||
     filters.resolution?.length > 0 || filters.dateFrom || filters.dateTo || wipSearch || repairSearch || filters.hasCredit;
 
   return (
@@ -224,27 +223,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             selected={filters.status || []}
             onChange={(val) => onFilterChange({ ...filters, status: val })}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-xs text-slate-600">Alert</Label>
-          <MultiSelect
-            placeholder="All Alerts"
-            options={alerts.map(a => ({ value: a, label: a }))}
-            selected={filters.alert || []}
-            onChange={(val) => onFilterChange({ ...filters, alert: val })}
-          />
-        </div>
-
-        {/* <div className="space-y-2">
-          <Label className="text-xs text-slate-600">Resolution</Label>
-          <MultiSelect
-            placeholder="All Resolutions"
-            options={resolutions.map(r => ({ value: r, label: r }))}
-            selected={filters.resolution || []}
-            onChange={(val) => onFilterChange({ ...filters, resolution: val })}
-          />
-        </div> */}
+        </div>        
 
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">Date From</Label>

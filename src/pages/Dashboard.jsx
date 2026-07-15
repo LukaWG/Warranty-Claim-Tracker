@@ -50,7 +50,7 @@ if (!session) {
 
 export default function Dashboard() {
     const queryClient = useQueryClient();
-    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], alert: [], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
+    const [filters, setFilters] = useState({wipNum: '', repairNum: '', site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], resolution: [], dateFrom: '', dateTo: '', hasCredit: false });
     const [editingClaim, setEditingClaim] = useState(null);
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
@@ -161,7 +161,6 @@ export default function Dashboard() {
       };
 
       const statusMatch = !filters.status?.length || getStatusMatches(filters.status);
-      const alertMatch = !filters.alert?.length || filters.alert.includes(claim.alert);
       const resolutionMatch = !filters.resolution?.length || filters.resolution.includes(claim.alert_resolution);
       const creditMatch = !filters.hasCredit || (claim.credit != null && claim.credit > 0);
 
@@ -201,7 +200,7 @@ export default function Dashboard() {
       }
 
       const claimedMatch = showClaimed || !claim.claimed;
-      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && alertMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch;
+      return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch;
     }) : [];
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
@@ -346,12 +345,12 @@ export default function Dashboard() {
 
   const handleDelete = (id) => {
             const userRole = currentUser?.custom_role || currentUser?.role;
-            if (userRole !== 'Service Manager' && userRole !== 'Owner') return;
+            if (userRole !== 'Group Manager' && userRole !== 'Owner') return;
             deleteMutation.mutate(id);
           };
 
     const handleResetFilters = () => {
-      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], alert: [], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
+      setFilters({ site: [], brand: [], user: [], claimedBy: [], status: ['in_progress', 'awaiting_review', 'awaiting_approval', 'approved', 'rejected', 'credit_rejected'], dateFrom: '', dateTo: '', deadlineStatus: 'all', hasCredit: false });
     };
 
   const handleBrandTileClick = (brandName) => {
@@ -448,7 +447,7 @@ export default function Dashboard() {
                 Monitor and manage all warranty repairs
               </p>
             </div>
-            {['Admin Manager', 'Owner'].includes(currentUser?.custom_role || currentUser?.role) && (
+            {['Group Manager', 'Owner'].includes(currentUser?.custom_role || currentUser?.role) && (
               <ExportButton claims={claims} />
             )}
           </div>
