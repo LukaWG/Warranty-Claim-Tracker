@@ -368,10 +368,12 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         content: msgBody.trim(),
         // @ts-ignore
         image_urls: uploadedUrls,
-      })
+      }),
+      databaseClients.WarrantyClaim.update(claim.id, { site_responded: true })
     ]);
     queryClient.invalidateQueries({ queryKey: ['messages'] });
     queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+    queryClient.invalidateQueries({ queryKey: ['claims'] });
     setMsgBody('');
     setMsgSubject('');
     setMsgImageFiles([]);
@@ -502,12 +504,6 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
           {/* Message form */}
           {activeTab === 'message' && (
             <div className="border-b pb-6 space-y-3">
-              <div className="px-3 py-2 rounded-md bg-slate-50 border border-slate-200 text-sm text-slate-600">
-                {isProcessor
-                ? <>Sending to the <strong>admin team</strong> re WIP <strong>{claim?.wip_number}</strong></>
-                : <>Sending to all site users at <strong>{claim?.site}</strong> re WIP <strong>{claim?.wip_number}</strong></>
-                }
-              </div>
               <div>
                 <Label className="text-sm font-medium mb-1 block">Subject</Label>
                 <Input

@@ -119,7 +119,8 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         claim_id: rootMessage.claim_id,
         content: `[Message Reply] ${rootMessage.subject}\n\n${replyBody.trim()}\n\n- ${senderName}`,
         image_url: uploadedUrls[0] || undefined
-      })
+      }),
+      databaseClients.WarrantyClaim.update(rootMessage.claim_id, { site_responded: true })
     ]);
     setReplyBody('');
     setImageFiles([]);
