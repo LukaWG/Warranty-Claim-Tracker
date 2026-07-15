@@ -112,6 +112,9 @@ kubectl create secret generic warranty-claim-tracker-secrets \
   --from-literal=auth-database-url='postgresql://adminuser:<strong-password>@postgres:5432/warranty_claim_tracker' \
   --from-literal=better-auth-secret="$(openssl rand -base64 32)"
 
+# OR
+kubectl apply -f k8s/secret.yaml
+
 # 3. Set the public URL in k8s/configmap.yaml (better-auth-url), then deploy
 kubectl apply -k k8s/
 
