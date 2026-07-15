@@ -160,11 +160,11 @@ export default function Layout({ children, currentPageName }) {
   const pendingApprovalsCount = pendingApprovals.length;
   
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Site Manager', 'Admin', 'Admin Manager', 'Owner'] },
-    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Site Manager', 'Admin Manager', 'Admin', 'Owner'] },
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Processor', 'Admin', 'Admin Manager', 'Owner'] },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Processor', 'Admin Manager', 'Admin', 'Owner'] },
     // { name: 'Reporting', label: 'Reporting', icon: BarChart3, roles: ['Admin Manager', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Admin Manager', 'Owner'] },
-    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Site Manager', 'Admin', 'Admin Manager', 'Owner'] },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Processor', 'Admin', 'Admin Manager', 'Owner'] },
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Admin Manager', 'Owner'] }
   ];
 
@@ -236,7 +236,7 @@ export default function Layout({ children, currentPageName }) {
             MENU
           </div>
           <div className="space-y-1">
-            {/* {displayRole !== 'Processor' && displayRole !== 'Site Manager' && ( // Search repairs button
+            {/* {displayRole !== 'Processor' && ( // Search repairs button
               <button
                 onClick={() => {
                   setSearchOpen(true);

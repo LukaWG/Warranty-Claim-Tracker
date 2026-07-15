@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
   const [creditLabour, setCreditLabour] = useState(claim?.credit_labour || 0);
   const [creditSubCon, setCreditSubCon] = useState(claim?.credit_sub_con || 0);
   const [creditNote, setCreditNote] = useState(claim?.credit_note || '');
+
+  useEffect(() => {
+    if (claim?.approval_status === 'rejected') {
+      setCreditParts(0);
+      setCreditLabour(0);
+      setCreditSubCon(0);
+      setCreditNote('');
+    }
+  }, [claim?.approval_status, open])
 
   const totalCredit = (parseFloat(creditParts) || 0) + (parseFloat(creditLabour) || 0) + (parseFloat(creditSubCon) || 0);
 
@@ -223,12 +232,12 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
               Apply Credit (£{totalCredit.toFixed(2)})
             </Button>
           )}
-          <span title={!creditNote.trim() ? "Credit note is required to save credit" : undefined}>
+          <span title={!creditNote.trim() ? "Credit note is required to request credit" : undefined}>
           <Button
             onClick={handleSave}
             disabled={!creditNote.trim()}
           >
-            Save Credit
+            Submit
           </Button>
           </span>
         </DialogFooter>

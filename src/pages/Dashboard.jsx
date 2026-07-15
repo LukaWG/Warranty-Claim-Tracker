@@ -127,14 +127,6 @@ export default function Dashboard() {
         if (claim.status === 'awaiting_review' || claim.status === 'claim_info_received') return false;
       }
 
-      // Site Manager: see only rejected claims for their site (awaiting_review is hidden, like Processor)
-      if (userRole === 'Site Manager') {
-        const isVisible = claim.status === 'rejected';
-        if (!isVisible) return false;
-        const managerSite = currentUser?.default_site;
-        if (managerSite && claim.site !== managerSite) return false;
-      }
-
       // Admin: hide truly rejected claims (no alert) but show queried claims (rejected with alert, or claimed_info_requested)
       if (userRole === 'Admin') {
         if (claim.status === 'rejected' && !claim.alert) {
@@ -299,7 +291,7 @@ export default function Dashboard() {
 
   const handleEditSave = async (data) => {
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (userRole === 'Processor' || userRole === 'Site Manager') {
+      if (userRole === 'Processor') {
         setEditingClaim(null);
         return;
       }
@@ -419,7 +411,7 @@ export default function Dashboard() {
 
   const siteBrandRestriction = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
-    if (['Processor', 'Site Manager'].includes(userRole) && currentUser?.default_site) {
+    if (['Processor'].includes(userRole) && currentUser?.default_site) {
       const userSite = allSites.find(s => s.id === currentUser.default_site || s.name === currentUser.default_site);
       return userSite?.brands || null;
     }
@@ -456,22 +448,24 @@ export default function Dashboard() {
                 Monitor and manage all warranty repairs
               </p>
             </div>
-            <ExportButton claims={claims} />
+            {['Admin Manager', 'Owner'].includes(currentUser?.custom_role || currentUser?.role) && (
+              <ExportButton claims={claims} />
+            )}
           </div>
         </div>
 
         {/* Filters */}
         <DashboardFilters claims={(() => {
           const userRole = currentUser?.custom_role || currentUser?.role;
-          if ((userRole === 'Admin' || userRole === 'Site Manager') && currentUser?.default_site) {
+          if ((userRole === 'Admin') && currentUser?.default_site) {
             return allClaims.filter(c => c.site === currentUser.default_site);
           }
           return allClaims;
         })()} onRepairSearchChange={setRepairSearch} repairSearch={repairSearch} onWipSearchChange={setWipSearch} wipSearch={wipSearch} filters={filters} onFilterChange={setFilters} allUsers={allUsers} showClaimed={showClaimed} onShowClaimedChange={setShowClaimed} currentUser={currentUser} allSites={allSites} />
 
           {/* Brand Stats Section 
-              Only show if user is NOT  a Processor or Site Manager */}
-          {currentUser?.customRole !== 'Processor' && currentUser?.customRole !== 'Site Manager' && (
+              Only show if user is NOT  a Processor */}
+          {currentUser?.customRole !== 'Processor' && (
             <BrandStatsSection claims={claims} allClaims={claims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} onStatusFilter={handleStatusFilter} />
           )}
 
@@ -513,6 +507,16 @@ export default function Dashboard() {
                   await createAuditLog(claim.id, claim.wip_number, key, claim[key], val, 'updated');
                 }
               }
+
+              // Create a ClaimNote if credit note was provided
+              if (data.credit_note && data.credit !== claim.credit) {
+                const user = await databaseClients.User.me()
+                await databaseClients.ClaimNote.create({
+                  claim_id: claim.id,
+                  content: `[Credit] Credit submitted: £${data.credit || 0} (Parts: £${data.credit_parts || 0}, Labour: £${data.credit_labour || 0}, Sub Con: £${data.credit_sub_con || 0})\n\nNote: ${data.credit_note}\n\n— ${user?.full_name}`,
+                });
+              }
+
               updateMutation.mutate({ id: claim.id, data });
               setCreditClaim(null);
             }}

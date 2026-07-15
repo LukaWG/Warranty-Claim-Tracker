@@ -62,7 +62,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminUser = ADMIN_ROLES.includes(userRole);
   const isProcessor = userRole === 'Processor';
-  const isSiteUser = userRole === 'Processor' || userRole === 'Site Manager';
+  const isSiteUser = userRole === 'Processor';
   const isQueried = !!claim?.alert || claim?.status === 'claimed_info_requested';
   const isWithdrawn = claim?.status === 'withdrawn';
   const canAddNote = isAdminUser || !isSiteUser || isQueried || isWithdrawn;
@@ -194,9 +194,9 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         await databaseClients.WarrantyClaim.update(claim.id, { site_responded: true });
       }
 
-      // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Processor or Site Manager
+      // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Processor
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Processor')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress', site_responded: true });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -209,7 +209,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       }
 
       // Move to claimed_info_received if claim is claimed_info_requested and user is a Processor
-      if (currentStatus === 'claimed_info_requested' && (userRole === 'Processor' || userRole === 'Site Manager')) {
+      if (currentStatus === 'claimed_info_requested' && (userRole === 'Processor')) {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,

@@ -134,7 +134,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   const QUERIED_STATUSES = ['rejected', 'claimed_info_requested'];
 
   const sortedClaims = React.useMemo(() => {
-    const isSiteRole = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor' || currentUser?.custome_role === 'Site Manager' || currentUser?.role === 'Site Manager';
+    const isSiteRole = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';
 
     const baseList = (isSiteRole && !sortConfig.key) ? [...claims].sort((a, b) => {
       const aQueried = QUERIED_STATUSES.includes(a.status) ? 0 : 1;
@@ -183,13 +183,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     const saved = localStorage.getItem('claimsTableColumns');
     if (saved) return; // user has a saved preference, don't override
     const role = currentUser.custom_role || currentUser.role;
-    if (role === 'Processor' || role === 'Site Manager') {
+    if (role === 'Processor') {
       setVisibleColumns(SITE_DEFAULT_COLUMNS);
     }
   }, [currentUser, roleDefaultApplied])
 
   const isProcessor = currentUser?.custom_role === 'Processor' || currentUser?.role === 'Processor';
-  const isSiteManager = currentUser?.custom_role === 'Site Manager' || currentUser?.role === 'Site Manager';
   const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner' || currentUser?.custom_role === 'Admin Manager' || currentUser?.role === 'Admin Manager';
 
 const SortableHead = ({ colKey, children }) => {
@@ -547,7 +546,7 @@ const SortableHead = ({ colKey, children }) => {
                             )}
                       <TableCell onClick={(e) => e.stopPropagation()}>
                          <div className="flex items-center gap-1">
-                           {!isProcessor && !isSiteManager && !claim.claimed && (
+                           {!isProcessor && !claim.claimed && (
                              <Button
                                variant="ghost"
                                size="icon"
@@ -558,7 +557,7 @@ const SortableHead = ({ colKey, children }) => {
                                <Pencil className="h-4 w-4" />
                              </Button>
                            )}
-                           {!isProcessor && !isSiteManager && !claim.claimed && (
+                           {!isProcessor && !claim.claimed && (
                             <Button
                               variant="ghost"
                               size="icon"
@@ -905,7 +904,7 @@ const SortableHead = ({ colKey, children }) => {
                            )}
                          <TableCell onClick={e => e.stopPropagation()}>
                             <div className="flex items-center gap-1">
-                              {!isProcessor && !isSiteManager && !claim.claimed && (
+                              {!isProcessor && !claim.claimed && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -916,7 +915,7 @@ const SortableHead = ({ colKey, children }) => {
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               )}
-                              {!isProcessor && !isSiteManager && !claim.claimed && (
+                              {!isProcessor && !claim.claimed && (
                                 <Button
                                   variant="ghost"
                                   size="icon"

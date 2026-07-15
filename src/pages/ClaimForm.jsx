@@ -50,7 +50,7 @@ export default function ClaimForm() {
       try {
         const user = await databaseClients.User.me();
         const role = user?.custom_role || user?.role;
-        if (!['Processor', 'Site Manager', 'Service Manager', 'Admin', 'Admin Manager', 'Owner'].includes(role)) {
+        if (!['Processor', 'Service Manager', 'Admin', 'Admin Manager', 'Owner'].includes(role)) {
           router.replace(createPageUrl('Dashboard'));
         }
       } catch (error) {

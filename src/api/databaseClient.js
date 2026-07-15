@@ -123,7 +123,12 @@ class DatabaseClient {
     if (entries.length === 1) {
       params.set('where', `${entries[0][0]}=${entries[0][1]}`);
     }
-    if (orderBy) params.set('order_by', orderBy);
+
+    // Check to see if order by has a - in front. If it does, reverse the list
+    const reversed = orderBy.startsWith('-');
+    const orderField = reversed ? orderBy.slice(1) : orderBy;
+
+    if (orderBy) params.set('order_by', orderField);
 
     const qs = params.toString() ? `?${params}` : '';
     let data = await apiFetch(`${url}${qs}`);
@@ -135,7 +140,7 @@ class DatabaseClient {
       );
       if (orderBy) {
         data.sort((a, b) => {
-          const av = a[orderBy], bv = b[orderBy];
+          const av = a[orderField], bv = b[orderField];
           if (av == null) return 1;
           if (bv == null) return -1;
           return av < bv ? -1 : av > bv ? 1 : 0;
@@ -143,7 +148,7 @@ class DatabaseClient {
       }
     }
 
-    return data;
+    return reversed ? data.reverse() : data;
   }
 
   // --- User-only helpers ---

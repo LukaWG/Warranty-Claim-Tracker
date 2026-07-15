@@ -5699,14 +5699,6 @@ export let userData = [[
     "default_site": null
   },
   {
-    "id": "69de371b5596465ed57bba75",
-    "email": "testuser2@example.com",
-    "first_name": "Test",
-    "last_name": "Site Manager",
-    "custom_role": "Site Manager",
-    "default_site": null
-  },
-  {
     "id": "69de371b5596465ed57bba76",
     "email": "testuser3@example.com",
     "first_name": "Test",

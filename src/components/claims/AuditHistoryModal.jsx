@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { format } from "date-fns";
-import { History, User, Calendar } from "lucide-react";
+import { History, User, Calendar, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function AuditHistoryModal({ claim, open, onClose }) {
@@ -13,11 +13,23 @@ export default function AuditHistoryModal({ claim, open, onClose }) {
     enabled: open && !!claim
   });
 
+  const { data: notes = [] } = useQuery({
+    queryKey: ['claimNotes', claim?.id],
+    queryFn: () => claim?.id ? databaseClients.ClaimNote.filter({ claim_id: claim.id }, '-created_date') : [],
+    enabled: open && !!claim?.id
+  });
+
+  // Filter credit-related audits and notes with credit info
+  const creditAudits = audits.filter(a =>
+  ['credit_parts', 'credit_labour', 'credit_sub_con', 'credit', 'credit_note'].includes(a.field_changed)
+  );
+
   const changeTypeColors = {
     created: "bg-green-100 text-green-700",
     updated: "bg-blue-100 text-blue-700",
     status_changed: "bg-purple-100 text-purple-700",
-    deleted: "bg-red-100 text-red-700"
+    deleted: "bg-red-100 text-red-700",
+    credit: "bg-teal-100 text-teal-700"
   };
 
   return (
@@ -40,11 +52,15 @@ export default function AuditHistoryModal({ claim, open, onClose }) {
           </div>
         ) : (
           <div className="space-y-3">
-            {audits.map((audit, index) => (
+            {audits.map((audit, index) => {
+              const isCreditRelated = ['credit_parts', 'credit_labour', 'credit_sub_con', 'credit', 'credit_note'].includes(audit.field_changed);
+              const badgeClass = isCreditRelated ? changeTypeColors.credit : (changeTypeColors[audit.change_type] || changeTypeColors.updated);
+              
+              return (
               <div key={audit.id} className="border border-slate-200 rounded-lg p-4 bg-slate-50">
                 <div className="flex items-start justify-between mb-2">
-                  <Badge className={changeTypeColors[audit.change_type]}>
-                    {audit.change_type.replace('_', ' ').toUpperCase()}
+                  <Badge className={badgeClass}>
+                    {isCreditRelated ? 'CREDIT' : audit.change_type.replace('_', ' ').toUpperCase()}
                   </Badge>
                   <div className="flex items-center gap-1 text-xs text-slate-500">
                     <Calendar className="h-3 w-3" />
@@ -59,8 +75,13 @@ export default function AuditHistoryModal({ claim, open, onClose }) {
                   </div>
                   
                   <div className="text-sm mt-2">
-                    <span className="font-medium text-slate-700">{audit.field_changed}:</span>
-                    {audit.old_value && (
+                    <span className="font-medium text-slate-700">
+                      {isCreditRelated 
+                          ? audit.field_changed.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())
+                          : audit.field_changed
+                        }:
+                    </span>
+                    {audit.old_value && audit.new_value !== 'null' && (
                       <span className="text-red-600 line-through ml-2">{audit.old_value}</span>
                     )}
                     {audit.new_value && (
@@ -69,7 +90,8 @@ export default function AuditHistoryModal({ claim, open, onClose }) {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </DialogContent>

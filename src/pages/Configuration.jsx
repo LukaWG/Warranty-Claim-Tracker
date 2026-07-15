@@ -1201,7 +1201,6 @@ export default function Configuration() {
 								className="h-8 px-2 rounded border border-input bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed"
 								>
 								<option value="Processor">Site</option>
-								<option value="Site Manager">Site Manager</option>
 								<option value="Admin">Admin</option>
 								<option value="Admin Manager">Admin Manager</option>
 								<option value="Owner">Owner</option>
@@ -1351,7 +1350,6 @@ export default function Configuration() {
 					</SelectTrigger>
 					<SelectContent>
 					<SelectItem value="Processor">Site</SelectItem>
-					<SelectItem value="Site Manager">Site Manager</SelectItem>
 					<SelectItem value="Admin">Admin</SelectItem>
 					<SelectItem value="Admin Manager">Admin Manager</SelectItem>
 					<SelectItem value="Owner">Owner</SelectItem>
@@ -1631,7 +1629,6 @@ export default function Configuration() {
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="Processor">Site</SelectItem>
-						<SelectItem value="Site Manager">Site Manager</SelectItem>
 						<SelectItem value="Admin">Admin</SelectItem>
 						<SelectItem value="Admin Manager">Admin Manager</SelectItem>
 						<SelectItem value="Owner">Owner</SelectItem>
