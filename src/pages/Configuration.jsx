@@ -85,7 +85,10 @@ export default function Configuration() {
 	});
 
 	const updateUserRoleMutation = useMutation({
-	mutationFn: ({ id, role }) => authUsers.update(id, { custom_role: role }),
+	mutationFn: ({ id, role }) => {
+		const platformRole = (role === 'Owner' || role === 'Administrator' || role === 'Group Manager') ? 'admin' : 'user';
+		return authUsers.update(id, { custom_role: role, role: platformRole });
+	},
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
 	onError: () => alert("Failed to update role. Please try again."),
 	});
