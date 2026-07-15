@@ -102,7 +102,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       const result = {file_url: ''} // TODO implement file upload
       imageUrl = result.file_url;
     }
-    await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn' });
+    await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn', site_responded: true });
     await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}`, ...(imageUrl ? { image_url: imageUrl } : {}) });
     await databaseClients.ClaimAudit.create({
       claim_id: claim.id,
@@ -505,7 +505,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
               <div className="px-3 py-2 rounded-md bg-slate-50 border border-slate-200 text-sm text-slate-600">
                 {isProcessor
                 ? <>Sending to the <strong>admin team</strong> re WIP <strong>{claim?.wip_number}</strong></>
-                : <>Sending to all processors at <strong>{claim?.site}</strong> re WIP <strong>{claim?.wip_number}</strong></>
+                : <>Sending to all site users at <strong>{claim?.site}</strong> re WIP <strong>{claim?.wip_number}</strong></>
                 }
               </div>
               <div>
