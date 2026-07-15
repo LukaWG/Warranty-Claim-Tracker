@@ -262,7 +262,7 @@ const SortableHead = ({ colKey, children }) => {
             <span className="ml-1 opacity-75">· {days}d</span>
           )}
         </Badge>
-        {claim.site_responded && claim.status === 'in_progress' && (
+        {claim.site_responded && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -544,7 +544,7 @@ const SortableHead = ({ colKey, children }) => {
                             )}
                       <TableCell onClick={(e) => e.stopPropagation()} className="whitespace-nowrap">
                          <div className="flex items-center gap-1">
-                           {!isProcessor && !claim.claimed && (
+                           {!isProcessor && (
                              <Button
                                variant="ghost"
                                size="icon"
@@ -555,7 +555,7 @@ const SortableHead = ({ colKey, children }) => {
                                <Pencil className="h-4 w-4" />
                              </Button>
                            )}
-                           {!isProcessor && !claim.claimed && (
+                           {!isProcessor && (
                             <Button
                               variant="ghost"
                               size="icon"
@@ -566,7 +566,7 @@ const SortableHead = ({ colKey, children }) => {
                               <CreditCard className="h-4 w-4" />
                             </Button>
                            )}
-                           {!claim.claimed && (
+                           
                            <Button
                              variant="ghost"
                              size="icon"
@@ -576,7 +576,7 @@ const SortableHead = ({ colKey, children }) => {
                            >
                              <MessageSquare className="h-4 w-4" />
                            </Button>
-                           )}
+                           
                           <Button
                             variant="ghost"
                             size="icon"
@@ -586,6 +586,21 @@ const SortableHead = ({ colKey, children }) => {
                           >
                             <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
+                          {isServiceManager && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                if (window.confirm('Are you sure you want to delete this repair?')) {
+                                  onDelete(claim.id);
+                                }
+                              }}
+                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                              title="Delete repair"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
                           {unreadClaimIds.has(claim.id) && (
                             <TooltipProvider>
                               <Tooltip>
@@ -603,21 +618,6 @@ const SortableHead = ({ colKey, children }) => {
                                 <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
-                          )}
-                          {isServiceManager && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                if (window.confirm('Are you sure you want to delete this repair?')) {
-                                  onDelete(claim.id);
-                                }
-                              }}
-                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                              title="Delete repair"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
                           )}
                           </div>
                           </TableCell>
@@ -902,7 +902,7 @@ const SortableHead = ({ colKey, children }) => {
                            )}
                          <TableCell onClick={e => e.stopPropagation()} className="whitespace-nowrap">
                             <div className="flex items-center gap-1">
-                              {!isProcessor && !claim.claimed && (
+                              {!isProcessor && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -913,7 +913,7 @@ const SortableHead = ({ colKey, children }) => {
                                   <Pencil className="h-4 w-4" />
                                 </Button>
                               )}
-                              {!isProcessor && !claim.claimed && (
+                              {!isProcessor && (
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -924,7 +924,7 @@ const SortableHead = ({ colKey, children }) => {
                                   <CreditCard className="h-4 w-4" />
                                 </Button>
                               )}
-                              {!claim.claimed && (
+                              
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -934,7 +934,7 @@ const SortableHead = ({ colKey, children }) => {
                                 >
                                   <MessageSquare className="h-4 w-4" />
                                 </Button>
-                              )}
+                                
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -944,6 +944,21 @@ const SortableHead = ({ colKey, children }) => {
                               >
                                 <GitCommitHorizontal className="h-4 w-4" />
                               </Button>
+                              {isServiceManager && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    if (window.confirm('Are you sure you want to delete this repair?')) {
+                                      onDelete(claim.id);
+                                    }
+                                  }}
+                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+                                  title="Delete repair"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
                               {unreadClaimIds.has(claim.id) && (
                                 <TooltipProvider>
                                   <Tooltip>
@@ -961,21 +976,6 @@ const SortableHead = ({ colKey, children }) => {
                                     <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
-                              )}
-                              {isServiceManager && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    if (window.confirm('Are you sure you want to delete this repair?')) {
-                                      onDelete(claim.id);
-                                    }
-                                  }}
-                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                                  title="Delete repair"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
                               )}
                             </div>
                           </TableCell>
