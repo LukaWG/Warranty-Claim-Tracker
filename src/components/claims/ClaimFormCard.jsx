@@ -277,7 +277,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-slate-700">
-                      Last Clocking Date <span className="text-red-500">*</span>
+                      Clocking Date <span className="text-red-500">*</span>
                     </Label>
                     <Popover>
                       <PopoverTrigger asChild>

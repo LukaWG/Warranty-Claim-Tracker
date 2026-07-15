@@ -77,7 +77,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   });
 
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const isAdminRole = ['Admin Manager', 'Service Manager', 'Owner', 'Administrator'].includes(userRole);
+  const isAdminRole = ['Group Manager', 'Service Manager', 'Owner', 'Administrator'].includes(userRole);
   const userSite = currentUser?.default_site;
 
   const { data: allMessages = [] } = useQuery({
@@ -189,7 +189,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   }, [currentUser, roleDefaultApplied])
 
   const isProcessor = currentUser?.custom_role === 'Location' || currentUser?.role === 'Location';
-  const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner' || currentUser?.custom_role === 'Admin Manager' || currentUser?.role === 'Admin Manager';
+  const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner' || currentUser?.custom_role === 'Group Manager' || currentUser?.role === 'Group Manager';
 
 const SortableHead = ({ colKey, children }) => {
     const active = sortConfig.key === colKey;
@@ -349,9 +349,7 @@ const SortableHead = ({ colKey, children }) => {
                       {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
                       {col('claimed_by') && <SortableHead colKey="claimed_by">Claimed By</SortableHead>}
-                      {/* {col('alert') && <SortableHead colKey="alert">Alert</SortableHead>} */}
-                      {/* {col('resolution') && <SortableHead colKey="resolution">Resolution</SortableHead>} */}
-                      <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
+                      <TableHead className="font-semibold text-slate-600 min-w-[200px]">Actions</TableHead>
                       </TableRow>
                  </TableHeader>
                 <TableBody>
@@ -405,7 +403,7 @@ const SortableHead = ({ colKey, children }) => {
                         </TableCell>
                       )}
                       {col('actual_hours') && (
-                        <TableCell className={cn("text-slate-600", claim.actual_hours && claim.expected_hours && claim.actual_hours > claim.expected_hours ? "bg-green-100 text-green-700 rounded px-2" : claim.actual_hours && claim.expected_hours && claim.actual_hours < claim.expected_hours ? "bg-red-100 text-red-700 rounded px-2" : "")}>
+                        <TableCell className={cn("text-slate-600", claim.actual_hours && claim.expected_hours && claim.actual_hours > claim.expected_hours ? "text-green-600 rounded px-2" : claim.actual_hours && claim.expected_hours && claim.actual_hours < claim.expected_hours ? "text-red-600 rounded px-2" : "")}>
                           {claim.actual_hours ? `${claim.actual_hours.toFixed(2)}h` : "—"}
                         </TableCell>
                       )}
@@ -544,7 +542,7 @@ const SortableHead = ({ colKey, children }) => {
                             {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                             </TableCell>
                             )}
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+                      <TableCell onClick={(e) => e.stopPropagation()} className="whitespace-nowrap">
                          <div className="flex items-center gap-1">
                            {!isProcessor && !claim.claimed && (
                              <Button
@@ -574,7 +572,7 @@ const SortableHead = ({ colKey, children }) => {
                              size="icon"
                              onClick={() => onViewNotes(claim)}
                              className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                             title="Alerts"
+                             title="Message Centre"
                            >
                              <MessageSquare className="h-4 w-4" />
                            </Button>
@@ -690,7 +688,7 @@ const SortableHead = ({ colKey, children }) => {
                        {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
                        {col('claimed_by') && !isProcessor && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
-                       <TableHead className="font-semibold text-slate-600 w-32">Actions</TableHead>
+                       <TableHead className="font-semibold text-slate-600 min-w-[200px]">Actions</TableHead>
                      </TableRow>
                    </TableHeader>
                    <TableBody>
@@ -902,7 +900,7 @@ const SortableHead = ({ colKey, children }) => {
                            {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
                            </TableCell>
                            )}
-                         <TableCell onClick={e => e.stopPropagation()}>
+                         <TableCell onClick={e => e.stopPropagation()} className="whitespace-nowrap">
                             <div className="flex items-center gap-1">
                               {!isProcessor && !claim.claimed && (
                                 <Button
@@ -932,7 +930,7 @@ const SortableHead = ({ colKey, children }) => {
                                 size="icon"
                                 onClick={() => onViewNotes(claim)}
                                 className="h-8 w-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50"
-                                title="Alerts"
+                                title="Message Centre"
                                 >
                                   <MessageSquare className="h-4 w-4" />
                                 </Button>
