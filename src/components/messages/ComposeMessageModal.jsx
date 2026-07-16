@@ -73,7 +73,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
       }),
       databaseClients.ClaimNote.create({
         claim_id: selectedClaim.id,
-        content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n- ${senderName}`,
+        content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n— ${senderName}`,
         image_urls: [] // Replace with actual uploaded image URLs
       }),
       databaseClients.WarrantyClaim.update(selectedClaim.id, { site_responded: true })
