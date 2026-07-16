@@ -102,6 +102,15 @@ export default function Layout({ children, currentPageName }) {
 
   const isSSO = accounts.length > 0 && !accounts.some(acc => acc.providerId === 'credential');
 
+  // Must run on every render (including auth pages) — a hook below the
+  // isAuthPage early return crashes React on client-side navigation to /login.
+  const { data: pendingApprovals = [] } = useQuery({
+    queryKey: ['pending-approvals', currentUser?.email],
+    queryFn: () => databaseClients.WarrantyClaim.filter({ approval_status: 'pending_approval' }),
+    enabled: !isAuthPage && !!currentUser?.email,
+    refetchInterval: 30000,
+  });
+
   const handleVoluntaryPasswordChange = async (e) => {
     e.preventDefault();
     setChangeError("");
@@ -150,15 +159,8 @@ export default function Layout({ children, currentPageName }) {
     return <>{children}</>;
   }
 
-  const { data: pendingApprovals = [] } = useQuery({
-    queryKey: ['pending-approvals', currentUser?.email],
-    queryFn: () => databaseClients.WarrantyClaim.filter({ approval_status: 'pending_approval' }),
-    enabled: !!currentUser?.email,
-    refetchInterval: 30000,
-  });
-
   const pendingApprovalsCount = pendingApprovals.length;
-  
+
   const allNavItems = [
     { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Group Manager', 'Administrator', 'Owner'] },
