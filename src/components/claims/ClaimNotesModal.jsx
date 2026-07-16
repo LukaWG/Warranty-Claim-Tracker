@@ -56,7 +56,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['claimNotes', claim?.id],
-    queryFn: () => claim?.id ? databaseClients.ClaimNote.query('*', `claim_id=${claim.id}`) : [],
+    queryFn: () => claim?.id ? databaseClients.ClaimNote.filter({claim_id: claim.id }, `-created_date`) : [],
     enabled: !!claim?.id
   });
 
