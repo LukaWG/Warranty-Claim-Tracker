@@ -29,6 +29,43 @@ export default async function authHandler(
   // Reconstruct full URL so Better Auth can parse it
   const url = new URL(req.url!, `${protocol}://${host}`)
 
+  // Custom endpoint: map of userId -> providerIds (e.g. ["credential"], ["microsoft"]).
+  // Better Auth's list-users returns no account info, so the Configuration page
+  // uses this to tell SSO-only users apart from email/password users.
+  if (url.pathname === "/api/auth/admin/list-user-providers" && req.method === "GET") {
+    try {
+      const session = await auth.api.getSession({
+        headers: req.headers as HeadersInit,
+      });
+
+      if (!session) {
+        return res.status(401).json({ message: "Unauthorized: No active session" });
+      }
+
+      // customRole is authoritative: legacy users may still carry the platform
+      // role "admin" from before Administrator lost configuration access.
+      const isRequesterAdmin = session.user.role === 'admin';
+
+      if (!isRequesterAdmin) {
+        return res.status(403).json({ message: "Forbidden: Administrator privileges required" });
+      }
+
+      const accounts = await prisma.account.findMany({
+        select: { userId: true, providerId: true },
+      });
+
+      const providers: Record<string, string[]> = {};
+      for (const account of accounts) {
+        (providers[account.userId] ??= []).push(account.providerId);
+      }
+
+      return res.status(200).json({ providers });
+    } catch (err: any) {
+      console.error("[List User Providers Error]:", err);
+      return res.status(500).json({ message: err.message || "Failed to list user providers" });
+    }
+  }
+
   // Intercept the admin/set-user-password endpoint to provide direct, error-free db updates
   if (url.pathname === "/api/auth/admin/set-user-password" && req.method === "POST") {
     try {
@@ -39,10 +76,8 @@ export default async function authHandler(
       if (!session) {
         return res.status(401).json({ message: "Unauthorized: No active session" });
       }
-
-      const isRequesterAdmin = 
-        session.user.role === "admin" || 
-        ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(session.user.customRole);
+      
+      const isRequesterAdmin = session.user.role === "admin"
 
       if (!isRequesterAdmin) {
         return res.status(403).json({ message: "Forbidden: Administrator privileges required" });
@@ -54,6 +89,16 @@ export default async function authHandler(
       }
 
       const hashedPassword = await hashPassword(newPassword);
+
+      // SSO-only users (accounts exist, none of them credential) have no
+      // password to reset — creating one would grant a parallel password login.
+      const userAccounts = await prisma.account.findMany({
+        where: { userId },
+        select: { providerId: true },
+      });
+      if (userAccounts.length > 0 && !userAccounts.some((a) => a.providerId === "credential")) {
+        return res.status(400).json({ message: "This user signs in with SSO and has no password to reset" });
+      }
 
       const account = await prisma.account.findFirst({
         where: {

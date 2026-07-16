@@ -33,7 +33,7 @@ export default function Messages() {
     queryFn: () => databaseClients.User.me()
   });
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const isAdmin = ['Group Manager', 'Service Manager', 'Owner', 'Administrator'].includes(userRole);
+  const isAdmin = ['Group Manager', 'Owner'].includes(userRole);
   const userSite = currentUser?.default_site;
 
   const { data: allMessages = [], isLoading } = useQuery({

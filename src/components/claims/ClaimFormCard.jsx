@@ -33,11 +33,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     queryKey: ['currentUser'],
     queryFn: () => databaseClients.User.me()
   });
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ['allUsers'],
-    queryFn: () => databaseClients.User.get(),
-    enabled: (currentUser?.custom_role || currentUser?.role) === 'Service Manager'
-  });
   const [formData, setFormData] = useState({
     wip_number: '',
     expected_hours: '',
@@ -46,7 +41,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     site: currentUser?.default_site || '',
     brand: '',
     manufacturer_deadline: null,
-    submitting_as: '',
     is_campaign: false,
     campaign_reference: ''
   });
@@ -59,8 +53,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   }, [currentUser?.default_site]);
 
   const [submitted, setSubmitted] = useState(false);
-  
-  const isServiceManager = (currentUser?.custom_role || currentUser?.role) === 'Service Manager';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,17 +69,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       status: 'in_progress'
     };
     
-    delete submitData.submitting_as;
-    
-    if (isServiceManager && formData.submitting_as) {
-      await databaseClients.Claim.submitClaimAs({
-        claimData: submitData,
-        submittingAs: formData.submitting_as
-      });
-    } else {
-      await onSubmit(submitData);
-    }
-    
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -99,7 +80,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
         site: '',
         brand: '',
         manufacturer_deadline: null,
-        submitting_as: '',
         is_campaign: false,
         campaign_reference: ''
       });
@@ -213,34 +193,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     </SelectContent>
                   </Select>
                 </div>
-
-                {isServiceManager && (
-                  <div className="space-y-2">
-                    <Label htmlFor="submitting_as" className="text-sm font-medium text-slate-700">
-                      Submitting As
-                    </Label>
-                    <Select 
-                      value={formData.submitting_as} 
-                      onValueChange={(value) => setFormData({ ...formData, submitting_as: value })}
-                    >
-                      <SelectTrigger className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500">
-                        {formData.submitting_as ? (() => {
-                          const user = allUsers.find(u => u.email === formData.submitting_as);
-                          return user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : user?.full_name || formData.submitting_as;
-                        })() : (
-                          <SelectValue placeholder="Select user" />
-                        )}
-                      </SelectTrigger>
-                      <SelectContent>
-                        {allUsers.map((user) => (
-                          <SelectItem key={user.id} value={user.email}>
-                            {user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : user.full_name} ({user.email})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="brand" className="text-sm font-medium text-slate-700">

@@ -34,8 +34,6 @@ export default function Home() {
           router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Administrator') {
           router.replace(createPageUrl('Dashboard'));
-        } else if (role === 'Service Manager') {
-          router.replace(createPageUrl('Dashboard'));
         } else if (role === 'Owner') {
           router.replace(createPageUrl('Dashboard'));
         } else {

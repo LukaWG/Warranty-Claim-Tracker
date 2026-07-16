@@ -26,7 +26,13 @@ export const getServerSideProps = async ({ req, res }) => {
   if (!session) {
 	return { redirect: { destination: "/login", permanent: false } }
   }
-  
+
+  // Only Owner and Group Manager may access Configuration
+  const customRole = session.user.customRole ?? session.user.custom_role;
+  if (!["Owner", "Group Manager"].includes(customRole)) {
+	return { redirect: { destination: "/", permanent: false } }
+  }
+
   return {
     props: {
       user: {
@@ -73,6 +79,15 @@ export default function Configuration() {
 	queryFn: () => authUsers.list(),
 	});
 
+	// userId -> providerIds; used to hide password reset for SSO-only users.
+	// Fails open: if the lookup errors the map stays empty and all buttons show.
+	const { data: userProviders = {} } = useQuery({
+	queryKey: ["user-providers"],
+	queryFn: () => authUsers.listUserProviders(),
+	});
+	const isSsoOnlyUser = (userId) =>
+		userProviders[userId]?.length > 0 && !userProviders[userId].includes("credential");
+
 	const inviteUserMutation = useMutation({
 	mutationFn: ({ email, role, first_name, last_name, default_site }) =>
 		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site }),
@@ -86,7 +101,7 @@ export default function Configuration() {
 
 	const updateUserRoleMutation = useMutation({
 	mutationFn: ({ id, role }) => {
-		const platformRole = (role === 'Owner' || role === 'Administrator' || role === 'Group Manager') ? 'admin' : 'user';
+		const platformRole = (role === 'Owner' || role === 'Group Manager') ? 'admin' : 'user';
 		return authUsers.update(id, { custom_role: role, role: platformRole });
 	},
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
@@ -1227,6 +1242,7 @@ export default function Configuration() {
 								>
 									<Pencil className="h-4 w-4" />
 								</Button>
+								{!isSsoOnlyUser(user.id) && (
 								<Button
 									variant="ghost"
 									size="icon"
@@ -1241,6 +1257,7 @@ export default function Configuration() {
 								>
 									<Key className="h-4 w-4" />
 								</Button>
+								)}
 								<Button
 									variant="ghost"
 									size="icon"

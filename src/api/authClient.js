@@ -52,7 +52,7 @@ export const authUsers = {
       delete mappedData.custom_role;
 
       // Keep platform role in sync
-      mappedData.role = ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(data.custom_role)
+      mappedData.role = ["Owner", "Group Manager"].includes(data.custom_role)
         ? "admin"
         : "user";
     }
@@ -81,7 +81,7 @@ export const authUsers = {
     }),
 
   invite: ({ email, first_name, last_name, custom_role, default_site, default_brands }) => {
-    const platformRole = ["Owner", "Service Manager", "Group Manager", "Administrator"].includes(custom_role)
+    const platformRole = ["Owner", "Group Manager"].includes(custom_role)
       ? "admin"
       : "user";
 
@@ -106,6 +106,12 @@ export const authUsers = {
       method: "POST",
       body: JSON.stringify({ userId, newPassword }),
     }),
+
+  // Map of userId -> providerIds (e.g. ["credential"], ["microsoft"]).
+  // Used to hide password actions for SSO-only users.
+  listUserProviders: () =>
+    request("/admin/list-user-providers", { method: "GET" })
+      .then((r) => r.providers ?? {}),
 
   updateMe: (data) => {
     const mappedData = { ...data };

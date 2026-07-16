@@ -77,7 +77,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   });
 
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const isAdminRole = ['Group Manager', 'Service Manager', 'Owner', 'Administrator'].includes(userRole);
+  const isAdminRole = ['Group Manager', 'Owner'].includes(userRole);
   const userSite = currentUser?.default_site;
 
   const { data: allMessages = [] } = useQuery({
@@ -189,7 +189,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   }, [currentUser, roleDefaultApplied])
 
   const isProcessor = currentUser?.custom_role === 'Location' || currentUser?.role === 'Location';
-  const isServiceManager = currentUser?.custom_role === 'Service Manager' || currentUser?.role === 'Service Manager' || currentUser?.custom_role === 'Owner' || currentUser?.role === 'Owner' || currentUser?.custom_role === 'Group Manager' || currentUser?.role === 'Group Manager';
 
 const SortableHead = ({ colKey, children }) => {
     const active = sortConfig.key === colKey;
@@ -595,21 +594,7 @@ const SortableHead = ({ colKey, children }) => {
                           >
                             <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
-                          {isServiceManager && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                if (window.confirm('Are you sure you want to delete this repair?')) {
-                                  onDelete(claim.id);
-                                }
-                              }}
-                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                              title="Delete repair"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
+                          
                           {unreadClaimIds.has(claim.id) && (
                             <TooltipProvider>
                               <Tooltip>
@@ -962,21 +947,6 @@ const SortableHead = ({ colKey, children }) => {
                               >
                                 <GitCommitHorizontal className="h-4 w-4" />
                               </Button>
-                              {isServiceManager && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    if (window.confirm('Are you sure you want to delete this repair?')) {
-                                      onDelete(claim.id);
-                                    }
-                                  }}
-                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-                                  title="Delete repair"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              )}
                               {unreadClaimIds.has(claim.id) && (
                                 <TooltipProvider>
                                   <Tooltip>

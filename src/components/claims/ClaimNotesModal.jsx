@@ -13,7 +13,7 @@ import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 
-const ADMIN_ROLES = ['Owner', 'Administrator', 'Service Manager', 'Group Manager'];
+const ADMIN_ROLES = ['Owner', 'Group Manager'];
 
 
 export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, requireNote }) {
