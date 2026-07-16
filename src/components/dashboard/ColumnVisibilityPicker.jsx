@@ -8,7 +8,7 @@ const SITE_DEFAULT_COLUMNS = {
   wip_number: true,
   invoice_number: true,
   claim_number: true,
-  site: false,
+  site: true,
   brand: true,
   expected_hours: true,
   actual_hours: true,
