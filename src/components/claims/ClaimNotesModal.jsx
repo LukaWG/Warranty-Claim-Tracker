@@ -365,7 +365,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       databaseClients.ClaimNote.create({
         claim_id: claim.id,
         wip_number: claim.wip_number,
-        content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n— ${senderName}`,
+        content: `[Message] ${msgSubject}\n\n${msgBody.trim()}\n\n— ${senderName}`,
         // @ts-ignore
         image_urls: uploadedUrls,
       }),
