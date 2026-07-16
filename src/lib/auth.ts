@@ -47,6 +47,24 @@ export const auth = betterAuth({
   plugins: [
     admin(),
   ],
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const isFirstUser = (await prisma.user.count()) === 0
+          if (!isFirstUser) return
+
+          return {
+            data: {
+              ...user,
+              customRole: "Owner",
+              role: "admin",
+            },
+          }
+        },
+      },
+    },
+  },
   socialProviders: {
     microsoft: {
       clientId: process.env.MICROSOFT_CLIENT_ID || "placeholder_client_id",

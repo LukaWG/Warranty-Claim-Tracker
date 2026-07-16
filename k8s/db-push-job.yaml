@@ -25,7 +25,7 @@ spec:
       - name: db-push
         image: lukawg/warranty-repair-tracker:latest
         imagePullPolicy: Always
-        command: ["npx", "prisma", "db", "push", "--skip-generate"]
+        command: ["npx", "prisma", "db", "push"]
         env:
         - name: AUTH_DATABASE_URL
           valueFrom:

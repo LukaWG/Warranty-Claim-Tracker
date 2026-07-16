@@ -64,7 +64,7 @@ services:
         condition: service_healthy
     environment:
       AUTH_DATABASE_URL: postgresql://adminuser:${POSTGRES_PASSWORD:-Password}@db:5432/warranty_claim_tracker
-    command: ["npx", "prisma", "db", "push", "--skip-generate"]
+    command: ["npx", "prisma", "db", "push"]
 
   # Optional: auto-pull and restart the app when a new image is pushed to the
   # registry. Uncomment to enable hands-off updates on this host.
