@@ -30,8 +30,5 @@ jobs:
             lukawg/warranty-repair-tracker:latest
             lukawg/warranty-repair-tracker:${{ github.sha }}
           build-args: |
-            NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH || '/' }}
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'http://192.168.1.144:5001' }}
-            NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://192.168.1.144:3000' }}
-            NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_ENABLE_MICROSOFT_SSO || 'false' }}
-            NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO || 'false' }}
+            NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://192.168.1.144' }}
