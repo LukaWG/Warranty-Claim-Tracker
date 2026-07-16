@@ -24,7 +24,7 @@ const SITE_DEFAULT_COLUMNS = {
   approval_status: false,
   claimed_date: false,
   claimed_by: false,
-  is_campaign: true,
+  is_campaign: false,
 };
 
 const DEFAULT_COLUMNS = {
