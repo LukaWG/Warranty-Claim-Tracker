@@ -144,6 +144,10 @@ kubectl port-forward -n warranty-claim-tracker svc/warranty-claim-tracker 3000:8
 # Push a new image (or let CI do it), then:
 kubectl rollout restart deployment/warranty-claim-tracker -n warranty-claim-tracker
 kubectl rollout status  deployment/warranty-claim-tracker -n warranty-claim-tracker
+
+# To specify a specific image to rollout, then:
+kubectl set image deployment/warranty-claim-tracker  warranty-claim-tracker=lukawg/warranty-repair-tracker@sha256:<sha256> -n warranty-claim-tracker
+kubectl rollout status  deployment/warranty-claim-tracker -n warranty-claim-tracker
 ```
 
 `imagePullPolicy: Always` + the `latest` tag means a restart pulls the newest
