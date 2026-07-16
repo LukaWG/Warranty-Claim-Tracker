@@ -9,4 +9,4 @@ metadata:
 data:
   # Public URL users reach the app on (scheme + host). Better Auth uses this
   # for cookies/redirects; it must match the ingress host.
-  better-auth-url: "http://warranty.local"
+  better-auth-url: "http://192.168.1.144"
