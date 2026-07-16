@@ -126,9 +126,9 @@ export default function LoginPage() {
               <label className="text-sm font-medium">
                 Password
               </label>
-              <Link href="/forgot-password" className="text-sm hover:underline" style={{ color: 'var(--hendy-teal)' }}>
+              {/* <Link href="/forgot-password" className="text-sm hover:underline" style={{ color: 'var(--hendy-teal)' }}>
                 Forgot password?
-              </Link>
+              </Link> */}
             </div>
             <input
               type="password" required
