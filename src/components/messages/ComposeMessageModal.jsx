@@ -148,7 +148,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
               ))}
             </div>
           )}
-          <input ref={fileInputRef} type="file" accept="image/*" multiple classname="hidden" onChange={handleImageAdd} />
+          <input ref={fileInputRef} type="file" accept="image/*" multiple classname="hidden" hidden onChange={handleImageAdd} />
           <Button variant="outline" size="sm" className="w-fit gap-2" onClick={() => fileInputRef.current?.click()}>
             <Paperclip className="h-4 w-4" /> Attach Images
           </Button>
