@@ -1242,6 +1242,18 @@ export default function Configuration() {
 								>
 									<Pencil className="h-4 w-4" />
 								</Button>
+								<Button
+									variant="ghost"
+									size="icon"
+									onClick={() => {
+									if (window.confirm(`Delete user "${user.email}"?`)) {
+										deleteUserMutation.mutate(user.id);
+									}
+									}}
+									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
+								>
+									<Trash2 className="h-4 w-4" />
+								</Button>
 								{!isSsoOnlyUser(user.id) && (
 								<Button
 									variant="ghost"
@@ -1258,18 +1270,6 @@ export default function Configuration() {
 									<Key className="h-4 w-4" />
 								</Button>
 								)}
-								<Button
-									variant="ghost"
-									size="icon"
-									onClick={() => {
-									if (window.confirm(`Delete user "${user.email}"?`)) {
-										deleteUserMutation.mutate(user.id);
-									}
-									}}
-									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
-								>
-									<Trash2 className="h-4 w-4" />
-								</Button>
 								</div>
 							</TableCell>
 							</TableRow>
