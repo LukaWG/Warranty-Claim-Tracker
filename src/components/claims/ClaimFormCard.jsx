@@ -381,7 +381,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     />
                     <label htmlFor="campaign-toggle" className="text-sm font-medium text-slate-700 cursor-pointer select-none flex items-center gap-1.5">
                       <AlertTriangle className="h-4 w-4" style={{ color: 'var(--hendy-blue)'}} />
-                      Safety Recall / Service Campaign (no scanned upload)
+                      Safety Recall / Service Campaign
                     </label>
                   </div>
                   {formData.is_campaign && (
