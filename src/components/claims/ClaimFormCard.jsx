@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { CalendarIcon, Send, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { toast } from "@/components/ui/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
@@ -68,7 +69,18 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       manufacturer_deadline: formData.manufacturer_deadline ? format(formData.manufacturer_deadline, 'yyyy-MM-dd') : null,
       status: 'in_progress'
     };
-    
+
+    try {
+      await onSubmit(submitData);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to submit claim",
+        description: error?.message || "Please try again.",
+      });
+      return;
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
