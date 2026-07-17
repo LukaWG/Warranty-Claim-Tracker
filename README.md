@@ -1,5 +1,7 @@
 # Warranty Claim Tracker
 
+[![Deploy to Docker](https://github.com/LukaWG/Warranty-Claim-Tracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/LukaWG/Warranty-Claim-Tracker/actions/workflows/deploy.yml)
+
 A web application for managing warranty repair claims across multiple brands and sites. It gives your team a single place to submit claims, track their status, approve or reject them, communicate about them, and report on performance.
 
 ---
