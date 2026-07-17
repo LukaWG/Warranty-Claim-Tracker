@@ -9,7 +9,7 @@ export default function ExportButton({ claims, filters }) {
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
-    queryFn: databaseClients.Brand.get()
+    queryFn: () => databaseClients.Brand.get()
   });
 
   const handleExport = () => {
