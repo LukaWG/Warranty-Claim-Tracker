@@ -57,7 +57,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryFn: () => databaseClients.AlertResolution.get()
   });
 
-  const { data: brands = [] } = useQuery({
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
     queryKey: ['brands'],
     queryFn: async () => {
       const data = await databaseClients.Brand.get();
@@ -312,7 +312,7 @@ const SortableHead = ({ colKey, children }) => {
            </div>
          </CardHeader>
         <CardContent className="p-0">
-          {isLoading ? (
+          {(isLoading || brandsLoading) ? (
             <div className="flex items-center justify-center py-16">
               <div className="h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
             </div>
@@ -647,7 +647,7 @@ const SortableHead = ({ colKey, children }) => {
              </Button>
            </div>
            <div className="p-6">
-             {isLoading ? (
+             {(isLoading || brandsLoading) ? (
                <div className="flex items-center justify-center py-16">
                  <div className="h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
                </div>
