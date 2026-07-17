@@ -7,6 +7,7 @@
 # -> Variables). These are baked into the client bundle at build time:
 #   NEXT_PUBLIC_API_URL, NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_BASE_PATH,
 #   NEXT_PUBLIC_ENABLE_MICROSOFT_SSO, NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO
+name: Deploy to Docker
 on:
   push:
     branches: [main]
