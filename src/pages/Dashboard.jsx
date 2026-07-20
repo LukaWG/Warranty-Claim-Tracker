@@ -11,6 +11,7 @@ import CreditOptionsModal from '@/components/claims/CreditOptionsModal';
 import ExportButton from '@/components/dashboard/ExportButton';
 
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -70,8 +71,7 @@ export default function Dashboard() {
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
-    // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.User.me(), // Fetch current user
+    queryFn: () => currentUserClient.me(), // Fetch current user
   });
 
   const { data: allClaims = [], isLoading } = useQuery({
@@ -510,7 +510,7 @@ export default function Dashboard() {
 
               // Create a ClaimNote if credit note was provided
               if (data.credit_note && data.credit !== claim.credit) {
-                const user = await databaseClients.User.me()
+                const user = await currentUserClient.me()
                 await databaseClients.ClaimNote.create({
                   claim_id: claim.id,
                   content: `[Credit] Credit submitted: £${data.credit || 0} (Parts: £${data.credit_parts || 0}, Labour: £${data.credit_labour || 0}, Sub Con: £${data.credit_sub_con || 0})\n\nNote: ${data.credit_note}\n\n— ${user?.full_name}`,

@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 
 export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   const { data: sites = [] } = useQuery({
@@ -32,7 +33,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.me()
+    queryFn: () => currentUserClient.me()
   });
   const [formData, setFormData] = useState({
     wip_number: '',

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
-import { databaseClients } from '@/api/databaseClient';
+import { currentUser } from '@/api/currentUser';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -25,7 +25,7 @@ export default function Home() {
   useEffect(() => {
     const redirectUser = async () => {
       try {
-        const user = await databaseClients.User.me();
+        const user = await currentUser.me();
         const role = user?.custom_role || user?.role;
 
         if (role === 'Location') {

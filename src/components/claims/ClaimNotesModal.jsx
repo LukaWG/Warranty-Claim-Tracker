@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 // import { useAuth } from '@/lib/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -45,7 +46,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.me(),
+    queryFn: () => currentUserClient.me(),
     staleTime: 30000,
   });
 

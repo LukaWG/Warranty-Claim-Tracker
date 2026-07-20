@@ -24,6 +24,7 @@ import HendyLogo from '@/components/layout/HendyLogo';
 import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 import { authClient, signOut } from "@/lib/auth-client";
 import { authUsers } from '@/api/authClient';
 import { useRouter } from "next/router";
@@ -86,8 +87,7 @@ export default function Layout({ children, currentPageName }) {
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    // [ ] Sort user logic and get current user here. For now just getting me manually
-    queryFn: () => databaseClients.User.me(),
+    queryFn: () => currentUserClient.me(),
     staleTime: 30000,
   });
 

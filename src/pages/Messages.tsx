@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ComposeMessageModal from '@/components/messages/ComposeMessageModal';
 import MessageThread from '@/components/messages/MessageThread';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 
 export default function Messages() {
   const queryClient = useQueryClient();
@@ -30,7 +31,7 @@ export default function Messages() {
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.me()
+    queryFn: () => currentUserClient.me()
   });
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdmin = ['Group Manager', 'Owner'].includes(userRole);

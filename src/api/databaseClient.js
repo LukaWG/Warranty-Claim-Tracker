@@ -1,27 +1,9 @@
-import { authClient } from '../lib/auth-client';
+import { currentUser } from './currentUser';
 
 // ---------------------------------------------------------------------------
 // Config — set NEXT_PUBLIC_API_URL in your .env.local
 // ---------------------------------------------------------------------------
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
-const ACTING_USER_STORAGE_KEY = 'actingUserId';
-
-function loadActingUserId() {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(ACTING_USER_STORAGE_KEY);
-}
-
-function saveActingUserId(userId) {
-  if (typeof window === 'undefined') return;
-  if (userId === null || typeof userId === 'undefined') {
-    localStorage.removeItem(ACTING_USER_STORAGE_KEY);
-  } else {
-    localStorage.setItem(ACTING_USER_STORAGE_KEY, String(userId));
-  }
-  window.dispatchEvent(new Event('acting-user-changed'));
-}
-
-let actingUserId = loadActingUserId();
 
 // ---------------------------------------------------------------------------
 // Internal fetch helper
@@ -52,7 +34,7 @@ class DatabaseClient {
 
   // POST /<collection>
   async create(data) {
-    const userData = await databaseClients.User.me();
+    const userData = await currentUser.me();
     data.created_by       = userData?.email ?? 'Unknown';
     data.created_by_id    = userData?.id    ?? null;
     // created_date / updated_date / id are set by the API
@@ -149,48 +131,6 @@ class DatabaseClient {
     }
 
     return reversed ? data.reverse() : data;
-  }
-
-  // --- User-only helpers ---
-
-  async me() {
-    if (this.fileName !== 'User') throw new Error('me() is only available on the User client');
-    const session = await authClient.getSession();
-
-    var authUser;
-    authUser = session?.data?.user;
-
-    if (!authUser) return null;
-      
-    return {
-      id:                  authUser.id,
-      email:               authUser.email,
-      first_name:          authUser.firstName  ?? authUser.name?.split(' ')[0] ?? 'User',
-      last_name:           authUser.lastName   ?? authUser.name?.split(' ')[1] ?? '',
-      full_name:           authUser.name       ?? `${authUser.firstName ?? ''} ${authUser.lastName ?? ''}`.trim() ?? 'User',
-      custom_role:         authUser.customRole ?? 'Location',
-      role:                authUser.role       ?? 'user',
-      must_change_password: authUser.mustChangePassword ?? authUser.must_change_password ?? false,
-      default_brands:      authUser.defaultBrands ?? authUser.default_brands ?? [],
-      default_site:        authUser.defaultSite  ?? authUser.default_site  ?? null,
-    };
-  }
-
-  setTestingUser(userId) {
-    if (this.fileName !== 'User') throw new Error('setTestingUser() is only available on the User client');
-    actingUserId = userId;
-    saveActingUserId(userId);
-  }
-
-  clearTestingUser() {
-    if (this.fileName !== 'User') throw new Error('clearTestingUser() is only available on the User client');
-    actingUserId = null;
-    saveActingUserId(null);
-  }
-
-  getActingUserId() {
-    if (this.fileName !== 'User') throw new Error('getActingUserId() is only available on the User client');
-    return actingUserId;
   }
 }
 

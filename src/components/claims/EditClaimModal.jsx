@@ -11,6 +11,7 @@ import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 
 export default function EditClaimModal({ claim, open, onClose, onSave }) {
   const [useRate2, setUseRate2] = useState(false);
@@ -35,7 +36,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
   });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.me()
+    queryFn: () => currentUserClient.me()
   });
 
   const [creditExpanded, setCreditExpanded] = useState(!!(claim?.credit || claim?.credit_parts || claim?.credit_labour || claim?.credit_sub_con));

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
@@ -43,7 +44,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   // const { user: currentUser } = useAuth();
     const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.me(),
+    queryFn: () => currentUserClient.me(),
     staleTime: 30000,
   });
 

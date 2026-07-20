@@ -5,6 +5,7 @@ import { createPageUrl } from '@/utils';
 import ClaimFormCard from '@/components/claims/ClaimFormCard';
 import HendyLogo from '@/components/layout/HendyLogo';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser } from '@/api/currentUser';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -48,7 +49,7 @@ export default function ClaimForm() {
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        const user = await databaseClients.User.me();
+        const user = await currentUser.me();
         const role = user?.custom_role || user?.role;
         if (!['Location', 'Administrator', 'Group Manager', 'Owner'].includes(role)) {
           router.replace(createPageUrl('Dashboard'));
