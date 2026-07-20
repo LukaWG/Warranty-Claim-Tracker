@@ -34,13 +34,13 @@ Not changed as part of this audit (deferred by decision), but CLAUDE.md should b
 ### Still present
 | Item | Current location | Done
 |---|---|---|
-| `invalidateQuereis` typo (active bug — see §5) | `src/pages/Messages.tsx:82` | ✔
+| `invalidateQuereis` typo (active bug — see §5) | `src/pages/Messages.tsx:82` | ✔ |
 | Unmemoized Dashboard filter | `src/pages/Dashboard.jsx:121–205` |
 | Duplicated user-field mapping (worse than reported — see §6.6) | `src/api/authClient.js:28–37`, `src/api/databaseClient.js:165–176` |
-| `Approvals` missing from `PAGES` map | `src/pages.config.js:55–62` |
+| `Approvals` missing from `PAGES` map | `src/pages.config.js:55–62` | ✔ |
 | Dead Vite-era files | `src/main.jsx`, `src/App.jsx`, `src/components/ProtectedRoute.jsx`, `src/lib/AuthContext.jsx` |
 | Unused `src/api/entities.js` | zero imports |
-| Console logs | `src/api/databaseClient.js:30, 90`, `src/pages/Configuration.jsx:1449`, `src/components/auth/ApplyPendingUserInfo.jsx:24` |
+| Console logs | `src/api/databaseClient.js:30, 90`, `src/pages/Configuration.jsx:1449`, `src/components/auth/ApplyPendingUserInfo.jsx:24` | ✔ |
 | Commented-out blocks | `src/pages/Approvals.tsx:63–79`, `src/pages/[...page].jsx:7–8`, `src/pages/Home.jsx:8`, plus `// import ... AuthContext` lines in `App.jsx:10`, `ApplyPendingUserInfo.jsx:2`, `ProtectedRoute.jsx:2`, `ClaimsTable.jsx:13`, `NavigationTracker.jsx:3`, `ClaimNotesModal.jsx:3` |
 
 ---
@@ -189,3 +189,11 @@ Recommended order when action is taken:
 6. **Update CLAUDE.md** to match the restored production auth/middleware and the real data layer.
 
 Deferred by decision on 2026-07-16: ui/dependency purge (§3), deletion of local-dev leftovers (`data/`, `entities/`, commented mock blocks), CLAUDE.md update.
+
+---
+
+## 8. My notes
+
+| File | To do |
+|---|---|
+| ApplyPendingUserInfo | Remove all references to this file |

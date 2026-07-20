@@ -9,7 +9,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
 // Internal fetch helper
 // ---------------------------------------------------------------------------
 async function apiFetch(path, options = {}) {
-  console.log(`[API FETCH URL] ${API_BASE}${path}`);
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
@@ -69,7 +68,6 @@ class DatabaseClient {
 
   // PUT /<collection>/<id>
   async update(id, data) {
-    console.log(data);
     return apiFetch(`/${this.fileName}/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),

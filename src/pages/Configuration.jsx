@@ -1446,7 +1446,6 @@ export default function Configuration() {
 					const brandRates2 = {};
 					brands.forEach(brand => {
 					const val1 = editingSite.brand_hourly_rates_1?.[brand.id];
-					console.log(brand);
 					if (val1 !== undefined && val1 !== '') {
 						brandRates1[brand.id] = parseFloat(val1);
 					}
