@@ -35,7 +35,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
   });
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => databaseClients.User.get()
+    queryFn: () => databaseClients.User.me()
   });
 
   const [creditExpanded, setCreditExpanded] = useState(!!(claim?.credit || claim?.credit_parts || claim?.credit_labour || claim?.credit_sub_con));
