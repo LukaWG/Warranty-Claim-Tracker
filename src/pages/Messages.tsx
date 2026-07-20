@@ -80,7 +80,7 @@ export default function Messages() {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
-      queryClient.invalidateQuereis({ queryKey: ['message-reads-all', currentUser?.email] });
+      queryClient.invalidateQueries({ queryKey: ['message-reads-all', currentUser?.email] });
     }
   });
 
