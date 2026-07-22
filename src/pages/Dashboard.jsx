@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import BrandStatsSection from '@/components/dashboard/BrandStatsSection';
@@ -118,7 +118,7 @@ export default function Dashboard() {
   })();
 
   // Apply filters and role-based access
-    const claims = (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
+    const claims = useMemo(() => (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
       // Location role: see all claims from their branch except awaiting_review
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (userRole === 'Location') {
@@ -202,7 +202,7 @@ export default function Dashboard() {
 
       const claimedMatch = showClaimed || !claim.claimed;
       return siteMatch && brandMatch && userMatch && claimedByMatch && statusMatch && resolutionMatch && dateMatch && deadlineStatusMatch && wipNumMatch && repairNumMatch && creditMatch && campaignMatch;
-    }) : [];
+    }) : [], [allClaims, isLoadingUser, currentUser, adminBrands, wipSearch, repairSearch, filters, brands, showClaimed]);
 
   const createAuditLog = async (claimId, wipNumber, fieldChanged, oldValue, newValue, changeType) => {
     await databaseClients.ClaimAudit.create({
