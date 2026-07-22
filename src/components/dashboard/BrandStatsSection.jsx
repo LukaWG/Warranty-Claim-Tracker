@@ -81,7 +81,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
 
   // Calculate All Brands stats
   const allBrandsClaims = claims.filter(c => !['completed', 'claimed_info_received', 'claimed_info_requested'].includes(c.status));
-  const allBrandsClaimsCount = allClaims.filter(c => !['complted'].includes(c.status));
+  const allBrandsClaimsCount = allClaims.filter(c => !['completed'].includes(c.status));
   const allBrandsClaimsForHours = claims.filter(c => ['in_progress', 'awaiting_review'].includes(c.status));
   const allBrandsTotalExpectedHours = allBrandsClaimsForHours.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
   const allBrandsStatusCounts = getStatusCounts(allClaims.filter(c => !['completed'].includes(c.status)));
