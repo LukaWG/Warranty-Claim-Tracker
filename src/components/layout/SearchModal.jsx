@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Search, MapPin, AlertCircle, ArrowUpDown } from "lucide-react";
-import { useQuery } from '@tanstack/react-query';
-import { databaseClients } from '@/api/databaseClient';
+import { useClaims } from '@/hooks/useClaims';
 import { format } from "date-fns";
 import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
@@ -22,11 +21,7 @@ export default function SearchModal({ open, onClose }) {
   const [sortColumn, setSortColumn] = useState('created_date');
   const [sortDirection, setSortDirection] = useState('desc');
 
-  const { data: claims = [], isLoading } = useQuery({
-    queryKey: ['claims'],
-    queryFn: () => databaseClients.WarrantyClaim.get(),
-    enabled: open
-  });
+  const { data: claims = [], isLoading } = useClaims({ enabled: open });
 
   const filteredClaims = useMemo(() => {
     if (!searchQuery.trim()) return claims;

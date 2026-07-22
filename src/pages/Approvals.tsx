@@ -9,6 +9,7 @@ import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { useAllUsers } from '@/hooks/useAllUsers';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -83,10 +84,7 @@ export default function Approvals() {
     queryFn: () => databaseClients.WarrantyClaim.query('*', 'approval_status=pending_approval')
   });
 
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ['allUsers'],
-    queryFn: () => databaseClients.User.get()
-  });
+  const { data: allUsers = [] } = useAllUsers();
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {

@@ -12,6 +12,8 @@ import ExportButton from '@/components/dashboard/ExportButton';
 
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useClaims } from '@/hooks/useClaims';
+import { useAllUsers } from '@/hooks/useAllUsers';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -74,12 +76,7 @@ export default function Dashboard() {
     queryFn: () => currentUserClient.me(), // Fetch current user
   });
 
-  const { data: allClaims = [], isLoading } = useQuery({
-    queryKey: ['claims'],
-    queryFn: () => databaseClients.WarrantyClaim.query(), // Fetch all claims for filtering on frontend
-    refetchInterval: 30000,
-    refetchIntervalInBackground: true,
-  });
+  const { data: allClaims = [], isLoading } = useClaims();
 
   const { data: brands = [] } = useQuery({
     queryKey: ['brands'],
@@ -91,10 +88,7 @@ export default function Dashboard() {
     queryFn: () => databaseClients.Site.get() // Fetch sites for filters
   });
 
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ['allUsers'],
-    queryFn: () => databaseClients.User.query('email') // Fetch users for filters
-  });
+  const { data: allUsers = [] } = useAllUsers();
 
   const adminBrands = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;

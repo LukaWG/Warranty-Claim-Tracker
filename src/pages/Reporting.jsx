@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import DashboardFilters from '@/components/dashboard/DashboardFilters';
 import ExportButton from '@/components/dashboard/ExportButton';
 import ExportChartsButton from '@/components/dashboard/ExportChartsButton';
@@ -7,7 +6,7 @@ import CustomizeReportingModal from '@/components/reporting/CustomizeReportingMo
 import { BarChart3, Settings2 } from 'lucide-react';
 import LagTimeSection from '@/components/reporting/LagTimeSection';
 import { Button } from "@/components/ui/button";
-import { databaseClients } from '@/api/databaseClient';
+import { useClaims } from '@/hooks/useClaims';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -87,10 +86,7 @@ export default function Reporting() {
     localStorage.setItem('reporting_config', JSON.stringify(config));
   };
 
-  const { data: allClaims = [], isLoading } = useQuery({
-    queryKey: ['claims'],
-    queryFn: () => databaseClients.WarrantyClaim.get() // Fetch all claims for filtering and stats
-  });
+  const { data: allClaims = [], isLoading } = useClaims();
 
   // Apply filters
   const claims = allClaims.filter(claim => {

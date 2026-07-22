@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 // import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useAllUsers } from '@/hooks/useAllUsers';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
@@ -72,10 +73,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryFn: () => databaseClients.Site.get()
   });
 
-  const { data: allUsers = [] } = useQuery({
-    queryKey: ['allUsers'],
-    queryFn: () => databaseClients.User.get()
-  });
+  const { data: allUsers = [] } = useAllUsers();
 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminRole = ['Group Manager', 'Owner'].includes(userRole);
