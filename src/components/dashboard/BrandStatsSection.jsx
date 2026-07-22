@@ -64,7 +64,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
   const brandStats = brands
     .map(brand => {
       const claimsForBrand = claims.filter(c => c.brand === brand.id && !['completed', 'claimed_info_requested', 'claimed_info_received', ].includes(c.status));
-      const claimsForBrandCount = claims.filter(c => c.brand === brand.id && !['ccompleted', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
+      const claimsForBrandCount = claims.filter(c => c.brand === brand.id && !['completed', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));
       const claimsForBrandsAllStatuses = claims.filter(c => c.brand === brand.id && !['completed'].includes(c.status));
       const claimsForHours = claims.filter(c => c.brand === brand.id && ['in_progress', 'awaiting_review'].includes(c.status));
       const totalExpectedHours = claimsForHours.reduce((sum, c) => sum + (c.expected_hours || 0), 0);
@@ -166,7 +166,7 @@ export default function BrandStatsSection({ claims, allClaims, brands, onBrandTi
     </Card>
   );
 
-  // Site breakdown when a brand is selected
+//  breakdown when a brand is selected
   if (activeBrandFilter && activeBrandFilter !== 'all') {
     const activeBrandObj = brands.find(b => b.id === activeBrandFilter);
     const brandClaims = claims.filter(c => c.brand === activeBrandFilter && !['completed', 'claimed_info_requested', 'claimed_info_received'].includes(c.status));

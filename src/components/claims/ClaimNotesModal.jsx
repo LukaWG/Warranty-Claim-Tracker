@@ -128,7 +128,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     setIsUndoingWithdrawal(true);
     await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress' });
     await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawal Undone] ${newNote}` });
-    await databaseClients.ClaimNote.create({
+    await databaseClients.ClaimAudit.create({
       claim_id: claim.id,
       wip_number: claim.wip_number,
       field_changed: 'status',

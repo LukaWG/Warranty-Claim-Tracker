@@ -35,7 +35,7 @@ Not changed as part of this audit (deferred by decision), but CLAUDE.md should b
 | Item | Current location | Done
 |---|---|---|
 | `invalidateQuereis` typo (active bug — see §5) | `src/pages/Messages.tsx:82` | ✔ |
-| Unmemoized Dashboard filter | `src/pages/Dashboard.jsx:121–205` |
+| Unmemoized Dashboard filter | `src/pages/Dashboard.jsx:121–205` | ✔ |
 | Duplicated user-field mapping (worse than reported — see §6.6) | `src/api/authClient.js:28–37`, `src/api/databaseClient.js:165–176` |
 | `Approvals` missing from `PAGES` map | `src/pages.config.js:55–62` | ✔ |
 | Dead Vite-era files | `src/main.jsx`, `src/App.jsx`, `src/components/ProtectedRoute.jsx`, `src/lib/AuthContext.jsx` |
