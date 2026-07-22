@@ -1,3 +1,5 @@
+import { normalizeUser } from '../lib/normalizeUser';
+
 const BASE = "/api/auth";
 
 async function request(path, options = {}) {
@@ -23,19 +25,7 @@ async function request(path, options = {}) {
 export const authUsers = {
   list: () =>
     request("/admin/list-users", { method: "GET" })
-      .then((r) => {
-        const users = r.users ?? [];
-        return users.map((u) => ({
-          ...u,
-          first_name: u.firstName ?? u.first_name ?? "",
-          last_name: u.lastName ?? u.last_name ?? "",
-          custom_role: u.customRole ?? u.custom_role ?? "Location",
-          default_site: u.defaultSite ?? u.default_site ?? "",
-          default_brands: u.defaultBrands ?? u.default_brands ?? [],
-          created_date: u.createdAt ?? u.created_date ?? null,
-          must_change_password: u.mustChangePassword ?? u.must_change_password ?? false,
-        }));
-      }),
+      .then((r) => (r.users ?? []).map(normalizeUser)),
 
   update: (userId, data) => {
     const mappedData = { ...data };
