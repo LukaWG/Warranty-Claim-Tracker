@@ -1,6 +1,7 @@
 import '@/index.css';
 import '@/App.css';
 import { useMemo } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClientInstance } from '@/lib/query-client';
@@ -39,6 +40,10 @@ function MyApp({ Component, pageProps }) {
   return (
     // <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
+        <Head>
+          <link rel="icon" href="/favicon.ico" sizes="any" media="(prefers-color-scheme: light)" />
+          <link rel="icon" href="/favicon-teal.ico" sizes="any" media="(prefers-color-scheme: dark)" />
+        </Head>
         <NavigationTracker />
         {Content}
         <Toaster />
