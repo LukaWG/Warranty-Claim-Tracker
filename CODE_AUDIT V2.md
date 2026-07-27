@@ -36,7 +36,7 @@ Not changed as part of this audit (deferred by decision), but CLAUDE.md should b
 |---|---|---|
 | `invalidateQuereis` typo (active bug — see §5) | `src/pages/Messages.tsx:82` | ✔ |
 | Unmemoized Dashboard filter | `src/pages/Dashboard.jsx:121–205` | ✔ |
-| Duplicated user-field mapping (worse than reported — see §6.6) | `src/api/authClient.js:28–37`, `src/api/databaseClient.js:165–176` |
+| Duplicated user-field mapping (worse than reported — see §6.6) | `src/api/authClient.js:28–37`, `src/api/databaseClient.js:165–176` | ✔ |
 | `Approvals` missing from `PAGES` map | `src/pages.config.js:55–62` | ✔ |
 | Dead Vite-era files | `src/main.jsx`, `src/App.jsx`, `src/components/ProtectedRoute.jsx`, `src/lib/AuthContext.jsx` |
 | Unused `src/api/entities.js` | zero imports |
@@ -125,43 +125,45 @@ Note the app has **three** toast stacks installed (radix toast — used; `sonner
 
 ## 5. Bugs (fix first)
 
-### 5.1 `invalidateQuereis` typo — `src/pages/Messages.tsx:82`
+### 5.1 `invalidateQuereis` typo — `src/pages/Messages.tsx:82` ✔ Fixed
 ```ts
 queryClient.invalidateQuereis({ queryKey: ['message-reads-all', currentUser?.email] });
 ```
 Method doesn't exist — this **throws inside `onSuccess`**, and `message-reads-all` is never invalidated (stale read-state in the "all" view until reload). Fix the spelling.
 
-### 5.2 Typo'd status strings — `src/components/dashboard/BrandStatsSection.jsx:67, 84`
+### 5.2 Typo'd status strings — `src/components/dashboard/BrandStatsSection.jsx:67, 84` ✔ Fixed
 ```js
-!['ccompleted', ...].includes(c.status)   // line 67 — 'ccompleted' never matches
-!['complted'].includes(c.status)          // line 84 — 'complted' never matches
+!['ccompleted', ...].includes(c.status)   // line 67 — fixed, now 'completed'
+!['complted'].includes(c.status)          // line 84 — fixed, now 'completed'
 ```
 Completed claims silently leak into the brand tile `count` and the all-brands count.
 
-### 5.3 Wrong entity in undo-withdrawal — `src/components/claims/ClaimNotesModal.jsx:130–137`
+### 5.3 Wrong entity in undo-withdrawal — `src/components/claims/ClaimNotesModal.jsx:130–137` ✔ Fixed
 `handleUndoWithdrawal` writes audit-log fields (`field_changed`, `old_value`, `new_value`, `change_type`) via `ClaimNote.create`. Compare the correct `handleWithdraw` (lines 107–114), which uses `ClaimAudit.create`. Undo events never reach the audit history and malformed rows land in ClaimNote.
 
 ### 5.4 React Query cache-key collisions (latent data bugs)
 The same query key is registered with **different query functions** in different components — whichever mounts first poisons the shared cache for the others:
 
-| Key | Conflicting sources |
-|---|---|
-| `['currentUser']` | `User.me()` (single object) in `Dashboard.jsx:71`, `ClaimsTable.jsx:44`, `ClaimNotesModal.jsx:46`, `ClaimFormCard.jsx:32`, `Layout.jsx:90` — but **`User.get()` (array of all users)** in `EditClaimModal.jsx:36–39` |
-| `['allUsers']` | Email-only `User.query('email')` in `Dashboard.jsx:94` vs full `User.get()` in `ClaimsTable.jsx:74`, `Approvals.tsx:86` — if Dashboard wins, `getUserName` silently falls back to raw emails |
-| `['claims']` | `WarrantyClaim.query()` in `Dashboard.jsx:78` vs `WarrantyClaim.get()` in `Reporting.jsx:91` |
+| Key | Conflicting sources | Done |
+|---|---|---|
+| `['currentUser']` | `User.me()` (single object) in `Dashboard.jsx:71`, `ClaimsTable.jsx:44`, `ClaimNotesModal.jsx:46`, `ClaimFormCard.jsx:32`, `Layout.jsx:90` — but **`User.get()` (array of all users)** in `EditClaimModal.jsx:36–39` | ✔ |
+| `['allUsers']` | Email-only `User.query('email')` in `Dashboard.jsx:94` vs full `User.get()` in `ClaimsTable.jsx:74`, `Approvals.tsx:86` — if Dashboard wins, `getUserName` silently falls back to raw emails | ✔ |
+| `['claims']` | `WarrantyClaim.query()` in `Dashboard.jsx:78` vs `WarrantyClaim.get()` in `Reporting.jsx:91` | ✔ |
 
-Additionally, identical data is double-fetched under duplicate keys: `'sites'` vs `'allSites'` (`ClaimsTable.jsx:70`, `BrandStatsSection.jsx:17`), `'brands'` vs `'allBrands'` (`BrandStatsSection.jsx:12`).
+All three closed by centralizing into shared hooks (`src/hooks/useAllUsers.js`, `src/hooks/useClaims.js`; `currentUser` collision resolved when `EditClaimModal.jsx` was switched to `currentUserClient.me()`).
+
+Additionally, identical data is double-fetched under duplicate keys: `'sites'` vs `'allSites'` (`ClaimsTable.jsx:70`, `BrandStatsSection.jsx:17`), `'brands'` vs `'allBrands'` (`BrandStatsSection.jsx:12`). — not yet addressed.
 
 ---
 
 ## 6. Refactoring / efficiency opportunities
 
-1. **Centralize React Query into shared hooks** (`useCurrentUser`, `useBrands`, `useSites`, `useAllUsers` — e.g. in `src/hooks/`). One canonical key + queryFn each. Fixes every §5.4 collision and the redundant fetches in a single move. _Highest value._
-2. **Memoize derived data.** `Dashboard.jsx` recomputes the full claims filter (121–205) plus ~6 per-render IIFEs (`adminBrands` 99–118, `activeSelectedBrands` 399–410, `siteBrandRestriction` 412–419, `visibleBrands` 421–425) and 9 full-list `.filter()` passes on every render/keystroke. `Reporting.jsx:96–139` repeats the same anti-pattern. Wrap in `useMemo`; also `getStatusMatches` (Dashboard 148–158) rebuilds its status map once per claim. Then `React.memo` the heavy children and memoize the fresh arrays/closures passed at `Dashboard.jsx:458–473` (line 458 builds a new filtered array inline every render).
+1. **Centralize React Query into shared hooks** (`useCurrentUser`, `useBrands`, `useSites`, `useAllUsers` — e.g. in `src/hooks/`). One canonical key + queryFn each. Fixes every §5.4 collision and the redundant fetches in a single move. _Highest value._ 🔶 Partially done — `useAllUsers` and `useClaims` added and adopted everywhere; `useCurrentUser`/`useBrands`/`useSites` (and the `sites`/`allSites`, `brands`/`allBrands` duplicate-key cleanup) not yet done.
+2. **Memoize derived data.** `Dashboard.jsx` recomputes the full claims filter (121–205) plus ~6 per-render IIFEs (`adminBrands` 99–118, `activeSelectedBrands` 399–410, `siteBrandRestriction` 412–419, `visibleBrands` 421–425) and 9 full-list `.filter()` passes on every render/keystroke. `Reporting.jsx:96–139` repeats the same anti-pattern. Wrap in `useMemo`; also `getStatusMatches` (Dashboard 148–158) rebuilds its status map once per claim. Then `React.memo` the heavy children and memoize the fresh arrays/closures passed at `Dashboard.jsx:458–473` (line 458 builds a new filtered array inline every render). 🔶 Partially done — the main `claims` filter in `Dashboard.jsx` is now wrapped in `useMemo`; the IIFEs, `getStatusMatches`, `React.memo` on children, and the `Reporting.jsx` equivalent are not yet done.
 3. **Extract the deadline "traffic-light" logic** — the same ~40-line days-remaining + green/amber/red computation appears **four times**: `ClaimsTable.jsx:460–506` and again `791–836`, `ClaimFormCard.jsx:279–325`, `BrandStatsSection.jsx:22–49`, plus the Dashboard filter variant (180–201). One `getDeadlineStatus(brand, deadline) → { color, daysRemaining }` util in `src/utils/`.
 4. **`ClaimsTable.jsx` renders the entire table twice** — inline (328–628) and fullscreen dialog (662–980), ~300 near-identical JSX lines; every column change must be made in both. Extract a shared table/row component. While there: replace the per-row `.find()` calls (`allSites.find` 388, `brands.find` 394 + 461, `allUsers.find` via `getUserName` 542) with memoized id→record maps (currently O(rows × lookup-table), doubled by the twin render), and cap the `delay: index * 0.05` row animation (362, 695 — 5 s stagger at 100 rows).
 5. **Split `Configuration.jsx` (1,767 lines)** into per-tab components: Sites (377–517 + edit dialog 1435–1580), Brands (519–931), Alerts (933–1038), Resolutions (1040–1145), Users (1147–1324 + dialogs 1327–1433, 1606–1727), TempPasswordDialog (1729–1764). Extract the **7 near-identical threshold `<Input>` blocks** (679–924) into one `<ThresholdInput>` (note each `onBlur` currently fires a separate PUT). Hoist `pendingInvites.filter(p => !users.find(...))`, computed twice per render (1158, 1277).
-6. **Extract `normalizeUser()`** — the snake↔camel user-field remap is copy-pasted in **8 places**: `authClient.js:28–37` and `40–70`, `databaseClient.js` `me()` (165–176), and the `getServerSideProps` of 6 pages (`Dashboard.jsx:31–46`, `Configuration.jsx:38–53`, `Reporting.jsx:28–43`, `ClaimForm.jsx:24–40`, `Approvals.tsx:29–43`, `[...page].jsx`). The `customRole` bug in §4 is exactly the drift this causes.
+6. **Extract `normalizeUser()`** — the snake↔camel user-field remap is copy-pasted in **8 places**: `authClient.js:28–37` and `40–70`, `databaseClient.js` `me()` (165–176), and the `getServerSideProps` of 6 pages (`Dashboard.jsx:31–46`, `Configuration.jsx:38–53`, `Reporting.jsx:28–43`, `ClaimForm.jsx:24–40`, `Approvals.tsx:29–43`, `[...page].jsx`). The `customRole` bug in §4 is exactly the drift this causes. ✔ Done — `src/lib/normalizeUser.js` added and adopted by `authClient.js` (`list()`) and `currentUser.js` (`me()`, the mapping's actual current home). The 6 `getServerSideProps` copies were deleted outright rather than migrated: none of the page components ever consumed the `user` prop they built, so it was dead output — only the session-check/redirect was kept.
 7. **Shared small utils:** `getUserName` exists in 3 variants (`Approvals.tsx:138–142`, `DashboardFilters.jsx:131`, `ClaimsTable.jsx:212–230`); date formatting is ad-hoc in 3+ files; the status color/label config is duplicated (`ClaimsTable.jsx:22–30`, inline approval-status badge blocks at 517–528 and 846–861, `BrandStatsSection.jsx:98–106`). `EditClaimModal` builds the same ~55-line save payload twice (`handleSubmit` 105–135 vs Mark-as-Claimed 531–560) — extract `buildClaimPayload()`.
 8. **`Messages.tsx:55` polls the entire MessageRead table every 3 s.** Prefer invalidation on send/mark-read (which already exists — once the §5.1 typo is fixed) with a much slower background refetch.
 9. **Push filtering server-side as data grows.** `databaseClient.js` `list()` (72–86) and multi-field `filter()` (112–152) fetch whole collections and sort/filter client-side; Dashboard and Reporting pull *all* claims. The server-side `query(select, where)` path already exists (see `Approvals.tsx:83`).
