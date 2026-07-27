@@ -36,7 +36,6 @@ function MyApp({ Component, pageProps }) {
   );
 
   return (
-    // <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Head>
           <title>Warranty Repair Tracker</title>
