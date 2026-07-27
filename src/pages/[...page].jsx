@@ -28,13 +28,12 @@ export default function DynamicPage() {
     if (!router.isReady) return null;
 
     const rawPathname = router.asPath || '/';
-    const normalizedPathname = rawPathname || '/';
 
-    if (normalizedPathname === '/' || normalizedPathname === '') {
+    if (rawPathname === '/' || rawPathname === '') {
       return mainPageKey;
     }
 
-    const pathSegment = normalizedPathname.replace(/^\//, '').split('/')[0]; // Get first segment of the path
+    const pathSegment = rawPathname.replace(/^\//, '').split('/')[0]; // Get first segment of the path
     // Check that Pages is defined and is an object before trying to find the key
     if (!Pages || typeof Pages !== 'object') {
       console.warn('Pages configuration is missing or invalid.');
