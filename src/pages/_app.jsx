@@ -41,13 +41,12 @@ function MyApp({ Component, pageProps }) {
     // <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Head>
+          <title>Warranty Repair Tracker</title>
           <link rel="icon" href="/favicon.ico" sizes="any" media="(prefers-color-scheme: light)" />
           <link rel="icon" href="/favicon-teal.ico" sizes="any" media="(prefers-color-scheme: dark)" />
         </Head>
-        <NavigationTracker />
         {Content}
         <Toaster />
-        <VisualEditAgent />
       </QueryClientProvider>
   );
 }
