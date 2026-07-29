@@ -55,6 +55,7 @@ RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nod
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 # Full node_modules (includes the generated Prisma client and the prisma CLI)
 # plus the schema, so this same image can run `npx prisma db push` to create
 # the auth tables — see DEPLOYMENT.md.
