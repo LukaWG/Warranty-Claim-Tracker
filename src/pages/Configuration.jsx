@@ -334,7 +334,7 @@ export default function Configuration() {
 			</h1>
 			</div>
 			<p className="text-slate-500">
-			Manage sites and alerts for warranty claims
+			Manage locations and alerts for warranty claims
 			</p>
 		</div>
 
@@ -342,7 +342,7 @@ export default function Configuration() {
 			<TabsList className="grid w-full grid-cols-5 mb-8">
 			<TabsTrigger value="sites" className="flex items-center gap-2">
 				<MapPin className="h-4 w-4" />
-				Sites
+				Locations
 			</TabsTrigger>
 			<TabsTrigger value="brands" className="flex items-center gap-2">
 				<Tag className="h-4 w-4" />
@@ -362,7 +362,7 @@ export default function Configuration() {
 			</TabsTrigger>
 			</TabsList>
 
-			{/* Sites Tab */}
+			{/* Locations Tab */}
 			<TabsContent value="sites">
 			<motion.div
 				initial={{ opacity: 0, y: 20 }}
@@ -372,15 +372,15 @@ export default function Configuration() {
 				<CardHeader className="border-b border-slate-100">
 					<CardTitle className="flex items-center gap-2">
 					<Plus className="h-5 w-5" />
-					Add New Site
+					Add New Location
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="pt-6">
 					<form onSubmit={handleSiteSubmit} className="flex gap-4">
 					<div className="flex-1">
-						<Label className="text-sm">Site Name *</Label>
+						<Label className="text-sm">Location Name *</Label>
 						<Input
-						placeholder="Enter site name"
+						placeholder="Enter location name"
 						value={newSite.name}
 						onChange={(e) => setNewSite({ ...newSite, name: e.target.value })}
 						required
@@ -388,9 +388,9 @@ export default function Configuration() {
 						/>
 					</div>
 					<div className="flex-1">
-						<Label className="text-sm">Site Code</Label>
+						<Label className="text-sm">Location Code</Label>
 						<Input
-						placeholder="Enter site code (optional)"
+						placeholder="Enter location code (optional)"
 						value={newSite.code}
 						onChange={(e) => setNewSite({ ...newSite, code: e.target.value })}
 						className="mt-1"
@@ -404,7 +404,7 @@ export default function Configuration() {
 						style={{ backgroundColor: 'var(--hendy-blue)' }}
 						>
 						<Plus className="h-4 w-4 mr-2" />
-						Add Site
+						Add Location
 						</Button>
 					</div>
 					</form>
@@ -421,7 +421,7 @@ export default function Configuration() {
 				<CardHeader className="border-b border-slate-100">
 					<CardTitle className="flex items-center gap-2">
 					<MapPin className="h-5 w-5" />
-					All Sites ({sites.length})
+					All Locations ({sites.length})
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="p-0">
@@ -434,15 +434,15 @@ export default function Configuration() {
 						<div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
 						<MapPin className="h-8 w-8 text-slate-400" />
 						</div>
-						<p className="text-slate-600 font-medium">No sites configured</p>
-						<p className="text-sm text-slate-400 mt-1">Add your first site location above</p>
+						<p className="text-slate-600 font-medium">No locations configured</p>
+						<p className="text-sm text-slate-400 mt-1">Add your first location above</p>
 					</div>
 					) : (
 					<Table>
 						<TableHeader>
 						<TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-							<TableHead className="font-semibold text-slate-600">Site Name</TableHead>
-							<TableHead className="font-semibold text-slate-600">Site Code</TableHead>
+							<TableHead className="font-semibold text-slate-600">Location Name</TableHead>
+							<TableHead className="font-semibold text-slate-600">Location Code</TableHead>
 							<TableHead className="font-semibold text-slate-600">Brand Rates</TableHead>
 							<TableHead className="font-semibold text-slate-600">Created By</TableHead>
 							<TableHead className="font-semibold text-slate-600 w-24">Actions</TableHead>
@@ -477,7 +477,7 @@ export default function Configuration() {
 									size="icon"
 									onClick={() => setEditingSite(site)}
 									className="h-8 w-8 text-slate-400 hover:text-slate-600 hover:bg-slate-50"
-									title="Edit site"
+									title="Edit location"
 								>
 									<Pencil className="h-4 w-4" />
 								</Button>
@@ -485,7 +485,7 @@ export default function Configuration() {
 									variant="ghost"
 									size="icon"
 									onClick={() => {
-									if (window.confirm(`Delete site "${site.name}"?`)) {
+									if (window.confirm(`Delete location "${site.name}"?`)) {
 										deleteSiteMutation.mutate(site.id);
 									}
 									}}
@@ -1447,11 +1447,11 @@ export default function Configuration() {
 			</DialogContent>
 		</Dialog>
 
-		{/* Edit Site Dialog */}
+		{/* Edit Location Dialog */}
 		<Dialog open={!!editingSite} onOpenChange={(open) => !open && setEditingSite(null)}>
 			<DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
 			<DialogHeader>
-				<DialogTitle>Edit Site</DialogTitle>
+				<DialogTitle>Edit Location</DialogTitle>
 			</DialogHeader>
 			{editingSite && (
 				<form
@@ -1480,25 +1480,25 @@ export default function Configuration() {
 				className="space-y-4"
 				>
 				<div className="space-y-2">
-					<Label>Site Name *</Label>
+					<Label>Location Name *</Label>
 					<Input
-					placeholder="Site name"
+					placeholder="Location name"
 					value={editingSite.name || ''}
 					onChange={(e) => setEditingSite({ ...editingSite, name: e.target.value })}
 					required
 					/>
 				</div>
 				<div className="space-y-2">
-					<Label>Site Code</Label>
+					<Label>Location Code</Label>
 					<Input
-					placeholder="Site code (optional)"
+					placeholder="Location code (optional)"
 					value={editingSite.code || ''}
 					onChange={(e) => setEditingSite({ ...editingSite, code: e.target.value })}
 					/>
 				</div>
 				<div className="space-y-2">
-					<Label className="text-sm font-medium">Available Brands at this Site</Label>
-					<p className="text-xs text-slate-500">Select which brands are available at this site.</p>
+					<Label className="text-sm font-medium">Available Brands at this location</Label>
+					<p className="text-xs text-slate-500">Select which brands are available at this location.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50">
 					{brands.map(brand => {
 						const isChecked = (editingSite.brands || []).includes(brand.id);

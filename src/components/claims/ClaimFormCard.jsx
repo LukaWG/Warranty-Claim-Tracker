@@ -203,7 +203,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
 
                 <div className="space-y-2">
                   <Label htmlFor="site" className="text-sm font-medium text-slate-700">
-                    Site <span className="text-red-500">*</span>
+                    Location <span className="text-red-500">*</span>
                   </Label>
                   <Select 
                     value={formData.site} 
@@ -211,7 +211,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     required
                   >
                     <SelectTrigger className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500">
-                      <SelectValue placeholder="Select site location" />
+                      <SelectValue placeholder="Select location" />
                     </SelectTrigger>
                     <SelectContent>
                       {availableSites.map((site) => (
