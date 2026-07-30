@@ -50,6 +50,10 @@ export const authUsers = {
       mappedData.defaultSite = data.default_site;
       delete mappedData.default_site;
     }
+    if (data.default_sites !== undefined) {
+      mappedData.defaultSites = data.default_sites;
+      delete mappedData.default_sites;
+    }
     if (data.default_brands !== undefined) {
       mappedData.defaultBrands = data.default_brands;
       delete mappedData.default_brands;

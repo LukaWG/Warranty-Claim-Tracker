@@ -94,6 +94,7 @@ export default function Configuration() {
 		last_name: data.last_name,
 		custom_role: data.custom_role,
 		default_site: data.default_site,
+		default_sites: data.default_sites,
 		default_brands: data.default_brands,
 		}),
 	onSuccess: () => {
@@ -306,7 +307,7 @@ export default function Configuration() {
 			last_name: editingUser.last_name,
 			custom_role: editingUser.custom_role || editingUser.role,
 			default_site: editingUser.default_site || null,
-			default_sites: (newRole === 'Location') ? (editiingUser.default_sites || []) : [],
+			default_sites: ((editingUser.custom_role || editingUser.role) === 'Location') ? (editingUser.default_sites || []) : [],
 			default_brands: ((editingUser.custom_role || editingUser.role) === 'Administrator') ? (editingUser.default_brands || []) : []
 		}
 		});
@@ -1670,10 +1671,10 @@ export default function Configuration() {
                         <input
                           type="checkbox"
                           id={`edit-user-site-${site.id}`}
-                          checked={(editingUser.default_sites || []).includes(site.name)}
+                          checked={(editingUser.default_sites || []).includes(site.id)}
                           onChange={(e) => {
                             const current = editingUser.default_sites || [];
-                            const updated = e.target.checked ? [...current, site.name] : current.filter(s => s !== site.name);
+                            const updated = e.target.checked ? [...current, site.id] : current.filter(s => s !== site.id);
                             setEditingUser({ ...editingUser, default_sites: updated });
                           }}
                           className="h-4 w-4 rounded border-gray-300"
