@@ -116,10 +116,12 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   })
 
   const userSite = currentUser?.default_site ? allSites.find(s => s.id === currentUser.default_site) : null;
-  // const allBrandsInClaims = [...new Set(completeAllBrands.filter(b => b.id === claims.map(c => c.brand).filter(Boolean)).name)];
   const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
-  // const allBrandsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
+  const adminSiteIds = currentUser?.default_sites;
+  const adminBrands = (userRole === 'Administrator' && adminSiteIds?.length > 0)
+    ? [...new Set(allSites.filter(s => adminSiteIds.includes(s.id)).flatMap(s => s.brands || []))]
+    : null;
   const brands = (userSite?.brands?.length > 0)
     ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
     : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));

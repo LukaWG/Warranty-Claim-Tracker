@@ -70,26 +70,38 @@ export default function Dashboard() {
 
   const { data: allUsers = [] } = useAllUsers();
 
+
   const adminBrands = (() => {
-    const userRole = currentUser?.custom_role || currentUser?.role;
-    if (userRole === 'Administrator' && currentUser?.default_brands) {
-      if (typeof currentUser.default_brands === 'string') {
-        try {
-          const parsed = JSON.parse(currentUser.default_brands);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
-          }
-          return null;
-        } catch (e) {
-          console.warn('Failed to parse admin brands:', currentUser.default_brands);  
-          return null;
-        }
-      } else if (Array.isArray(currentUser.default_brands) && currentUser.default_brands.length > 0) {
-        return currentUser.default_brands;
-      }
+    const userRole = currentUser?.custome_role || currentUser?.role;
+    if (currentUser?.default_sites?.length > 0 && userRole === 'Administrator') {
+      const adminSiteBrands = allSites
+        .filter(s => currentUser.default_sites.includes(s.id))
+        .flatMap(s => s.brands || []);
+      return [...new Set(adminSiteBrands)];
     }
-    return null;
+    return null
   })();
+
+  // const adminBrands = (() => {
+  //   const userRole = currentUser?.custom_role || currentUser?.role;
+  //   if (userRole === 'Administrator' && currentUser?.default_brands) {
+  //     if (typeof currentUser.default_brands === 'string') {
+  //       try {
+  //         const parsed = JSON.parse(currentUser.default_brands);
+  //         if (Array.isArray(parsed) && parsed.length > 0) {
+  //           return parsed;
+  //         }
+  //         return null;
+  //       } catch (e) {
+  //         console.warn('Failed to parse admin brands:', currentUser.default_brands);  
+  //         return null;
+  //       }
+  //     } else if (Array.isArray(currentUser.default_brands) && currentUser.default_brands.length > 0) {
+  //       return currentUser.default_brands;
+  //     }
+  //   }
+  //   return null;
+  // })();
 
   // Apply filters and role-based access
     const claims = useMemo(() => (!isLoadingUser && currentUser) ? allClaims.filter(claim => {
@@ -383,11 +395,23 @@ export default function Dashboard() {
     return brands.map(b => b.id);
   })();
 
-  const siteBrandRestriction = (() => {
+  // const siteBrandRestriction = (() => {
+  //   const userRole = currentUser?.custom_role || currentUser?.role;
+  //   if (['Location'].includes(userRole) && currentUser?.default_site) {
+  //     const userSite = allSites.find(s => s.id === currentUser.default_site || s.name === currentUser.default_site);
+  //     return userSite?.brands || null;
+  //   }
+  //   return null;
+  // })();
+
+  const siteOrAdministratorBrandRestriction = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
-    if (['Location'].includes(userRole) && currentUser?.default_site) {
-      const userSite = allSites.find(s => s.id === currentUser.default_site || s.name === currentUser.default_site);
-      return userSite?.brands || null;
+    if (['Location', 'Administrator'].includes(userRole) && currentUser?.default_sites?.length > 0) {
+      const siteBrands = allSites
+        .filter(s => currentUser.default_sites.includes(s.id))
+        .flatMap(s => s.brands || []);
+      const unique = [...new Set(siteBrands)];
+      return unique.length > 0 ? unique : null
     }
     return null;
   })();
@@ -395,7 +419,7 @@ export default function Dashboard() {
   const visibleBrands = brands.filter(b => 
     activeSelectedBrands.includes(b.id) &&
     (adminBrands === null || adminBrands.includes(b.id)) &&
-    (siteBrandRestriction === null || siteBrandRestriction.includes(b.id))
+    (siteOrAdministratorBrandRestriction === null || siteOrAdministratorBrandRestriction.includes(b.id))
   );
 
   // Calculate stats

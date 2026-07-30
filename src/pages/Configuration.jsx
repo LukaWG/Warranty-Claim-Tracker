@@ -41,8 +41,8 @@ export const getServerSideProps = async ({ req, res }) => {
 function roleFieldsFor(role, { default_site, default_sites, default_brands } = {}) {
 	return {
 		default_site: (role !== 'Administrator' && role !== 'Location') ? (default_site || null) : null,
-		default_sites: role === 'Location' ? (default_sites || []) : [],
-		default_brands: role === 'Administrator' ? (default_brands || []) : []
+		default_sites: role === 'Location' || role === 'Administrator' ? (default_sites || []) : [],
+		default_brands: []
 	};
 }
 
@@ -1412,26 +1412,26 @@ export default function Configuration() {
 				)}
 				{newUser.role === 'Administrator' && (
 					<div className="space-y-2">
-						<Label>Brand Access (Administrator)</Label>
-						<p className="text-xs text-slate-500">Select which brands this Administrator can see. Leave empty for all brands.</p>
+						<Label>Assigned Locations</Label>
+						<p className="text-xs text-slate-500">Select which locations this Administrator can see. The brands available at these locations determine which claims appear. Leave empty for all locations.</p>
 						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
-							{brands.map(brand => (
-								<div key={brand.id} className="flex items-center gap-3">
+							{sites.map(site => (
+								<div key={site.id} className="flex items-center gap-3">
 									<input
 										type="checkbox"
-										id={`new-user-brand-${brand.id}`}
-										checked={(newUser.default_brands || []).includes(brand.name)}
+										id={`new-user-admin-site-${site.id}`}
+										checked={(newUser.default_sites || []).includes(site.name)}
 										onChange={(e) => {
-											const current = newUser.default_brands || [];
-											const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
-											setNewUser({ ...newUser, default_brands: updated });
+											const current = newUser.default_sites || [];
+											const updated = e.target.checked ? [...current, site.name] : current.filter(b => b !== site.name);
+											setNewUser({ ...newUser, default_sites: updated });
 										}}
 										className="h-4 w-4 rounded border-gray-300"
 									/>
-									<label htmlFor={`new-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+									<label htmlFor={`new-user-admin-site-${site.id}`} className="text-sm text-slate-700">{site.name}</label>
 								</div>
 							))}
-							{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+							{sites.length === 0 && <p className="text-xs text-slate-400">No sites configured yet</p>}
 						</div>
 					</div>
 				)}
@@ -1715,40 +1715,26 @@ export default function Configuration() {
 				)}
 				{(editingUser.custom_role || editingUser.role) === 'Administrator' && (
 					<div className="space-y-2">
-					<Label>Brand Access (Administrator)</Label>
-					<p className="text-xs text-slate-500">Select which brands this Administrator can see. Leave empty for all brands.</p>
+					<Label>Assigned Locations</Label>
+					<p className="text-xs text-slate-500">Select which locations this Administrator can see. The brands available at these locations determine which claims appear. Leave empty for all locations.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
-						<div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate0299">
+						{sites.map(site => (
+						<div key={site.id} className="flex items-center gap-3">
 							<input
 							type="checkbox"
-							id={`edit-user-brand-all`}
-							checked={(editingUser.default_brands || []).length === 0}
+							id={`edit-user-admin-site-${site.id}`}
+							checked={(editingUser.default_sites || []).includes(site.name)}
 							onChange={(e) => {
-								if (e.target.checked) {
-								setEditingUser({ ...editingUser, default_brands: [] });
-								}
+								const current = editingUser.default_sites || [];
+								const updated = e.target.checked ? [...current, site.name] : current.filter(b => b !== site.name);
+								setEditingUser({ ...editingUser, default_sites: updated });
 							}}
 							className="h-4 w-4 rounded border-gray-300"
 							/>
-							<label htmlFor={`edit-user-brand-all`} className="text-sm text-slate-700 font-medium">All Brands</label>
-						</div>
-						{brands.map(brand => (
-						<div key={brand.id} className="flex items-center gap-3">
-							<input
-							type="checkbox"
-							id={`edit-user-brand-${brand.id}`}
-							checked={(editingUser.default_brands || []).includes(brand.name)}
-							onChange={(e) => {
-								const current = editingUser.default_brands || [];
-								const updated = e.target.checked ? [...current, brand.name] : current.filter(b => b !== brand.name);
-								setEditingUser({ ...editingUser, default_brands: updated });
-							}}
-							className="h-4 w-4 rounded border-gray-300"
-							/>
-							<label htmlFor={`edit-user-brand-${brand.id}`} className="text-sm text-slate-700">{brand.name}</label>
+							<label htmlFor={`edit-user-admin-site-${site.id}`} className="text-sm text-slate-700">{site.name}</label>
 						</div>
 						))}
-						{brands.length === 0 && <p className="text-xs text-slate-400">No brands configured yet</p>}
+						{sites.length === 0 && <p className="text-xs text-slate-400">No sites configured yet</p>}
 					</div>
 					</div>
 				)}
