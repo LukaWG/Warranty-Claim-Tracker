@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import EditBrandModal from '@/components/configuration/EditBrandModal';
 import { databaseClients } from '@/api/databaseClient';
-
 import { authUsers } from "@/api/authClient";
 
 // Redirect if user not logged in
