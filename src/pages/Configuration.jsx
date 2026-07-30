@@ -36,6 +36,16 @@ export const getServerSideProps = async ({ req, res }) => {
 
 
 
+// Role-exclusive fields: only one of these ever applies to a given role, so
+// whichever ones don't apply must be cleared whenever a role is set/changed.
+function roleFieldsFor(role, { default_site, default_sites, default_brands } = {}) {
+	return {
+		default_site: (role !== 'Administrator' && role !== 'Location') ? (default_site || null) : null,
+		default_sites: role === 'Location' ? (default_sites || []) : [],
+		default_brands: role === 'Administrator' ? (default_brands || []) : []
+	};
+}
+
 export default function Configuration() {
 	const queryClient = useQueryClient();
 	const [newSite, setNewSite] = useState({ name: '', code: '' });
@@ -79,9 +89,9 @@ export default function Configuration() {
 	});
 
 	const updateUserRoleMutation = useMutation({
-	mutationFn: ({ id, role }) => {
+	mutationFn: ({ id, role, user }) => {
 		const platformRole = (role === 'Owner' || role === 'Group Manager') ? 'admin' : 'user';
-		return authUsers.update(id, { custom_role: role, role: platformRole });
+		return authUsers.update(id, { custom_role: role, role: platformRole, ...roleFieldsFor(role, user) });
 	},
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
 	onError: () => alert("Failed to update role. Please try again."),
@@ -290,9 +300,7 @@ export default function Configuration() {
 		role: newUser.role,
 		first_name: newUser.first_name,
 		last_name: newUser.last_name,
-		default_site: newUser.default_site || null,
-		default_sites: newUser.default_sites || [],
-		default_brands: newUser.default_brands || []
+		...roleFieldsFor(newUser.role, newUser)
 		});
 	}
 	};
@@ -300,15 +308,14 @@ export default function Configuration() {
 	const handleUserEdit = (e) => {
 	e.preventDefault();
 	if (editingUser) {
+		const role = editingUser.custom_role || editingUser.role;
 		updateUserMutation.mutate({
 		id: editingUser.id,
 		data: {
 			first_name: editingUser.first_name,
 			last_name: editingUser.last_name,
-			custom_role: editingUser.custom_role || editingUser.role,
-			default_site: editingUser.default_site || null,
-			default_sites: ((editingUser.custom_role || editingUser.role) === 'Location') ? (editingUser.default_sites || []) : [],
-			default_brands: ((editingUser.custom_role || editingUser.role) === 'Administrator') ? (editingUser.default_brands || []) : []
+			custom_role: role,
+			...roleFieldsFor(role, editingUser)
 		}
 		});
 	}
@@ -1193,7 +1200,8 @@ export default function Configuration() {
 									if (window.confirm(`Change ${user.email}'s role to ${newRole}?`)) {
 									updateUserRoleMutation.mutate({
 										id: user.id,
-										role: newRole
+										role: newRole,
+										user
 									});
 									}
 								}}
