@@ -47,6 +47,12 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     campaign_reference: ''
   });
 
+  // Find sites to display. Location users can only select their assigned sites
+  const userRole = currentUser?.custom_role || currentUser?.role;
+  const availableSites = userRole === 'Location' && currentUser?.default_site
+    ? sites.filter((site) => site.id === currentUser.default_site)
+    : sites;
+
   // Auto-populate site when currentUser loads
   React.useEffect(() => {
     if (currentUser?.default_site && !formData.site) {
@@ -198,7 +204,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                       <SelectValue placeholder="Select site location" />
                     </SelectTrigger>
                     <SelectContent>
-                      {sites.map((site) => (
+                      {availableSites.map((site) => (
                         <SelectItem key={site.id} value={site.id}>
                           {site.name}
                         </SelectItem>
