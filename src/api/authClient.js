@@ -70,7 +70,7 @@ export const authUsers = {
       body: JSON.stringify({ userId }),
     }),
 
-  invite: ({ email, first_name, last_name, custom_role, default_site, default_brands }) => {
+  invite: ({ email, first_name, last_name, custom_role, default_site, default_sites, default_brands }) => {
     const platformRole = ["Owner", "Group Manager"].includes(custom_role)
       ? "admin"
       : "user";
@@ -86,6 +86,7 @@ export const authUsers = {
         lastName: last_name,
         customRole: custom_role ?? "Location",
         defaultSite: default_site ?? null,
+        defaultSites: default_sites ?? [],
         defaultBrands: default_brands ?? [],
       }),
     });

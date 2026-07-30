@@ -43,7 +43,7 @@ export default function Configuration() {
 	const [newAlert, setNewAlert] = useState({ name: '' });
 	const [newResolution, setNewResolution] = useState({ name: '' });
 	const [newBrand, setNewBrand] = useState({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
-	const [newUser, setNewUser] = useState({ email: '', role: 'Location', first_name: '', last_name: '', default_site: '', default_brands: [] });
+	const [newUser, setNewUser] = useState({ email: '', role: 'Location', first_name: '', last_name: '', default_site: '', default_sites: [], default_brands: [] });
 	const [showUserDialog, setShowUserDialog] = useState(false);
 	const [editingUser, setEditingUser] = useState(null);
 	const [tempPassword, setTempPassword] = useState(null);
@@ -68,8 +68,8 @@ export default function Configuration() {
 		userProviders[userId]?.length > 0 && !userProviders[userId].includes("credential");
 
 	const inviteUserMutation = useMutation({
-	mutationFn: ({ email, role, first_name, last_name, default_site }) =>
-		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site }),
+	mutationFn: ({ email, role, first_name, last_name, default_site, default_sites, default_brands }) =>
+		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site, default_sites, default_brands }),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 		setNewUser({ email: "", role: "Location", first_name: "", last_name: "", default_site: "" });
@@ -290,6 +290,7 @@ export default function Configuration() {
 		first_name: newUser.first_name,
 		last_name: newUser.last_name,
 		default_site: newUser.default_site || null,
+		default_sites: newUser.default_sites || [],
 		default_brands: newUser.default_brands || []
 		});
 	}
@@ -305,6 +306,7 @@ export default function Configuration() {
 			last_name: editingUser.last_name,
 			custom_role: editingUser.custom_role || editingUser.role,
 			default_site: editingUser.default_site || null,
+			default_sites: (newRole === 'Location') ? (editiingUser.default_sites || []) : [],
 			default_brands: ((editingUser.custom_role || editingUser.role) === 'Administrator') ? (editingUser.default_brands || []) : []
 		}
 		});
@@ -1355,7 +1357,32 @@ export default function Configuration() {
 					</SelectContent>
 				</Select>
 				</div>
-				{newUser.role !== 'Administrator' && (
+				{newUser.role === 'Location' && (
+				  <div className="space-y-2">
+                  <Label>Assigned Branches</Label>
+                  <p className="text-xs text-slate-500">Select which branches this Location user can submit claims for.</p>
+                  <div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+                    {sites.map((site) => (
+                      <div key={site.id} className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id={`new-user-site-${site.id}`}
+                          checked={(newUser.default_sites || []).includes(site.id)}
+                          onChange={(e) => {
+                            const current = newUser.default_sites || [];
+                            const updated = e.target.checked ? [...current, site.id] : current.filter(s => s !== site.id);
+                            setNewUser({ ...newUser, default_sites: updated });
+                          }}
+                          className="h-4 w-4 rounded border-gray-300"
+                        />
+                        <label htmlFor={`new-user-site-${site.id}`} className="text-sm text-slate-700">{site.name}</label>
+                      </div>
+                    ))}
+                    {sites.length === 0 && <p className="text-xs text-slate-400">No sites configured yet</p>}
+                  </div>
+                </div>
+              )}
+              {newUser.role !== 'Administrator' && newUser.role !== 'Location' && (
 				<div className="space-y-2">
 				<Label>Default Branch</Label>
 				<Select
@@ -1633,7 +1660,32 @@ export default function Configuration() {
 					</SelectContent>
 					</Select>
 				</div>
-				{(editingUser.custom_role || editingUser.role) !== 'Administrator' && (
+				{(editingUser.custom_role || editingUser.role) === 'Location' && (
+					<div className="space-y-2">
+                  <Label>Assigned Branches</Label>
+                  <p className="text-xs text-slate-500">Select which branches this Location user can submit claims for.</p>
+                  <div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+                    {sites.map((site) => (
+                      <div key={site.id} className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          id={`edit-user-site-${site.id}`}
+                          checked={(editingUser.default_sites || []).includes(site.name)}
+                          onChange={(e) => {
+                            const current = editingUser.default_sites || [];
+                            const updated = e.target.checked ? [...current, site.name] : current.filter(s => s !== site.name);
+                            setEditingUser({ ...editingUser, default_sites: updated });
+                          }}
+                          className="h-4 w-4 rounded border-gray-300"
+                        />
+                        <label htmlFor={`edit-user-site-${site.id}`} className="text-sm text-slate-700">{site.name}</label>
+                      </div>
+                    ))}
+                    {sites.length === 0 && <p className="text-xs text-slate-400">No sites configured yet</p>}
+                  </div>
+                </div>
+                )}
+                {(editingUser.custom_role || editingUser.role) !== 'Administrator' && (editingUser.custom_role || editingUser.role) !== 'Location' && (
 				<div className="space-y-2">
 					<Label>Default Branch</Label>
 					<Select
