@@ -49,16 +49,26 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
 
   // Find sites to display. Location users can only select their assigned sites
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const availableSites = userRole === 'Location' && currentUser?.default_site
-    ? sites.filter((site) => site.id === currentUser.default_site)
+  const assignedSites = userRole === 'Location'
+    ? (currentUser?.default_sites?.length
+      ? currentUser.default_sites
+      : (currentUser?.default_site
+        ? [currentUser.default_site]
+        : [] ))
+    : [];
+  const availableSites = userRole === 'Location'
+    ? sites.filter((site) => assignedSites.includes(site.id))
     : sites;
 
   // Auto-populate site when currentUser loads
   React.useEffect(() => {
-    if (currentUser?.default_site && !formData.site) {
-      setFormData(prev => ({ ...prev, site: currentUser.default_site }));
+    if (!formData.site) {
+      const firstAssigned = currentUser?.default_sites?.[0] || currentUser?.default_site;
+      if (firstAssigned) {
+        setFormData(prev => ({ ...prev, site: firstAssigned }));
+      }
     }
-  }, [currentUser?.default_site]);
+  }, [currentUser?.default_site, currentUser?.default_sites]);
 
   const [submitted, setSubmitted] = useState(false);
 

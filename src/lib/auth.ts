@@ -78,6 +78,7 @@ export const auth = betterAuth({
       lastName: { type: "string", required: false, input: true },
       customRole: { type: "string", defaultValue: "Location", input: true },
       defaultSite: { type: "string", required: false, input: true },
+      defaultSites: { type: "string[]", defaultValue: [], input: true },
       defaultBrands: { type: "string[]", defaultValue: [], input: true },
       mustChangePassword: { type: "boolean", defaultValue: false, input: true },
     }
