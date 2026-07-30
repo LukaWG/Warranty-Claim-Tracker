@@ -402,7 +402,7 @@ export default function Dashboard() {
   //     return userSite?.brands || null;
   //   }
   //   return null;
-  // })();
+  // })(); 
 
   const siteOrAdministratorBrandRestriction = (() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
