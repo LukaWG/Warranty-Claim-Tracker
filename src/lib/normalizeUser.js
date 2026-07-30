@@ -11,6 +11,7 @@ export function normalizeUser(rawUser) {
     full_name: rawUser.name ?? `${firstName} ${lastName}`.trim() ?? 'User',
     custom_role: rawUser.customRole ?? rawUser.custom_role ?? 'Location',
     default_site: rawUser.defaultSite ?? rawUser.default_site ?? null,
+    default_sites: rawUser.defaultSites ?? rawUser.default_sites ?? [],
     default_brands: rawUser.defaultBrands ?? rawUser.default_brands ?? [],
     must_change_password: rawUser.mustChangePassword ?? rawUser.must_change_password ?? false,
     created_date: rawUser.createdAt ?? rawUser.created_date ?? null,
