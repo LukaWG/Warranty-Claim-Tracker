@@ -89,7 +89,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   // Build set of claim IDs that have unread messages (shared read state)
   const unreadClaimIds = useMemo(() => {
     if (!currentUser?.email) return new Set();
-    const readIds = new Set(readReceipts.map(r => r.message_id));
     const claimIds = new Set();
     allMessages.forEach(m => {
       if (m.sender_email === currentUser.email) return;
