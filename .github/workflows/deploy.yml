@@ -28,8 +28,8 @@ jobs:
           context: .
           push: true
           tags: |
-            lukawg/warranty-repair-tracker:latest
-            lukawg/warranty-repair-tracker:${{ github.sha }}
+            lukawg/warranty-claim-tracker:latest
+            lukawg/warranty-claim-tracker:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'http://192.168.1.144:5001' }}
             NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://192.168.1.144' }}
