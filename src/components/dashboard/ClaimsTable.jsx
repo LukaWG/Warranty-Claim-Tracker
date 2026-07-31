@@ -593,6 +593,8 @@ const SortableHead = ({ colKey, children }) => {
                           >
                             <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
+
+                          
                           
                           {unreadClaimIds.has(claim.id) && (
                             <TooltipProvider>
