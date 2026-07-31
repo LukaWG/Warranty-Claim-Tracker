@@ -600,7 +600,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                               variant="ghosst"
                               size="icon"
                               onClick={() => onDelete(claim)}
-                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover-bg-red-50"
+                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                               title="Delete claim"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -965,7 +965,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                   variant="ghosst"
                                   size="icon"
                                   onClick={() => onDelete(claim)}
-                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover-bg-red-50"
+                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                                   title="Delete claim"
                                 >
                                   <Trash2 className="h-4 w-4" />
