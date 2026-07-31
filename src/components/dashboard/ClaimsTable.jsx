@@ -188,8 +188,9 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
   }, [currentUser, roleDefaultApplied])
 
   const isProcessor = currentUser?.custom_role === 'Location' || currentUser?.role === 'Location';
+  const isManager = ['Group Manager', 'Owner'].some(role => [currentUser?.custom_role, currentUser?.role].includes(role));
 
-const SortableHead = ({ colKey, children }) => {
+  const SortableHead = ({ colKey, children }) => {
     const active = sortConfig.key === colKey;
     return (
       <TableHead
@@ -594,7 +595,17 @@ const SortableHead = ({ colKey, children }) => {
                             <GitCommitHorizontal className="h-4 w-4" />
                           </Button>
 
-                          
+                          {isManager && (
+                            <Button
+                              variant="ghosst"
+                              size="icon"
+                              onClick={() => onDelete(claim)}
+                              className="h-8 w-8 text-slate-400 hover:text-red-600 hover-bg-red-50"
+                              title="Delete claim"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
                           
                           {unreadClaimIds.has(claim.id) && (
                             <TooltipProvider>
@@ -948,6 +959,19 @@ const SortableHead = ({ colKey, children }) => {
                               >
                                 <GitCommitHorizontal className="h-4 w-4" />
                               </Button>
+
+                              {isManager && (
+                                <Button
+                                  variant="ghosst"
+                                  size="icon"
+                                  onClick={() => onDelete(claim)}
+                                  className="h-8 w-8 text-slate-400 hover:text-red-600 hover-bg-red-50"
+                                  title="Delete claim"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+
                               {unreadClaimIds.has(claim.id) && (
                                 <TooltipProvider>
                                   <Tooltip>
