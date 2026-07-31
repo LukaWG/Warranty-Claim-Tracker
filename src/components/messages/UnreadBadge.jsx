@@ -14,15 +14,6 @@ export default function UnreadBadge({ currentUser }) {
     refetchInterval: 30000
   });
 
-  const { data: readReceipts = [] } = useQuery({
-    queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
-    enabled: !!currentUser?.email,
-    refetchInterval: 30000
-  });
-
-  const readIds = new Set(readReceipts.map(r => r.message_id));
-
   // Only count root messages (not replies) - same logic as Messages page
   const rootMessages = messages.filter(m => !m.is_reply);
 
@@ -30,9 +21,9 @@ export default function UnreadBadge({ currentUser }) {
     if (m.sender_email === currentUser?.email) return false;
     // Admins see all messages; site users only see their site
     if (!isAdmin && m.target_site !== userSite) return false;
-    // Check if the whole thread has any unread message
+    // Shared read state: a thread is unread if any message hasn't been read (by anyone)
     const threadMessages = messages.filter(tm => tm.id === m.id || tm.parent_message_id === m.id)
-    return threadMessages.some(tm => tm.sender_email !== currentUser?.email && !readIds.has(tm.id));
+    return threadMessages.some(tm => tm.sender_email !== currentUser?.email && !tm.read);
   }).length;
 
   if (unreadCount === 0) return null;

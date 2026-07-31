@@ -86,14 +86,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     refetchInterval: 30000
   });
 
-  const { data: readReceipts = [] } = useQuery({
-    queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
-    enabled: !!currentUser?.email,
-    refetchInterval: 30000
-  });
-
-  // Build set of claim IDs that have unread messages for this user
+  // Build set of claim IDs that have unread messages (shared read state)
   const unreadClaimIds = useMemo(() => {
     if (!currentUser?.email) return new Set();
     const readIds = new Set(readReceipts.map(r => r.message_id));
@@ -101,12 +94,12 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     allMessages.forEach(m => {
       if (m.sender_email === currentUser.email) return;
       if (!isAdminRole && m.target_site !== userSite) return;
-      if (!readIds.has(m.id)) {
+      if (!m.read) {
         claimIds.add(m.claim_id);
       }
     });
     return claimIds;
-  }, [allMessages, readReceipts, currentUser, isAdminRole, userSite]);
+  }, [allMessages, currentUser, isAdminRole, userSite]);
 
 
   const toggleRow = (id) => setExpandedRows(prev => {

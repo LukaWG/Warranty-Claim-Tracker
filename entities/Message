@@ -39,6 +39,11 @@
       "default": false,
       "description": "Whether this is a reply to another message"
     },
+    "read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Shared read state - once read by anyone, marked as read for all users"
+    }
     "image_urls": {
       "type": "array",
       "items": {

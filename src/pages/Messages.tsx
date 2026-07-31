@@ -43,13 +43,6 @@ export default function Messages() {
     refetchInterval: 30000
   });
 
-  const { data: readReceipts = [] } = useQuery({
-    queryKey: ['message-reads', currentUser?.email],
-    queryFn: () => databaseClients.MessageRead.filter({ reader_email: currentUser.email }),
-    enabled: !!currentUser?.email,
-    refetchInterval: 30000
-  });
-
   const { data: allReadReceipts = [] } = useQuery({
     queryKey: ['message-reads-all'],
     queryFn: () => databaseClients.MessageRead.get(),
@@ -79,18 +72,15 @@ export default function Messages() {
        reader_name: (currentUser.firstName + ' ' + currentUser.lastName) || currentUser.email,
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
       queryClient.invalidateQueries({ queryKey: ['message-reads-all', currentUser?.email] });
     }
   });
-
-  const readIds = new Set(readReceipts.map(r => r.message_id));
 
   const getReplies = (rootId) => allMessages.filter(m => m.parent_message_id === rootId);
 
   const isThreadUnread = (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
-    return allInThread.some(m => m.sender_email !== currentUser?.email && !readIds.has(m.id));
+    return allInThread.some(m => m.sender_email !== currentUser?.email && !m.read);
   };
 
   // Root messages (not replies)
@@ -136,11 +126,20 @@ export default function Messages() {
 
   const markThreadRead = async (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
+    const myReceiptIds = new Set(allReadReceipts.filter(r => r.reader_email === currentUser?.email).map(r => r.message_id));
     for (const m of allInThread) {
-      if (m.sender_email !== currentUser?.email && !readIds.has(m.id)) {
+      if (m.sender_email === currentUser?.email) continue;
+      // shared read state: mark read for all users
+      if (!m.read) {
+        databaseClients.Message.update(m.id, { read: true }).catch(() => {});
+      }
+      // Per-user receipt powers the "Read by" indicator
+      if (!myReceiptIds.has(m.id)) {
         markReadMutation.mutate({ messageId: m.id });
       }
     }
+    queryClient.invalidateQueries({ queryKey: ['messages'] });
+    queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
   };
 
   const handleOpenThread = async (msg) => {

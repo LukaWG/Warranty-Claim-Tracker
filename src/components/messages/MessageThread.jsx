@@ -50,11 +50,9 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
 
   const handleMarkUnread = async () => {
     const allMessages = [rootMessage, ...replies];
-    const myReceipts = allReadReceipts.filter(r => 
-      r.reader_email === currentUser?.email &&
-      allMessages.some(m => m.id === r.message_id)
-    );
-    await Promise.all(myReceipts.map(r => databaseClients.MessageRead.delete(r.id)));
+    
+    // Shared read state: marking unread clears the read flag for all users
+    await Promise.all(allMessages.map(m => databaseClients.Message.update(m.id, { read: false })));
     queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
     queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
     queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
