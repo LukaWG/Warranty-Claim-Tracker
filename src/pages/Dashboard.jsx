@@ -9,6 +9,7 @@ import AuditHistoryModal from '@/components/claims/AuditHistoryModal';
 import ClaimNotesModal from '@/components/claims/ClaimNotesModal';
 import CreditOptionsModal from '@/components/claims/CreditOptionsModal';
 import ExportButton from '@/components/dashboard/ExportButton';
+import { toast } from '@/components/ui/use-toast';
 
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
@@ -212,67 +213,83 @@ export default function Dashboard() {
   const handleStatusChange = async (id, status) => {
     const claim = allClaims.find(c => c.id === id);
     if (claim?.claimed) return; // locked if claimed
-    if (claim) {
-      await createAuditLog(id, claim.wip_number, 'status', claim.status, status, 'status_changed');
+    try {
+      if (claim) {
+        await createAuditLog(id, claim.wip_number, 'status', claim.status, status, 'status_changed');
+      }
+      updateMutation.mutate({ id, data: { status } });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to update status', description: error?.message || 'Please try again.' });
     }
-    updateMutation.mutate({ id, data: { status } });
   };
 
   const handleClaimedChange = async (id, claimed) => {
     const claim = allClaims.find(c => c.id === id);
-    if (claim) {
-      await createAuditLog(id, claim.wip_number, 'claimed', claim.claimed, claimed, 'updated');
-      const newStatus = claimed ? 'completed' : 'in_progress';
-      if (claim.status !== newStatus) {
-        await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+    try {
+      if (claim) {
+        await createAuditLog(id, claim.wip_number, 'claimed', claim.claimed, claimed, 'updated');
+        const newStatus = claimed ? 'completed' : 'in_progress';
+        if (claim.status !== newStatus) {
+          await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+        }
       }
+      updateMutation.mutate({
+        id,
+        data: {
+          claimed,
+          claimed_date: claimed ? new Date().toISOString() : null,
+          status: claimed ? 'completed' : 'in_progress'
+        }
+      });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to update claim', description: error?.message || 'Please try again.' });
     }
-    updateMutation.mutate({ 
-      id, 
-      data: { 
-        claimed,
-        claimed_date: claimed ? new Date().toISOString() : null,
-        status: claimed ? 'completed' : 'in_progress'
-      } 
-    });
   };
 
   const handleAlertChange = async (id, alert) => {
     const claim = allClaims.find(c => c.id === id);
-    if (claim) {
-      await createAuditLog(id, claim.wip_number, 'alert', claim.alert, alert, 'updated');
-      const newStatus = claim.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
-      if (claim.status !== newStatus) {
-        await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+    try {
+      if (claim) {
+        await createAuditLog(id, claim.wip_number, 'alert', claim.alert, alert, 'updated');
+        const newStatus = claim.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
+        if (claim.status !== newStatus) {
+          await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+        }
       }
+      const alertNewStatus = claim?.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
+      updateMutation.mutate({
+        id,
+        data: {
+          alert,
+          status: alertNewStatus
+        }
+      });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to update alert', description: error?.message || 'Please try again.' });
     }
-    const alertNewStatus = claim?.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
-    updateMutation.mutate({ 
-      id, 
-      data: { 
-        alert,
-        status: alertNewStatus
-      } 
-    });
   };
 
   const handleResolutionChange = async (id, alert_resolution) => {
     const claim = allClaims.find(c => c.id === id);
-    if (claim) {
-      await createAuditLog(id, claim.wip_number, 'alert_resolution', claim.alert_resolution, alert_resolution, 'updated');
-      const newStatus = claim.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim.alert ? 'rejected' : claim.status)));
-      if (claim.status !== newStatus) {
-        await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+    try {
+      if (claim) {
+        await createAuditLog(id, claim.wip_number, 'alert_resolution', claim.alert_resolution, alert_resolution, 'updated');
+        const newStatus = claim.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim.alert ? 'rejected' : claim.status)));
+        if (claim.status !== newStatus) {
+          await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+        }
       }
+      const newStatus = claim?.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim?.alert ? 'rejected' : claim?.status)));
+      updateMutation.mutate({
+        id,
+        data: {
+          alert_resolution,
+          status: newStatus
+        }
+      });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to update resolution', description: error?.message || 'Please try again.' });
     }
-    const newStatus = claim?.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim?.alert ? 'rejected' : claim?.status)));
-    updateMutation.mutate({ 
-      id, 
-      data: { 
-        alert_resolution,
-        status: newStatus
-      } 
-    });
   };
 
   const handleEditSave = async (data) => {
@@ -290,39 +307,43 @@ export default function Dashboard() {
           changes.push({ field: key, oldValue: claim[key], newValue: data[key] });
         }
       });
-      
-      for (const change of changes) {
-          await createAuditLog(
-            claim.id, 
-            claim.wip_number, 
-            change.field, 
-            change.oldValue, 
-            change.newValue, 
-            'updated'
-          );
-      }
 
-      // If alert changed (and is actually provided in the form data), apply status logic
-      const alertChanged = 'alert' in data && data.alert !== claim.alert;
-      if (alertChanged) {
-        const newAlert = data.alert;
-        const alertNewStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested'
-          : (data.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
-        // Override status with alert-driven value
-        data = { ...data, status: alertNewStatus };
-      }
+      try {
+        for (const change of changes) {
+            await createAuditLog(
+              claim.id,
+              claim.wip_number,
+              change.field,
+              change.oldValue,
+              change.newValue,
+              'updated'
+            );
+        }
 
-      // If resolution changed (and is actually provided in the form data), apply status logic
-      const resolutionChanged = 'alert_resolution' in data && data.alert_resolution !== claim.alert_resolution;
-      if (resolutionChanged && !alertChanged) {
-        const resolution = data.alert_resolution;
-        const newStatus = data.claimed ? 'completed'
-          : (resolution === 'Non-actionable' ? 'completed' : (resolution ? 'in_progress' : (data.alert ? 'rejected' : data.status)));
-        data = { ...data, status: newStatus };
-      }
+        // If alert changed (and is actually provided in the form data), apply status logic
+        const alertChanged = 'alert' in data && data.alert !== claim.alert;
+        if (alertChanged) {
+          const newAlert = data.alert;
+          const alertNewStatus = newAlert === 'Info - Post Claim' ? 'claimed_info_requested'
+            : (data.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
+          // Override status with alert-driven value
+          data = { ...data, status: alertNewStatus };
+        }
 
-      updateMutation.mutate({ id: claim.id, data });
-      setEditingClaim(null);
+        // If resolution changed (and is actually provided in the form data), apply status logic
+        const resolutionChanged = 'alert_resolution' in data && data.alert_resolution !== claim.alert_resolution;
+        if (resolutionChanged && !alertChanged) {
+          const resolution = data.alert_resolution;
+          const newStatus = data.claimed ? 'completed'
+            : (resolution === 'Non-actionable' ? 'completed' : (resolution ? 'in_progress' : (data.alert ? 'rejected' : data.status)));
+          data = { ...data, status: newStatus };
+        }
+
+        updateMutation.mutate({ id: claim.id, data });
+        setEditingClaim(null);
+      } catch (error) {
+        toast({ variant: 'destructive', title: 'Failed to save claim', description: error?.message || 'Please try again.' });
+      }
     };
 
   const deleteMutation = useMutation({
@@ -500,23 +521,27 @@ export default function Dashboard() {
             onClose={() => setCreditClaim(null)}
             onSave={async (data) => {
               const claim = creditClaim;
-              for (const [key, val] of Object.entries(data)) {
-                if (val !== claim[key]) {
-                  await createAuditLog(claim.id, claim.wip_number, key, claim[key], val, 'updated');
+              try {
+                for (const [key, val] of Object.entries(data)) {
+                  if (val !== claim[key]) {
+                    await createAuditLog(claim.id, claim.wip_number, key, claim[key], val, 'updated');
+                  }
                 }
-              }
 
-              // Create a ClaimNote if credit note was provided
-              if (data.credit_note && data.credit !== claim.credit) {
-                const user = await currentUserClient.me()
-                await databaseClients.ClaimNote.create({
-                  claim_id: claim.id,
-                  content: `[Credit] Credit submitted: £${data.credit || 0} (Parts: £${data.credit_parts || 0}, Labour: £${data.credit_labour || 0}, Sub Con: £${data.credit_sub_con || 0})\n\nNote: ${data.credit_note}\n\n— ${user?.full_name}`,
-                });
-              }
+                // Create a ClaimNote if credit note was provided
+                if (data.credit_note && data.credit !== claim.credit) {
+                  const user = await currentUserClient.me()
+                  await databaseClients.ClaimNote.create({
+                    claim_id: claim.id,
+                    content: `[Credit] Credit submitted: £${data.credit || 0} (Parts: £${data.credit_parts || 0}, Labour: £${data.credit_labour || 0}, Sub Con: £${data.credit_sub_con || 0})\n\nNote: ${data.credit_note}\n\n— ${user?.full_name}`,
+                  });
+                }
 
-              updateMutation.mutate({ id: claim.id, data });
-              setCreditClaim(null);
+                updateMutation.mutate({ id: claim.id, data });
+                setCreditClaim(null);
+              } catch (error) {
+                toast({ variant: 'destructive', title: 'Failed to save credit', description: error?.message || 'Please try again.' });
+              }
             }}
           />
         )}
@@ -538,22 +563,26 @@ export default function Dashboard() {
             requireNote={!!pendingAlert}
             onClose={() => setViewingNotes(null)}
             onStatusUpdate={async () => {
-              // If there's a pending alert, apply it now that the note has been added
-              if (pendingAlert) {
-                const { claimId, alert } = pendingAlert;
-                const claim = allClaims.find(c => c.id === claimId);
-                if (claim) {
-                  await createAuditLog(claimId, claim.wip_number, 'alert', claim.alert, alert, 'updated');
-                  const newStatus = alert === 'Info - Post Claim' ? 'claimed_info_requested' : (claim.claimed ? 'completed' : 'rejected');
-                  if (claim.status !== newStatus) {
-                    await createAuditLog(claimId, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+              try {
+                // If there's a pending alert, apply it now that the note has been added
+                if (pendingAlert) {
+                  const { claimId, alert } = pendingAlert;
+                  const claim = allClaims.find(c => c.id === claimId);
+                  if (claim) {
+                    await createAuditLog(claimId, claim.wip_number, 'alert', claim.alert, alert, 'updated');
+                    const newStatus = alert === 'Info - Post Claim' ? 'claimed_info_requested' : (claim.claimed ? 'completed' : 'rejected');
+                    if (claim.status !== newStatus) {
+                      await createAuditLog(claimId, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
+                    }
+                    updateMutation.mutate({ id: claimId, data: { alert, status: newStatus } });
                   }
-                  updateMutation.mutate({ id: claimId, data: { alert, status: newStatus } });
+                  setPendingAlert(null);
                 }
-                setPendingAlert(null);
+                queryClient.invalidateQueries({ queryKey: ['claims'] });
+                setViewingNotes(null);
+              } catch (error) {
+                toast({ variant: 'destructive', title: 'Failed to update claim note', description: error?.message || 'Please try again.' });
               }
-              queryClient.invalidateQueries({ queryKey: ['claims'] });
-              setViewingNotes(null);
             }}
           />
         )}

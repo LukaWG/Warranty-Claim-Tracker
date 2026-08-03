@@ -46,7 +46,7 @@ export default function Messages() {
   const { data: allReadReceipts = [] } = useQuery({
     queryKey: ['message-reads-all'],
     queryFn: () => databaseClients.MessageRead.get(),
-    refetchInterval: 3000
+    refetchInterval: 30000
   });
 
   const { data: sites = [] } = useQuery({

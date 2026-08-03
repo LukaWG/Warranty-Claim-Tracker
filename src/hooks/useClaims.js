@@ -6,7 +6,6 @@ export function useClaims(options = {}) {
     queryKey: ['claims'],
     queryFn: () => databaseClients.WarrantyClaim.get(),
     refetchInterval: 30000,
-    refetchIntervalInBackground: true,
     ...options,
   });
 }
