@@ -40,6 +40,11 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
   });
 
   const [creditExpanded, setCreditExpanded] = useState(!!(claim?.credit || claim?.credit_parts || claim?.credit_labour || claim?.credit_sub_con));
+  const [savingAction, setSavingAction] = useState(null); // 'save' | 'claim' | null
+
+  React.useEffect(() => {
+    if (!isSaving) setSavingAction(null);
+  }, [isSaving]);
 
   const existingParts = (claim?.claim_number || '').split(' & ').filter(Boolean);
   const [claimNumbers, setClaimNumbers] = useState(existingParts.length > 0 ? existingParts : ['']);
@@ -84,6 +89,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSavingAction('save');
     const claimNumberParts = claimNumbers.map(num => num.replace(/&/g, '')).filter(Boolean);
     const { scanned_date_original, original_parts, original_labour, original_sub_con, ...rest } = formData;
 
@@ -512,6 +518,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
                   type="button"
                   disabled={!canClaim || isSaving}
                   onClick={() => {
+                    setSavingAction('claim');
                     const updatedData = { ...formData, claimed: true, claimed_by: currentUser ? currentUser.email : '' };
                     setFormData(updatedData);
                     const claimNumberParts = claimNumbers.filter(Boolean);
@@ -564,7 +571,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
                   style={canClaim ? { backgroundColor: 'var(--hendy-teal)', color: 'white' } : {}}
                   title={!canClaim ? 'Invoice number, claim number and total cost are required before claiming' : ''}
                 >
-                  {isSaving ? 'Saving...' : 'Mark as Claimed'}
+                  {isSaving && savingAction === 'claim' ? 'Saving...' : 'Mark as Claimed'}
                 </Button>
               );
             })()}
@@ -575,7 +582,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Changes'}</Button>
+            <Button type="submit" disabled={isSaving}>{isSaving && savingAction === 'save' ? 'Saving...' : 'Save Changes'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
