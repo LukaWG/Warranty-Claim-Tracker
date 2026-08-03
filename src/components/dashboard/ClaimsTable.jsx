@@ -31,7 +31,7 @@ const statusConfig = {
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
-export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
+export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, onAlertChange, onResolutionChange, onDelete, deletingClaimId, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
   const [mounted, setMounted] = useState(false);
@@ -591,7 +591,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             <Button
                               variant="ghosst"
                               size="icon"
-                              onClick={() => onDelete(claim)}
+                              onClick={() => onDelete(claim.id)}
+                              disabled={deletingClaimId === claim.id}
                               className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                               title="Delete claim"
                             >
@@ -956,7 +957,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                 <Button
                                   variant="ghosst"
                                   size="icon"
-                                  onClick={() => onDelete(claim)}
+                                  onClick={() => onDelete(claim.id)}
+                                  disabled={deletingClaimId === claim.id}
                                   className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                                   title="Delete claim"
                                 >

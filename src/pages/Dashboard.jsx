@@ -39,6 +39,7 @@ export default function Dashboard() {
     const [viewingHistory, setViewingHistory] = useState(null);
     const [viewingNotes, setViewingNotes] = useState(null);
     const [creditClaim, setCreditClaim] = useState(null);
+    const [isSavingClaim, setIsSavingClaim] = useState(false);
     const [selectedBrands, setSelectedBrands] = useState(null);
     const [pendingAlert, setPendingAlert] = useState([]);
     const [showClaimed, setShowClaimed] = useState(false);
@@ -308,6 +309,7 @@ export default function Dashboard() {
         }
       });
 
+      setIsSavingClaim(true);
       try {
         for (const change of changes) {
             await createAuditLog(
@@ -343,6 +345,8 @@ export default function Dashboard() {
         setEditingClaim(null);
       } catch (error) {
         toast({ variant: 'destructive', title: 'Failed to save claim', description: error?.message || 'Please try again.' });
+      } finally {
+        setIsSavingClaim(false);
       }
     };
 
@@ -496,6 +500,7 @@ export default function Dashboard() {
           onAlertChange={handleAlertChange}
           onResolutionChange={handleResolutionChange}
           onDelete={handleDelete}
+          deletingClaimId={deleteMutation.isPending ? deleteMutation.variables : null}
           onEdit={setEditingClaim}
           onCreditOptions={setCreditClaim}
           onViewHistory={setViewingHistory}
@@ -510,6 +515,7 @@ export default function Dashboard() {
             open={!!editingClaim}
             onClose={() => setEditingClaim(null)}
             onSave={handleEditSave}
+            isSaving={isSavingClaim}
           />
         )}
 
@@ -519,8 +525,10 @@ export default function Dashboard() {
             claim={creditClaim}
             open={!!creditClaim}
             onClose={() => setCreditClaim(null)}
+            isSaving={isSavingClaim}
             onSave={async (data) => {
               const claim = creditClaim;
+              setIsSavingClaim(true);
               try {
                 for (const [key, val] of Object.entries(data)) {
                   if (val !== claim[key]) {
@@ -541,6 +549,8 @@ export default function Dashboard() {
                 setCreditClaim(null);
               } catch (error) {
                 toast({ variant: 'destructive', title: 'Failed to save credit', description: error?.message || 'Please try again.' });
+              } finally {
+                setIsSavingClaim(false);
               }
             }}
           />

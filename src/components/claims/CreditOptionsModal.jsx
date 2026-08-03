@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 
-export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
+export default function CreditOptionsModal({ claim, open, onClose, onSave, isSaving = false }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: () => databaseClients.Site.list('name')
@@ -205,6 +205,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
           {(claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval') && totalCredit > 0 && (
             <Button
               variant="outline"
+              disabled={isSaving}
               className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
               onClick={() => {
                 const creditVal = totalCredit;
@@ -229,15 +230,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave }) {
               }
             }
             >
-              Apply Credit (£{totalCredit.toFixed(2)})
+              {isSaving ? 'Applying...' : `Apply Credit (£${totalCredit.toFixed(2)})`}
             </Button>
           )}
           <span title={!creditNote.trim() ? "Credit note is required to request credit" : undefined}>
           <Button
             onClick={handleSave}
-            disabled={!creditNote.trim()}
+            disabled={!creditNote.trim() || isSaving}
           >
-            Submit
+            {isSaving ? 'Submitting...' : 'Submit'}
           </Button>
           </span>
         </DialogFooter>

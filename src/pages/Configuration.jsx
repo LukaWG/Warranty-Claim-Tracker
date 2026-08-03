@@ -489,6 +489,7 @@ export default function Configuration() {
 										deleteSiteMutation.mutate(site.id);
 									}
 									}}
+									disabled={deleteSiteMutation.isPending && deleteSiteMutation.variables === site.id}
 									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								>
 									<Trash2 className="h-4 w-4" />
@@ -903,6 +904,7 @@ export default function Configuration() {
 										deleteBrandMutation.mutate(brand.id);
 									}
 									}}
+									disabled={deleteBrandMutation.isPending && deleteBrandMutation.variables === brand.id}
 									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								>
 									<Trash2 className="h-4 w-4" />
@@ -1011,6 +1013,7 @@ export default function Configuration() {
 									deleteAlertMutation.mutate(alert.id);
 									}
 								}}
+								disabled={deleteAlertMutation.isPending && deleteAlertMutation.variables === alert.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								>
 								<Trash2 className="h-4 w-4" />
@@ -1118,6 +1121,7 @@ export default function Configuration() {
 									deleteResolutionMutation.mutate(resolution.id);
 									}
 								}}
+								disabled={deleteResolutionMutation.isPending && deleteResolutionMutation.variables === resolution.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								>
 								<Trash2 className="h-4 w-4" />
@@ -1240,6 +1244,7 @@ export default function Configuration() {
 										deleteUserMutation.mutate(user.id);
 									}
 									}}
+									disabled={deleteUserMutation.isPending && deleteUserMutation.variables === user.id}
 									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								>
 									<Trash2 className="h-4 w-4" />
@@ -1296,6 +1301,7 @@ export default function Configuration() {
 										deletePendingInviteMutation.mutate(invite.id);
 									}
 									}}
+									disabled={deletePendingInviteMutation.isPending && deletePendingInviteMutation.variables === invite.id}
 									className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 									title="Cancel invite"
 								>

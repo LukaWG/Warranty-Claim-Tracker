@@ -69,8 +69,10 @@ export default function Layout({ children, currentPageName }) {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       await signOut({
         fetchOptions: {
@@ -82,6 +84,8 @@ export default function Layout({ children, currentPageName }) {
     } catch (error) {
       console.error("Logout failed:", error);
       router.push("/login");
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -319,12 +323,17 @@ export default function Layout({ children, currentPageName }) {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator className="my-1" />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={handleLogout}
+                  disabled={isLoggingOut}
                   className="flex items-center gap-2.5 px-2.5 py-2 text-rose-600 focus:text-rose-700 focus:bg-rose-50 rounded-md cursor-pointer text-sm"
                 >
-                  <LogOut className="h-4 w-4 text-rose-500" />
-                  <span>Log Out</span>
+                  {isLoggingOut ? (
+                    <Loader2 className="h-4 w-4 text-rose-500 animate-spin" />
+                  ) : (
+                    <LogOut className="h-4 w-4 text-rose-500" />
+                  )}
+                  <span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

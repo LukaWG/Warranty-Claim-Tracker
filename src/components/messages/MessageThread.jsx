@@ -44,19 +44,25 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const [sending, setSending] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [markingUnread, setMarkingUnread] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleMarkUnread = async () => {
-    const allMessages = [rootMessage, ...replies];
-    
-    // Shared read state: marking unread clears the read flag for all users
-    await Promise.all(allMessages.map(m => databaseClients.Message.update(m.id, { read: false })));
-    queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
-    queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
-    queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
-    onMarkUnread?.();
+    setMarkingUnread(true);
+    try {
+      const allMessages = [rootMessage, ...replies];
+
+      // Shared read state: marking unread clears the read flag for all users
+      await Promise.all(allMessages.map(m => databaseClients.Message.update(m.id, { read: false })));
+      queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
+      queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
+      queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
+      onMarkUnread?.();
+    } finally {
+      setMarkingUnread(false);
+    }
   };
 
   const handleImageAdd = (e) => {
@@ -143,10 +149,11 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
             variant="ghost"
             className="h-7 text-xs gap-1 text-slate-500"
             onClick={handleMarkUnread}
+            disabled={markingUnread}
             title="Mark as unread"
           >
             <MailOpen className="h-3 w-3" />
-            Mark unread
+            {markingUnread ? 'Marking...' : 'Mark unread'}
           </Button>
         
           <Button 

@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 
-export default function EditClaimModal({ claim, open, onClose, onSave }) {
+export default function EditClaimModal({ claim, open, onClose, onSave, isSaving = false }) {
   const [useRate2, setUseRate2] = useState(false);
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
@@ -510,7 +510,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
               return (
                 <Button
                   type="button"
-                  disabled={!canClaim}
+                  disabled={!canClaim || isSaving}
                   onClick={() => {
                     const updatedData = { ...formData, claimed: true, claimed_by: currentUser ? currentUser.email : '' };
                     setFormData(updatedData);
@@ -564,7 +564,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
                   style={canClaim ? { backgroundColor: 'var(--hendy-teal)', color: 'white' } : {}}
                   title={!canClaim ? 'Invoice number, claim number and total cost are required before claiming' : ''}
                 >
-                  Mark as Claimed
+                  {isSaving ? 'Saving...' : 'Mark as Claimed'}
                 </Button>
               );
             })()}
@@ -575,7 +575,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave }) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Changes'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
