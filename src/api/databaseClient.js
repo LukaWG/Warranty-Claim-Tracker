@@ -1,13 +1,8 @@
 import { currentUser } from './currentUser';
 
-// ---------------------------------------------------------------------------
-// Config — set NEXT_PUBLIC_API_URL in your .env.local
-// ---------------------------------------------------------------------------
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
 
-// ---------------------------------------------------------------------------
 // Internal fetch helper
-// ---------------------------------------------------------------------------
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options.headers },
@@ -23,9 +18,7 @@ async function apiFetch(path, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-// ---------------------------------------------------------------------------
 // DatabaseClient
-// ---------------------------------------------------------------------------
 class DatabaseClient {
   constructor(fileName) {
     this.fileName = fileName;
@@ -132,9 +125,7 @@ class DatabaseClient {
   }
 }
 
-// ---------------------------------------------------------------------------
 // DatabaseClients registry — same shape as before
-// ---------------------------------------------------------------------------
 class DatabaseClients {
   constructor() {
     const fileNames = [
