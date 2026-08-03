@@ -208,6 +208,13 @@ export default function Dashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['claims'] });
       queryClient.invalidateQueries({ queryKey: ['audits'] });
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to update claim',
+        description: error?.message || 'Please try again.',
+      });
     }
   });
 
@@ -352,7 +359,14 @@ export default function Dashboard() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => databaseClients.WarrantyClaim.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['claims'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['claims'] }),
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete claim',
+        description: error?.message || 'Please try again.',
+      });
+    }
   });
 
   const handleDelete = (id) => {
