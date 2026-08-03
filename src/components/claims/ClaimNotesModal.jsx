@@ -12,6 +12,7 @@ import { MessageSquare, User, Paperclip, X, ChevronDown, Send, Undo2 } from 'luc
 import { format } from 'date-fns';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { toast } from '@/components/ui/use-toast';
 
 
 const ADMIN_ROLES = ['Owner', 'Group Manager'];
@@ -98,50 +99,68 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const handleWithdraw = async () => {
     if (!newNote.trim()) return;
     setIsWithdrawing(true);
-    let imageUrl = null;
-    if (withdrawImage?.file) {
-      const result = {file_url: ''} // TODO implement file upload
-      imageUrl = result.file_url;
+    try {
+      let imageUrl = null;
+      if (withdrawImage?.file) {
+        const result = {file_url: ''} // TODO implement file upload
+        imageUrl = result.file_url;
+      }
+      await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn', site_responded: true });
+      await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}`, ...(imageUrl ? { image_url: imageUrl } : {}) });
+      await databaseClients.ClaimAudit.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        field_changed: 'status',
+        old_value: claim.status || '',
+        new_value: 'withdrawn',
+        change_type: 'status_changed'
+      });
+      queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+      queryClient.invalidateQueries({ queryKey: ['claims'] });
+      setNewNote('');
+      setShowWithdraw(false);
+      removeWithdrawImage();
+      if (onStatusUpdate) onStatusUpdate();
+      onClose();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to withdraw claim',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setIsWithdrawing(false);
     }
-    await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn', site_responded: true });
-    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}`, ...(imageUrl ? { image_url: imageUrl } : {}) });
-    await databaseClients.ClaimAudit.create({
-      claim_id: claim.id,
-      wip_number: claim.wip_number,
-      field_changed: 'status',
-      old_value: claim.status || '',
-      new_value: 'withdrawn',
-      change_type: 'status_changed'
-    });
-    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
-    queryClient.invalidateQueries({ queryKey: ['claims'] });
-    setNewNote('');
-    setShowWithdraw(false);
-    setIsWithdrawing(false);
-    removeWithdrawImage();
-    if (onStatusUpdate) onStatusUpdate();
-    onClose();
   }
 
   const handleUndoWithdrawal = async () => {
     if (!newNote.trim()) return;
     setIsUndoingWithdrawal(true);
-    await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress' });
-    await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawal Undone] ${newNote}` });
-    await databaseClients.ClaimAudit.create({
-      claim_id: claim.id,
-      wip_number: claim.wip_number,
-      field_changed: 'status',
-      old_value: 'withdrawn',
-      new_value: 'in_progress',
-      change_type: 'status_changed'
-    });
-    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
-    queryClient.invalidateQueries({ queryKey: ['claims'] });
-    setNewNote('');
-    setIsUndoingWithdrawal(false);
-    if (onStatusUpdate) onStatusUpdate();
-    onClose();
+    try {
+      await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress' });
+      await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawal Undone] ${newNote}` });
+      await databaseClients.ClaimAudit.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        field_changed: 'status',
+        old_value: 'withdrawn',
+        new_value: 'in_progress',
+        change_type: 'status_changed'
+      });
+      queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+      queryClient.invalidateQueries({ queryKey: ['claims'] });
+      setNewNote('');
+      if (onStatusUpdate) onStatusUpdate();
+      onClose();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to undo withdrawal',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setIsUndoingWithdrawal(false);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -270,6 +289,13 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       setAlertEnabled(false);
       removeAttachment();
       if (onStatusUpdate) onStatusUpdate();
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to add note',
+        description: error?.message || 'Please try again.',
+      });
     }
   });
 
@@ -347,40 +373,49 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const handleSendMessage = async () => {
     if (!msgBody.trim() || !claim) return;
     setMsgSending(true);
-    const senderName = currentUser.full_name || currentUser.email;
-    const subject = msgSubject.trim() || `Re: WIP ${claim.wip_number}`;
-    const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
-    await Promise.all([
-      databaseClients.Message.create({
-        claim_id: claim.id,
-        wip_number: claim.wip_number,
-        target_site: claim.site,
-        subject,
-        body: msgBody.trim(),
-        sender_email: currentUser.email,
-        sender_name: senderName,
-        is_reply: false,
-        // @ts-ignore
-        image_urls: uploadedUrls
-      }),
-      databaseClients.ClaimNote.create({
-        claim_id: claim.id,
-        wip_number: claim.wip_number,
-        content: `[Message] ${msgSubject}\n\n${msgBody.trim()}\n\n— ${senderName}`,
-        // @ts-ignore
-        image_urls: uploadedUrls,
-      }),
-      databaseClients.WarrantyClaim.update(claim.id, { site_responded: true })
-    ]);
-    queryClient.invalidateQueries({ queryKey: ['messages'] });
-    queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
-    queryClient.invalidateQueries({ queryKey: ['claims'] });
-    setMsgBody('');
-    setMsgSubject('');
-    setMsgImageFiles([]);
-    setMsgImagePreviews([]);
-    setMsgSending(false);
-    setActiveTab('note'); // Switch back to the note tab after sending
+    try {
+      const senderName = currentUser.full_name || currentUser.email;
+      const subject = msgSubject.trim() || `Re: WIP ${claim.wip_number}`;
+      const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
+      await Promise.all([
+        databaseClients.Message.create({
+          claim_id: claim.id,
+          wip_number: claim.wip_number,
+          target_site: claim.site,
+          subject,
+          body: msgBody.trim(),
+          sender_email: currentUser.email,
+          sender_name: senderName,
+          is_reply: false,
+          // @ts-ignore
+          image_urls: uploadedUrls
+        }),
+        databaseClients.ClaimNote.create({
+          claim_id: claim.id,
+          wip_number: claim.wip_number,
+          content: `[Message] ${msgSubject}\n\n${msgBody.trim()}\n\n— ${senderName}`,
+          // @ts-ignore
+          image_urls: uploadedUrls,
+        }),
+        databaseClients.WarrantyClaim.update(claim.id, { site_responded: true })
+      ]);
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+      queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
+      queryClient.invalidateQueries({ queryKey: ['claims'] });
+      setMsgBody('');
+      setMsgSubject('');
+      setMsgImageFiles([]);
+      setMsgImagePreviews([]);
+      setActiveTab('note'); // Switch back to the note tab after sending
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to send message',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setMsgSending(false);
+    }
   };
 
   return (
