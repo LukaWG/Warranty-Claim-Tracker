@@ -15,7 +15,7 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, open, onOpenChange, ...props }) {
         return (
-          <Toast key={id} {...props}>
+          <Toast key={id} data-state={open ? "open" : "closed"} {...props}>
             <div className="grid gap-1">
               {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
