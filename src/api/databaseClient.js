@@ -127,6 +127,18 @@ class DatabaseClient {
 
 // DatabaseClients registry — same shape as before
 class DatabaseClients {
+  /** @type {DatabaseClient} */ Alert;
+  /** @type {DatabaseClient} */ AlertResolution;
+  /** @type {DatabaseClient} */ Brand;
+  /** @type {DatabaseClient} */ ClaimAudit;
+  /** @type {DatabaseClient} */ ClaimNote;
+  /** @type {DatabaseClient} */ PendingUserInvite;
+  /** @type {DatabaseClient} */ User;
+  /** @type {DatabaseClient} */ WarrantyClaim;
+  /** @type {DatabaseClient} */ Site;
+  /** @type {DatabaseClient} */ Message;
+  /** @type {DatabaseClient} */ MessageRead;
+
   constructor() {
     const fileNames = [
       'Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote',
