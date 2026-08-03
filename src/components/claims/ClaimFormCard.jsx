@@ -197,6 +197,7 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     value={formData.expected_hours}
                     onChange={(e) => setFormData({ ...formData, expected_hours: e.target.value })}
                     required
+                    inputMode="decimal"
                     className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500 transition-all"
                   />
                 </div>
