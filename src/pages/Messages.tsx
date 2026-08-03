@@ -73,7 +73,8 @@ export default function Messages() {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['message-reads-all', currentUser?.email] });
-    }
+    },
+    onError: (error) => console.error('Failed to mark message as read:', error)
   });
 
   const getReplies = (rootId) => allMessages.filter(m => m.parent_message_id === rootId);
@@ -131,7 +132,7 @@ export default function Messages() {
       if (m.sender_email === currentUser?.email) continue;
       // shared read state: mark read for all users
       if (!m.read) {
-        databaseClients.Message.update(m.id, { read: true }).catch(() => {});
+        databaseClients.Message.update(m.id, { read: true }).catch((error) => console.error('Failed to mark message as read:', error));
       }
       // Per-user receipt powers the "Read by" indicator
       if (!myReceiptIds.has(m.id)) {

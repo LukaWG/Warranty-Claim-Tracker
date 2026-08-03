@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { Paperclip, X } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 export default function ComposeMessageModal({ open, onClose, onSent, currentUser, prefilledClaim = null }) {
   const [subject, setSubject] = useState('');
@@ -55,37 +56,46 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
   const handleSend = async () => {
     if (!selectedClaim || !body.trim()) return;
     setSending(true);
-    const msgSubject = subject.trim() || `Re: WIP ${selectedClaim.wip_number}`;
-    const senderName = currentUser.full_name || currentUser.email;
-    // Upload any attached images first and get their URLs
-    // TODO: Implement image upload logic here and get the uploaded image URLs
-    await Promise.all([
-      databaseClients.Message.create({
-        claim_id: selectedClaim.id,
-        wip_number: selectedClaim.wip_number,
-        target_site: selectedClaim.site,
-        subject: msgSubject,
-        body: body.trim(),
-        sender_email: currentUser.email,
-        sender_name: senderName,
-        is_reply: false,
-        image_urls: [] // Replace with actual uploaded image URLs
-      }),
-      databaseClients.ClaimNote.create({
-        claim_id: selectedClaim.id,
-        content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n— ${senderName}`,
-        image_urls: [] // Replace with actual uploaded image URLs
-      }),
-      databaseClients.WarrantyClaim.update(selectedClaim.id, { site_responded: true })
-    ]);
-    setSending(false);
-    setBody('');
-    setSubject('');
-    setSelectedClaimId('');
-    setImageFiles([]);
-    setImagePreviews([]);
-    onSent?.();
-    onClose();
+    try {
+      const msgSubject = subject.trim() || `Re: WIP ${selectedClaim.wip_number}`;
+      const senderName = currentUser.full_name || currentUser.email;
+      // Upload any attached images first and get their URLs
+      // TODO: Implement image upload logic here and get the uploaded image URLs
+      await Promise.all([
+        databaseClients.Message.create({
+          claim_id: selectedClaim.id,
+          wip_number: selectedClaim.wip_number,
+          target_site: selectedClaim.site,
+          subject: msgSubject,
+          body: body.trim(),
+          sender_email: currentUser.email,
+          sender_name: senderName,
+          is_reply: false,
+          image_urls: [] // Replace with actual uploaded image URLs
+        }),
+        databaseClients.ClaimNote.create({
+          claim_id: selectedClaim.id,
+          content: `[Message] ${msgSubject}\n\n${body.trim()}\n\n— ${senderName}`,
+          image_urls: [] // Replace with actual uploaded image URLs
+        }),
+        databaseClients.WarrantyClaim.update(selectedClaim.id, { site_responded: true })
+      ]);
+      setBody('');
+      setSubject('');
+      setSelectedClaimId('');
+      setImageFiles([]);
+      setImagePreviews([]);
+      onSent?.();
+      onClose();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to send message',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

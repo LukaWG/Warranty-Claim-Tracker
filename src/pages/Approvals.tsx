@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { toast } from '@/components/ui/use-toast';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -86,7 +87,14 @@ export default function Approvals() {
         });
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingApprovals'] })
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingApprovals'] }),
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to approve claim',
+        description: error?.message || 'Please try again.',
+      });
+    }
   });
 
   const rejectMutation = useMutation({
@@ -111,6 +119,13 @@ export default function Approvals() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pendingApprovals'] });
       setApprovalNotes({});
+    },
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to reject claim',
+        description: error?.message || 'Please try again.',
+      });
     }
     });
 

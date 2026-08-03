@@ -8,6 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
+import { toast } from '@/components/ui/use-toast';
 
 function MessageBubble({ message, isOwn, readers }) {
   return (
@@ -60,6 +61,12 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
       queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
       queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
       onMarkUnread?.();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to mark as unread',
+        description: error?.message || 'Please try again.',
+      });
     } finally {
       setMarkingUnread(false);
     }
@@ -103,35 +110,44 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const handleSendReply = async () => {
     if (!replyBody.trim()) return;
     setSending(true);
-    const senderName = currentUser.full_name || currentUser.email;
-    const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
-    alert("Image upload not implemented - message will be sent without the image");
-    await Promise.all([
-      databaseClients.Message.create({
-        claim_id: rootMessage.claim_id,
-        wip_number: rootMessage.wip_number,
-        target_site: rootMessage.target_site,
-        subject: rootMessage.subject,
-        body: replyBody.trim(),
-        sender_email: currentUser.email,
-        sender_name: senderName,
-        parent_message_id: rootMessage.id,
-        is_reply: true,
-        image_urls: uploadedUrls
-      }),
-      databaseClients.ClaimNote.create({
-        claim_id: rootMessage.claim_id,
-        content: `[Message Reply] ${rootMessage.subject}\n\n${replyBody.trim()}\n\n- ${senderName}`,
-        image_url: uploadedUrls[0] || undefined
-      }),
-      databaseClients.WarrantyClaim.update(rootMessage.claim_id, { site_responded: true })
-    ]);
-    setReplyBody('');
-    setImageFiles([]);
-    setImagePreviews([]);
-    setSending(false);
-    queryClient.invalidateQueries({ queryKey: ['messages'] });
-    onReply?.();
+    try {
+      const senderName = currentUser.full_name || currentUser.email;
+      const uploadedUrls = []; // TODO: Implement image upload logic here and get the uploaded image URLs
+      alert("Image upload not implemented - message will be sent without the image");
+      await Promise.all([
+        databaseClients.Message.create({
+          claim_id: rootMessage.claim_id,
+          wip_number: rootMessage.wip_number,
+          target_site: rootMessage.target_site,
+          subject: rootMessage.subject,
+          body: replyBody.trim(),
+          sender_email: currentUser.email,
+          sender_name: senderName,
+          parent_message_id: rootMessage.id,
+          is_reply: true,
+          image_urls: uploadedUrls
+        }),
+        databaseClients.ClaimNote.create({
+          claim_id: rootMessage.claim_id,
+          content: `[Message Reply] ${rootMessage.subject}\n\n${replyBody.trim()}\n\n- ${senderName}`,
+          image_url: uploadedUrls[0] || undefined
+        }),
+        databaseClients.WarrantyClaim.update(rootMessage.claim_id, { site_responded: true })
+      ]);
+      setReplyBody('');
+      setImageFiles([]);
+      setImagePreviews([]);
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+      onReply?.();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to send reply',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
   const allMessages = [rootMessage, ...replies].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));

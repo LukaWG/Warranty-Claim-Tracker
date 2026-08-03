@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import EditBrandModal from '@/components/configuration/EditBrandModal';
 import { databaseClients } from '@/api/databaseClient';
 import { authUsers } from "@/api/authClient";
+import { toast } from '@/components/ui/use-toast';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -117,6 +118,7 @@ export default function Configuration() {
 	const deleteUserMutation = useMutation({
 	mutationFn: (id) => authUsers.delete(id),
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to delete user', description: error?.message || 'Please try again.' }),
 	});
 
 	// GET DATA
@@ -154,7 +156,8 @@ export default function Configuration() {
 
 	const deletePendingInviteMutation = useMutation({
 	mutationFn: (id) => databaseClients.PendingUserInvite.delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pendingInvites'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to cancel invite', description: error?.message || 'Please try again.' })
 	});
 
 	const createSiteMutation = useMutation({
@@ -162,7 +165,8 @@ export default function Configuration() {
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setNewSite({ name: '', code: '' });
-	}
+	},
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to add location', description: error?.message || 'Please try again.' })
 	});
 
 	const updateSiteMutation = useMutation({
@@ -170,12 +174,14 @@ export default function Configuration() {
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['sites'] });
 		setEditingSite(null);
-	}
+	},
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to update location', description: error?.message || 'Please try again.' })
 	});
 
 	const deleteSiteMutation = useMutation({
 	mutationFn: (id) => databaseClients.Site.delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['sites'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to delete location', description: error?.message || 'Please try again.' })
 	});
 
 	const createAlertMutation = useMutation({
@@ -183,12 +189,14 @@ export default function Configuration() {
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['alerts'] });
 		setNewAlert({ name: '' });
-	}
+	},
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to add alert', description: error?.message || 'Please try again.' })
 	});
 
 	const deleteAlertMutation = useMutation({
 	mutationFn: (id) => databaseClients.Alert.delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to delete alert', description: error?.message || 'Please try again.' })
 	});
 
 	const createResolutionMutation = useMutation({
@@ -196,12 +204,14 @@ export default function Configuration() {
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['resolutions'] });
 		setNewResolution({ name: '' });
-	}
+	},
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to add resolution', description: error?.message || 'Please try again.' })
 	});
 
 	const deleteResolutionMutation = useMutation({
 	mutationFn: (id) => databaseClients.AlertResolution.delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['resolutions'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['resolutions'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to delete resolution', description: error?.message || 'Please try again.' })
 	});
 
 	const createBrandMutation = useMutation({
@@ -209,17 +219,20 @@ export default function Configuration() {
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ['brands'] });
 		setNewBrand({ name: '', manufacturer_deadline_days: '', green_min_days: '', green_max_days: '', amber_min_days: '', amber_max_days: '', red_min_days: '', red_max_days: '' });
-	}
+	},
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to add brand', description: error?.message || 'Please try again.' })
 	});
 
 	const updateBrandMutation = useMutation({
 	mutationFn: ({ id, data }) => databaseClients.Brand.update(id, data),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to update brand', description: error?.message || 'Please try again.' })
 	});
 
 	const deleteBrandMutation = useMutation({
 	mutationFn: (id) => databaseClients.Brand.delete(id),
-	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] })
+	onSuccess: () => queryClient.invalidateQueries({ queryKey: ['brands'] }),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to delete brand', description: error?.message || 'Please try again.' })
 	});
 
 	const handleSiteSubmit = (e) => {
