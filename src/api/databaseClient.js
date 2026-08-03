@@ -1,13 +1,29 @@
 import { currentUser } from './currentUser';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
+const DEFAULT_TIMEOUT_MS = 15000;
 
 // Internal fetch helper
-async function apiFetch(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
+async function apiFetch(path, { timeoutMs = DEFAULT_TIMEOUT_MS, ...options } = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      ...options,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out. Please check your connection and try again.');
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(err.error ?? `API error ${res.status}`);
