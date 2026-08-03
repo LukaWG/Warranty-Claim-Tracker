@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 20;
-const TOAST_REMOVE_DELAY = 300;
+const TOAST_REMOVE_DELAY = 300; // 300ms for exit animation
 const TOAST_AUTO_DISMISS_DELAY = 15000;
 
 const actionTypes = {
