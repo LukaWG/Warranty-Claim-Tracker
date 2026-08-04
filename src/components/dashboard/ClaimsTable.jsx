@@ -110,7 +110,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     if (!!currentUser?.email) return new Set();
     const claimIds = new Set();
     approvalMessages.forEach(m => {
-      if (m.sender_email === currentUser.email) return;
       if (!m.read) claimIds.add(m.claim_id);
     });
     return claimIds;

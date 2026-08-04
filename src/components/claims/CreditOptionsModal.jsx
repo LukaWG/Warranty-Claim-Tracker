@@ -21,6 +21,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
     queryFn: () => currentUserClient.me()
   });
 
+  const [activeTab, setActiveTab] = useState('credit');
+
   const CREDIT_APPROVAL_LIMIT = 100;
 
   const selectedSite = sites.find(s => s.name === claim?.site);
@@ -92,7 +94,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
           <DialogTitle>Credit Options — {claim?.wip_number}</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="credit" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 w-full mb-2">
             <TabsTrigger value="credit">Credit</TabsTrigger>
             <TabsTrigger value="chat">Approval Chat</TabsTrigger>
@@ -219,49 +221,51 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             )}
           </TabsContent>
         </Tabs>
-
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          {(claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval') && totalCredit > 0 && (
-            <Button
-              variant="outline"
-              disabled={isSaving}
-              className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
-              onClick={() => {
-                const creditVal = totalCredit;
-                const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
-                const newLabour = Math.max(0, currentLabour - (parseFloat(creditLabour) || 0));
-                const newSubCon = Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0));
-                const newTotal = updateTotal(newParts, newLabour, newSubCon);
-                const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
-                const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
-                onSave({
-                  approval_status: 'credited',
-                  credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
-                  credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
-                  credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
-                  credit: creditVal || null,
-                  parts: newParts > 0 ? newParts : null,
-                  labour: newLabour > 0 ? newLabour : null,
-                  sub_con: newSubCon > 0 ? newSubCon : null,
-                  total_claim_cost: newTotal > 0 ? newTotal : null,
-                  actual_hours: actualHours || null,
-                });
+        
+        {activeTab === 'credit' && (
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+            {(claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval') && totalCredit > 0 && (
+              <Button
+                variant="outline"
+                disabled={isSaving}
+                className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
+                onClick={() => {
+                  const creditVal = totalCredit;
+                  const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
+                  const newLabour = Math.max(0, currentLabour - (parseFloat(creditLabour) || 0));
+                  const newSubCon = Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0));
+                  const newTotal = updateTotal(newParts, newLabour, newSubCon);
+                  const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
+                  const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
+                  onSave({
+                    approval_status: 'credited',
+                    credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
+                    credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
+                    credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
+                    credit: creditVal || null,
+                    parts: newParts > 0 ? newParts : null,
+                    labour: newLabour > 0 ? newLabour : null,
+                    sub_con: newSubCon > 0 ? newSubCon : null,
+                    total_claim_cost: newTotal > 0 ? newTotal : null,
+                    actual_hours: actualHours || null,
+                  });
+                }
               }
-            }
+              >
+                {isSaving ? 'Applying...' : `Apply Credit (£${totalCredit.toFixed(2)})`}
+              </Button>
+            )}
+            <span title={!creditNote.trim() ? "Credit note is required to request credit" : undefined}>
+            <Button
+              onClick={handleSave}
+              disabled={!creditNote.trim() || isSaving}
             >
-              {isSaving ? 'Applying...' : `Apply Credit (£${totalCredit.toFixed(2)})`}
+              {isSaving ? 'Submitting...' : 'Submit'}
             </Button>
-          )}
-          <span title={!creditNote.trim() ? "Credit note is required to request credit" : undefined}>
-          <Button
-            onClick={handleSave}
-            disabled={!creditNote.trim() || isSaving}
-          >
-            {isSaving ? 'Submitting...' : 'Submit'}
-          </Button>
-          </span>
-        </DialogFooter>
+            </span>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );
