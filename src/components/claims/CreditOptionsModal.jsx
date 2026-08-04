@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Mail, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
@@ -38,6 +39,9 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
   const [creditNote, setCreditNote] = useState(claim?.credit_note || '');
   const [newNote, setNewNote] = useState('');
   const hasExistingNote = !!(claim?.credit_note);
+  const [sendMessage, setSendMessage] = useState(false);
+  const [locationMessage, setLocationMessage] = useState('');
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (claim?.approval_status === 'rejected') {
@@ -55,10 +59,28 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
     ? (newNote.trim() ? `${claim.credit_note}\n\n--- Additional note ---\n${newNote.trim()}` : claim.credit_note)
     : creditNote;
 
+    const sendLocationMessage = async () => {
+      if (!locationMessage.trim() || claim?.id || !currentUser) return;
+      setSending(true);
+      await databaseClients.Message.create({
+        claim_id: claim.id,
+        wip_number: claim.wip_number,
+        target_site: claim.site,
+        subject: `Credit applied - WIP ${claim.wip_number}`,
+        body: locationMessage.trim(),
+        sender_email: currentUser.email,
+        sender_name: currentUser.full_name || currentUser.email,
+        is_reply: false,
+      });
+      setSending(false);
+      setLocationMessage('');
+      setSendMessage(false);
+    };
+
   const updateTotal = (parts, labour, subCon) =>
     (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const creditVal = totalCredit;
 
     const originalCreditVal = parseFloat(claim?.credit) || 0;
@@ -194,6 +216,43 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
               </div>
             )}
 
+            {totalCredit > 0 && (
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSendMessage(!sendMessage);
+                  if (!sendMessage && !locationMessage.trim()) {
+                    setLocationMessage(`A credit of £${totalCredit.toFixed(2)} has been applied to WIP ${claim?.wip_number}.`);
+                  }
+                }}
+                className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+                Send message to location
+              </button>
+              {sendMessage && (
+                <div className="space-y-2">
+                <Textarea
+                  placeholder="Explain why this credit was applied..."
+                  value={locationMessage}
+                  onChange={(e) => setLocationMessage(e.target.value)}
+                  className="resize-none" rows={3}
+                />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={sendLocationMessage}
+                    disabled={!locationMessage.trim() || sending}
+                  >
+                    <Send className="h-4 w-4" />
+                    {sending ? 'Sending...' : 'Send'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+
             {claim?.approval_note && (
               <div className="space-y-2">
                 <Label>Approver Note</Label>
@@ -251,7 +310,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                 variant="outline"
                 disabled={isSaving || claim?.approval_status !== 'approved' }
                 className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => {
+                onClick={async () => {
                   const creditVal = totalCredit;
                   const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
                   const newLabour = Math.max(0, currentLabour - (parseFloat(creditLabour) || 0));
