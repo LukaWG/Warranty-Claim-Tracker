@@ -46,9 +46,25 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [markingUnread, setMarkingUnread] = useState(false);
+  const [markingRead, setMarkingRead] = useState(false);
   const fileInputRef = useRef(null);
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const handleMarkRead = async () => {
+    setMarkingRead(true);
+    try {
+      await onMarkRead?.();
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to mark as read',
+        description: error?.message || 'Please try again.',
+      });
+    } finally {
+      setMarkingRead(false);
+    }
+  };
 
   const handleMarkUnread = async () => {
     setMarkingUnread(true);
@@ -168,11 +184,12 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
               size="sm"
               variant="ghost"
               className="h-7 text-xs gap-1 text-slate-500"
-              onClick={onMarkRead?.()}
+              onClick={handleMarkRead}
+              disabled={markingRead}
               title="Mark as read"
             >
               <CheckCheck className="h-3 w-3" />
-              Mark read
+              {markingRead ? 'Marking...' : 'Mark read'}
             </Button>
           ) : (
           <Button

@@ -128,17 +128,19 @@ export default function Messages() {
   const markThreadRead = async (rootMsg) => {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
     const myReceiptIds = new Set(allReadReceipts.filter(r => r.reader_email === currentUser?.email).map(r => r.message_id));
+    const updates = [];
     for (const m of allInThread) {
       if (m.sender_email === currentUser?.email) continue;
       // shared read state: mark read for all users
       if (!m.read) {
-        databaseClients.Message.update(m.id, { read: true }).catch((error) => console.error('Failed to mark message as read:', error));
+        updates.push(databaseClients.Message.update(m.id, { read: true }));
       }
       // Per-user receipt powers the "Read by" indicator
       if (!myReceiptIds.has(m.id)) {
-        markReadMutation.mutate({ messageId: m.id });
+        updates.push(markReadMutation.mutateAsync({ messageId: m.id }));
       }
     }
+    await Promise.all(updates);
     queryClient.invalidateQueries({ queryKey: ['messages'] });
     queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
   };
@@ -276,7 +278,7 @@ export default function Messages() {
               }}
               onGoToRepair={() => setSelectedThread(null)}
               onMarkUnread={() => setSelectedThread(null)}
-              onMarkRead={() => { markThreadRead(selectedThread); setSelectedThread(null);}}
+              onMarkRead={async () => { await markThreadRead(selectedThread); setSelectedThread(null); }}
             />
           </DialogContent>
         </Dialog>
