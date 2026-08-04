@@ -76,10 +76,10 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
 
       // Shared read state: marking unread clears the read flag for all users
       await Promise.all(allMessages.map(m => databaseClients.Message.update(m.id, { read: false })));
+      onMarkUnread?.();
       queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
       queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
       queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
-      onMarkUnread?.();
     } catch (error) {
       toast({
         variant: 'destructive',
