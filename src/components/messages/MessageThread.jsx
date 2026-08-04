@@ -73,13 +73,17 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
     setMarkingUnread(true);
     try {
       const allMessages = [rootMessage, ...replies];
+      const ids = new Set(allMessages.map(m => m.id));
 
       // Shared read state: marking unread clears the read flag for all users
       await Promise.all(allMessages.map(m => databaseClients.Message.update(m.id, { read: false })));
       onMarkUnread?.();
+      // Patch the cached lists in place instead of invalidating, to avoid re-fetching the full message list
+      const patchUnread = (old) => old?.map(m => ids.has(m.id) ? { ...m, read: false } : m);
+      queryClient.setQueryData(['messages'], patchUnread);
+      queryClient.setQueryData(['messages-unread', currentUser?.email], patchUnread);
       queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
       queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
-      queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
     } catch (error) {
       toast({
         variant: 'destructive',

@@ -129,11 +129,13 @@ export default function Messages() {
     const allInThread = [rootMsg, ...getReplies(rootMsg.id)];
     const myReceiptIds = new Set(allReadReceipts.filter(r => r.reader_email === currentUser?.email).map(r => r.message_id));
     const updates = [];
+    const readIds = new Set();
     for (const m of allInThread) {
       if (m.sender_email === currentUser?.email) continue;
       // shared read state: mark read for all users
       if (!m.read) {
         updates.push(databaseClients.Message.update(m.id, { read: true }));
+        readIds.add(m.id);
       }
       // Per-user receipt powers the "Read by" indicator
       if (!myReceiptIds.has(m.id)) {
@@ -141,8 +143,10 @@ export default function Messages() {
       }
     }
     await Promise.all(updates);
-    queryClient.invalidateQueries({ queryKey: ['messages'] });
-    queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
+    // Patch the cached lists in place instead of invalidating, to avoid re-fetching the full message list
+    const patchRead = (old) => old?.map(m => readIds.has(m.id) ? { ...m, read: true } : m);
+    queryClient.setQueryData(['messages'], patchRead);
+    queryClient.setQueryData(['messages-unread', currentUser?.email], patchRead);
   };
 
   const handleOpenThread = (msg) => {
