@@ -50,7 +50,7 @@ export const auth = betterAuth({
   ],
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
-      if (ctx.path !== "sign-up/email") return;
+      if (ctx.path !== "/sign-up/email") return;
       if (!ctx.body?.email.endsWith("@hendy-group.com")) {
         throw new APIError("BAD_REQUEST", {
           message: "Invalid email domain.",
