@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth"
+import { APIError, betterAuth } from "better-auth"
 import { admin } from "better-auth/plugins"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from "./prisma"
@@ -47,6 +47,16 @@ export const auth = betterAuth({
   plugins: [
     admin(),
   ],
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "sign-up/email") return;
+      if (!ctx.body?.email.endsWith("@hendy-group.com")) {
+        throw new APIError("BAD_REQUEST", {
+          message: "Invalid email domain.",
+        });
+      }
+    }),
+  },
   databaseHooks: {
     user: {
       create: {
