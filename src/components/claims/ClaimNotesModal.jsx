@@ -65,10 +65,10 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdminUser = ADMIN_ROLES.includes(userRole);
   const isProcessor = userRole === 'Location';
-  const isSiteUser = userRole === 'Location';
+  const isLocationUser = userRole === 'Location';
   const isQueried = !!claim?.alert || claim?.status === 'claimed_info_requested';
   const isWithdrawn = claim?.status === 'withdrawn';
-  const canAddNote = isAdminUser || !isSiteUser || isQueried || isWithdrawn;
+  const canAddNote = isAdminUser || !isLocationUser || isQueried || isWithdrawn;
 
   // If user can't add notes, default to message tab
   useEffect (() => {
@@ -436,7 +436,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )} */}
 
-          {/* Tab switcher - Note tab only shown when canAddNote, Message tab hidden for site users when claim is queried */}
+          {/* Tab switcher - Note tab only shown when canAddNote, Message tab hidden for location users when claim is queried */}
           <div className="flex gap-1 p-1 bg-slate-100 rounded-lg w-fit">
             {canAddNote && (
               <button
@@ -446,17 +446,17 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
                 Note
               </button>
             )}
-            {!isSiteUser || !isQueried ? (
+            {!isLocationUser || !isQueried ? (
               <button
                 onClick={() => setActiveTab('message')}
                 className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === 'message' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Administrator' : 'Site'}
+                  <Send className="h-3.5 w-3.5" /> Message {isProcessor ? 'Administrator' : 'Location'}
                 </button>
               ) : null}
             </div>
 
-          {/* Note form - Admin users always see it, site users only when alert exists */}
+          {/* Note form - Admin users always see it, location users only when alert exists */}
           {activeTab === 'note' && (isAdminUser || isQueried || isWithdrawn) && (
             <div className="border-b pb-6 space-y-3">
               <form onSubmit={handleAddNote} className="space-y-3">
@@ -592,8 +592,8 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             </div>
           )}
           
-          {/* Withdrawal Actions - Subtle header style for site users */}
-          {isSiteUser && claim?.status !== 'completed' && claim?.status !== 'claimed_info_received' && (
+          {/* Withdrawal Actions - Subtle header style for location users */}
+          {isLocationUser && claim?.status !== 'completed' && claim?.status !== 'claimed_info_received' && (
           <div className="border-b pb-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-slate-700">
