@@ -89,8 +89,10 @@ export default function Messages() {
 
   // Visible threads based on role
   const roleFilteredThreads = rootMessages.filter(m => {
-    if (isAdmin) return true;
-    return m.target_site === userSite;
+    if (['Location', 'Administrator'].includes(userRole) && currentUser?.default_sites?.length > 0) {
+      return currentUser.default_sites.includes(m.target_site);
+    }
+    return true;
   });
 
   const siteName = (id) => sites.find(site => site.id === id)?.name || id;

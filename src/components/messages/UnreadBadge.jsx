@@ -19,8 +19,10 @@ export default function UnreadBadge({ currentUser }) {
 
   const unreadCount = rootMessages.filter(m => {
     if (m.sender_email === currentUser?.email) return false;
-    // Admins see all messages; site users only see their site
-    if (!isAdmin && m.target_site !== userSite) return false;
+    // Location users only see their site. Administrators are restricted to their assigned locations
+    if (['Location', 'Administrator'].includes(userRole) && currentUser?.default_sites?.length > 0) {
+      if (!currentUser.default_sites.includes(m.target_site)) return false;
+    }
     // Shared read state: a thread is unread if any message hasn't been read (by anyone)
     const threadMessages = messages.filter(tm => tm.id === m.id || tm.parent_message_id === m.id)
     return threadMessages.some(tm => tm.sender_email !== currentUser?.email && !tm.read);
