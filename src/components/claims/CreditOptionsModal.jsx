@@ -228,8 +228,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             {(claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval') && totalCredit > 0 && (
               <Button
                 variant="outline"
-                disabled={isSaving}
-                className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100"
+                disabled={isSaving || claim?.approval_status !== 'approved' }
+                className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => {
                   const creditVal = totalCredit;
                   const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
