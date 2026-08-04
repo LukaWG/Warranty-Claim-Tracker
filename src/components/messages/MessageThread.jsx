@@ -55,6 +55,9 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
     setMarkingRead(true);
     try {
       await onMarkRead?.();
+      queryClient.invalidateQueries({ queryKey: ['message-reads', currentUser?.email] });
+      queryClient.invalidateQueries({ queryKey: ['message-reads-all'] });
+      queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
     } catch (error) {
       toast({
         variant: 'destructive',
