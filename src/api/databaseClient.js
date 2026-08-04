@@ -157,7 +157,7 @@ class DatabaseClients {
 
   constructor() {
     const fileNames = [
-      'Alert', 'AlertResolution', 'Brand', 'ClaimAudit', 'ClaimNote',
+      'Alert', 'AlertResolution', 'ApprovalMessage', 'Brand', 'ClaimAudit', 'ClaimNote',
       'PendingUserInvite', 'User', 'WarrantyClaim', 'Site', 'Message', 'MessageRead',
     ];
     fileNames.forEach((name) => {
