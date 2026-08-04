@@ -14,7 +14,8 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  MessageSquare
+  MessageSquare,
+  MessagesSquare
 } from 'lucide-react';
 import UnreadBadge from '@/components/messages/UnreadBadge';
 import { cn } from "@/lib/utils";
@@ -163,19 +164,13 @@ export default function Layout({ children, currentPageName }) {
     return <>{children}</>;
   }
 
-  const userRole = currentUser?.custom_role || currentUser?.role;
-  const isLocationRole = userRole === 'Location';
-  const userSites = currentUser?.default_sites?.length
-    ? currentUser.default_sites
-    : (currentUser?.default_site ? [currentUser.default_site] : []);
-  const pendingApprovalsCount = isLocationRole
-    ? pendingApprovals.filter(c => userSites.includes(c.site)).length
-    : pendingApprovals.length;
+  const pendingApprovalsCount = pendingApprovals.length;
 
   const allNavItems = [
     { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Group Manager', 'Administrator', 'Owner'] },
-    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Group Manager', 'Owner', 'Location'] },
+    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Group Manager', 'Owner'] },
+    { name: 'ApprovalMessages', label: 'Approval Messages', icon: MessagesSquare, roles: ['Group Manager', 'Administrator', 'Owner'] },
     { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Group Manager', 'Owner'] }
   ];

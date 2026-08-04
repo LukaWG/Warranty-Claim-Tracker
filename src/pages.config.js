@@ -50,6 +50,7 @@ import Home from './pages/Home';
 import Messages from './pages/Messages';
 import Configuration from './pages/Configuration';
 import Approvals from './pages/Approvals'
+import ApprovalMessages from './pages/ApprovalMessages';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -58,7 +59,8 @@ export const PAGES = {
     "Home": Home,
     "Messages": Messages,
     "Configuration": Configuration,
-    "Approvals": Approvals
+    "Approvals": Approvals,
+    "ApprovalMessages": ApprovalMessages,
 }
 
 export const pagesConfig = {
