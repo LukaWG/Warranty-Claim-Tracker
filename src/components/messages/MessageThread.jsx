@@ -179,7 +179,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   const threadUnread = [rootMessage, ...replies].some(m => m.sender_email !== currentUser?.email && !m.read);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-w-0">
       <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
         <MessageCircle className="h-4 w-4 text-slate-400" />
         <span className="text-sm font-medium text-slate-700">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
@@ -259,7 +259,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
           onChange={e => setReplyBody(e.target.value)}
           onPaste={handlePaste}
           rows={2}
-          className="resize-none text-sm"
+          className="resize-none text-sm min-w-0 flex-1"
         />
         <div className="flex flex-col gap-1 self-end">
             <Button size="icon" variant="outline" className="h-9 w-9 shrink-0" onClick={() => fileInputRef.current?.click()}>
