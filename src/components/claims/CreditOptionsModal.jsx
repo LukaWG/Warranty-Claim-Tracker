@@ -96,17 +96,17 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Credit Options — {claim?.wip_number}</DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex-1 min-h-0 flex flex-col">
           <TabsList className="grid grid-cols-2 w-full mb-2">
             <TabsTrigger value="credit">Credit</TabsTrigger>
             <TabsTrigger value="chat">Approval Chat</TabsTrigger>
           </TabsList>
-          <TabsContent value="credit" className="space-y-4 pt-2">
+          <TabsContent value="credit" className="space-y-4 pt-2 flex-1 min-h-0 overflow-y-auto pr-1">
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-2">
                 <Label>Parts Credit (£)</Label>
@@ -235,7 +235,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
               return null;
             })()}
           </TabsContent>
-          <TabsContent value="chat">
+          <TabsContent value="chat" className="flex-1 min-h-0 overflow-y-auto pr-1">
 
             {claim?.id && (
                 <ApprovalChat claim={claim} currentUser={currentUser} />
