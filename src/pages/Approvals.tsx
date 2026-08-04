@@ -9,8 +9,10 @@ import { CheckCircle2, XCircle, Clock, MapPin, User } from "lucide-react";
 import { format } from "date-fns";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
 import { useAllUsers } from '@/hooks/useAllUsers';
 import { toast } from '@/components/ui/use-toast';
+import ApprovalChat from '@/components/approvals/ApprovalChat';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -41,25 +43,6 @@ export default function Approvals() {
     queryKey: ['sites'],
     queryFn: () => databaseClients.Site.get()
   })
-  
-  
-    // const [claims, setPendingApprovals] = useState([]);
-    // const [isLoading, setisLoading] = useState(true);
-    // React.useEffect(() => {
-    //   async function fetchPendingApprovals() {
-    //     setisLoading(true);
-    //     try {
-    //       const data = await getData('PendingApprovals', '*');
-    //       setPendingApprovals(data);
-    //     } catch (error) {
-    //       console.error('Failed to fetch pending Approvals:', error);
-    //       alert('Failed to fetch pending Approvals. Please check the console for more details.');
-    //     } finally {
-    //       setisLoading(false);
-    //     }
-    //   }
-    //   fetchPendingApprovals();
-    // }, []);
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ['pendingApprovals'],
@@ -67,6 +50,18 @@ export default function Approvals() {
   });
 
   const { data: allUsers = [] } = useAllUsers();
+
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => currentUserClient.me()
+  });
+
+  const userRole = currentUser?.custom_role || currentUser?.role;
+  const isLocationUser = userRole === 'Location';
+  const userSites = currentUser?.default_sites?.length
+    ? currentUser.default_sites
+    : (currentUser?.default_site ? [currentUser.default_site] : []);
+  const visibleClaims = isLocationUser ? claims.filter(c => userSites.includes(c.site)) : claims;
 
   const approveMutation = useMutation({
     mutationFn: async (id) => {
@@ -145,14 +140,14 @@ export default function Approvals() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-800">Pending Approvals</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{isLocationUser ? 'Awaiting Approval' : 'Pending Approvals'}</h1>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
           <div className="h-8 w-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
         </div>
-      ) : claims.length === 0 ? (
+      ) : visibleClaims.length === 0 ? (
         <Card className="border-0 shadow-lg">
           <CardContent className="flex flex-col items-center justify-center py-16">
             <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
@@ -164,7 +159,7 @@ export default function Approvals() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {claims.map((claim) => (
+          {visibleClaims.map((claim) => (
             <Card key={claim.id} className="border-0 shadow-lg">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
@@ -272,16 +267,18 @@ export default function Approvals() {
                       )}
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
-                      <div>
-                        <label className="text-xs text-slate-400 uppercase tracking-wide block mb-2">Approval Note (Optional)</label>
-                        <Textarea
-                          placeholder="Add any notes for this approval..."
-                          value={approvalNotes[claim.id] || ''}
-                          onChange={(e) => setApprovalNotes(prev => ({ ...prev, [claim.id]: e.target.value }))}
-                          className="resize-none text-sm"
-                          rows={3}
-                        />
-                      </div>
+                      {!isLocationUser && (
+                        <div>
+                          <label className="text-xs text-slate-400 uppercase tracking-wide block mb-2">Approval Note (Optional)</label>
+                          <Textarea
+                            placeholder="Add any notes for this approval..."
+                            value={approvalNotes[claim.id] || ''}
+                            onChange={(e) => setApprovalNotes(prev => ({ ...prev, [claim.id]: e.target.value }))}
+                            className="resize-none text-sm"
+                            rows={3}
+                          />
+                        </div>
+                      )}
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-slate-400" />
                         <p className="text-xs text-slate-400">
@@ -289,28 +286,33 @@ export default function Approvals() {
                         </p>
                       </div>
                     </div>
+                    <div className="mt-4">
+                      <ApprovalChat claim={claim} currentUser={currentUser} />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2 shrink-0">
-                    <Button
-                      size="sm"
-                      className="bg-green-600 hover:bg-green-700 text-white gap-2"
-                      onClick={() => approveMutation.mutate(claim.id)}
-                      disabled={approveMutation.isPending}
-                    >
-                      <CheckCircle2 className="h-4 w-4" />
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
-                      onClick={() => rejectMutation.mutate(claim.id)}
-                      disabled={rejectMutation.isPending}
-                    >
-                      <XCircle className="h-4 w-4" />
-                      Reject
-                    </Button>
-                  </div>
+                  {!isLocationUser && (
+                    <div className="flex flex-col gap-2 shrink-0">
+                      <Button
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                        onClick={() => approveMutation.mutate(claim.id)}
+                        disabled={approveMutation.isPending}
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        Approve
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-red-200 text-red-600 hover:bg-red-50 gap-2"
+                        onClick={() => rejectMutation.mutate(claim.id)}
+                        disabled={rejectMutation.isPending}
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Reject
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
