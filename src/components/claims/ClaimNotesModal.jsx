@@ -676,7 +676,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
           {/* Notes List */}
           <div>
-            <Label className="text-sm font-medium mb-3 block">Notes History</Label>
+            <Label className="text-sm font-medium mb-3 block">History</Label>
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
