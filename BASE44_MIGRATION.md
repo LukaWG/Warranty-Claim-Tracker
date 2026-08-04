@@ -155,7 +155,7 @@ image build/push, then spent ~15 commits fixing real production issues:
 |---|---|
 | `16ba3c0` "Build docker container" | **Rewrites `.github/workflows/deploy.yml` from scratch**: drops the entire GH-Pages job, replaces with `docker/login-action` + `docker/build-push-action` pushing to Docker Hub. The pivot from static-site hosting to container deployment. |
 | `081a5e6`, `4019780` | Adds then merges a second compose file (`nextapp` + `watchtower` services) into `docker-compose.yaml`. |
-| `04f1cbc` "Make docker image lowercase" | Docker Hub rejects uppercase repo names; renamed image to `lukawg/warranty-repair-tracker:latest`. |
+| `04f1cbc` "Make docker image lowercase" | Docker Hub rejects uppercase repo names; renamed image to `lukawg/warranty-claim-tracker:latest`. |
 | `6e4371d`, `113acea`, `241267d`, `19ffed1`, `ccb0ad8` | Prisma-7-in-Docker fixes: `DATABASE_URL`/`AUTH_DATABASE_URL` build args (dummy at build time, real at runtime), removing `datasource.url` from `schema.prisma` (Prisma 7 forbids it alongside `prisma.config.ts`), installing OpenSSL in the builder stage, suppressing a `BETTER_AUTH_SECRET` build-time warning. |
 | `b70459c` "Switch Docker base image from Alpine to Debian slim" | `node:22-alpine` → `node:22-slim` — musl libc lacks the OpenSSL libs Prisma's engine needs. |
 | `9607e44` | Pinned `react-is` directly — a transitive dep webpack couldn't resolve during the Docker build. |

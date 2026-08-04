@@ -37,7 +37,7 @@ services:
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
         NEXT_PUBLIC_ENABLE_MICROSOFT_SSO: ${NEXT_PUBLIC_ENABLE_MICROSOFT_SSO:-false}
         NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO: ${NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO:-false}
-    image: lukawg/warranty-repair-tracker:latest
+    image: lukawg/warranty-claim-tracker:latest
     container_name: warranty-claim-tracker-app
     ports:
       - "3000:3000"
@@ -58,7 +58,7 @@ services:
   # Run with: docker compose --profile setup run --rm db-push
   db-push:
     profiles: ["setup"]
-    image: lukawg/warranty-repair-tracker:latest
+    image: lukawg/warranty-claim-tracker:latest
     depends_on:
       db:
         condition: service_healthy

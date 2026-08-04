@@ -23,7 +23,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-push
-        image: lukawg/warranty-repair-tracker:latest
+        image: lukawg/warranty-claim-tracker:latest
         imagePullPolicy: Always
         command: ["npx", "prisma", "db", "push"]
         env:

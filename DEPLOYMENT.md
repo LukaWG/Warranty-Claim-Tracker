@@ -61,13 +61,13 @@ deployment, restore production behaviour:
 docker build \
   --build-arg NEXT_PUBLIC_API_URL=http://192.168.1.144:5001 \
   --build-arg NEXT_PUBLIC_APP_URL=http://warranty.local \
-  -t lukawg/warranty-repair-tracker:latest .
+  -t lukawg/warranty-claim-tracker:latest .
 
-docker push lukawg/warranty-repair-tracker:latest
+docker push lukawg/warranty-claim-tracker:latest
 ```
 
 CI does this automatically: `.github/workflows/deploy.yml` builds and pushes
-`lukawg/warranty-repair-tracker:latest` (plus a `:<git-sha>` tag) on every push
+`lukawg/warranty-claim-tracker:latest` (plus a `:<git-sha>` tag) on every push
 to `main`. Set the `NEXT_PUBLIC_*` values as repository **variables** and the
 Docker Hub credentials as **secrets** in GitHub.
 
@@ -153,7 +153,7 @@ kubectl rollout restart deployment/warranty-claim-tracker -n warranty-claim-trac
 kubectl rollout status  deployment/warranty-claim-tracker -n warranty-claim-tracker
 
 # To specify a specific image to rollout, then:
-kubectl set image deployment/warranty-claim-tracker  warranty-claim-tracker=lukawg/warranty-repair-tracker@sha256:<sha256> -n warranty-claim-tracker
+kubectl set image deployment/warranty-claim-tracker  warranty-claim-tracker=lukawg/warranty-claim-tracker@sha256:<sha256> -n warranty-claim-tracker
 kubectl rollout status  deployment/warranty-claim-tracker -n warranty-claim-tracker
 ```
 
@@ -162,7 +162,7 @@ image. For controlled rollbacks, deploy by sha tag instead:
 
 ```bash
 kubectl set image deployment/warranty-claim-tracker \
-  warranty-claim-tracker=lukawg/warranty-repair-tracker:<git-sha> \
+  warranty-claim-tracker=lukawg/warranty-claim-tracker:<git-sha> \
   -n warranty-claim-tracker
 # Roll back:
 kubectl rollout undo deployment/warranty-claim-tracker -n warranty-claim-tracker
@@ -200,7 +200,7 @@ mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config && sudo cho
   uses `ingressClassName: traefik`. Change it to `nginx` on clusters running
   ingress-nginx.
 - To use a locally built image without a registry:
-  `docker save lukawg/warranty-repair-tracker:latest | sudo k3s ctr images import -`
+  `docker save lukawg/warranty-claim-tracker:latest | sudo k3s ctr images import -`
   and set `imagePullPolicy: IfNotPresent` in `k8s/deployment.yaml`.
 
 ### Running on Docker Desktop Kubernetes (Mac) instead of K3s

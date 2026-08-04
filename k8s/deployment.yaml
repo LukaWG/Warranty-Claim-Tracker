@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: warranty-claim-tracker
-        image: lukawg/warranty-repair-tracker:latest
+        image: lukawg/warranty-claim-tracker:latest
         imagePullPolicy: Always
         ports:
         - name: http
