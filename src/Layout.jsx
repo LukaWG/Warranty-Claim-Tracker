@@ -14,8 +14,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  MessageSquare,
-  MessagesSquare
+  MessageSquare
 } from 'lucide-react';
 import UnreadBadge from '@/components/messages/UnreadBadge';
 import { cn } from "@/lib/utils";
@@ -170,7 +169,6 @@ export default function Layout({ children, currentPageName }) {
     { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
     { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Group Manager', 'Administrator', 'Owner'] },
     { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Group Manager', 'Owner'] },
-    { name: 'ApprovalMessages', label: 'Approval Messages', icon: MessagesSquare, roles: ['Group Manager', 'Administrator', 'Owner'] },
     { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
     { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Group Manager', 'Owner'] }
   ];

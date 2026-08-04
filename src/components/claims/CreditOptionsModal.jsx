@@ -6,11 +6,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { currentUser as currentUserClient } from '@/api/currentUser';
+import ApprovalChat from '@/components/approvals/ApprovalChat';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 export default function CreditOptionsModal({ claim, open, onClose, onSave, isSaving = false }) {
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: () => databaseClients.Site.list('name')
+  });
+
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => currentUserClient.me()
   });
 
   const CREDIT_APPROVAL_LIMIT = 100;
@@ -84,121 +92,133 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
           <DialogTitle>Credit Options — {claim?.wip_number}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="space-y-2">
-              <Label>Parts Credit (£)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                <Input
-                  type="number" step="0.01" min="0"
-                  max={currentParts > 0 ? currentParts : undefined}
-                  value={creditParts}
-                  onChange={(e) => setCreditParts(e.target.value)}
-                  className="pl-7"
-                  disabled={currentParts <= 0}
-                />
-              </div>
-              {currentParts > 0
-                ? <p className="text-xs text-slate-400">of £{currentParts.toFixed(2)}</p>
-                : <p className="text-xs text-amber-500">No parts cost recorded</p>
-              }
-            </div>
-            <div className="space-y-2">
-              <Label>Labour Credit (£)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                <Input
-                  type="number" step="0.01" min="0"
-                  max={currentLabour > 0 ? currentLabour : undefined}
-                  value={creditLabour}
-                  onChange={(e) => setCreditLabour(e.target.value)}
-                  className="pl-7"
-                  disabled={currentLabour <= 0}
-                />
-              </div>
-              {currentLabour > 0
-                ? <p className="text-xs text-slate-400">of £{currentLabour.toFixed(2)}</p>
-                : <p className="text-xs text-amber-500">No labour cost recorded</p>
-              }
-            </div>
-            <div className="space-y-2">
-              <Label>Sub Con Credit (£)</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
-                <Input
-                  type="number" step="0.01" min="0"
-                  max={currentSubCon > 0 ? currentSubCon : undefined}
-                  value={creditSubCon}
-                  onChange={(e) => setCreditSubCon(e.target.value)}
-                  className="pl-7"
-                  disabled={currentSubCon <= 0}
-                />
-              </div>
-              {currentSubCon > 0
-                ? <p className="text-xs text-slate-400">of £{currentSubCon.toFixed(2)}</p>
-                : <p className="text-xs text-amber-500">No sub con cost recorded</p>
-              }
-            </div>
-          </div>
-
-          {totalCredit > 0 && (
-            <p className="text-sm font-medium text-slate-600">Total Credit: £{totalCredit.toFixed(2)}</p>
-          )}
-
-          {totalCredit > 0 && (
-            <div className="space-y-2">
-              <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal"></span></Label>
-              <Textarea
-                placeholder="Please provide justification for this credit amount..."
-                value={creditNote}
-                onChange={(e) => setCreditNote(e.target.value)}
-                required className="resize-none" rows={3}
-              />
-            </div>
-          )}
-
-          {claim?.approval_note && (
-            <div className="space-y-2">
-              <Label>Approver Note</Label>
-              <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
-                <p className="text-sm text-slate-700">{claim.approval_note}</p>
-              </div>
-            </div>
-          )}
-
-          {(() => {
-            const originalCreditVal = parseFloat(claim?.credit) || 0;
-            const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= CREDIT_APPROVAL_LIMIT;
-            if (creditChangedAfterApproval) {
-              return (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
-                  <span className="text-amber-500 text-sm">⚠</span>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-amber-700">Re-approval required</span>
-                    <span className="text-xs text-amber-600">Credit figure changed — pending re-approval</span>
-                  </div>
+        <Tabs defaultValue="credit" className="w-full">
+          <TabsList className="grid grid-cols-2 w-full mb-2">
+            <TabsTrigger value="credit">Credit</TabsTrigger>
+            <TabsTrigger value="chat">Approval Chat</TabsTrigger>
+          </TabsList>
+          <TabsContent value="credit" className="space-y-4 pt-2">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2">
+                <Label>Parts Credit (£)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
+                  <Input
+                    type="number" step="0.01" min="0"
+                    max={currentParts > 0 ? currentParts : undefined}
+                    value={creditParts}
+                    onChange={(e) => setCreditParts(e.target.value)}
+                    className="pl-7"
+                    disabled={currentParts <= 0}
+                  />
                 </div>
-              );
-            }
-            if (totalCredit >= CREDIT_APPROVAL_LIMIT && claim?.approval_status !== 'approved') {
-              return (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
-                  <span className="text-amber-500 text-sm">⚠</span>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-amber-700">Credit approval pending</span>
-                    <span className="text-xs text-amber-600">
-                      Credit ≥ £{CREDIT_APPROVAL_LIMIT}
-                      {claim?.approval_status === 'rejected' && ' · Rejected'}
-                      {claim?.approval_status === 'pending_approval' && ' · Awaiting approval'}
-                    </span>
-                  </div>
+                {currentParts > 0
+                  ? <p className="text-xs text-slate-400">of £{currentParts.toFixed(2)}</p>
+                  : <p className="text-xs text-amber-500">No parts cost recorded</p>
+                }
+              </div>
+              <div className="space-y-2">
+                <Label>Labour Credit (£)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
+                  <Input
+                    type="number" step="0.01" min="0"
+                    max={currentLabour > 0 ? currentLabour : undefined}
+                    value={creditLabour}
+                    onChange={(e) => setCreditLabour(e.target.value)}
+                    className="pl-7"
+                    disabled={currentLabour <= 0}
+                  />
                 </div>
-              );
-            }
-            return null;
-          })()}
-        </div>
+                {currentLabour > 0
+                  ? <p className="text-xs text-slate-400">of £{currentLabour.toFixed(2)}</p>
+                  : <p className="text-xs text-amber-500">No labour cost recorded</p>
+                }
+              </div>
+              <div className="space-y-2">
+                <Label>Sub Con Credit (£)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">£</span>
+                  <Input
+                    type="number" step="0.01" min="0"
+                    max={currentSubCon > 0 ? currentSubCon : undefined}
+                    value={creditSubCon}
+                    onChange={(e) => setCreditSubCon(e.target.value)}
+                    className="pl-7"
+                    disabled={currentSubCon <= 0}
+                  />
+                </div>
+                {currentSubCon > 0
+                  ? <p className="text-xs text-slate-400">of £{currentSubCon.toFixed(2)}</p>
+                  : <p className="text-xs text-amber-500">No sub con cost recorded</p>
+                }
+              </div>
+            </div>
+
+            {totalCredit > 0 && (
+              <p className="text-sm font-medium text-slate-600">Total Credit: £{totalCredit.toFixed(2)}</p>
+            )}
+
+            {totalCredit > 0 && (
+              <div className="space-y-2">
+                <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal"></span></Label>
+                <Textarea
+                  placeholder="Please provide justification for this credit amount..."
+                  value={creditNote}
+                  onChange={(e) => setCreditNote(e.target.value)}
+                  required className="resize-none" rows={3}
+                />
+              </div>
+            )}
+
+            {claim?.approval_note && (
+              <div className="space-y-2">
+                <Label>Approver Note</Label>
+                <div className="p-3 rounded-md bg-slate-50 border border-slate-200">
+                  <p className="text-sm text-slate-700">{claim.approval_note}</p>
+                </div>
+              </div>
+            )}
+
+            {(() => {
+              const originalCreditVal = parseFloat(claim?.credit) || 0;
+              const creditChangedAfterApproval = claim?.approval_status === 'approved' && totalCredit !== originalCreditVal && totalCredit >= CREDIT_APPROVAL_LIMIT;
+              if (creditChangedAfterApproval) {
+                return (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+                    <span className="text-amber-500 text-sm">⚠</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-semibold text-amber-700">Re-approval required</span>
+                      <span className="text-xs text-amber-600">Credit figure changed — pending re-approval</span>
+                    </div>
+                  </div>
+                );
+              }
+              if (totalCredit >= CREDIT_APPROVAL_LIMIT && claim?.approval_status !== 'approved') {
+                return (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-50 border border-amber-200">
+                    <span className="text-amber-500 text-sm">⚠</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-semibold text-amber-700">Credit approval pending</span>
+                      <span className="text-xs text-amber-600">
+                        Credit ≥ £{CREDIT_APPROVAL_LIMIT}
+                        {claim?.approval_status === 'rejected' && ' · Rejected'}
+                        {claim?.approval_status === 'pending_approval' && ' · Awaiting approval'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+          </TabsContent>
+          <TabsContent value="chat">
+
+            {claim?.id && (
+                <ApprovalChat claim={claim} currentUser={currentUser} />
+            )}
+          </TabsContent>
+        </Tabs>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>

@@ -42,7 +42,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
 
   const router = useRouter();
 
-  // const { user: currentUser } = useAuth();
     const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => currentUserClient.me(),
@@ -100,6 +99,22 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     return claimIds;
   }, [allMessages, currentUser, isAdminRole, userSite]);
 
+  const { data: approvalMessages = [] } = useQuery({
+    queryKey: ['approvalMessages-unread', currentUser?.email],
+    queryFn: () => databaseClients.ApprovalMessage.list('-created_date', 200),
+    enabled: !!currentUser?.email,
+    refetchInterval: 30000
+  });
+
+  const unreadApprovalClaimIds = useMemo(() => {
+    if (!!currentUser?.email) return new Set();
+    const claimIds = new Set();
+    approvalMessages.forEach(m => {
+      if (m.sender_email === currentUser.email) return;
+      if (!m.read) claimIds.add(m.claim_id);
+    });
+    return claimIds;
+  }, [approvalMessages, currentUser]);
 
   const toggleRow = (id) => setExpandedRows(prev => {
     const next = new Set(prev);
@@ -560,10 +575,13 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                               variant="ghost"
                               size="icon"
                               onClick={() => onCreditOptions(claim)}
-                              className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
+                              className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50 relative"
                               title="Credit"
                             >
                               <CreditCard className="h-4 w-4" />
+                              {unreadApprovalClaimIds.has(claim.id) && 
+                                <span className="absolute top-1 right-1 h-2 w-2 rounded-full" style={{ backgroundColor: 'var(--hendy-teal)' }}
+                              />}
                             </Button>
                            )}
                            
@@ -926,10 +944,13 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => onCreditOptions(claim)}
-                                  className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50"
+                                  className="h-8 w-8 text-slate-400 hover:text-green-600 hover:bg-green-50 relative"
                                   title="Credit"
                                 >
                                   <CreditCard className="h-4 w-4" />
+                                  {unreadApprovalClaimIds.has(claim.id) && 
+                                    <span className="absolute top-1 right-1 h-2 w-2 rounded-full" style={{ backgroundColor: 'var(--hendy-teal)' }}
+                                  />}
                                 </Button>
                               )}
                               

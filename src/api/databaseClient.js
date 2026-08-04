@@ -145,6 +145,7 @@ class DatabaseClient {
 class DatabaseClients {
   /** @type {DatabaseClient} */ Alert;
   /** @type {DatabaseClient} */ AlertResolution;
+  /** @type {DatabaseClient} */ ApprovalMessage;
   /** @type {DatabaseClient} */ Brand;
   /** @type {DatabaseClient} */ ClaimAudit;
   /** @type {DatabaseClient} */ ClaimNote;
