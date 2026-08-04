@@ -1,7 +1,8 @@
-import { APIError, betterAuth } from "better-auth"
+import { betterAuth } from "better-auth"
 import { admin } from "better-auth/plugins"
 import { prismaAdapter } from "better-auth/adapters/prisma"
 import { prisma } from "./prisma"
+import { createAuthMiddleware, APIError } from "better-auth/api"
 
 const isDev = process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
 
