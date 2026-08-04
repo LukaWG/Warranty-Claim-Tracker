@@ -36,6 +36,8 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
   const [creditLabour, setCreditLabour] = useState(claim?.credit_labour || 0);
   const [creditSubCon, setCreditSubCon] = useState(claim?.credit_sub_con || 0);
   const [creditNote, setCreditNote] = useState(claim?.credit_note || '');
+  const [newNote, setNewNote] = useState('');
+  const hasExistingNote = !!(claim?.credit_note);
 
   useEffect(() => {
     if (claim?.approval_status === 'rejected') {
@@ -43,10 +45,15 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
       setCreditLabour(0);
       setCreditSubCon(0);
       setCreditNote('');
+      setNewNote('');
     }
   }, [claim?.approval_status, open])
 
   const totalCredit = (parseFloat(creditParts) || 0) + (parseFloat(creditLabour) || 0) + (parseFloat(creditSubCon) || 0);
+
+  const finalCreditNote = hasExistingNote
+    ? (newNote.trim() ? `${claim.credit_note}\n\n--- Additional note ---\n${newNote.trim()}` : claim.credit_note)
+    : creditNote;
 
   const updateTotal = (parts, labour, subCon) =>
     (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
@@ -77,7 +84,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
       credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
       credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
       credit: creditVal || null,
-      credit_note: creditVal > 0 ? creditNote : null,
+      credit_note: creditVal > 0 ? finalCreditNote : null,
       approval_status: effectiveApprovalStatus,
       parts: (shouldUpdateFigures && newParts > 0) ? newParts : (currentParts > 0 ? currentParts : null),
       labour: (shouldUpdateFigures && newLabour > 0) ? newLabour : (currentLabour > 0 ? currentLabour : null),
@@ -162,14 +169,28 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             )}
 
             {totalCredit > 0 && (
+              <div className="space-y-3">
+              {hasExistingNote && (
+                <div className="space-y-2">
+                  <Label>Credit Note</Label>
+                  <div className="p-3 rounded-md bg-slate-50 border border-slate-200 whitespace-pre-wrap">
+                    <p className="text-sm text-slate-700">{claim.credit_note}</p>
+                  </div>
+                </div>
+              )}
               <div className="space-y-2">
-                <Label>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal"></span></Label>
+                <Label>
+                  {hasExistingNote
+                    ? <>Add Note <span className="text-xs text-slate-400 font-normal">(optional)</span></>
+                    : <>Credit Note <span className="text-red-500">*</span> <span className="text-xs text-slate-400 font-normal">(required for any credit)</span></>}
+                </Label>
                 <Textarea
-                  placeholder="Please provide justification for this credit amount..."
-                  value={creditNote}
-                  onChange={(e) => setCreditNote(e.target.value)}
-                  required className="resize-none" rows={3}
+                  placeholder={hasExistingNote ? "Add an additional note..." : "Please provide justification for this credit amount..."}
+                  value={hasExistingNote ? newNote : creditNote}
+                  onChange={(e) => hasExistingNote ? setNewNote(e.target.value) : setCreditNote(e.target.value)}
+                  required={!hasExistingNote} className="resize-none" rows={3}
                 />
+              </div>
               </div>
             )}
 
