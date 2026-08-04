@@ -40,7 +40,7 @@ function MessageBubble({ message, isOwn, readers }) {
   );
 }
 
-export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [], onGoToRepair, onMarkUnread }) {
+export default function MessageThread({ rootMessage, replies, currentUser, onReply, allReadReceipts = [], onGoToRepair, onMarkUnread, onMarkRead }) {
   const [replyBody, setReplyBody] = useState('');
   const [sending, setSending] = useState(false);
   const [imageFiles, setImageFiles] = useState([]);
@@ -132,7 +132,9 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
           content: `[Message Reply] ${rootMessage.subject}\n\n${replyBody.trim()}\n\n- ${senderName}`,
           image_url: uploadedUrls[0] || undefined
         }),
-        databaseClients.WarrantyClaim.update(rootMessage.claim_id, { site_responded: true })
+        rootMessage.claim_id
+          ? databaseClients.WarrantyClaim.update(rootMessage.claim_id, { site_responded: true }).catch(() => {}) // Ignore errors if claim_id is not valid
+          : Promise.resolve()
       ]);
       setReplyBody('');
       setImageFiles([]);
@@ -151,6 +153,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
   };
 
   const allMessages = [rootMessage, ...replies].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+  const threadUnread = [rootMessage, ...replies].some(m => m.sender_email !== currentUser?.email && !m.read);
 
   return (
     <div className="space-y-4">
@@ -160,6 +163,18 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
         <Badge variant="outline" className="text-xs">{rootMessage.wip_number}</Badge>
         <Badge variant="outline" className="text-xs bg-slate-50">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
         <div className="ml-auto flex items-center gap-2">
+          {threadUnread ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 text-xs gap-1 text-slate-500"
+              onClick={onMarkRead?.()}
+              title="Mark as read"
+            >
+              <CheckCheck className="h-3 w-3" />
+              Mark read
+            </Button>
+          ) : (
           <Button
             size="sm"
             variant="ghost"
@@ -171,6 +186,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
             <MailOpen className="h-3 w-3" />
             {markingUnread ? 'Marking...' : 'Mark unread'}
           </Button>
+          )}
         
           <Button 
             size="sm" 

@@ -143,9 +143,8 @@ export default function Messages() {
     queryClient.invalidateQueries({ queryKey: ['messages-unread', currentUser?.email] });
   };
 
-  const handleOpenThread = async (msg) => {
+  const handleOpenThread = (msg) => {
     setSelectedThread(msg);
-    await markThreadRead(msg);
   };
 
   return (
@@ -277,6 +276,7 @@ export default function Messages() {
               }}
               onGoToRepair={() => setSelectedThread(null)}
               onMarkUnread={() => setSelectedThread(null)}
+              onMarkRead={() => { markThreadRead(selectedThread); setSelectedThread(null);}}
             />
           </DialogContent>
         </Dialog>
