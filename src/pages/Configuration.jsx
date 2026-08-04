@@ -1240,9 +1240,10 @@ export default function Configuration() {
 									variant="ghost"
 									size="icon"
 									onClick={() => {
-										// Normalize legacy default_site values that stored the site name instead of its id
+										// Normalize legacy default_site/default_sites values that stored the site name instead of its id
 										const legacySite = user.default_site ? sites.find(s => s.name === user.default_site) : null;
-										setEditingUser(legacySite ? { ...user, default_site: legacySite.id } : user);
+										const normalizedSites = (user.default_sites || []).map(s => sites.find(site => site.id === s) ? s : (sites.find(site => site.name === s)?.id ?? s));
+										setEditingUser({ ...user, ...(legacySite ? { default_site: legacySite.id } : {}), default_sites: normalizedSites });
 									}}
 									className="h-8 w-8 text-slate-400 hover:text-slate-600 hover:bg-slate-50"
 									title="Edit user"
@@ -1439,10 +1440,10 @@ export default function Configuration() {
 									<input
 										type="checkbox"
 										id={`new-user-admin-site-${site.id}`}
-										checked={(newUser.default_sites || []).includes(site.name)}
+										checked={(newUser.default_sites || []).includes(site.id)}
 										onChange={(e) => {
 											const current = newUser.default_sites || [];
-											const updated = e.target.checked ? [...current, site.name] : current.filter(b => b !== site.name);
+											const updated = e.target.checked ? [...current, site.id] : current.filter(b => b !== site.id);
 											setNewUser({ ...newUser, default_sites: updated });
 										}}
 										className="h-4 w-4 rounded border-gray-300"
@@ -1756,10 +1757,10 @@ export default function Configuration() {
 							<input
 							type="checkbox"
 							id={`edit-user-admin-site-${site.id}`}
-							checked={(editingUser.default_sites || []).includes(site.name)}
+							checked={(editingUser.default_sites || []).includes(site.id)}
 							onChange={(e) => {
 								const current = editingUser.default_sites || [];
-								const updated = e.target.checked ? [...current, site.name] : current.filter(b => b !== site.name);
+								const updated = e.target.checked ? [...current, site.id] : current.filter(b => b !== site.id);
 								setEditingUser({ ...editingUser, default_sites: updated });
 							}}
 							className="h-4 w-4 rounded border-gray-300"
