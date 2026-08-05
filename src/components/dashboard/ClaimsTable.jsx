@@ -351,7 +351,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                       {col('scanned_date') && <SortableHead colKey="scanned_date">Scanned Date</SortableHead>}
                       {col('manufacturer_deadline') && <SortableHead colKey="manufacturer_deadline">Mfr Deadline</SortableHead>}
                       {col('status') && <SortableHead colKey="status">Status</SortableHead>}
-                      {col('approval_status') && <SortableHead colKey="approval_status">Approval Status</SortableHead>}
+                      {col('approval_status') && <SortableHead colKey="approval_status">Credit Status</SortableHead>}
                       {col('claimed_date') && <SortableHead colKey="claimed_date">Claimed Date</SortableHead>}
                       {col('claimed_by') && <SortableHead colKey="claimed_by">Claimed By</SortableHead>}
                       {col('is_campaign') && <TableHead className="font-semibold text-slate-600">Campaign</TableHead>}
@@ -701,7 +701,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                        {col('scanned_date') && <TableHead className="font-semibold text-slate-600">Scanned Date</TableHead>}
                        {col('manufacturer_deadline') && <TableHead className="font-semibold text-slate-600">Mfr Deadline</TableHead>}
                        {col('status') && <TableHead className="font-semibold text-slate-600">Status</TableHead>}
-                       {col('approval_status') && <TableHead className="font-semibold text-slate-600">Approval Status</TableHead>}
+                       {col('approval_status') && <TableHead className="font-semibold text-slate-600">Credit Status</TableHead>}
                        {col('claimed_date') && <TableHead className="font-semibold text-slate-600">Claimed Date</TableHead>}
                        {col('claimed_by') && !isProcessor && <TableHead className="font-semibold text-slate-600">Claimed By</TableHead>}
                        {col('is_campaign') && <TableHead className="font-semibold text-slate-600">Campaign</TableHead>}
