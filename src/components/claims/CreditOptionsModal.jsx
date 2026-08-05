@@ -343,7 +343,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             <span title={!creditNote.trim() ? "Credit note is required to request credit" : undefined}>
             <Button
               onClick={handleSave}
-              disabled={!creditNote.trim() || isSaving}
+              disabled={(totalCredit > 0 && !hasExistingNote && !creditNote.trim()) || isSaving}
             >
               {isSaving ? 'Submitting...' : 'Submit'}
             </Button>
