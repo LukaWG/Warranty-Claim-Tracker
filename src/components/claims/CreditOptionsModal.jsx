@@ -88,7 +88,11 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
     const creditChangedAfterApproval = (claim?.approval_status === 'approved' || claim?.approval_status === 'rejected') && creditVal !== originalCreditVal && creditVal >= CREDIT_APPROVAL_LIMIT;
     const effectiveApprovalStatus = creditChangedAfterApproval
       ? 'pending_approval'
-      : (needsApproval ? (claim?.approval_status || 'pending_approval') : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) ? 'approved' : null);
+      : (needsApproval
+        ? (claim?.approval_status === 'approved' ? 'approved' : 'pending_approval')
+        : (creditVal > 0 && creditVal < CREDIT_APPROVAL_LIMIT) 
+          ? 'approved' 
+          : null);
 
     // Only update the actual figures when status is set to 'credited'
     // Otherwise, just store the credit values without reducing parts/labour/sub_con
