@@ -354,27 +354,34 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                   );
                 })()}
 
-                <div className="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="campaign-toggle"
-                      checked={!!formData.is_campaign}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_campaign: !!checked, campaign_reference: checked ? prev.campaign_reference: '' }))}
-                    />
-                    <label htmlFor="campaign-toggle" className="text-sm font-medium text-slate-700 cursor-pointer select-none flex items-center gap-1.5">
-                      <AlertTriangle className="h-4 w-4" style={{ color: 'var(--hendy-blue)'}} />
-                      Safety Recall / Service Campaign
-                    </label>
+                {(() => {
+                  const selectedSite = sites.find(s => s.name === formData.site);
+                  const campaignEnabled = selectedSite ? selectedSite.campaign_enabled !== false : true;
+                  if (!campaignEnabled) return null;
+                  return (
+                  <div className="border border-slate-200 rounded-lg p-4 bg-slate-50 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="campaign-toggle"
+                        checked={!!formData.is_campaign}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_campaign: !!checked, campaign_reference: checked ? prev.campaign_reference: '' }))}
+                      />
+                      <label htmlFor="campaign-toggle" className="text-sm font-medium text-slate-700 cursor-pointer select-none flex items-center gap-1.5">
+                        <AlertTriangle className="h-4 w-4" style={{ color: 'var(--hendy-blue)'}} />
+                        Safety Recall / Service Campaign
+                      </label>
+                    </div>
+                    {formData.is_campaign && (
+                      <Input
+                        placeholder="Enter campaign reference number or description"
+                        value={formData.campaign_reference}
+                        onChange={(e) => setFormData(prev => ({ ...prev, campaign_reference: e.target.value }))}
+                        className="h-10 border-slate-300 focus:border-purple-500 focus:ring-purple-500"
+                      />
+                    )}
                   </div>
-                  {formData.is_campaign && (
-                    <Input
-                      placeholder="Enter campaign reference number or description"
-                      value={formData.campaign_reference}
-                      onChange={(e) => setFormData(prev => ({ ...prev, campaign_reference: e.target.value }))}
-                      className="h-10 border-slate-300 focus:border-purple-500 focus:ring-purple-500"
-                    />
-                  )}
-                </div>
+                  );
+                })()}
 
                 <Button
                   type="submit"

@@ -1494,7 +1494,8 @@ export default function Configuration() {
 					code: editingSite.code || null,
 					brands: editingSite.brands || [],
 					brand_hourly_rates_1: Object.keys(brandRates1).length > 0 ? brandRates1 : null,
-					brand_hourly_rates_2: Object.keys(brandRates2).length > 0 ? brandRates2 : null
+					brand_hourly_rates_2: Object.keys(brandRates2).length > 0 ? brandRates2 : null,
+					campaign_enabled: editingSite.campaign_enabled !== false
 				}});
 				}}
 				className="space-y-4"
@@ -1546,6 +1547,18 @@ export default function Configuration() {
 					)}
 					</div>
 				</div>
+				 <div className="flex items-center gap-3 rounded-md border border-slate-200 p-3 bg-slate-50">
+                  <input
+                    type="checkbox"
+                    id="campaign-enabled"
+                    checked={editingSite.campaign_enabled !== false}
+                    onChange={(e) => setEditingSite({ ...editingSite, campaign_enabled: e.target.checked })}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <label htmlFor="campaign-enabled" className="text-sm text-slate-700 cursor-pointer">
+                    Show "Safety Recall / Service Campaign" option on the submission form for this location's users
+                  </label>
+                </div>
 				<div className="space-y-2">
 					<Label className="text-sm font-medium">Hourly Rate per Brand (£)</Label>
 					<p className="text-xs text-slate-500">Set a rate per brand. Leave blank to exclude that brand.</p>
