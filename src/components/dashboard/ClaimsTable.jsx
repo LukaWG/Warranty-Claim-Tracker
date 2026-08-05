@@ -527,7 +527,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             claim.approval_status === 'credited' ? 'bg-teal-50 border-teal-200 text-teal-700' :
                             'bg-amber-50 border-amber-200 text-amber-700'
                           }`}>
-                            {claim.approval_status === 'pending_approval' && 'Pending'}
+                            {claim.approval_status === 'pending_approval' && 'Awaiting Approval'}
                             {claim.approval_status === 'approved' && 'Approved'}
                             {claim.approval_status === 'rejected' && 'Rejected'}
                             {claim.approval_status === 'credited' && 'Credited'}
@@ -872,7 +872,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                                    claim.approval_status === 'credited' ? 'bg-teal-50 border-teal-200 text-teal-700' :
                                    'bg-amber-50 border-amber-200 text-amber-700'
                                  }`}>
-                                 {claim.approval_status === 'pending_approval' && 'Pending'}
+                                 {claim.approval_status === 'pending_approval' && 'Awaiting Approval'}
                                  {claim.approval_status === 'approved' && 'Approved'}
                                  {claim.approval_status === 'rejected' && 'Rejected'}
                                  {claim.approval_status === 'credited' && 'Credited'}
