@@ -51,7 +51,36 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
     enabled: open
   });
 
-  const selectedClaim = prefilledClaim || claims.find(c => c.id === selectedClaimId);
+  const { data: allSites = [] } = useQuery({
+    queryKey: ['sites'],
+    queryFn: () => databaseClients.Site.get()
+  });
+
+  // Apply site/brand permissions based on user role
+  const visibleClaims = claims.filter(claim => {
+    const userRole = currentUser?.custom_role || currentUser?.role;
+    if (userRole === 'Location') {
+      const userSites = currentUser?.default_sites?.length
+        ? currentUser.default_sites
+        : (currentUser?.default_site ? [currentUser.default_site] : []);
+      if (userSites.length > 0 && !userSites.includes(claim.site)) return false;
+      const siteBrands = allSites
+        .filter(s => userSites.includes(s.name))
+        .flatMap(s => s.brands || []);
+      const allowedBrands = [...new Set(siteBrands)];
+      if (allowedBrands.length > 0 && !allowedBrands.includes(claim.brand)) return false;
+    }
+    if (userRole === 'Administrator' && currentUser?.default_sites?.length > 0) {
+      const adminSiteBrands = allSites
+        .filter(s => currentUser.default_sites.includes(s.name))
+        .flatMap(s => s.brands || []);
+      const adminBrands = [...new Set(adminSiteBrands)];
+      if (adminBrands.length > 0 && !adminBrands.includes(claim.brand)) return false;
+    }
+    return true;
+  });
+
+  const selectedClaim = prefilledClaim || visibleClaims.find(c => c.id === selectedClaimId);
 
   const handleSend = async () => {
     if (!selectedClaim || !body.trim()) return;
@@ -113,7 +142,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
                   <SelectValue placeholder="Select a claim..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {claims.map(c => (
+                  {visibleClaims.map(c => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.wip_number} — {sites.find(s => s.id === c.site)?.name} {c.brand ? `(${brands.find(b => b.id === c.brand)?.name})` : ''}
                     </SelectItem>
