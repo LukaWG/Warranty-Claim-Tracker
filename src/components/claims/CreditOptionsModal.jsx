@@ -312,7 +312,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             {(totalCredit > 0 && (totalCredit < 100 || claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval')) && (
               <Button
                 variant="outline"
-                disabled={isSaving || (claim?.approval_status !== 'approved' && totalCredit >= 100 && !finalCreditNote) }
+                disabled={isSaving || (claim?.approval_status !== 'approved' && totalCredit >= 100) || !finalCreditNote }
                 className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={async () => {
                   const creditVal = totalCredit;
