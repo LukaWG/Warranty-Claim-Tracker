@@ -448,7 +448,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                       )}
                       {col('total_claim_cost') && (
                         <TableCell className="text-slate-600 font-medium">
-                          {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
+                          {claim.total_claim_cost ? `£${(claim.total_claim_cost - (claim.approval_status === 'credited' ? (claim.credit || 0) : 0)).toFixed(2)}` : "—"}
                         </TableCell>
                       )}
                       {col('last_clocking_date') && (
@@ -797,7 +797,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                          )}
                          {col('total_claim_cost') && (
                            <TableCell className="text-slate-600 font-medium">
-                             {claim.total_claim_cost ? `£${claim.total_claim_cost.toFixed(2)}` : "—"}
+                              {claim.total_claim_cost ? `£${(claim.total_claim_cost - (claim.approval_status === 'credited' ? (claim.credit || 0) : 0)).toFixed(2)}` : "—"}
                            </TableCell>
                          )}
                          {col('last_clocking_date') && (

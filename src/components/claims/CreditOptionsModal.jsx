@@ -33,6 +33,11 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
   const currentLabour = parseFloat(claim?.labour) || 0;
   const currentSubCon = parseFloat(claim?.sub_con) || 0;
 
+  const isCredited = claim?.approval_status === 'credited';
+  const remainingParts = Math.max(0, currentParts - (parseFloat(claim?.credit_parts) || 0));
+  const remainingLabour = Math.max(0, currentLabour - (parseFloat(claim?.credit_labour) || 0));
+  const remainingSubCon = Math.max(0, currentSubCon - (parseFloat(claim?.credit_sub_con) || 0));
+
   const [creditParts, setCreditParts] = useState(claim?.credit_parts || 0);
   const [creditLabour, setCreditLabour] = useState(claim?.credit_labour || 0);
   const [creditSubCon, setCreditSubCon] = useState(claim?.credit_sub_con || 0);
@@ -122,14 +127,14 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   <Input
                     type="number" step="0.01" min="0"
                     max={currentParts > 0 ? currentParts : undefined}
-                    value={creditParts}
+                    value={isCredited ? '' : creditParts}
                     onChange={(e) => setCreditParts(e.target.value)}
                     className="pl-7"
-                    disabled={currentParts <= 0}
+                    disabled={isCredited || currentParts <= 0}
                   />
                 </div>
                 {currentParts > 0
-                  ? <p className="text-xs text-slate-400">of £{currentParts.toFixed(2)}</p>
+                  ? <p className="text-xs text-slate-400">of £{isCredited ? remainingParts.toFixed(2) : currentParts.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No parts cost recorded</p>
                 }
               </div>
@@ -140,14 +145,14 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   <Input
                     type="number" step="0.01" min="0"
                     max={currentLabour > 0 ? currentLabour : undefined}
-                    value={creditLabour}
+                    value={isCredited ? '' : creditLabour}
                     onChange={(e) => setCreditLabour(e.target.value)}
                     className="pl-7"
-                    disabled={currentLabour <= 0}
+                    disabled={isCredited || currentLabour <= 0}
                   />
                 </div>
                 {currentLabour > 0
-                  ? <p className="text-xs text-slate-400">of £{currentLabour.toFixed(2)}</p>
+                  ? <p className="text-xs text-slate-400">of £{isCredited ? remainingLabour.toFixed(2) : currentLabour.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No labour cost recorded</p>
                 }
               </div>
@@ -158,14 +163,14 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   <Input
                     type="number" step="0.01" min="0"
                     max={currentSubCon > 0 ? currentSubCon : undefined}
-                    value={creditSubCon}
+                    value={isCredited ? '' : creditSubCon}
                     onChange={(e) => setCreditSubCon(e.target.value)}
                     className="pl-7"
-                    disabled={currentSubCon <= 0}
+                    disabled={isCredited || currentSubCon <= 0}
                   />
                 </div>
                 {currentSubCon > 0
-                  ? <p className="text-xs text-slate-400">of £{currentSubCon.toFixed(2)}</p>
+                  ? <p className="text-xs text-slate-400">of £{isCredited ? remainingSubCon.toFixed(2) : currentSubCon.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No sub con cost recorded</p>
                 }
               </div>
