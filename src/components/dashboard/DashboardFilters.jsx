@@ -28,11 +28,9 @@ function MultiSelect({ label, options, selected, onChange, placeholder }) {
     }
   };
 
-  const displayText = selected.length === 0
-    ? placeholder
-    : selected.length === 1
-      ? (options.find(o => o.value === selected[0])?.label || selected[0])
-      : `${selected.length} selected`;
+  const displayText = selected.length === 1
+    ? (options.find(o => o.value === selected[0])?.label || selected[0])
+    : placeholder
 
   return (
     <div className="relative" ref={ref}>
