@@ -77,9 +77,6 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
       setSendMessage(false);
     };
 
-  const updateTotal = (parts, labour, subCon) =>
-    (parseFloat(parts) || 0) + (parseFloat(labour) || 0) + (parseFloat(subCon) || 0);
-
   const handleSave = async () => {
     const creditVal = totalCredit;
 
@@ -94,29 +91,13 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
           ? 'approved' 
           : null);
 
-    // Only update the actual figures when status is set to 'credited'
-    // Otherwise, just store the credit values without reducing parts/labour/sub_con
-    const shouldUpdateFigures = effectiveApprovalStatus === 'credited';
-    
-    const newParts = shouldUpdateFigures ? Math.max(0, currentParts - (parseFloat(creditParts) || 0)) : currentParts;
-    const newLabour = shouldUpdateFigures ? Math.max(0, currentLabour - (parseFloat(creditLabour) || 0)) : currentLabour;
-    const newSubCon = shouldUpdateFigures ? Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0)) : currentSubCon;
-    const newTotal = shouldUpdateFigures ? updateTotal(newParts, newLabour, newSubCon) : updateTotal(currentParts, currentLabour, currentSubCon);
-    const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
-    const actualHours = hourlyRate > 0 && shouldUpdateFigures ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
-
     onSave({
       credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
       credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
       credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
       credit: creditVal || null,
       credit_note: creditVal > 0 ? finalCreditNote : null,
-      approval_status: effectiveApprovalStatus,
-      parts: (shouldUpdateFigures && newParts > 0) ? newParts : (currentParts > 0 ? currentParts : null),
-      labour: (shouldUpdateFigures && newLabour > 0) ? newLabour : (currentLabour > 0 ? currentLabour : null),
-      sub_con: (shouldUpdateFigures && newSubCon > 0) ? newSubCon : (currentSubCon > 0 ? currentSubCon : null),
-      total_claim_cost: (shouldUpdateFigures && newTotal > 0) ? newTotal : (updateTotal(currentParts, currentLabour, currentSubCon) > 0 ? updateTotal(currentParts, currentLabour, currentSubCon) : null),
-      actual_hours: actualHours || null,
+      approval_status: effectiveApprovalStatus
     });
   };
 
@@ -316,24 +297,13 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                 className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={async () => {
                   const creditVal = totalCredit;
-                  const newParts = Math.max(0, currentParts - (parseFloat(creditParts) || 0));
-                  const newLabour = Math.max(0, currentLabour - (parseFloat(creditLabour) || 0));
-                  const newSubCon = Math.max(0, currentSubCon - (parseFloat(creditSubCon) || 0));
-                  const newTotal = updateTotal(newParts, newLabour, newSubCon);
-                  const hourlyRate = selectedSite?.brand_hourly_rates?.[claim?.brand] || 0;
-                  const actualHours = hourlyRate > 0 ? Math.round((newLabour / hourlyRate) * 100) / 100 : claim?.actual_hours;
                   onSave({
                     approval_status: 'credited',
                     credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
                     credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
                     credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
                     credit_note: creditVal > 0 ? finalCreditNote : null,
-                    credit: creditVal || null,
-                    parts: newParts > 0 ? newParts : null,
-                    labour: newLabour > 0 ? newLabour : null,
-                    sub_con: newSubCon > 0 ? newSubCon : null,
-                    total_claim_cost: newTotal > 0 ? newTotal : null,
-                    actual_hours: actualHours || null,
+                    credit: creditVal || null
                   });
                 }
               }
