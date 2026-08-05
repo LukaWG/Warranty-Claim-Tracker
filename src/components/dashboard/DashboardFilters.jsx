@@ -101,6 +101,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const userRole = currentUser?.custom_role || currentUser?.role;
   const isAdmin = userRole === 'Administrator';
   const adminSite = currentUser?.default_site;
+  const isLocation = userRole === 'Location';
 
   const sitesShuffled = isAdmin && adminSite
     ? [adminSite]
@@ -205,15 +206,17 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           />
         </div>
 
-        <div className="space-y-2">
-          <Label className="text-xs text-slate-600">Submitted By</Label>
-          <MultiSelect
-            placeholder="All Users"
-            options={userEmails.map(e => ({ value: e, label: getUserName(e) }))}
-            selected={filters.user || []}
-            onChange={(val) => onFilterChange({ ...filters, user: val })}
-          />
-        </div>
+        {!isLocation && (
+          <div className="space-y-2">
+            <Label className="text-xs text-slate-600">Submitted By</Label>
+            <MultiSelect
+              placeholder="All Users"
+              options={userEmails.map(e => ({ value: e, label: getUserName(e) }))}
+              selected={filters.user || []}
+              onChange={(val) => onFilterChange({ ...filters, user: val })}
+            />
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label className="text-xs text-slate-600">Status</Label>
