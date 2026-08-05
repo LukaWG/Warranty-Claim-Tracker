@@ -110,8 +110,16 @@ export default function Dashboard() {
       // Location role: see all claims from their branch except awaiting_review
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (userRole === 'Location') {
-        const locationSite = currentUser?.default_site;
-        if (locationSite && claim.site !== locationSite) return false;
+        const userSites = currentUser?.default_sites?.length
+          ? currentUser.default_sites
+          : (currentUser?.default_site ? [currentUser.default_site] : []);
+        if (userSites.length > 0 && !userSites.includes(claim.site)) return false;
+        // Also filter by brand if the user's site(s) have brand restrictions
+        const siteBrands = allSites
+          .filter(s => userSites.includes(s.name))
+          .flatMap(s => s.brands || []);
+        const allowedBrands = [...new Set(siteBrands)];
+        if (allowedBrands.length > 0 && !allowedBrands.includes(claim.brand)) return false;
         if (claim.status === 'awaiting_review' || claim.status === 'claim_info_received') return false;
       }
 
