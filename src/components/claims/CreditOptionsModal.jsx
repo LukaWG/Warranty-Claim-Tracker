@@ -137,6 +137,9 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   ? <p className="text-xs text-slate-400">of £{isCredited ? remainingParts.toFixed(2) : currentParts.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No parts cost recorded</p>
                 }
+                {isCredited && (parseFloat(claim?.credit_parts) || 0) > 0 && (
+                  <p className="text-xs font-medium text-teal-700">£{(parseFloat(claim.credit_parts)).toFixed(2)} credited</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Labour Credit (£)</Label>
@@ -155,6 +158,9 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   ? <p className="text-xs text-slate-400">of £{isCredited ? remainingLabour.toFixed(2) : currentLabour.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No labour cost recorded</p>
                 }
+                {isCredited && (parseFloat(claim?.credit_labour) || 0) > 0 && (
+                  <p className="text-xs font-medium text-teal-700">£{(parseFloat(claim.credit_labour)).toFixed(2)} credited</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Sub Con Credit (£)</Label>
@@ -173,6 +179,9 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   ? <p className="text-xs text-slate-400">of £{isCredited ? remainingSubCon.toFixed(2) : currentSubCon.toFixed(2)}</p>
                   : <p className="text-xs text-amber-500">No sub con cost recorded</p>
                 }
+                {isCredited && (parseFloat(claim?.credit_sub_con) || 0) > 0 && (
+                  <p className="text-xs font-medium text-teal-700">£{(parseFloat(claim.credit_sub_con)).toFixed(2)} credited</p>
+                )}
               </div>
             </div>
 
