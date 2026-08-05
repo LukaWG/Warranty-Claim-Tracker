@@ -312,7 +312,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
             {(totalCredit > 0 && (totalCredit < 100 || claim?.approval_status === 'approved' || claim?.approval_status === 'pending_approval')) && (
               <Button
                 variant="outline"
-                disabled={isSaving || (claim?.approval_status !== 'approved' && totalCredit >= 100) }
+                disabled={isSaving || (claim?.approval_status !== 'approved' && totalCredit >= 100 && !finalCreditNote) }
                 className="bg-teal-50 border-teal-300 text-teal-700 hover:bg-teal-100 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={async () => {
                   const creditVal = totalCredit;
@@ -327,6 +327,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                     credit_parts: creditVal > 0 ? parseFloat(creditParts) || null : null,
                     credit_labour: creditVal > 0 ? parseFloat(creditLabour) || null : null,
                     credit_sub_con: creditVal > 0 ? parseFloat(creditSubCon) || null : null,
+                    credit_note: creditVal > 0 ? finalCreditNote : null,
                     credit: creditVal || null,
                     parts: newParts > 0 ? newParts : null,
                     labour: newLabour > 0 ? newLabour : null,
