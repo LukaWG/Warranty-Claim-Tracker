@@ -67,9 +67,6 @@ export default function ApprovalChat({ claim, currentUser }) {
       <div className="flex items-center gap-2 px-4 py-2 border-b border-slate-200">
         <MessagesSquare className="h-4 w-4 text-slate-500" />
         <span className="text-sm font-medium text-slate-700">Approval Chat</span>
-        <span className="text-xs text-slate-400">
-          — {isApprover ? 'you (approver) ↔ site' : 'you (site) ↔ approver'}
-        </span>
       </div>
       <div ref={scrollRef} className="max-h-56 overflow-y-auto px-4 py-3 space-y-3">
         {isLoading ? (
