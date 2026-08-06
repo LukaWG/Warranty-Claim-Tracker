@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard, Mail } from "lucide-react";
+import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard, Mail, AlertCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
@@ -274,6 +274,16 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                 <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
               </TooltipTrigger>
               <TooltipContent className="text-xs">Note has been added to this claim</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+        {claim.is_campaign && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <AlertCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+              </TooltipTrigger>
+              <TooltipContent className="text-xs">Safety Recall / Service Campaign {claim.campaign_reference ? `: ${claim.campaign_reference}` : ''}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}
