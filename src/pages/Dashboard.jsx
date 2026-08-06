@@ -120,6 +120,9 @@ export default function Dashboard() {
           .flatMap(s => s.brands || []);
         const allowedBrands = [...new Set(siteBrands)];
         if (allowedBrands.length > 0 && !allowedBrands.includes(claim.brand)) return false;
+        // Further filter by user's assigned brands if set
+        const userBrands = currentUser?.default_brands;
+        if (userBrands && userBrands.length > 0 && !userBrands.includes(claim.brand)) return false;
         if (claim.status === 'awaiting_review' || claim.status === 'claim_info_received') return false;
       }
 

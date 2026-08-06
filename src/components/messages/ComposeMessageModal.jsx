@@ -69,6 +69,9 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
         .flatMap(s => s.brands || []);
       const allowedBrands = [...new Set(siteBrands)];
       if (allowedBrands.length > 0 && !allowedBrands.includes(claim.brand)) return false;
+      // Further filter by user's assigned brands if set
+      const userBrands = currentUser?.default_brands;
+      if (userBrands && userBrands.length > 0 && !userBrands.includes(claim.brand)) return false;
     }
     if (userRole === 'Administrator' && currentUser?.default_sites?.length > 0) {
       const adminSiteBrands = allSites
