@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Send } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
@@ -217,6 +218,22 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
 
             {totalCredit > 0 && (
             <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="send-message-location"
+                  checked={sendMessage}
+                  onCheckedChange={(checked) => {
+                    setSendMessage(checked);
+                    if (checked && !locationMessage.trim()) {
+                      setLocationMessage(`A credit of £${totalCredit.toFixed(2)} has been applied to WIP ${claim?.wip_number}.`);
+                    }
+                  }}
+                />
+                <label htmlFor="send-message-location" className="flex items-center-gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors cursor-pointer">
+                  <Mail className="h-4 w-4" />
+                  Send message to location
+                </label>
+              </div>
               <button
                 type="button"
                 onClick={() => {
