@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -69,6 +69,43 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       }
     }
   }, [currentUser?.default_site, currentUser?.default_sites]);
+
+  // Auto-select site when only one option is available
+  React.useEffect(() => {
+    if (!formData.site && availableSites.length === 1) {
+      setFormData(prev => ({ ...prev, site: availableSites[0].id }));
+    }
+  }, [availableSites, formData.site]);
+
+  const siteBrands = useMemo(() => {
+    const selectedSite = sites.find(s => s.id === formData.site);
+    let filtered = selectedSite?.brands?.length > 0
+      ? brands.filter(b => selectedSite.brands.includes(b.id))
+      : brands;
+    // For Location users, further filter by their assigned brands
+    if (userRole === 'Location' && currentUser?.default_brands?.length > 0) {
+      filtered = filtered.filter(b => currentUser.default_brands.includes(b.id));
+    }
+    return filtered;
+  }, [sites, brands, formData.site, userRole, currentUser?.default_brands]);
+
+  const selectBrand = (value) => {
+    const selectedBrand = brands.find(b => b.id === value);
+    const deadlineDays = selectedBrand?.manufacturer_deadline_days;
+    const deadline = deadlineDays && formData.last_clocking_date ? (() => {
+      const date = new Date(formData.last_clocking_date);
+      date.setDate(date.getDate() + deadlineDays);
+      return date;
+    })() : null;
+    setFormData(prev => ({ ...prev, brand: value, manufacturer_deadline: deadline }));
+  };
+
+  // Auto-select brand when only one option is available
+  React.useEffect(() => {
+    if (!formData.brand && siteBrands.length === 1) {
+      selectBrand(siteBrands[0].id);
+    }
+  }, [siteBrands, formData.brand]);
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -228,39 +265,20 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                   <Label htmlFor="brand" className="text-sm font-medium text-slate-700">
                     Brand <span className="text-red-500">*</span>
                   </Label>
-                  <Select 
-                    value={formData.brand} 
-                    onValueChange={(value) => {
-                      const selectedBrand = brands.find(b => b.id === value);
-                      const deadlineDays = selectedBrand?.manufacturer_deadline_days;
-                      const deadline = deadlineDays && formData.last_clocking_date ? (() => {
-                        const date = new Date(formData.last_clocking_date);
-                        date.setDate(date.getDate() + deadlineDays);
-                        return date;
-                      })() : null;
-                      setFormData({ ...formData, brand: value, manufacturer_deadline: deadline });
-                    }}
+                  <Select
+                    value={formData.brand}
+                    onValueChange={selectBrand}
                     required
                   >
                     <SelectTrigger className="h-12 border-slate-200 focus:border-blue-500 focus:ring-blue-500">
                       <SelectValue placeholder={formData.site ? "Select brand" : "Select a site first"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {(() => {
-                        const selectedSite = sites.find(s => s.id === formData.site);
-                        let siteBrands = selectedSite?.brands?.length > 0
-                          ? brands.filter(b => selectedSite.brands.includes(b.id))
-                          : brands;
-                        // For Location users, further filter by their assigned brands
-                        if (userRole === 'Location' && currentUser?.default_brands?.length > 0) {
-                          siteBrands = siteBrands.filter(b => currentUser.default_brands.includes(b.id));
-                        }
-                        return siteBrands.map((brand) => (
-                          <SelectItem key={brand.id} value={brand.id}>
-                            {brand.name}
-                          </SelectItem>
-                        ));
-                      })()}
+                      {siteBrands.map((brand) => (
+                        <SelectItem key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
