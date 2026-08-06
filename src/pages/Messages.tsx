@@ -89,8 +89,27 @@ export default function Messages() {
 
   // Visible threads based on role
   const roleFilteredThreads = rootMessages.filter(m => {
-    if (['Location', 'Administrator'].includes(userRole) && currentUser?.default_sites?.length > 0) {
-      return currentUser.default_sites.includes(m.target_site);
+    if (userRole === 'Location') {
+      const userSites = currentUser?.default_sites?.length
+        ? currentUser.default_sites
+        : (userSite ? [userSite] : []);
+      if (userSites.length > 0 && !userSites.includes(m.target_site)) return false;
+      // Filter by user's assigned brands if set
+      const userBrands = currentUser?.default_brands;
+      if (userBrands && userBrands.length > 0) {
+        const claimBrand = claimsByWip[m.wip_number]?.brand;
+        if (claimBrand && !userBrands.includes(claimBrand)) return false;
+      }
+      return true;
+    }
+    if (userRole === 'Administrator' && currentUser?.default_sites?.length > 0) {
+      if (!currentUser.default_sites.includes(m.target_site)) return false;
+      const userBrands = currentUser?.default_brands;
+      if (userBrands && userBrands.length > 0) {
+        const claimBrand = claimsByWip[m.wip_number]?.brand;
+        if (claimBrand && !userBrands.includes(claimBrand)) return false;
+      }
+      return true;
     }
     return true;
   });
