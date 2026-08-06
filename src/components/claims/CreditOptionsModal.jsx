@@ -234,7 +234,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                   Send message to location
                 </label>
               </div>
-              <button
+              {/* <button
                 type="button"
                 onClick={() => {
                   setSendMessage(!sendMessage);
@@ -246,7 +246,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
               >
                 <Mail className="h-4 w-4" />
                 Send message to location
-              </button>
+              </button> */}
               {sendMessage && (
                 <div className="space-y-2">
                 <Textarea
