@@ -1343,7 +1343,7 @@ export default function Configuration() {
 
 		{/* Add User Dialog */}
 		<Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
-			<DialogContent>
+			<DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
 			<DialogHeader>
 				<DialogTitle>Add New User</DialogTitle>
 			</DialogHeader>
@@ -1690,7 +1690,7 @@ export default function Configuration() {
 
 		{/* Edit User Dialog */}
 		<Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
-			<DialogContent>
+			<DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
 			<DialogHeader>
 				<DialogTitle>Edit User</DialogTitle>
 			</DialogHeader>
