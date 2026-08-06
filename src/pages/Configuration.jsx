@@ -43,7 +43,7 @@ function roleFieldsFor(role, { default_site, default_sites, default_brands } = {
 	return {
 		default_site: (role !== 'Administrator' && role !== 'Location') ? (default_site || null) : null,
 		default_sites: role === 'Location' || role === 'Administrator' ? (default_sites || []) : [],
-		default_brands: []
+		default_brands: role === 'Location' ? ( default_brands || []) : [],
 	};
 }
 
@@ -80,7 +80,14 @@ export default function Configuration() {
 
 	const inviteUserMutation = useMutation({
 	mutationFn: ({ email, role, first_name, last_name, default_site, default_sites, default_brands }) =>
-		authUsers.invite({ email, first_name, last_name, custom_role: role, default_site, default_sites, default_brands }),
+		authUsers.invite({ 
+			email, 
+			first_name, 
+			last_name, 
+			custom_role: role, 
+			default_site, 
+			default_sites, 
+			default_brands }),
 	onSuccess: () => {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 		setNewUser({ email: "", role: "Location", first_name: "", last_name: "", default_site: "" });
@@ -1411,6 +1418,37 @@ export default function Configuration() {
                   </div>
                 </div>
               )}
+			  {newUser.role === 'Location' && (() => {
+				const selectedSiteBrands = sites
+					.filter(s => (newUser.default_sites || []).includes(s.id))
+					.flatMap(s => s.brands || []);
+				const availableBrands = [...new Set(selectedSiteBrands)];
+				if (availableBrands.length === 0) return null;
+				return (
+					<div className="space-y-2">
+						<Label>Assigned Brands</Label>
+						<p className="text-xs text-slate-500">Select which brands this Location user can submit claims for. These are the brands available at their assigned branches.</p>
+						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+							{availableBrands.map((brandId) => (
+								<div key={brandId} className="flex items-center gap-3">
+									<input
+										type="checkbox"
+										id={`new-user-brand-${brandId}`}
+										checked={(newUser.default_brands || []).includes(brandId)}
+										onChange={(e) => {
+											const current = newUser.default_brands || [];
+											const updated = e.target.checked ? [...current, brandId] : current.filter(b => b !== brandId);
+											setNewUser({ ...newUser, default_brands: updated });
+										}}
+										className="h-4 w-4 rounded border-gray-300"
+									/>
+									<label htmlFor={`new-user-brand-${brandId}`} className="text-sm text-slate-700">{brands.find(b => b.id === brandId)?.name}</label>
+								</div>
+							))}
+						</div>
+					</div>
+				);
+				})()}
               {newUser.role !== 'Administrator' && newUser.role !== 'Location' && (
 				<div className="space-y-2">
 				<Label>Default Branch</Label>
@@ -1727,6 +1765,37 @@ export default function Configuration() {
                   </div>
                 </div>
                 )}
+				{(editingUser.custom_role || editingUser.role) === 'Location' && (() => {
+                  const selectedSiteBrands = sites
+                    .filter(s => (editingUser.default_sites || []).includes(s.id))
+                    .flatMap(s => s.brands || []);
+                  const availableBrands = [...new Set(selectedSiteBrands)];
+                  if (availableBrands.length === 0) return null;
+                  return (
+                  <div className="space-y-2">
+                    <Label>Assigned Brands</Label>
+                    <p className="text-xs text-slate-500">Select which brands this Location user can submit claims for. These are the brands available at their assigned branches.</p>
+                    <div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+                      {availableBrands.map((brandId) => (
+                        <div key={brandId} className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            id={`edit-user-brand-${brandId}`}
+                            checked={(editingUser.default_brands || []).includes(brandId)}
+                            onChange={(e) => {
+                              const current = editingUser.default_brands || [];
+                              const updated = e.target.checked ? [...current, brandId] : current.filter(b => b !== brandId);
+                              setEditingUser({ ...editingUser, default_brands: updated });
+                            }}
+                            className="h-4 w-4 rounded border-gray-300"
+                          />
+                          <label htmlFor={`edit-user-brand-${brandId}`} className="text-sm text-slate-700">{brands.find(b => b.id === brandId)?.name || brandId}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  );
+                })()}
                 {(editingUser.custom_role || editingUser.role) !== 'Administrator' && (editingUser.custom_role || editingUser.role) !== 'Location' && (
 				<div className="space-y-2">
 					<Label>Default Branch</Label>
