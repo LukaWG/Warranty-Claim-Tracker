@@ -252,7 +252,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
             ))}
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex items-end gap-2">
         <Textarea
           placeholder="Write a reply..."
           value={replyBody}
@@ -261,7 +261,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
           rows={2}
           className="resize-none text-sm min-w-0 flex-1"
         />
-        <div className="flex flex-col gap-1 self-end">
+        <div className="flex gap-1 pb-1">
             <Button size="icon" variant="outline" className="h-9 w-9 shrink-0" onClick={() => fileInputRef.current?.click()}>
               <Paperclip className="h-4 w-4" />
             </Button>
