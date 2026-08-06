@@ -248,9 +248,13 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
                     <SelectContent>
                       {(() => {
                         const selectedSite = sites.find(s => s.id === formData.site);
-                        const siteBrands = selectedSite?.brands?.length > 0
+                        let siteBrands = selectedSite?.brands?.length > 0
                           ? brands.filter(b => selectedSite.brands.includes(b.id))
                           : brands;
+                        // For Location users, further filter by their assigned brands
+                        if (userRole === 'Location' && currentUser?.default_brands?.length > 0) {
+                          siteBrands = siteBrands.filter(b => currentUser.default_brands.includes(b.id));
+                        }
                         return siteBrands.map((brand) => (
                           <SelectItem key={brand.id} value={brand.id}>
                             {brand.name}
