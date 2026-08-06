@@ -66,7 +66,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
     : creditNote;
 
     const sendLocationMessage = async () => {
-      if (!locationMessage.trim() || claim?.id || !currentUser) return;
+      if (!locationMessage.trim() || !claim?.id || !currentUser) return;
       setSending(true);
       await databaseClients.Message.create({
         claim_id: claim.id,
