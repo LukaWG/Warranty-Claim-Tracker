@@ -180,12 +180,12 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
 
   return (
     <div className="space-y-4 min-w-0">
-      <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-        <MessageCircle className="h-4 w-4 text-slate-400" />
-        <span className="text-sm font-medium text-slate-700">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
-        <Badge variant="outline" className="text-xs">{rootMessage.wip_number}</Badge>
-        <Badge variant="outline" className="text-xs bg-slate-50">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
-        <div className="ml-auto flex items-center gap-2">
+      <div className="flex items-center gap-2 pb-2 border-b border-slate-100 min-w-0">
+        <MessageCircle className="h-4 w-4 text-slate-400 shrink-0" />
+        <span className="text-sm font-medium text-slate-700 truncate min-w-0">{rootMessage.subject || `WIP ${rootMessage.wip_number}`}</span>
+        <Badge variant="outline" className="text-xs shrink-0">{rootMessage.wip_number}</Badge>
+        <Badge variant="outline" className="text-xs bg-slate-50 shrink-0">{sites.find(site => site.id === rootMessage.target_site)?.name}</Badge>
+        <div className="ml-auto flex items-center gap-2 shrink-0">
           {threadUnread ? (
             <Button
               size="sm"

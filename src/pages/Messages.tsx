@@ -293,7 +293,7 @@ export default function Messages() {
       {/* Thread Dialog */}
       {selectedThread && (
         <Dialog open={!!selectedThread} onOpenChange={() => setSelectedThread(null)}>
-          <DialogContent className="max-w-2x1">
+          <DialogContent className="max-w-2xl">
             <MessageThread
               rootMessage={selectedThread}
               replies={getReplies(selectedThread.id)}
