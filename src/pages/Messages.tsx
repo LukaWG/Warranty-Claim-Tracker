@@ -172,6 +172,7 @@ export default function Messages() {
 
   const handleOpenThread = (msg) => {
     setSelectedThread(msg);
+    markThreadRead(msg);
   };
 
   return (
