@@ -229,7 +229,7 @@ export default function CreditOptionsModal({ claim, open, onClose, onSave, isSav
                     }
                   }}
                 />
-                <label htmlFor="send-message-location" className="flex items-center-gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors cursor-pointer">
+                <label htmlFor="send-message-location" className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors cursor-pointer">
                   <Mail className="h-4 w-4" />
                   Send message to location
                 </label>
