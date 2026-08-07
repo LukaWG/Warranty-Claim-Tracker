@@ -101,7 +101,12 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
-  const { data: currentUser } = useQuery({
+  const {
+    data: currentUser,
+    isLoading: isCurrentUserLoading,
+    isError: isCurrentUserError,
+    refetch: refetchCurrentUser,
+  } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => currentUserClient.me(),
     staleTime: 30000,
@@ -173,16 +178,27 @@ export default function Layout({ children, currentPageName }) {
 
   const displayRole = currentUser?.custom_role || currentUser?.role;
   const requiredRoles = PAGE_ROLES[currentPageName];
-  const isAuthorized = !requiredRoles || (!!currentUser && requiredRoles.includes(displayRole));
+  // Fail closed: a restricted page is "authorized" only once the role fetch has
+  // positively succeeded and the role is on the allow-list. Still loading, a
+  // failed fetch, or an unrecognized role are all treated as NOT authorized —
+  // never render restricted content on the strength of an absent/slow answer.
+  const isRoleKnown = !isCurrentUserLoading && !isCurrentUserError && !!currentUser;
+  const isRolePermitted = isRoleKnown && !!requiredRoles?.includes(displayRole);
+  const isAuthorized = !requiredRoles || isRolePermitted;
 
   React.useEffect(() => {
-    if (isAuthPage) return;
-    if (!currentUser) return; // wait for role to load before deciding
-    if (requiredRoles && !requiredRoles.includes(displayRole)) {
+    if (isAuthPage || !requiredRoles) return;
+    if (isCurrentUserError) {
+      // Can't confirm identity/role at all — deny and force re-auth rather than
+      // leaving the page hanging or, worse, rendering it.
+      router.replace(`/login?callbackUrl=${encodeURIComponent(router.asPath)}`);
+      return;
+    }
+    if (isRoleKnown && !isRolePermitted) {
       router.replace(createPageUrl('ClaimForm'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthPage, currentUser, currentPageName, displayRole]);
+  }, [isAuthPage, requiredRoles, isCurrentUserError, isRoleKnown, isRolePermitted, router]);
 
   if (isAuthPage) {
     return <>{children}</>;
@@ -384,7 +400,16 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Page Content */}
         <main className="flex-1">
-          {isAuthorized ? children : (
+          {isAuthorized ? children : isCurrentUserError ? (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-center px-4">
+              <p className="text-sm text-slate-600 max-w-sm">
+                We couldn&apos;t verify your access to this page. Redirecting you to sign in…
+              </p>
+              <Button variant="outline" size="sm" onClick={() => refetchCurrentUser()}>
+                Try again
+              </Button>
+            </div>
+          ) : (
             <div className="flex items-center justify-center min-h-[50vh]">
               <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
             </div>
