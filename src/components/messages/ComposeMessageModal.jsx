@@ -73,12 +73,12 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
       const userBrands = currentUser?.default_brands;
       if (userBrands && userBrands.length > 0 && !userBrands.includes(claim.brand)) return false;
     }
-    if (userRole === 'Administrator' && currentUser?.default_sites?.length > 0) {
-      const adminSiteBrands = allSites
-        .filter(s => currentUser.default_sites.includes(s.name))
-        .flatMap(s => s.brands || []);
-      const adminBrands = [...new Set(adminSiteBrands)];
-      if (adminBrands.length > 0 && !adminBrands.includes(claim.brand)) return false;
+    if (userRole === 'Administrator') {
+      // Restrict by assigned locations if set
+      if (currentUser?.default_sites?.length > 0 && !currentUser.default_sites.includes(claim.site)) return false;
+      // Restrict by assigned brands if set
+      const userBrands = currentUser?.default_brands;
+      if (userBrands && userBrands.length > 0 && !userBrands.includes(claim.brand)) return false;
     }
     return true;
   });
