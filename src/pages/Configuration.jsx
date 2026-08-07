@@ -43,7 +43,7 @@ function roleFieldsFor(role, { default_site, default_sites, default_brands } = {
 	return {
 		default_site: (role !== 'Administrator' && role !== 'Location') ? (default_site || null) : null,
 		default_sites: role === 'Location' || role === 'Administrator' ? (default_sites || []) : [],
-		default_brands: role === 'Location' ? ( default_brands || []) : [],
+		default_brands: (role === 'Location' || role === 'Administrator') ? ( default_brands || []) : [],
 	};
 }
 
@@ -1471,7 +1471,7 @@ export default function Configuration() {
 				{newUser.role === 'Administrator' && (
 					<div className="space-y-2">
 						<Label>Assigned Locations</Label>
-						<p className="text-xs text-slate-500">Select which locations this Administrator can see. The brands available at these locations determine which claims appear. Leave empty for all locations.</p>
+						<p className="text-xs text-slate-500">Select which locations this Administrator can see. Leave empty for all locations.</p>
 						<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
 							{sites.map(site => (
 								<div key={site.id} className="flex items-center gap-3">
@@ -1493,6 +1493,49 @@ export default function Configuration() {
 						</div>
 					</div>
 				)}
+				{newUser.role === 'Administrator' && (() => {
+					const adminSiteBrands = (newUser.default_sites || []).length === 0
+						? sites.flatMap(s => s.brands || [])
+						: sites.filter(s => (newUser.default_sites || []).includes(s.id)).flatMap(s => s.brands || []);
+					const availableBrands = [...new Set(adminSiteBrands)];
+					if (availableBrands.length === 0) return null;
+					return (
+					<div className="space-y-2">
+					<Label>Assigned Brands</Label>
+					<p className="text-xs text-slate-500">Restrict this Admin to specific brands. Leave empty for all brands.</p>
+					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+						<div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate-200">
+						<input
+							type="checkbox"
+							id="new-user-admin-brand-all"
+							checked={(newUser.default_brands || []).length === 0}
+							onChange={(e) => {
+							if (e.target.checked) setNewUser({ ...newUser, default_brands: [] });
+							}}
+							className="h-4 w-4 rounded border-gray-300"
+						/>
+						<label htmlFor="new-user-admin-brand-all" className="text-sm font-medium text-slate-700">All Brands</label>
+						</div>
+						{availableBrands.map((brandId) => (
+						<div key={brandId} className="flex items-center gap-3">
+							<input
+							type="checkbox"
+							id={`new-user-admin-brand-${brandId}`}
+							checked={(newUser.default_brands || []).includes(brandId)}
+							onChange={(e) => {
+								const current = newUser.default_brands || [];
+								const updated = e.target.checked ? [...current, brandId] : current.filter(b => b !== brandId);
+								setNewUser({ ...newUser, default_brands: updated });
+							}}
+							className="h-4 w-4 rounded border-gray-300"
+							/>
+							<label htmlFor={`new-user-admin-brand-${brandId}`} className="text-sm text-slate-700">{brands.find(b => b.id === brandId)?.name}</label>
+						</div>
+						))}
+					</div>
+					</div>
+					);
+				})()}
 				<DialogFooter>
 				<Button type="button" variant="outline" onClick={() => setShowUserDialog(false)}>
 					Cancel
@@ -1818,7 +1861,7 @@ export default function Configuration() {
 				{(editingUser.custom_role || editingUser.role) === 'Administrator' && (
 					<div className="space-y-2">
 					<Label>Assigned Locations</Label>
-					<p className="text-xs text-slate-500">Select which locations this Administrator can see. The brands available at these locations determine which claims appear. Leave empty for all locations.</p>
+					<p className="text-xs text-slate-500">Select which locations this Administrator can see. Leave empty for all locations.</p>
 					<div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
 						<div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate-200">
 							<input
@@ -1854,6 +1897,49 @@ export default function Configuration() {
 					</div>
 					</div>
 				)}
+				{(editingUser.custom_role || editingUser.role) === 'Administrator' && (() => {
+                  const adminSiteBrands = (editingUser.default_sites || []).length === 0
+                    ? sites.flatMap(s => s.brands || [])
+                    : sites.filter(s => (editingUser.default_sites || []).includes(s.id)).flatMap(s => s.brands || []);
+                  const availableBrands = [...new Set(adminSiteBrands)];
+                  if (availableBrands.length === 0) return null;
+                  return (
+                  <div className="space-y-2">
+                    <Label>Assigned Brands</Label>
+                    <p className="text-xs text-slate-500">Restrict this Admin to specific brands. Leave empty for all brands.</p>
+                    <div className="space-y-2 border rounded-md p-3 bg-slate-50 max-h-40 overflow-y-auto">
+                      <div className="flex items-center gap-3 pb-2 mb-1 border-b border-slate-200">
+                        <input
+                          type="checkbox"
+                          id="edit-user-admin-brand-all"
+                          checked={(editingUser.default_brands || []).length === 0}
+                          onChange={(e) => {
+                            if (e.target.checked) setEditingUser({ ...editingUser, default_brands: [] });
+                          }}
+                          className="h-4 w-4 rounded border-gray-300"
+                        />
+                        <label htmlFor="edit-user-admin-brand-all" className="text-sm font-medium text-slate-700">All Brands</label>
+                      </div>
+                      {availableBrands.map((brandId) => (
+                        <div key={brandId} className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            id={`edit-user-admin-brand-${brandId}`}
+                            checked={(editingUser.default_brands || []).includes(brandId)}
+                            onChange={(e) => {
+                              const current = editingUser.default_brands || [];
+                              const updated = e.target.checked ? [...current, brandId] : current.filter(b => b !== brandId);
+                              setEditingUser({ ...editingUser, default_brands: updated });
+                            }}
+                            className="h-4 w-4 rounded border-gray-300"
+                          />
+                          <label htmlFor={`edit-user-admin-brand-${brandId}`} className="text-sm text-slate-700">{brands.find(b => b.id === brandId)?.name || brandId}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  );
+                })()}
 				<DialogFooter>
 					<Button type="button" variant="outline" onClick={() => setEditingUser(null)}>
 					Cancel
