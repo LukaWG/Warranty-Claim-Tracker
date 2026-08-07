@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';
 import HendyLogo from '@/components/layout/HendyLogo';
 import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
+import AccessDenied from '@/lib/AccessDenied';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
@@ -185,6 +186,9 @@ export default function Layout({ children, currentPageName }) {
   const isRoleKnown = !isCurrentUserLoading && !isCurrentUserError && !!currentUser;
   const isRolePermitted = isRoleKnown && !!requiredRoles?.includes(displayRole);
   const isAuthorized = !requiredRoles || isRolePermitted;
+  // Role resolved, but it's not on the allow-list — show Access Denied in place
+  // rather than silently redirecting away.
+  const isAccessDenied = !!requiredRoles && isRoleKnown && !isRolePermitted;
 
   React.useEffect(() => {
     if (isAuthPage || !requiredRoles) return;
@@ -192,13 +196,9 @@ export default function Layout({ children, currentPageName }) {
       // Can't confirm identity/role at all — deny and force re-auth rather than
       // leaving the page hanging or, worse, rendering it.
       router.replace(`/login?callbackUrl=${encodeURIComponent(router.asPath)}`);
-      return;
-    }
-    if (isRoleKnown && !isRolePermitted) {
-      router.replace(createPageUrl('ClaimForm'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthPage, requiredRoles, isCurrentUserError, isRoleKnown, isRolePermitted, router]);
+  }, [isAuthPage, requiredRoles, isCurrentUserError, router]);
 
   if (isAuthPage) {
     return <>{children}</>;
@@ -400,7 +400,9 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Page Content */}
         <main className="flex-1">
-          {isAuthorized ? children : isCurrentUserError ? (
+          {isAuthorized ? children : isAccessDenied ? (
+            <AccessDenied />
+          ) : isCurrentUserError ? (
             <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-center px-4">
               <p className="text-sm text-slate-600 max-w-sm">
                 We couldn&apos;t verify your access to this page. Redirecting you to sign in…
