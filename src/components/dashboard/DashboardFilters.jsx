@@ -122,7 +122,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     queryFn: () => databaseClients.Brand.get()
   })
 
-  const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
+  const allBrandIdsInClaims = allBrands.map(b => b.name).filter(Boolean);
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   const adminSiteIds = currentUser?.default_sites;
 
