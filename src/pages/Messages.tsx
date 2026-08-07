@@ -102,8 +102,8 @@ export default function Messages() {
       }
       return true;
     }
-    if (userRole === 'Administrator' && currentUser?.default_sites?.length > 0) {
-      if (!currentUser.default_sites.includes(m.target_site)) return false;
+    if (userRole === 'Administrator') {
+      if (currentUser?.default_sites?.length > 0 && !currentUser.default_sites.includes(m.target_site)) return false;
       const userBrands = currentUser?.default_brands;
       if (userBrands && userBrands.length > 0) {
         const claimBrand = claimsByWip[m.wip_number]?.brand;
