@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { CalendarIcon, Send, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +18,11 @@ import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 
 export default function ClaimFormCard({ onSubmit, isSubmitting }) {
+
+  const { data: allClaims = [] } = useQuery({
+    queryKey: ['claims'],
+    queryFn: () => databaseClients.WarrantyClaim.get()
+  });
   const { data: sites = [] } = useQuery({
     queryKey: ['sites'],
     queryFn: async () => {
@@ -110,6 +116,29 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
   }, [siteBrands, formData.brand]);
 
   const [submitted, setSubmitted] = useState(false);
+  const [dupDialogOpen, setDupDialogOpen] = useState(false);
+  const [pendingSubmitData, setPendingSubmitData] = useState(null);
+
+  const doSubmit = async (submitData) => {
+    await onSubmit(submitData);
+
+    setSubmitted(true);
+    setTimeout(() => {
+      setSubmitted(false);
+      setFormData({
+        wip_number: '',
+        expected_hours: '',
+        last_clocking_date: null,
+        scanned_date: new Date(),
+        site: '',
+        brand: '',
+        manufacturer_deadline: null,
+        submitting_as: '',
+        is_campaign: false,
+        campaign_reference: ''
+        });
+    }, 2000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,8 +155,15 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       status: 'in_progress'
     };
 
+    const duplicate = allClaims.find(c => c.wip_number?.trim().toLowerCase() === formData.wip_number?.trim().toLowerCase());
+    if (duplicate) {
+      setPendingSubmitData(submitData);
+      setDupDialogOpen(true);
+      return;
+    }
+
     try {
-      await onSubmit(submitData);
+      await doSubmit(submitData);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -136,22 +172,6 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
       });
       return;
     }
-
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        wip_number: '',
-        expected_hours: '',
-        last_clocking_date: null,
-        scanned_date: new Date(),
-        site: '',
-        brand: '',
-        manufacturer_deadline: null,
-        is_campaign: false,
-        campaign_reference: ''
-      });
-    }, 2000);
   };
 
   const handleLastClockingSelect = (date) => {
@@ -433,6 +453,30 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
           </AnimatePresence>
         </CardContent>
       </Card>
+      <AlertDialog open={dupDialogOpen} onOpenChange={setDupDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Duplicate WIP Number</AlertDialogTitle>
+            <AlertDialogDescription>
+              WIP number <strong>{formData.wip_number}</strong> is already in use by an existing repair. Are you sure you want to submit another repair with this WIP number?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setDupDialogOpen(false); setPendingSubmitData(null); }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={async () => {
+                setDupDialogOpen(false);
+                await doSubmit(pendingSubmitData);
+                setPendingSubmitData(null);
+              }}
+            >
+              Submit Anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 }
