@@ -118,12 +118,22 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   const adminSiteIds = currentUser?.default_sites;
-  const adminBrands = (userRole === 'Administrator' && adminSiteIds?.length > 0)
-    ? [...new Set(allSites.filter(s => adminSiteIds.includes(s.id)).flatMap(s => s.brands || []))]
+
+  const userAssignedBrands = currentUser?.default_brands;
+  const userRestrictedBrands = (userRole === 'Administrator' || userRole === 'Location')
+    ? (userAssignedBrands?.length > 0
+        ? userAssignedBrands.map(id => completeAllBrands.find(b => b.id === id)).filter(Boolean).sort((a, b) => (a.name).localeCompare(b.name))
+        : (adminSiteIds?.length > 0
+            ? [...new Set(allSites.filter(s => adminSiteIds.includes(s.id)).flatMap(s => s.brands || []))]
+                .map(id => completeAllBrands.find(b => b.id === id))
+            : null))
     : null;
-  const brands = (userSite?.brands?.length > 0)
-    ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
-    : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));
+
+  const brands = (userRestrictedBrands?.length > 0)
+    ? userRestrictedBrands
+    : (userSite?.brands?.length > 0)
+      ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
+      : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));
 
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];

@@ -131,9 +131,18 @@ export default function Dashboard() {
         if (claim.status === 'rejected' && !claim.alert) {
           return false;
         }
-        if (adminBrands && adminBrands.length > 0 && !adminBrands.includes(claim.brand)) {
-          return false;
+        // Filter by assigned locations if set
+        if (currentUser?.default_sites.length > 0) {
+          if (!currentUser.default_sites.includes(claim.site)) return false;
+          const adminSiteBrands = allSites
+            .filter(s => currentUser.default_sites.includes(s.id))
+            .flatMap(s => s.brands || []);
+          const adminBrands = [...new Set(adminSiteBrands)];
+          if (adminBrands.length > 0 && !adminBrands.includes(claim.brand)) return false;
         }
+        // Furhter filter by user's assigned brands if set
+        const userBrands = currentUser?.default_brands;
+        if (userBrands && userBrands.length > 0 && !userBrands.includes(claim.brand)) return false;
       }
 
       const wipNumMatch = !wipSearch || claim.wip_number.toLowerCase().includes(wipSearch.toLowerCase());
