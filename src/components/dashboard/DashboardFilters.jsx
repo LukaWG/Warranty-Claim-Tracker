@@ -129,11 +129,21 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
             : null))
     : null;
 
-  const brands = (userRestrictedBrands?.length > 0)
+  // When site filter is active, narrow brand options to brands available at that site
+  const selectedSiteBrands = (filters.site?.length > 0)
+    ? [...new Set(allSites.filter(s => filters.site.includes(s.id)).flatMap(s => s.brands || []))]
+    : null;
+    
+  const availableBrands = (userRestrictedBrands?.length > 0)
     ? userRestrictedBrands
     : (userSite?.brands?.length > 0)
       ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
       : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));
+
+  // Brands is an AND selection from selectedSiteBrands and availableBrands
+  const brands = selectedSiteBrands?.length > 0
+    ? availableBrands.filter(b => selectedSiteBrands.includes(b.id))
+    : availableBrands;
 
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
