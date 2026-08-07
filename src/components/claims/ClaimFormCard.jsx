@@ -49,14 +49,14 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
 
   // Find sites to display. Location users can only select their assigned sites
   const userRole = currentUser?.custom_role || currentUser?.role;
-  const assignedSites = userRole === 'Location'
+  const assignedSites = (userRole === 'Location' || userRole === 'Administrator')
     ? (currentUser?.default_sites?.length
       ? currentUser.default_sites
       : (currentUser?.default_site
         ? [currentUser.default_site]
         : [] ))
     : [];
-  const availableSites = userRole === 'Location'
+  const availableSites = (userRole === 'Location' || userRole === 'Administrator')
     ? sites.filter((site) => assignedSites.includes(site.id))
     : sites;
 
@@ -82,9 +82,11 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
     let filtered = selectedSite?.brands?.length > 0
       ? brands.filter(b => selectedSite.brands.includes(b.id))
       : brands;
-    // For Location users, further filter by their assigned brands
-    if (userRole === 'Location' && currentUser?.default_brands?.length > 0) {
-      filtered = filtered.filter(b => currentUser.default_brands.includes(b.id));
+    // For Location or Administrator users, further filter by their assigned brands
+    if (userRole === 'Location' || userRole === 'Administrator') {
+      if (currentUser?.default_brands?.length > 0) {
+        filtered = filtered.filter(b => currentUser.default_brands.includes(b.id));
+      }
     }
     return filtered;
   }, [sites, brands, formData.site, userRole, currentUser?.default_brands]);
