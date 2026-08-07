@@ -37,13 +37,25 @@ export const getServerSideProps = async ({ req, res }) => {
 
 
 
+// Brand IDs selectable for a role given its assigned sites — mirrors the
+// "Assigned Brands" checkbox lists rendered for Location/Administrator users.
+function availableBrandIdsFor(role, default_sites, sites) {
+	const siteIds = default_sites || [];
+	const relevantSites = (role === 'Administrator' && siteIds.length === 0)
+		? sites
+		: sites.filter(s => siteIds.includes(s.id));
+	return [...new Set(relevantSites.flatMap(s => s.brands || []))];
+}
+
 // Role-exclusive fields: only one of these ever applies to a given role, so
 // whichever ones don't apply must be cleared whenever a role is set/changed.
-function roleFieldsFor(role, { default_site, default_sites, default_brands } = {}) {
+function roleFieldsFor(role, { default_site, default_sites, default_brands } = {}, sites = []) {
+	const isBrandRestrictable = role === 'Location' || role === 'Administrator';
+	const availableBrandIds = isBrandRestrictable ? availableBrandIdsFor(role, default_sites, sites) : [];
 	return {
 		default_site: (role !== 'Administrator' && role !== 'Location') ? (default_site || null) : null,
-		default_sites: role === 'Location' || role === 'Administrator' ? (default_sites || []) : [],
-		default_brands: (role === 'Location' || role === 'Administrator') ? ( default_brands || []) : [],
+		default_sites: isBrandRestrictable ? (default_sites || []) : [],
+		default_brands: isBrandRestrictable ? (default_brands || []).filter(id => availableBrandIds.includes(id)) : [],
 	};
 }
 
@@ -320,7 +332,7 @@ export default function Configuration() {
 		role: newUser.role,
 		first_name: newUser.first_name,
 		last_name: newUser.last_name,
-		...roleFieldsFor(newUser.role, newUser)
+		...roleFieldsFor(newUser.role, newUser, sites)
 		});
 	}
 	};
@@ -335,7 +347,7 @@ export default function Configuration() {
 			first_name: editingUser.first_name,
 			last_name: editingUser.last_name,
 			custom_role: role,
-			...roleFieldsFor(role, editingUser)
+			...roleFieldsFor(role, editingUser, sites)
 		}
 		});
 	}
