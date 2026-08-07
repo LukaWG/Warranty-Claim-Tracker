@@ -44,6 +44,18 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
+// Roles allowed to view each page. Pages omitted here have no role
+// restriction (any authenticated user may view them). Shared between nav
+// rendering and route-level access enforcement so they can't drift apart.
+const PAGE_ROLES = {
+  ClaimForm: ['Location', 'Administrator', 'Group Manager', 'Owner'],
+  Dashboard: ['Location', 'Group Manager', 'Administrator', 'Owner'],
+  Approvals: ['Group Manager', 'Owner'],
+  ApprovalMessages: ['Group Manager', 'Owner'],
+  Messages: ['Location', 'Administrator', 'Group Manager', 'Owner'],
+  Configuration: ['Group Manager', 'Owner'],
+};
+
 export default function Layout({ children, currentPageName }) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -159,6 +171,19 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
+  const displayRole = currentUser?.custom_role || currentUser?.role;
+  const requiredRoles = PAGE_ROLES[currentPageName];
+  const isAuthorized = !requiredRoles || (!!currentUser && requiredRoles.includes(displayRole));
+
+  React.useEffect(() => {
+    if (isAuthPage) return;
+    if (!currentUser) return; // wait for role to load before deciding
+    if (requiredRoles && !requiredRoles.includes(displayRole)) {
+      router.replace(createPageUrl('ClaimForm'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthPage, currentUser, currentPageName, displayRole]);
+
   if (isAuthPage) {
     return <>{children}</>;
   }
@@ -166,15 +191,14 @@ export default function Layout({ children, currentPageName }) {
   const pendingApprovalsCount = pendingApprovals.length;
 
   const allNavItems = [
-    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
-    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Location', 'Group Manager', 'Administrator', 'Owner'] },
-    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: ['Group Manager', 'Owner'] },
-    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: ['Location', 'Administrator', 'Group Manager', 'Owner'] },
-    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: ['Group Manager', 'Owner'] }
+    { name: 'ClaimForm', label: 'Submit Repair', icon: FileEdit, roles: PAGE_ROLES.ClaimForm },
+    { name: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: PAGE_ROLES.Dashboard },
+    { name: 'Approvals', label: 'Approvals', icon: ShieldCheck, roles: PAGE_ROLES.Approvals },
+    { name: 'Messages', label: 'Messages', icon: MessageSquare, roles: PAGE_ROLES.Messages },
+    { name: 'Configuration', label: 'Configuration', icon: Settings, roles: PAGE_ROLES.Configuration }
   ];
 
-  const displayRole = currentUser?.custom_role || currentUser?.role;
-  const navItems = currentUser 
+  const navItems = currentUser
     ? allNavItems.filter(item => item.roles.includes(displayRole))
     : allNavItems;
 
@@ -360,7 +384,11 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Page Content */}
         <main className="flex-1">
-          {children}
+          {isAuthorized ? children : (
+            <div className="flex items-center justify-center min-h-[50vh]">
+              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            </div>
+          )}
         </main>
       </div>
 
