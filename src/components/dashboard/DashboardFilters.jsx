@@ -108,9 +108,9 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
   
   const sites = [...sitesShuffled].sort((a, b) => (allSites.find(site => site.id === a)?.name ?? "").localeCompare((allSites.find(site => site.id === b)?.name ?? "")));
-  const userSiteIds = currentUser?.default_sites.length > 0 ? currentUser.default_sites : sites.map(site => site.id);
+  const userSiteIds = currentUser?.default_sites.length > 0 ? currentUser.default_sites : sites;
 
-  const availableSites = sites.filter(site => userSiteIds.includes(site.id));
+  const availableSites = sites.filter(site => userSiteIds.includes(site));
   // Filter sites by selected brands
   const filteredSites = (filters.brand?.length > 0)
     ? availableSites.filter(siteId => (allSites.find(s => s.id === siteId)?.brands || []).some(b => filters.brand.includes(b)))
