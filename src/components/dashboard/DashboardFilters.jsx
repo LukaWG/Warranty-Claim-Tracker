@@ -105,7 +105,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
 
   const sitesShuffled = isAdmin && adminSite
     ? [adminSite]
-    : [...new Set(claims.map(c => c.site).filter(Boolean))];
+    : allSites.map(s => s.id).filter(Boolean);
   
   const sites = [...sitesShuffled].sort((a, b) => (allSites.find(site => site.id === a)?.name ?? "").localeCompare((allSites.find(site => site.id === b)?.name ?? "")));
   const userSiteIds = currentUser?.default_sites.length > 0 ? currentUser.default_sites : sites;
@@ -122,7 +122,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     queryFn: () => databaseClients.Brand.get()
   })
 
-  const allBrandIdsInClaims = allBrands.map(b => b.name).filter(Boolean);
+  const allBrandIdsInClaims = allBrands.map(b => b.id).filter(Boolean);
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   const adminSiteIds = currentUser?.default_sites;
 
