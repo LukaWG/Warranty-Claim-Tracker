@@ -108,13 +108,20 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     : [...new Set(claims.map(c => c.site).filter(Boolean))];
   
   const sites = [...sitesShuffled].sort((a, b) => (allSites.find(site => site.id === a)?.name ?? "").localeCompare((allSites.find(site => site.id === b)?.name ?? "")));
+  const userSiteIds = currentUser?.default_sites.length > 0 ? currentUser.default_sites : sites.map(site => site.id);
+
+  const availableSites = sites.filter(site => userSiteIds.includes(site.id));
+  // Filter sites by selected brands
+  const filteredSites = (filters.brand?.length > 0)
+    ? availableSites.filter(siteId => (allSites.find(s => s.id === siteId)?.brands || []).some(b => filters.brand.includes(b)))
+    : availableSites;
+
 
   const { data: completeAllBrands = [] } = useQuery({
     queryKey: ['completeAllBrands'],
     queryFn: () => databaseClients.Brand.get()
   })
 
-  const userSite = currentUser?.default_site ? allSites.find(s => s.id === currentUser.default_site) : null;
   const allBrandIdsInClaims = [...new Set(claims.map(c => c.brand).filter(Boolean))];
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
   const adminSiteIds = currentUser?.default_sites;
@@ -136,8 +143,8 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     
   const availableBrands = (userRestrictedBrands?.length > 0)
     ? userRestrictedBrands
-    : (userSite?.brands?.length > 0)
-      ? allBrandsInClaims.filter(b => userSite.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
+    : (userSiteIds?.brands?.length > 0)
+      ? allBrandsInClaims.filter(b => userSiteIds.brands.includes(b.id)).sort((a, b) => (a.name).localeCompare(b.name))
       : allBrandsInClaims.sort((a, b) => (a.name).localeCompare(b.name));
 
   // Brands is an AND selection from selectedSiteBrands and availableBrands
@@ -210,7 +217,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
           <Label className="text-xs text-slate-600">Site</Label>
           <MultiSelect
             placeholder="All Sites"
-            options={sites.map(s => ({ value: s, label: allSites.find(site => site.id === s)?.name }))}
+            options={filteredSites.map(s => ({ value: s, label: allSites.find(site => site.id === s)?.name }))}
             selected={filters.site || []}
             onChange={(val) => onFilterChange({ ...filters, site: val })}
           />
