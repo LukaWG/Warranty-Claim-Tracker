@@ -639,17 +639,17 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <span className="cursor-help">
-                                  <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-8 w-8 hover:bg-teal-50"
-                                      style={{ color: 'var(--hendy-teal)' }}
-                                      onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
-                                    >
-                                    <Mail className="h-4 w-4" />
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8 hover:bg-teal-50"
+                                        style={{ color: 'var(--hendy-teal)' }}
+                                        onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
+                                      >
+                                        <Mail className="h-4 w-4" />
+                                      </Button>
                                     </span>
-                                </Button>
-                            </TooltipTrigger>
+                                </TooltipTrigger>
                                 <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
