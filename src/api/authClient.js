@@ -107,16 +107,4 @@ export const authUsers = {
   listUserProviders: () =>
     request("/admin/list-user-providers", { method: "GET" })
       .then((r) => r.providers ?? {}),
-
-  updateMe: (data) => {
-    const mappedData = { ...data };
-    if (data.must_change_password !== undefined) {
-      mappedData.mustChangePassword = data.must_change_password;
-      delete mappedData.must_change_password;
-    }
-    return request("/update-user", {
-      method: "POST",
-      body: JSON.stringify(mappedData),
-    });
-  },
 };

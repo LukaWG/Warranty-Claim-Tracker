@@ -19,14 +19,12 @@ import {
 import UnreadBadge from '@/components/messages/UnreadBadge';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import SearchModal from '@/components/layout/SearchModal';
 import HendyLogo from '@/components/layout/HendyLogo';
 import AccessDenied from '@/lib/AccessDenied';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 import { authClient, signOut } from "@/lib/auth-client";
-import { authUsers } from '@/api/authClient';
 import { useRouter } from "next/router";
 import {
   DropdownMenu,
@@ -58,7 +56,6 @@ const PAGE_ROLES = {
 
 export default function Layout({ children, currentPageName }) {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const isAuthPage = ['/login', '/signup', '/forgot-password', '/reset-password'].includes(router.pathname);
 
   // Voluntary Password Change States
@@ -71,15 +68,6 @@ export default function Layout({ children, currentPageName }) {
   const [changeSuccess, setChangeSuccess] = useState(false);
   const [changeLoading, setChangeLoading] = useState(false);
 
-  // Forced Password Change States
-  const [forcedCurrentPassword, setForcedCurrentPassword] = useState("");
-  const [forcedNewPassword, setForcedNewPassword] = useState("");
-  const [forcedConfirmPassword, setForcedConfirmPassword] = useState("");
-  const [forcedShowPasswords, setForcedShowPasswords] = useState(false);
-  const [forcedError, setForcedError] = useState("");
-  const [forcedLoading, setForcedLoading] = useState(false);
-
-  const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -283,18 +271,6 @@ export default function Layout({ children, currentPageName }) {
             MENU
           </div>
           <div className="space-y-1">
-            {/* {displayRole !== 'Location' && ( // Search repairs button
-              <button
-                onClick={() => {
-                  setSearchOpen(true);
-                  setSidebarOpen(false);
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                <Search className="h-5 w-5 text-slate-500" />
-                <span className="text-sm font-medium">Search Repairs</span>
-              </button>
-            )} */}
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPageName === item.name;
@@ -420,9 +396,6 @@ export default function Layout({ children, currentPageName }) {
           )}
         </main>
       </div>
-
-      {/* Search Modal */}
-      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Voluntary Change Password Dialog */}
       <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>

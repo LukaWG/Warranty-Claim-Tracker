@@ -149,15 +149,8 @@ export default function UsersTab() {
 	const handleUserInvite = async (e) => {
 	e.preventDefault();
 
-	// Check if user is logged in
-	// [ ] Log in system and invites need to be setup. Waiting on where it is being hosted
-	try {
-		// await base44.auth.me(); // Commented out for testing
-		// [ ] Check whether user is logged in before inviting user
-	} catch (error) {
-		alert('You must be logged in to invite users. Please refresh the page and log in.');
-		return;
-	}
+	// [ ] Check whether user is logged in before inviting user. Log in system
+	// and invites need to be setup. Waiting on where it is being hosted.
 
 	if (newUser.email.trim()) {
 		inviteUserMutation.mutate({
