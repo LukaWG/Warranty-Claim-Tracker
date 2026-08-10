@@ -33,6 +33,13 @@ const statusConfig = {
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
+const APPROVAL_STATUS_LABELS = {
+  pending_approval: 'Awaiting Approval',
+  approved: 'Approved',
+  rejected: 'Rejected',
+  credited: 'Credited',
+};
+
 // Row-entrance stagger is capped so long claim lists don't push later rows'
 // animations out several seconds.
 const ROW_STAGGER_CAP = 0.5;
@@ -137,6 +144,30 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
 
   const QUERIED_STATUSES = ['rejected', 'claimed_info_requested'];
 
+  // Sort by what the column actually displays, not the raw underlying field —
+  // e.g. site/brand are stored as ids, status/approval_status as enum keys,
+  // and claimed_by as an email, none of which match the visible text.
+  const getSortValue = (claim, key) => {
+    switch (key) {
+      case 'site':
+        return sitesById.get(claim.site)?.name;
+      case 'brand':
+        return brandsById.get(claim.brand)?.name;
+      case 'status':
+        return statusConfig[claim.status]?.label ?? claim.status;
+      case 'approval_status':
+        return claim.approval_status ? (APPROVAL_STATUS_LABELS[claim.approval_status] ?? claim.approval_status) : null;
+      case 'claimed_by':
+        return claim.claimed_by ? getUserName(claim.claimed_by, allUsers, currentUser) : null;
+      case 'total_claim_cost':
+        return claim.total_claim_cost != null
+          ? claim.total_claim_cost - (claim.approval_status === 'credited' ? (claim.credit || 0) : 0)
+          : null;
+      default:
+        return claim[key];
+    }
+  };
+
   const sortedClaims = React.useMemo(() => {
     const isSiteRole = currentUser?.custom_role === 'Location' || currentUser?.role === 'Location';
 
@@ -149,8 +180,8 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
 
     if (!sortConfig.key) return baseList;
     return [...claims].sort((a, b) => {
-      let aVal = a[sortConfig.key];
-      let bVal = b[sortConfig.key];
+      let aVal = getSortValue(a, sortConfig.key);
+      let bVal = getSortValue(b, sortConfig.key);
       if (aVal == null) return 1;
       if (bVal == null) return -1;
       if (typeof aVal === 'string') aVal = aVal.toLowerCase();
@@ -159,7 +190,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
       if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [claims, sortConfig, currentUser]);
+  }, [claims, sortConfig, currentUser, sitesById, brandsById, allUsers]);
 
   useEffect(() => {
     const saved = localStorage.getItem('claimsTableColumns');
@@ -439,10 +470,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
                   claim.approval_status === 'credited' ? 'bg-teal-50 border-teal-200 text-teal-700' :
                   'bg-amber-50 border-amber-200 text-amber-700'
                 }`}>
-                  {claim.approval_status === 'pending_approval' && 'Awaiting Approval'}
-                  {claim.approval_status === 'approved' && 'Approved'}
-                  {claim.approval_status === 'rejected' && 'Rejected'}
-                  {claim.approval_status === 'credited' && 'Credited'}
+                  {APPROVAL_STATUS_LABELS[claim.approval_status] ?? claim.approval_status}
                 </Badge>
               ) : (
                 <span className="text-sm text-slate-400">—</span>
