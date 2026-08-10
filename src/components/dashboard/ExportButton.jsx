@@ -2,15 +2,11 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { format } from 'date-fns';
-import { useQuery } from '@tanstack/react-query';
-import { databaseClients } from '@/api/databaseClient';
+import { useBrands } from '@/hooks/useBrands';
 
 export default function ExportButton({ claims, filters }) {
 
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get()
-  });
+  const { data: brands = [] } = useBrands();
 
   const handleExport = () => {
     // Prepare CSV data

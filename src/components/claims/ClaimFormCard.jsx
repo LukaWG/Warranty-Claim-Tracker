@@ -14,29 +14,17 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from '@tanstack/react-query';
-import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useClaims } from '@/hooks/useClaims';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
+import { getDaysRemaining, getDeadlineStatus, DEADLINE_STATUS_COLORS, DEFAULT_DEADLINE_STATUS_COLORS } from '@/lib/getDeadlineStatus';
 
 export default function ClaimFormCard({ onSubmit, isSubmitting }) {
 
-  const { data: allClaims = [] } = useQuery({
-    queryKey: ['claims'],
-    queryFn: () => databaseClients.WarrantyClaim.get()
-  });
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: async () => {
-      const sitesData = await databaseClients.Site.get();
-      return sitesData.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  });
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: async () => {
-      const brandData = await databaseClients.Brand.get();
-      return brandData.sort((a, b) => a.name.localeCompare(b.name));
-    }
-  });
+  const { data: allClaims = [] } = useClaims();
+  const { data: sites = [] } = useSites();
+  const { data: brands = [] } = useBrands();
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => currentUserClient.me()
@@ -352,39 +340,9 @@ export default function ClaimFormCard({ onSubmit, isSubmitting }) {
 
                 {formData.manufacturer_deadline && (() => {
                   const selectedBrand = brands.find(b => b.id === formData.brand);
-                  const daysRemaining = Math.ceil((new Date(formData.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
-                  
-                  let bgColor = 'bg-slate-100';
-                  let textColor = 'text-slate-700';
+                  const daysRemaining = getDaysRemaining(formData.manufacturer_deadline);
+                  const { bgColor, textColor } = DEADLINE_STATUS_COLORS[getDeadlineStatus(selectedBrand, daysRemaining)] || DEFAULT_DEADLINE_STATUS_COLORS;
 
-                  if (selectedBrand) {
-                    if (daysRemaining < 1) {
-                      bgColor = 'bg-red-100';
-                      textColor = 'text-red-700';
-                    } else if (selectedBrand.green_max_days != null && daysRemaining > selectedBrand.green_max_days) {
-                      bgColor = 'bg-green-100';
-                      textColor = 'text-green-700';
-                    } else {
-                      const inGreenRange = selectedBrand.green_min_days != null && selectedBrand.green_max_days != null && 
-                        daysRemaining >= selectedBrand.green_min_days && daysRemaining <= selectedBrand.green_max_days;
-                      const inAmberRange = selectedBrand.amber_min_days != null && selectedBrand.amber_max_days != null && 
-                        daysRemaining >= selectedBrand.amber_min_days && daysRemaining <= selectedBrand.amber_max_days;
-                      const inRedRange = selectedBrand.red_min_days != null && selectedBrand.red_max_days != null && 
-                        daysRemaining >= selectedBrand.red_min_days && daysRemaining <= selectedBrand.red_max_days;
-
-                      if (inGreenRange) {
-                        bgColor = 'bg-green-100';
-                        textColor = 'text-green-700';
-                      } else if (inAmberRange) {
-                        bgColor = 'bg-amber-100';
-                        textColor = 'text-amber-700';
-                      } else if (inRedRange) {
-                        bgColor = 'bg-red-100';
-                        textColor = 'text-red-700';
-                      }
-                    }
-                  }
-                  
                   return (
                     <div className="space-y-2">
                       <Label className="text-sm font-medium text-slate-700">

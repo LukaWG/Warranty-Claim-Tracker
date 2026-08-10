@@ -15,6 +15,9 @@ import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 import { useClaims } from '@/hooks/useClaims';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
+import { getDaysRemaining, getDeadlineStatus } from '@/lib/getDeadlineStatus';
 
 // Redirect if user not logged in
 import { auth } from "@/lib/auth"
@@ -60,29 +63,23 @@ export default function Dashboard() {
 
   const { data: allClaims = [], isLoading } = useClaims();
 
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get() // Fetch brands for stats and filters
-  });
+  const { data: brands = [] } = useBrands();
 
-  const { data: allSites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get() // Fetch sites for filters
-  });
+  const { data: allSites = [] } = useSites();
 
   const { data: allUsers = [] } = useAllUsers();
 
 
-  const adminBrands = (() => {
-    const userRole = currentUser?.custome_role || currentUser?.role;
+  const adminBrands = useMemo(() => {
+    const userRole = currentUser?.custom_role || currentUser?.role;
     if (currentUser?.default_sites?.length > 0 && userRole === 'Administrator') {
       const adminSiteBrands = allSites
         .filter(s => currentUser.default_sites.includes(s.id))
         .flatMap(s => s.brands || []);
       return [...new Set(adminSiteBrands)];
     }
-    return null
-  })();
+    return null;
+  }, [currentUser, allSites]);
 
   // const adminBrands = (() => {
   //   const userRole = currentUser?.custom_role || currentUser?.role;
@@ -186,25 +183,12 @@ export default function Dashboard() {
 
       let deadlineStatusMatch = true;
       if (filters.deadlineStatus && filters.deadlineStatus !== 'all') {
-        const brand = brands.find(b => b.id === claim.brand);
         if (!claim.manufacturer_deadline) {
           deadlineStatusMatch = false;
         } else {
-          const now = new Date();
-          const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - now) / (1000 * 60 * 60 * 24));
-
-          if (filters.deadlineStatus === 'Red') {
-            deadlineStatusMatch = daysRemaining < 1 || 
-              (brand?.red_min_days != null && brand?.red_max_days != null && 
-               daysRemaining >= brand.red_min_days && daysRemaining <= brand.red_max_days);
-          } else if (filters.deadlineStatus === 'Amber') {
-            deadlineStatusMatch = brand?.amber_min_days != null && brand?.amber_max_days != null && 
-              daysRemaining >= brand.amber_min_days && daysRemaining <= brand.amber_max_days;
-          } else if (filters.deadlineStatus === 'Green') {
-            deadlineStatusMatch = (brand?.green_max_days != null && daysRemaining > brand.green_max_days) ||
-              (brand?.green_min_days != null && brand?.green_max_days != null && 
-               daysRemaining >= brand.green_min_days && daysRemaining <= brand.green_max_days);
-          }
+          const brand = brands.find(b => b.id === claim.brand);
+          const daysRemaining = getDaysRemaining(claim.manufacturer_deadline);
+          deadlineStatusMatch = getDeadlineStatus(brand, daysRemaining) === filters.deadlineStatus.toLowerCase();
         }
       }
 
@@ -441,7 +425,7 @@ export default function Dashboard() {
   };
 
 
-  const activeSelectedBrands = selectedBrands ?? (() => {
+  const activeSelectedBrands = useMemo(() => selectedBrands ?? (() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('selectedBrandTiles');
       if (saved) {
@@ -452,7 +436,7 @@ export default function Dashboard() {
       }
     }
     return brands.map(b => b.id);
-  })();
+  })(), [selectedBrands, brands]);
 
   // const siteBrandRestriction = (() => {
   //   const userRole = currentUser?.custom_role || currentUser?.role;
@@ -463,23 +447,23 @@ export default function Dashboard() {
   //   return null;
   // })(); 
 
-  const siteOrAdministratorBrandRestriction = (() => {
+  const siteOrAdministratorBrandRestriction = useMemo(() => {
     const userRole = currentUser?.custom_role || currentUser?.role;
     if (['Location', 'Administrator'].includes(userRole) && currentUser?.default_sites?.length > 0) {
       const siteBrands = allSites
         .filter(s => currentUser.default_sites.includes(s.id))
         .flatMap(s => s.brands || []);
       const unique = [...new Set(siteBrands)];
-      return unique.length > 0 ? unique : null
+      return unique.length > 0 ? unique : null;
     }
     return null;
-  })();
+  }, [currentUser, allSites]);
 
-  const visibleBrands = brands.filter(b => 
+  const visibleBrands = useMemo(() => brands.filter(b =>
     activeSelectedBrands.includes(b.id) &&
     (adminBrands === null || adminBrands.includes(b.id)) &&
     (siteOrAdministratorBrandRestriction === null || siteOrAdministratorBrandRestriction.includes(b.id))
-  );
+  ), [brands, activeSelectedBrands, adminBrands, siteOrAdministratorBrandRestriction]);
 
   // Calculate stats
   const totalClaims = claims.length;
@@ -522,7 +506,7 @@ export default function Dashboard() {
 
           {/* Brand Stats Section 
               Only show if user is NOT  a Location */}
-          {currentUser?.customRole !== 'Location' && (
+          {(currentUser?.custom_role || currentUser?.role) !== 'Location' && (
             <BrandStatsSection claims={claims} allClaims={claims} brands={visibleBrands} onBrandTileClick={handleBrandTileClick} activeBrandFilter={filters.brand?.length === 1 ? filters.brand[0] : null} onDeadlineStatusFilter={handleDeadlineStatusFilter} onSiteFilter={(site) => setFilters(f => ({ ...f, site: f.site?.includes(site) ? f.site.filter(s => s !== site) : [...(f.site || []), site] }))} onResetFilters={handleResetFilters} onStatusFilter={handleStatusFilter} />
           )}
 

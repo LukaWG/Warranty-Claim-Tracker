@@ -12,20 +12,13 @@ import { cn } from "@/lib/utils";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
 
 export default function EditClaimModal({ claim, open, onClose, onSave, isSaving = false }) {
   const [useRate2, setUseRate2] = useState(false);
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
-  });
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: async () => {
-      const data = await databaseClients.Brand.get();
-      return data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-    }
-  });
+  const { data: sites = [] } = useSites();
+  const { data: brands = [] } = useBrands();
   const { data: alerts = [] } = useQuery({
     queryKey: ['alerts'],
     queryFn: () => databaseClients.Alert.get()

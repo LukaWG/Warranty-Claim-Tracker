@@ -4,8 +4,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { Reply, MessageCircle, CheckCheck, Paperclip, X, ExternalLink, MailOpen } from 'lucide-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { useSites } from '@/hooks/useSites';
 import { useRouter } from 'next/router';
 import { createPageUrl } from '@/utils';
 import { toast } from '@/components/ui/use-toast';
@@ -125,10 +126,7 @@ export default function MessageThread({ rootMessage, replies, currentUser, onRep
     });
   };
 
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
-  })
+  const { data: sites = [] } = useSites();
 
   const handleSendReply = async () => {
     if (!replyBody.trim()) return;

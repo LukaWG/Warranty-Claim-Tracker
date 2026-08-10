@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
 import { Paperclip, X } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
@@ -35,25 +37,14 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
     setImagePreviews(prev => prev.filter((_, i) => i !== idx));
   };
 
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get()
-  });
+  const { data: brands = [] } = useBrands();
 
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
-  });
+  const { data: sites = [] } = useSites();
 
   const { data: claims = [] } = useQuery({
     queryKey: ['claims-for-messages'],
     queryFn: () => databaseClients.WarrantyClaim.get(),
     enabled: open
-  });
-
-  const { data: allSites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
   });
 
   // Apply site/brand permissions based on user role
@@ -64,7 +55,7 @@ export default function ComposeMessageModal({ open, onClose, onSent, currentUser
         ? currentUser.default_sites
         : (currentUser?.default_site ? [currentUser.default_site] : []);
       if (userSites.length > 0 && !userSites.includes(claim.site)) return false;
-      const siteBrands = allSites
+      const siteBrands = sites
         .filter(s => userSites.includes(s.name))
         .flatMap(s => s.brands || []);
       const allowedBrands = [...new Set(siteBrands)];

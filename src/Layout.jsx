@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import SearchModal from '@/components/layout/SearchModal';
 import HendyLogo from '@/components/layout/HendyLogo';
-import ApplyPendingUserInfo from '@/components/auth/ApplyPendingUserInfo';
 import AccessDenied from '@/lib/AccessDenied';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
@@ -189,16 +188,20 @@ export default function Layout({ children, currentPageName }) {
   // Role resolved, but it's not on the allow-list — show Access Denied in place
   // rather than silently redirecting away.
   const isAccessDenied = !!requiredRoles && isRoleKnown && !isRolePermitted;
+  // The session fetch can succeed with no user (no active session) rather than
+  // throwing — that's not isCurrentUserError, so it needs its own check or the
+  // page is stuck on the loading spinner forever instead of redirecting.
+  const isUnauthenticated = !isCurrentUserLoading && !isCurrentUserError && !currentUser;
 
   React.useEffect(() => {
     if (isAuthPage || !requiredRoles) return;
-    if (isCurrentUserError) {
+    if (isCurrentUserError || isUnauthenticated) {
       // Can't confirm identity/role at all — deny and force re-auth rather than
       // leaving the page hanging or, worse, rendering it.
       router.replace(`/login?callbackUrl=${encodeURIComponent(router.asPath)}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthPage, requiredRoles, isCurrentUserError, router]);
+  }, [isAuthPage, requiredRoles, isCurrentUserError, isUnauthenticated, router]);
 
   if (isAuthPage) {
     return <>{children}</>;
@@ -220,7 +223,6 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      <ApplyPendingUserInfo />
       <style>{`
         :root {
           --hendy-blue: #222b57;
@@ -402,7 +404,7 @@ export default function Layout({ children, currentPageName }) {
         <main className="flex-1">
           {isAuthorized ? children : isAccessDenied ? (
             <AccessDenied />
-          ) : isCurrentUserError ? (
+          ) : isCurrentUserError || isUnauthenticated ? (
             <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-center px-4">
               <p className="text-sm text-slate-600 max-w-sm">
                 We couldn&apos;t verify your access to this page. Redirecting you to sign in…

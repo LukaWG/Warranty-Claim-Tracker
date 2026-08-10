@@ -11,6 +11,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
+import { getUserName } from '@/lib/getUserName';
 import { toast } from '@/components/ui/use-toast';
 import ApprovalChat from '@/components/approvals/ApprovalChat';
 
@@ -34,15 +37,9 @@ export default function Approvals() {
   const queryClient = useQueryClient();
   const [approvalNotes, setApprovalNotes] = useState({});
 
-  const { data: brands = [] } = useQuery({
-    queryKey: ['brands'],
-    queryFn: () => databaseClients.Brand.get()
-  })
+  const { data: brands = [] } = useBrands();
 
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
-  })
+  const { data: sites = [] } = useSites();
 
   const { data: claims = [], isLoading } = useQuery({
     queryKey: ['pendingApprovals'],
@@ -123,12 +120,6 @@ export default function Approvals() {
       });
     }
     });
-
-    const getUserName = (email) => {
-    const user = allUsers.find(u => u.email === email);
-    if (user?.first_name && user?.last_name) return `${user.first_name} ${user.last_name}`;
-    return user?.full_name || email;
-  };
 
   const Field = ({ label, value, className = '' }) => (
     <div>
@@ -244,7 +235,7 @@ export default function Approvals() {
                         <p className="text-xs text-slate-400 uppercase tracking-wide">Submitted By</p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <User className="h-3.5 w-3.5 text-slate-400" />
-                          <p className="font-medium text-slate-700">{getUserName(claim.submitted_for || claim.created_by)}</p>
+                          <p className="font-medium text-slate-700">{getUserName(claim.submitted_for || claim.created_by, allUsers, currentUser)}</p>
                         </div>
                       </div>
                       {claim.credit_note && (

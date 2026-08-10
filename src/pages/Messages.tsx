@@ -12,6 +12,7 @@ import ComposeMessageModal from '@/components/messages/ComposeMessageModal';
 import MessageThread from '@/components/messages/MessageThread';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useSites } from '@/hooks/useSites';
 
 export default function Messages() {
   const queryClient = useQueryClient();
@@ -49,10 +50,7 @@ export default function Messages() {
     refetchInterval: 30000
   });
 
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.get()
-  });
+  const { data: sites = [] } = useSites();
 
   const { data: allClaims = [] } = useQuery({
     queryKey: ['claims-for-messages'],

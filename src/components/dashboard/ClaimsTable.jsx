@@ -10,10 +10,13 @@ import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, A
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { useQuery } from '@tanstack/react-query';
-// import { useAuth } from '@/lib/AuthContext';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
 import { useAllUsers } from '@/hooks/useAllUsers';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
+import { getDaysRemaining, getDeadlineStatus, DEADLINE_STATUS_COLORS, DEFAULT_DEADLINE_STATUS_COLORS } from '@/lib/getDeadlineStatus';
+import { getUserName } from '@/lib/getUserName';
 import { cn } from "@/lib/utils";
 import ColumnVisibilityPicker, { DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS } from './ColumnVisibilityPicker';
 import ClaimTimeline from '@/components/claims/ClaimTimeline';
@@ -58,19 +61,9 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
     queryFn: () => databaseClients.AlertResolution.get()
   });
 
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ['brands'],
-    queryFn: async () => {
-      const data = await databaseClients.Brand.get();
-      const sorted = data.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-      return sorted;
-    }
-  });
+  const { data: brands = [], isLoading: brandsLoading } = useBrands();
 
-  const { data: allSites = [] } = useQuery({
-    queryKey: ['allSites'],
-    queryFn: () => databaseClients.Site.get()
-  });
+  const { data: allSites = [] } = useSites();
 
   const { data: allUsers = [] } = useAllUsers();
 
@@ -213,26 +206,6 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
         </div>
       </TableHead>
     );
-  };
-
-  const getUserName = (email) => {
-    if (!email) return "—";
-    // Try from allUsers list (admins can see all users)
-    const user = allUsers.find(u => u.email === email);
-    if (user) {
-      if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`;
-      if (user.first_name) return user.first_name;
-      if (user.full_name) return user.full_name;
-    }
-    // Fallback: if it matches currentUser, use their own data (check both top-level and nested data object)
-    if (currentUser && currentUser.email === email) {
-      const fn = currentUser.first_name || currentUser.data?.first_name;
-      const ln = currentUser.last_name || currentUser.data?.last_name;
-      if (fn && ln) return `${fn} ${ln}`;
-      if (fn) return fn;
-      if (currentUser.full_name) return currentUser.full_name;
-    }
-    return email;
   };
 
   const formatDate = (dateString) => {
@@ -482,43 +455,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                       <TableCell>
                         {claim.manufacturer_deadline ? (() => {
                           const brand = brands.find(b => b.id === claim.brand);
-                          const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
-
-                          let bgColor = 'bg-slate-100';
-                          let textColor = 'text-slate-700';
-
-                          if (brand) {
-                            // Always red if below 1 day
-                            if (daysRemaining < 1) {
-                              bgColor = 'bg-red-100';
-                              textColor = 'text-red-700';
-                            }
-                            // Always green if above max threshold
-                            else if (brand.green_max_days != null && daysRemaining > brand.green_max_days) {
-                              bgColor = 'bg-green-100';
-                              textColor = 'text-green-700';
-                            }
-                            // Use range logic for values in between
-                            else {
-                              const inGreenRange = brand.green_min_days != null && brand.green_max_days != null && 
-                                daysRemaining >= brand.green_min_days && daysRemaining <= brand.green_max_days;
-                              const inAmberRange = brand.amber_min_days != null && brand.amber_max_days != null && 
-                                daysRemaining >= brand.amber_min_days && daysRemaining <= brand.amber_max_days;
-                              const inRedRange = brand.red_min_days != null && brand.red_max_days != null && 
-                                daysRemaining >= brand.red_min_days && daysRemaining <= brand.red_max_days;
-                              
-                              if (inGreenRange) {
-                                bgColor = 'bg-green-100';
-                                textColor = 'text-green-700';
-                              } else if (inAmberRange) {
-                                bgColor = 'bg-amber-100';
-                                textColor = 'text-amber-700';
-                              } else if (inRedRange) {
-                                bgColor = 'bg-red-100';
-                                textColor = 'text-red-700';
-                              }
-                            }
-                          }
+                          const daysRemaining = getDaysRemaining(claim.manufacturer_deadline);
+                          const { bgColor, textColor } = DEADLINE_STATUS_COLORS[getDeadlineStatus(brand, daysRemaining)] || DEFAULT_DEADLINE_STATUS_COLORS;
 
                           return (
                             <div className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-md", bgColor, textColor)}>
@@ -562,7 +500,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             )}
                             {col('claimed_by') && !isProcessor && (
                             <TableCell className="text-slate-600">
-                            {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
+                            {claim.claimed_by ? getUserName(claim.claimed_by, allUsers, currentUser) : "—"}
                             </TableCell>
                             )}
                            {col('is_campaign') && (
@@ -759,7 +697,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                            <TableCell>
                              <div className="flex items-center gap-2 text-slate-600">
                                <MapPin className="h-4 w-4 text-slate-400" />
-                               {claim.site}
+                               {allSites.find(site => site.id === claim.site)?.name}
                              </div>
                            </TableCell>
                          )}
@@ -833,40 +771,8 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                          <TableCell>
                            {claim.manufacturer_deadline ? (() => {
                              const brand = brands.find(b => b.id === claim.brand);
-                             const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - new Date()) / (1000 * 60 * 60 * 24));
-
-                             let bgColor = 'bg-slate-100';
-                             let textColor = 'text-slate-700';
-
-                             if (brand) {
-                               if (daysRemaining < 1) {
-                                 bgColor = 'bg-red-100';
-                                 textColor = 'text-red-700';
-                               }
-                               else if (brand.green_max_days != null && daysRemaining > brand.green_max_days) {
-                                 bgColor = 'bg-green-100';
-                                 textColor = 'text-green-700';
-                               }
-                               else {
-                                 const inGreenRange = brand.green_min_days != null && brand.green_max_days != null && 
-                                   daysRemaining >= brand.green_min_days && daysRemaining <= brand.green_max_days;
-                                 const inAmberRange = brand.amber_min_days != null && brand.amber_max_days != null && 
-                                   daysRemaining >= brand.amber_min_days && daysRemaining <= brand.amber_max_days;
-                                 const inRedRange = brand.red_min_days != null && brand.red_max_days != null && 
-                                   daysRemaining >= brand.red_min_days && daysRemaining <= brand.red_max_days;
-
-                                 if (inGreenRange) {
-                                   bgColor = 'bg-green-100';
-                                   textColor = 'text-green-700';
-                                 } else if (inAmberRange) {
-                                   bgColor = 'bg-amber-100';
-                                   textColor = 'text-amber-700';
-                                 } else if (inRedRange) {
-                                   bgColor = 'bg-red-100';
-                                   textColor = 'text-red-700';
-                                 }
-                               }
-                             }
+                             const daysRemaining = getDaysRemaining(claim.manufacturer_deadline);
+                             const { bgColor, textColor } = DEADLINE_STATUS_COLORS[getDeadlineStatus(brand, daysRemaining)] || DEFAULT_DEADLINE_STATUS_COLORS;
 
                              return (
                                <div className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-md", bgColor, textColor)}>
@@ -933,7 +839,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                            )}
                            {col('claimed_by') && !isProcessor && (
                            <TableCell className="text-slate-600">
-                           {claim.claimed_by ? getUserName(claim.claimed_by) : "—"}
+                           {claim.claimed_by ? getUserName(claim.claimed_by, allUsers, currentUser) : "—"}
                            </TableCell>
                            )}
                            {col('is_campaign') && (

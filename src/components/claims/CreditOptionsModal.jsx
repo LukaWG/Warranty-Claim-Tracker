@@ -9,14 +9,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { currentUser as currentUserClient } from '@/api/currentUser';
+import { useSites } from '@/hooks/useSites';
 import ApprovalChat from '@/components/approvals/ApprovalChat';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 export default function CreditOptionsModal({ claim, open, onClose, onSave, isSaving = false }) {
-  const { data: sites = [] } = useQuery({
-    queryKey: ['sites'],
-    queryFn: () => databaseClients.Site.list('name')
-  });
+  const { data: sites = [] } = useSites();
 
   const { data: currentUser } = useQuery({
     queryKey: ['currentUser'],
