@@ -281,9 +281,16 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <AlertCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                <span className="inline-flex cursor-help">
+                  <AlertCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                </span>
               </TooltipTrigger>
-              <TooltipContent className="text-xs">Safety Recall / Service Campaign {claim.campaign_reference ? `: ${claim.campaign_reference}` : ''}</TooltipContent>
+              <TooltipContent className="text-xs max-w-xs">
+                {claim.campaign_reference
+                  ? `Campaign: ${claim.campaign_reference}`
+                  : 'Safety Recall / Service Campaign'
+                }
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}
