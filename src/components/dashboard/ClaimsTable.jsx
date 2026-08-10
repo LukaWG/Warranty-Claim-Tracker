@@ -271,7 +271,7 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-default flex-shrink-0">!</span>
+                <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-amber-400 text-white text-[9px] font-bold cursor-help flex-shrink-0">!</span>
               </TooltipTrigger>
               <TooltipContent className="text-xs">Note has been added to this claim</TooltipContent>
             </Tooltip>
@@ -638,14 +638,16 @@ export default function ClaimsTable({ claims, onStatusChange, onClaimedChange, o
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                              <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 hover:bg-teal-50"
-                                  style={{ color: 'var(--hendy-teal)' }}
-                                  onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
-                                >
-                                  <Mail className="h-4 w-4" />
+                                  <span className="cursor-help">
+                                  <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 hover:bg-teal-50"
+                                      style={{ color: 'var(--hendy-teal)' }}
+                                      onClick={() => router.push(`${createPageUrl('Messages')}?wip=${encodeURIComponent(claim.wip_number)}`)}
+                                    >
+                                    <Mail className="h-4 w-4" />
+                                    </span>
                                 </Button>
                             </TooltipTrigger>
                                 <TooltipContent className="text-xs">Unread message - click to view</TooltipContent>
