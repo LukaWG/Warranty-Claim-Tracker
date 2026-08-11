@@ -13,6 +13,7 @@ import { databaseClients } from '@/api/databaseClient';
 import { useSites } from '@/hooks/useSites';
 import { useBrands } from '@/hooks/useBrands';
 import { authUsers } from "@/api/authClient";
+import { generatePassword } from '@/lib/generatePassword';
 import { toast } from '@/components/ui/use-toast';
 
 // Brand IDs selectable for a role given its assigned sites — mirrors the
@@ -84,10 +85,12 @@ export default function UsersTab() {
 			default_site,
 			default_sites,
 			default_brands }),
-	onSuccess: () => {
+	onSuccess: (result) => {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 		setNewUser({ email: "", role: "Location", first_name: "", last_name: "", default_site: "" });
 		setShowUserDialog(false);
+		setTempPassword(result.temporaryPassword);
+		setShowTempPasswordDialog(true);
 	},
 	onError: (error) => alert(`Failed to add user: ${error.message}`),
 	});
@@ -126,11 +129,7 @@ export default function UsersTab() {
 
 	const resetUserPasswordMutation = useMutation({
 	mutationFn: async ({ id }) => {
-		const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
-		let generatedPassword = "";
-		for (let i = 0; i < 10; i++) {
-			generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
-		}
+		const generatedPassword = generatePassword();
 
 		await authUsers.resetPassword(id, generatedPassword);
 		await authUsers.update(id, { must_change_password: true });
@@ -794,11 +793,11 @@ export default function UsersTab() {
 		<Dialog open={showTempPasswordDialog} onOpenChange={setShowTempPasswordDialog}>
 			<DialogContent className="sm:max-w-md">
 			<DialogHeader>
-				<DialogTitle className="text-slate-800">Password Reset Successful</DialogTitle>
+				<DialogTitle className="text-slate-800">Temporary Password Generated</DialogTitle>
 			</DialogHeader>
 			<div className="space-y-4 my-4">
 				<p className="text-sm text-slate-500">
-					A temporary password has been successfully generated for the user. Please copy and share this password with them, as it will only be displayed once.
+					A temporary password has been generated for this user. They'll be required to set their own password the first time they log in. Please copy and share this one with them, as it will only be displayed once.
 				</p>
 				<div className="flex items-center space-x-2">
 					<Input

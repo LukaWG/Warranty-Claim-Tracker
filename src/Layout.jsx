@@ -147,6 +147,11 @@ export default function Layout({ children, currentPageName }) {
         throw new Error(res.error.message || "Failed to change password.");
       }
 
+      if (mustChangePasswordNow) {
+        await authClient.updateUser({ mustChangePassword: false });
+        await refetchCurrentUser();
+      }
+
       setChangeSuccess(true);
       setCurrentPassword("");
       setNewPassword("");
@@ -165,6 +170,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   const displayRole = currentUser?.custom_role || currentUser?.role;
+  const mustChangePasswordNow = !!currentUser?.must_change_password;
   const requiredRoles = PAGE_ROLES[currentPageName];
   // Fail closed: a restricted page is "authorized" only once the role fetch has
   // positively succeeded and the role is on the allow-list. Still loading, a
@@ -190,6 +196,12 @@ export default function Layout({ children, currentPageName }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthPage, requiredRoles, isCurrentUserError, isUnauthenticated, router]);
+
+  // A temporary (invited/reset) password must be replaced before anything
+  // else happens — pop the dialog open as soon as we know it's required.
+  React.useEffect(() => {
+    if (mustChangePasswordNow) setChangePasswordOpen(true);
+  }, [mustChangePasswordNow]);
 
   if (isAuthPage) {
     return <>{children}</>;
@@ -378,7 +390,14 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Page Content */}
         <main className="flex-1">
-          {isAuthorized ? children : isAccessDenied ? (
+          {mustChangePasswordNow ? (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-center px-4">
+              <Lock className="h-8 w-8 text-slate-400" />
+              <p className="text-sm text-slate-600 max-w-sm">
+                You need to set a new password before you can continue. Use the dialog to finish.
+              </p>
+            </div>
+          ) : isAuthorized ? children : isAccessDenied ? (
             <AccessDenied />
           ) : isCurrentUserError || isUnauthenticated ? (
             <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-center px-4">
@@ -398,12 +417,20 @@ export default function Layout({ children, currentPageName }) {
       </div>
 
       {/* Voluntary Change Password Dialog */}
-      <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>
+      <Dialog
+        open={changePasswordOpen}
+        onOpenChange={(open) => {
+          if (!open && mustChangePasswordNow) return;
+          setChangePasswordOpen(open);
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
+            <DialogTitle>{mustChangePasswordNow ? "Set a New Password" : "Change Password"}</DialogTitle>
             <DialogDescription>
-              Update your password to keep your account secure.
+              {mustChangePasswordNow
+                ? "Your password was set by an administrator and must be changed before you continue."
+                : "Update your password to keep your account secure."}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleVoluntaryPasswordChange} className="space-y-4 py-2">
@@ -473,14 +500,16 @@ export default function Layout({ children, currentPageName }) {
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setChangePasswordOpen(false)}
-                disabled={changeLoading || changeSuccess}
-              >
-                Cancel
-              </Button>
+              {!mustChangePasswordNow && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setChangePasswordOpen(false)}
+                  disabled={changeLoading || changeSuccess}
+                >
+                  Cancel
+                </Button>
+              )}
               <Button
                 type="submit"
                 disabled={changeLoading || changeSuccess}

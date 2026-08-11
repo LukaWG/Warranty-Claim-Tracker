@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-11
 **Scope:** Next.js app (this repo), its Better Auth/Prisma/Postgres auth stack, and its trust boundary with the external "data API" (`warrantyrepairdata-api`, separate repo, reachable at `NEXT_PUBLIC_API_URL`).
-**Method:** Static source review + live testing against the running local stack (Docker containers `warranty-claim-tracker-app`, `warranty-claim-tracker-db`, `warrantyrepairdata-api-1`) via `curl`. No destructive testing was performed; one throwaway account created during testing was deleted from Postgres afterward (see Finding 2).
+**Method:** Static source review + live testing against the running local stack (Docker containers `warranty-claim-tracker-app`, `warranty-claim-tracker-db`, `warrantyrepairdata-api-1`) via `curl` and an actual browser session. No destructive testing was performed; all throwaway accounts created during testing and remediation verification were deleted from Postgres afterward.
 
 ## Summary
 
@@ -13,8 +13,8 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | # | Severity | Finding |
 |---|----------|---------|
 | 1 | **Critical** | ~~Data API has no authentication~~ — **fixed (pass 1)**: session-checked proxy + shared-secret now required; row-level scoping is a follow-up pass |
-| 2 | **Critical** | Self-signup accepts unverified email domain match — account squatting / spoofing |
-| 3 | **High** | Invited users get a hardcoded default password (`"password"`), never forced to change it |
+| 2 | **Critical** | ~~Self-signup accepts unverified email domain match~~ — **fixed**: self-signup now only works while the user table is empty (first Owner only); everyone else must be invited |
+| 3 | **High** | ~~Invited users get a hardcoded default password~~ — **fixed**: invite now generates a real random password and forces a change on first login |
 | 4 | **High** | Password reset is non-functional in production (logs to console instead of emailing) |
 | 5 | **High** | All authorization/business rules (RBAC, site/brand scoping, approval workflow) enforced client-side only |
 | 6 | **High** | Microsoft SSO configured for `tenantId: "common"` with no domain restriction on the social sign-in path |
@@ -68,7 +68,18 @@ The `access-control-allow-methods` header on that response advertises `GET,POST,
 
 </details>
 
-## 2. Critical — Unverified self-signup keyed only on email string match
+## 2. Critical — Unverified self-signup keyed only on email string match — ✅ REMEDIATED (2026-08-11)
+
+**Fix applied:** `src/lib/auth.ts`'s `before` hook now also rejects `/sign-up/email` whenever the `user` table already has at least one row (`prisma.user.count() > 0`), independent of the existing domain check. Self-signup is only ever reachable to create the very first Owner on a fresh deployment — exactly matching what the existing `databaseHooks.user.create.before` "first user becomes Owner" hook already assumes. Once that first user exists, the endpoint returns `400` with "Self-service sign-up is disabled. Ask an administrator to invite you." for everyone, permanently — there's no time-limited window or feature flag to remember to turn off.
+
+This was chosen over enabling `requireEmailVerification: true` because that flag also gates *sign-in* in Better Auth (not just sign-up) — turning it on would have locked out every admin-invited user too, since `admin/create-user` doesn't set `emailVerified: true`. Fixing that properly is bundled with Finding 4 (real email delivery), which is still open.
+
+**Verified live:** `curl -X POST /api/auth/sign-up/email` with a fresh `@hendy-group.com` address now returns `{"message":"Self-service sign-up is disabled. Ask an administrator to invite you."}`, and the same rendered correctly in the actual `/signup` page in-browser. Existing sign-in (`/api/auth/sign-in/email`) is untouched and still works.
+
+**Not fixed by this change (separate, lower-priority items):** the Microsoft SSO path (Finding 6) still has no domain restriction if it's ever enabled — that hook is independent of this one. Real email verification/delivery (Finding 4) is still open; this fix closes the exploitable gap without needing it.
+
+<details>
+<summary>Original finding (pre-fix), preserved for reference</summary>
 
 **Where:** `src/lib/auth.ts` (`emailAndPassword.requireEmailVerification: false`, and the `before` hook that only checks `ctx.body?.email.endsWith("@hendy-group.com")`).
 
@@ -85,7 +96,20 @@ An email address that has never existed and received no verification email produ
 
 **Recommendation:** Set `requireEmailVerification: true` and gate first-login/session issuance on verification, or remove open self-signup entirely in favor of the admin-invite flow (which at least requires an existing admin to act). If open signup by domain is intentional, it must be paired with a real verification email loop — which also requires fixing Finding 4.
 
-## 3. High — Hardcoded default password for invited users, never forced to change
+</details>
+
+## 3. High — Hardcoded default password for invited users, never forced to change — ✅ REMEDIATED (2026-08-11)
+
+**Fix applied:**
+- `src/api/authClient.js`'s `invite()` now generates a real random password (`src/lib/generatePassword.js`, backed by `crypto.getRandomValues` — not `crypto.randomUUID`, which requires HTTPS and would break on this app's plain-HTTP LAN deployment) and sends `mustChangePassword: true`. The same generator now also backs the admin "Reset Password" action in `UsersTab.jsx`, replacing its inline copy of the same logic.
+- **Bug found while fixing this:** the invite payload was sending `firstName`, `customRole`, `defaultSite`, `defaultSites`, `defaultBrands` (and my new `mustChangePassword`) as top-level body fields, but Better Auth's `/admin/create-user` only applies additionalFields nested under a `data` key — anything else is silently stripped by its request schema before the handler ever sees it (confirmed by reading `better-auth/dist/plugins/admin/routes.mjs`). This meant **invited users' role/site/brand assignments were never actually being applied at creation time**, independent of this security fix — every invited user silently got the schema defaults (`customRole: "Location"`, no site/brand restriction) regardless of what was picked in the "Add New User" form. Fixed by nesting those fields under `data`, which was necessary for `mustChangePassword` to take effect and fixes the pre-existing bug as a side effect.
+- `src/Layout.jsx` now enforces the flag instead of just storing it: a `mustChangePasswordNow` check auto-opens the existing "Change Password" dialog (retitled/reworded for this context), makes it non-dismissable (`onOpenChange` ignores close attempts while the flag is set — covers the X button, outside-click, and Escape, since Radix funnels all three through it), and blocks all page content behind it. On successful change, it calls Better Auth's self-service `authClient.updateUser({ mustChangePassword: false })` (available to any signed-in user for `additionalFields` marked `input: true` — no admin role needed) and refetches the session, which lifts the block.
+- The admin UI now also surfaces the invite's generated password in the same one-time "temporary password" dialog already used for admin-triggered resets (`UsersTab.jsx`), generalized to cover both contexts.
+
+**Verified live, full round-trip:** invited a throwaway user through the actual Configuration → Users UI, captured the generated temporary password from the dialog, confirmed `must_change_password = true` in Postgres, signed in as that user and confirmed the "Set a New Password" dialog auto-opened and blocked the app (`/` redirected to `ClaimForm` but rendered only the forced dialog), confirmed the X button did not dismiss it, completed the change, confirmed the app unblocked immediately afterward, confirmed `must_change_password` flipped to `false` in Postgres, and confirmed the old temporary password no longer works while the new one does (`401` vs `200` on `/api/auth/sign-in/email`). Test accounts were deleted from Postgres afterward.
+
+<details>
+<summary>Original finding (pre-fix), preserved for reference</summary>
 
 **Where:** `src/api/authClient.js`, `authUsers.invite()`:
 ```js
@@ -98,6 +122,8 @@ Grepping the whole app for `mustChangePassword`/`must_change_password` shows it 
 **Impact:** Every newly invited account is guessable-credential (`password`) until the user happens to change it voluntarily via the optional "Change Password" menu item in `Layout.jsx` — nothing in the product requires or even prompts that. Combined with Finding 2's guessable-email problem, an attacker doesn't even need the invite email; they can attempt sign-in directly against a guessed `firstname.lastname@hendy-group.com` with password `password` before the invited user's first login.
 
 **Recommendation:** Generate a random one-time password (the commented-out `crypto.randomUUID()` was the right idea), set `mustChangePassword: true` on invite, and add an actual enforcement gate (e.g. in `Layout.jsx`/middleware) that blocks all app usage until the flag is cleared by a genuine password change.
+
+</details>
 
 ## 4. High — Password reset is non-functional / reset tokens only go to server logs
 
@@ -202,8 +228,8 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 ## Suggested remediation order
 
 1. ~~Put real authentication on the data API (Finding 1)~~ — **done, pass 1.** Row-level authorization (site/brand/role scoping enforced server-side, not just in React) is the natural pass 2 for this same finding.
-2. Fix signup verification (Finding 2) and the invite default password (Finding 3) together — both are "anyone can get in as someone else" issues.
-3. Wire up real password-reset email delivery (Finding 4), since it's the intended replacement for the weak invite-password flow.
+2. ~~Fix signup verification (Finding 2) and the invite default password (Finding 3)~~ — **done.**
+3. Wire up real password-reset email delivery (Finding 4) — also needed to properly close the `requireEmailVerification` gap noted in Finding 2's fix.
 4. Patch dependencies (Finding 7) — cheap, mostly automatic via `npm audit fix`.
 5. Add security headers (Finding 8) and fix CSV export escaping (Finding 9) — low effort, meaningful defense-in-depth.
 6. Decide whether Microsoft SSO will actually be turned on; if yes, fix the tenant restriction before flipping the flag (Finding 6).
@@ -211,3 +237,4 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 ## Remediation log
 
 - **2026-08-11 — Finding 1, pass 1:** Added `src/pages/api/data/[...path].ts` (session-checked proxy) in this repo and a shared-secret check in `warrantyRepairData/src/middleware.ts`. `databaseClient.js` now calls `/api/data` instead of `NEXT_PUBLIC_API_URL`. New env vars `DATA_API_URL`/`DATA_API_KEY` (server-only) replace the old client-exposed `NEXT_PUBLIC_API_URL` across `.env`, `docker-compose.yaml`, `Dockerfile`, `k8s/*`, and `.github/workflows/deploy.yml`. Verified live via curl and in-browser (network log shows every collection loading through `/api/data/...`, direct `:5001` access now returns `401`). Row-level authorization deliberately deferred — see Finding 1's "what this pass did NOT fix."
+- **2026-08-11 — Findings 2 & 3:** Self-signup now only works while the user table is empty (`src/lib/auth.ts`). Invite now generates a real random password, sets `mustChangePassword: true`, and `Layout.jsx` actually enforces it with a non-dismissable forced-change dialog blocking the app. Found and fixed a pre-existing bug in the same code path: `/admin/create-user`'s extra fields need to be nested under `data`, not top-level — role/site/brand assignments on invite were silently no-ops before this fix. Verified live end-to-end (invite → temp password → forced dialog → change → unblocked → old password rejected, new one works).

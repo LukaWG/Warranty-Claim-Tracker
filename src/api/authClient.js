@@ -1,4 +1,5 @@
 import { normalizeUser } from '../lib/normalizeUser';
+import { generatePassword } from '../lib/generatePassword';
 
 const BASE = "/api/auth";
 
@@ -78,22 +79,30 @@ export const authUsers = {
     const platformRole = ["Owner", "Group Manager"].includes(custom_role)
       ? "admin"
       : "user";
+    const temporaryPassword = generatePassword();
 
     return request("/admin/create-user", {
       method: "POST",
       body: JSON.stringify({
         email,
         name: `${first_name} ${last_name}`.trim(),
-        password: "password", //crypto.randomUUID(), // throwaway — user resets via forgot password
+        password: temporaryPassword,
         role: platformRole,
-        firstName: first_name,
-        lastName: last_name,
-        customRole: custom_role ?? "Location",
-        defaultSite: default_site ?? null,
-        defaultSites: default_sites ?? [],
-        defaultBrands: default_brands ?? [],
+        // Better Auth's /admin/create-user only applies additionalFields nested
+        // under `data` — anything sent top-level is silently dropped by its
+        // request schema (this was also true before this change, so custom_role/
+        // default_site/etc. never actually took effect on invite either).
+        data: {
+          firstName: first_name,
+          lastName: last_name,
+          customRole: custom_role ?? "Location",
+          defaultSite: default_site ?? null,
+          defaultSites: default_sites ?? [],
+          defaultBrands: default_brands ?? [],
+          mustChangePassword: true,
+        },
       }),
-    });
+    }).then((result) => ({ ...result, temporaryPassword }));
   },
 
   resetPassword: (userId, newPassword) =>

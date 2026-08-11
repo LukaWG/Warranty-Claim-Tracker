@@ -56,6 +56,18 @@ export const auth = betterAuth({
           message: "Invalid email domain.",
         });
       }
+      // Self-service sign-up only ever exists to create the very first
+      // (Owner) user on a fresh deployment — see the isFirstUser hook below.
+      // Once that user exists, everyone else must be invited by an admin;
+      // otherwise anyone could register as an unverified @hendy-group.com
+      // address before its real owner ever signs up (SECURITY_AUDIT.md
+      // Finding 2).
+      const hasExistingUser = (await prisma.user.count()) > 0;
+      if (hasExistingUser) {
+        throw new APIError("BAD_REQUEST", {
+          message: "Self-service sign-up is disabled. Ask an administrator to invite you.",
+        });
+      }
     }),
   },
   databaseHooks: {
