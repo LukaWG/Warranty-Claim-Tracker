@@ -33,6 +33,13 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  // Store rate-limit counters in Postgres (shared by every app instance)
+  // instead of the default in-memory store, which is per-process and would
+  // let each of the k8s deployment's replicas grant its own separate attempt
+  // budget (SECURITY_AUDIT.md Finding 10).
+  rateLimit: {
+    storage: "database",
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,

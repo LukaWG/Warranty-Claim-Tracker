@@ -4,6 +4,15 @@ import { Download } from "lucide-react";
 import { format } from 'date-fns';
 import { useBrands } from '@/hooks/useBrands';
 
+// RFC 4180 quoting, plus a leading `'` on any cell starting with a
+// formula-trigger character (=, +, -, @) so Excel/Sheets never interprets
+// exported claim data as a formula (CSV/formula injection).
+function escapeCsvCell(value) {
+  let str = value === null || value === undefined ? '' : String(value);
+  if (/^[=+\-@]/.test(str)) str = `'${str}`;
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
 export default function ExportButton({ claims, filters }) {
 
   const { data: brands = [] } = useBrands();
@@ -44,8 +53,8 @@ export default function ExportButton({ claims, filters }) {
 
     // Create CSV content
     const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      headers.map(escapeCsvCell).join(','),
+      ...rows.map(row => row.map(escapeCsvCell).join(','))
     ].join('\n');
 
     // Create blob and download

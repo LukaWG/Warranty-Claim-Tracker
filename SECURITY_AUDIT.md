@@ -19,9 +19,9 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 5 | **High** | All authorization/business rules (RBAC, site/brand scoping, approval workflow) enforced client-side only |
 | 6 | **High** | Microsoft SSO configured for `tenantId: "common"` with no domain restriction on the social sign-in path |
 | 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **mostly fixed**: 13→3, all remaining ones require a Next.js 15→16 major bump, deliberately deferred |
-| 8 | **Medium** | No security headers (CSP, X-Frame-Options, HSTS, etc.) on the app |
-| 9 | **Medium** | CSV export is vulnerable to formula/CSV injection and mishandles embedded quotes |
-| 10 | **Low** | Auth rate limiting is per-instance in-memory; not shared across the 2 k8s replicas |
+| 8 | **Medium** | ~~No security headers~~ — **fixed**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS all added |
+| 9 | **Medium** | ~~CSV export vulnerable to formula/CSV injection~~ — **fixed**: proper RFC 4180 quoting + formula-prefix neutralization |
+| 10 | **Low** | ~~Auth rate limiting not shared across replicas~~ — **fixed**: now backed by Postgres via `rateLimit.storage: "database"` |
 | 11 | **Informational** | `X-Powered-By: Next.js` discloses framework |
 | — | **Positive controls observed** | See end of report |
 
@@ -192,39 +192,29 @@ The domain-restriction `before` hook only triggers `if (ctx.path !== "/sign-up/e
 
 </details>
 
-## 8. Medium — No security headers
+## 8. Medium — No security headers — ✅ REMEDIATED (2026-08-11)
 
-**Where:** `next.config.js`, `middleware.ts`. Live check:
+**Fix applied:** Added a `headers()` block to `next.config.js` applying to every route: `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Strict-Transport-Security` (harmless over today's plain HTTP — browsers only honor it once a connection is already HTTPS, so it's a no-op now and takes effect automatically whenever TLS termination is added in front), and a `Content-Security-Policy`:
 ```
-$ curl -i http://192.168.1.144:3000/login
-HTTP/1.1 200 OK
-X-Powered-By: Next.js
-ETag: ...
-Content-Type: text/html; charset=utf-8
+default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';
+img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self';
+object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 ```
-No `Content-Security-Policy`, `X-Frame-Options`/`frame-ancestors`, `X-Content-Type-Options`, `Referrer-Policy`, or `Strict-Transport-Security`. The app can be framed by any other site (clickjacking) and has no CSP as a second line of defense if an XSS vector is ever introduced.
+`style-src` needed `'unsafe-inline'` because the app renders inline `<style>` blocks and inline `style={{...}}` attributes extensively (`Layout.jsx`, `login.tsx`, etc.) — switching to nonces would mean threading them through every component. Everything else stays `'self'`-only since the app doesn't load any external scripts, fonts, or images anywhere (confirmed by grep). In dev mode only, `script-src` also allows `'unsafe-eval'`/`'unsafe-inline'` for Turbopack's HMR runtime.
 
-**Recommendation:** Add a `headers()` block in `next.config.js` (or set headers in `middleware.ts`) for at least `X-Frame-Options: DENY`/`frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, and a baseline CSP. Add HSTS once TLS termination is confirmed in front of the app (the current deployment is plain HTTP on a LAN IP).
+**Verified live:** confirmed all five headers present via `curl -i`, then loaded the actual app in a browser (Dashboard, a Radix `Select` portal dropdown, dialogs) and checked the console — zero CSP violations, everything renders and functions identically to before.
 
-## 9. Medium — CSV export: formula/injection risk and broken quote escaping
+## 9. Medium — CSV export: formula/injection risk and broken quote escaping — ✅ REMEDIATED (2026-08-11)
 
-**Where:** `src/components/dashboard/ExportButton.jsx`:
-```js
-...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-```
-Two problems in the same line:
-1. No escaping of embedded double quotes (`"` inside a field breaks the CSV structure rather than being doubled to `""`).
-2. No neutralization of leading `=`, `+`, `-`, or `@` characters. Several exported fields (`site`, `alert`, `alert_resolution`, `wip_number`) originate from free-text/claim data rather than fixed enums, so a value like `=HYPERLINK("http://evil/","x")` or a DDE-style formula in one of those fields would execute as a formula the moment a user opens the exported CSV in Excel/Sheets — classic CSV/formula injection.
+**Fix applied:** `src/components/dashboard/ExportButton.jsx` now runs every cell through an `escapeCsvCell()` helper before joining: doubles any embedded `"` per RFC 4180, and prefixes the value with a `'` if it starts with `= + - @` so Excel/Sheets can never interpret exported claim data as a formula.
 
-**Recommendation:** Prefix any cell whose first character is `= + - @` with a `'` (or a space) before quoting, and double any embedded `"` (standard RFC 4180 escaping) instead of the current naive wrap.
+**Verified:** unit-checked the helper against `=cmd|calc`, `+1234`, `-5`, `@SUM(A1)`, embedded quotes, `null`/`undefined`, and plain text — all escape exactly as expected (formula triggers get a leading `'`, quotes get doubled, nullish values become empty strings).
 
-## 10. Low — Auth rate limiting is not shared across replicas
+## 10. Low — Auth rate limiting is not shared across replicas — ✅ REMEDIATED (2026-08-11)
 
-**Live proof:** 8 rapid bad-password attempts against `/api/auth/sign-in/email` for the same account returned `401, 401, 401, 429, 429, 429, 429, 429` — Better Auth's default rate limiter is active and working on this single instance.
+**Fix applied:** `src/lib/auth.ts` now sets `rateLimit: { storage: "database" }`. Better Auth ships a database-backed rate-limit storage that uses the same Prisma/Postgres adapter already configured for everything else — no new infrastructure (e.g. Redis) needed, and every `k8s/deployment.yaml` replica now shares one counter instead of keeping its own in-memory one. Added the `rateLimit` model to `prisma/schema.prisma` (`key`, `count`, `lastRequest`) and a migration (`prisma/migrations/20260811110000_add_rate_limit_table`); applied to the local dev database via `prisma db push` (matching how this app's own `db-push-job.yaml`/compose profile already provisions schema changes — `prisma migrate dev` wanted to reset the whole database first because it had drifted from migration history pre-existing this change, so that path was avoided).
 
-However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit store (e.g. Redis) configured for Better Auth. Since the default limiter is in-memory per process, a client can roughly double its effective attempt budget by getting load-balanced across both pods.
-
-**Recommendation:** If/when this app scales past one replica in production, configure Better Auth's rate limiter with a shared backing store, or front it with an infrastructure-level rate limit (ingress/WAF) that isn't per-pod.
+**Verified live:** ran 5 rapid bad-password attempts against `/api/auth/sign-in/email` (got `401,401,401,429,429`, confirming the limit still triggers), then confirmed a row for that key actually landed in the new `rateLimit` Postgres table with `count = 3` — proving the counter now lives in the shared database, not a per-process map.
 
 ## 11. Informational — Framework fingerprinting
 
@@ -249,7 +239,7 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 2. ~~Fix signup verification (Finding 2) and the invite default password (Finding 3)~~ — **done.**
 3. Wire up real password-reset email delivery (Finding 4) — also needed to properly close the `requireEmailVerification` gap noted in Finding 2's fix.
 4. ~~Patch dependencies (Finding 7)~~ — **done** for everything except the Next.js 15→16 major bump, tracked separately.
-5. Add security headers (Finding 8) and fix CSV export escaping (Finding 9) — low effort, meaningful defense-in-depth.
+5. ~~Add security headers (Finding 8) and fix CSV export escaping (Finding 9)~~ — **done**, along with Finding 10 (rate-limit sharing) in the same pass.
 6. Decide whether Microsoft SSO will actually be turned on; if yes, fix the tenant restriction before flipping the flag (Finding 6).
 
 ## Remediation log
@@ -257,3 +247,4 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 - **2026-08-11 — Finding 1, pass 1:** Added `src/pages/api/data/[...path].ts` (session-checked proxy) in this repo and a shared-secret check in `warrantyRepairData/src/middleware.ts`. `databaseClient.js` now calls `/api/data` instead of `NEXT_PUBLIC_API_URL`. New env vars `DATA_API_URL`/`DATA_API_KEY` (server-only) replace the old client-exposed `NEXT_PUBLIC_API_URL` across `.env`, `docker-compose.yaml`, `Dockerfile`, `k8s/*`, and `.github/workflows/deploy.yml`. Verified live via curl and in-browser (network log shows every collection loading through `/api/data/...`, direct `:5001` access now returns `401`). Row-level authorization deliberately deferred — see Finding 1's "what this pass did NOT fix."
 - **2026-08-11 — Findings 2 & 3:** Self-signup now only works while the user table is empty (`src/lib/auth.ts`). Invite now generates a real random password, sets `mustChangePassword: true`, and `Layout.jsx` actually enforces it with a non-dismissable forced-change dialog blocking the app. Found and fixed a pre-existing bug in the same code path: `/admin/create-user`'s extra fields need to be nested under `data`, not top-level — role/site/brand assignments on invite were silently no-ops before this fix. Verified live end-to-end (invite → temp password → forced dialog → change → unblocked → old password rejected, new one works).
 - **2026-08-11 — Finding 7:** `npm audit fix` (no `--force`) took 13 vulnerabilities down to 3 — `better-auth` → `1.6.26`, `next` → `15.5.23` (a security backport that already fixes every direct Next.js CVE originally listed), plus `postcss`/`nanoid`/`js-yaml`/`valibot`/`hono` transitively. No `package.json` changes needed — everything resolved within existing semver ranges. Remaining 3 (nested `postcss`/`sharp` inside Next's own tree) require a Next 15→16 major bump; decided with the user to defer that as its own dedicated upgrade rather than force it here — low practical exposure (no `next/image` usage, `postcss` issues are build-time-oriented) versus real risk of breaking this app's custom middleware/standalone build. Verified live post-upgrade: production Docker build succeeds, login/signup/data-proxy/data-API auth all still behave correctly, and a real (non-test) user's password still validates against its existing hash.
+- **2026-08-11 — Findings 8, 9, 10:** Added security headers (CSP + X-Frame-Options + X-Content-Type-Options + Referrer-Policy + HSTS) to `next.config.js`; verified zero CSP violations against the real app (Dashboard, Radix portal dropdowns, dialogs). Fixed CSV export's formula/quote injection in `ExportButton.jsx`. Moved Better Auth's rate limiter to `storage: "database"`, adding a `rateLimit` Prisma model/migration so every k8s replica shares one Postgres-backed counter instead of its own in-memory one — verified a real row landed in the table after triggering the limit.
