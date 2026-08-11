@@ -45,9 +45,8 @@ const nextConfig = {
   poweredByHeader: false,
   allowedDevOrigins: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
   // allowedHosts: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // The `eslint` config option (and `next build` running lint at all) was
+  // removed in Next.js 16 — `npm run lint` runs eslint directly instead.
   typescript: {
     ignoreBuildErrors: true,
   },

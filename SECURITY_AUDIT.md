@@ -18,7 +18,7 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 4 | **High** | Password reset non-functional — **on hold**: plan is to go SSO-only and remove credential login entirely, making this moot |
 | 5 | **High** | RBAC/site/brand scoping enforced client-side only — **on hold**: `databaseClient.js` is expected to be rewritten against a different data source first |
 | 6 | **High** | ~~Microsoft SSO has no domain restriction~~ — **partially fixed**: app-level domain check now backstops every account-creation path; `tenantId` itself is still `"common"` (needs your Azure tenant GUID) |
-| 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **mostly fixed**: 13→3, all remaining ones require a Next.js 15→16 major bump, deliberately deferred |
+| 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **fully fixed**: 0 vulnerabilities after the Next.js 16 upgrade (see below) |
 | 8 | **Medium** | ~~No security headers~~ — **fixed**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS all added |
 | 9 | **Medium** | ~~CSV export vulnerable to formula/CSV injection~~ — **fixed**: proper RFC 4180 quoting + formula-prefix neutralization |
 | 10 | **Low** | ~~Auth rate limiting not shared across replicas~~ — **fixed**: now backed by Postgres via `rateLimit.storage: "database"` |
@@ -162,7 +162,9 @@ Every one of these is real code but has zero server-side backing, because of Fin
 
 **Recommendation:** Either set `MICROSOFT_TENANT_ID` to the actual Hendy tenant GUID (not `"common"`) and/or add a post-sign-in hook that checks the resulting user's email domain and rejects/deletes accounts that don't match, mirroring the email/password hook.
 
-## 7. High — Known-vulnerable dependencies — ⚠️ MOSTLY REMEDIATED (2026-08-11)
+## 7. High — Known-vulnerable dependencies — ✅ FULLY REMEDIATED (2026-08-11)
+
+**Update:** the Next.js 15→16 upgrade (see below) closed the last 3 findings. `npm audit` now reports **0 vulnerabilities**.
 
 **Fix applied:** `npm audit fix` (no `--force`) resolved 10 of the 13 findings entirely within the existing `package.json` semver ranges — `package.json` itself didn't need to change, only `package-lock.json`. Notably this bumped `better-auth` to `1.6.26` (past the `1.6.22` fix line) and `next` to `15.5.23`, a security-backport release on the 15.x line that turned out to already fix every *direct* Next.js CVE originally listed here (the Server Actions DoS/SSRF, cache confusion, and Server Function disclosure advisories) — none of those needed a major-version bump after all.
 
@@ -176,6 +178,14 @@ Every one of these is real code but has zero server-side backing, because of Fin
 - A Next.js major bump is a meaningfully different, riskier change than a dependency patch — this app has real surface area that could break (custom `middleware.ts`, `output: 'standalone'`, Pages Router, Turbopack dev script) and deserves its own dedicated upgrade-and-test pass rather than being rushed through as the tail end of a patching task.
 
 **Recommendation:** Track the Next.js 16 upgrade as its own piece of work — budget time to test routing, middleware, the standalone Docker build, and the admin/auth flows end-to-end before shipping it, rather than folding it into routine dependency maintenance.
+
+**Update (2026-08-11):** Done, on the `nextjs-16-upgrade` branch. Ran the official `@next/codemod upgrade latest`, which bumped `next`/`react`/`react-dom`/`@types/react`/`@types/react-dom` and renamed `middleware.ts` → `proxy.ts` (`export function middleware` → `export function proxy`, per Next.js 16's routing/proxy rename — the file's actual logic is untouched). Manually removed `next.config.js`'s `eslint` block (the option itself was removed in v16 — `next build` no longer lints at all, which is a no-op change here since `npm run lint` already ran `eslint` directly) and dropped the now-redundant `--turbopack` flag from `package.json`'s `dev` script (Turbopack is the default bundler for both `dev` and `build` now). `next-env.d.ts`/`tsconfig.json`'s `jsx: "react-jsx"` were auto-updated by Next.js itself on first build.
+
+Checked every API/config change in the official v16 upgrade guide against this app (Pages Router only, no `src/app`): none of the App-Router-specific breaking changes (async `params`/`searchParams`/`cookies()`/`headers()`, parallel routes, cache components/PPR) apply. No custom `webpack` config, no `next/image`, `next/legacy/image`, `next/amp`, or `next/config` usage anywhere — confirmed by grep before touching anything.
+
+**Verified live end-to-end** on the rebuilt Docker image: `npm audit` → 0 vulnerabilities; production build succeeds; `proxy.ts` still redirects unauthenticated requests to `/login` (307); all 5 security headers (Finding 8) still present; self-signup still correctly disabled (Finding 2); the `/api/data` proxy and the data API's shared-secret gate (Finding 1) both still return `401` with no session/key; rate limiting still triggers and still writes to the Postgres-backed `rateLimit` table (Finding 10); a real user's password still validates against its existing hash. In an actual browser: Dashboard renders, a Radix `Select` portal dropdown opens and interacts correctly, zero console errors on any page. Ran the full admin-invite round trip (Configuration → Users → Add User) — temporary password generation and the forced-change-password flow (Finding 3) both still work exactly as before. All test accounts created for this verification were deleted from Postgres afterward.
+
+Left on the `nextjs-16-upgrade` branch, not yet merged into `main` — this was deliberately kept as its own reviewable unit per the plan above.
 
 <details>
 <summary>Original finding (pre-fix), preserved for reference</summary>
@@ -257,3 +267,4 @@ object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 - **2026-08-11 — Findings 8, 9, 10:** Added security headers (CSP + X-Frame-Options + X-Content-Type-Options + Referrer-Policy + HSTS) to `next.config.js`; verified zero CSP violations against the real app (Dashboard, Radix portal dropdowns, dialogs). Fixed CSV export's formula/quote injection in `ExportButton.jsx`. Moved Better Auth's rate limiter to `storage: "database"`, adding a `rateLimit` Prisma model/migration so every k8s replica shares one Postgres-backed counter instead of its own in-memory one — verified a real row landed in the table after triggering the limit.
 - **2026-08-11 — Finding 11:** Set `poweredByHeader: false` in `next.config.js`. Verified `X-Powered-By` is gone from responses and every other fix still works post-rebuild.
 - **2026-08-11 — Finding 6:** Added a domain check to `databaseHooks.user.create.before` in `src/lib/auth.ts` so every account-creation path — not just `/sign-up/email` — rejects non-`@hendy-group.com` emails; this is what actually backstops Microsoft SSO, which had no domain gate of its own. Verified via `/api/auth/admin/create-user` (same underlying hook): valid domain succeeds, `attacker@evil.com` gets rejected. `tenantId` itself is still `"common"` — that's on the user to set to Hendy Group's real Entra ID tenant GUID; the code comment now says where to find it. Couldn't test the live Microsoft OAuth callback — real `MICROSOFT_CLIENT_ID`/`SECRET` aren't configured yet.
+- **2026-08-11 — Finding 7, completion:** Upgraded Next.js 15→16 on the `nextjs-16-upgrade` branch via the official codemod (bumps next/react/react-dom/@types, renames `middleware.ts`→`proxy.ts`), plus manual cleanup (removed `next.config.js`'s now-unsupported `eslint` block, dropped the redundant `--turbopack` flag). `npm audit` now reports 0 vulnerabilities. Verified every prior fix (1, 2, 3, 8, 9, 10) still works against the rebuilt image, in both curl and a real browser session, including the full admin-invite round trip. Not yet merged into `main`.
