@@ -18,7 +18,7 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 4 | **High** | Password reset is non-functional in production (logs to console instead of emailing) |
 | 5 | **High** | All authorization/business rules (RBAC, site/brand scoping, approval workflow) enforced client-side only |
 | 6 | **High** | Microsoft SSO configured for `tenantId: "common"` with no domain restriction on the social sign-in path |
-| 7 | **High** | Known vulnerabilities in dependencies (`better-auth`, Next.js, postcss, sharp) — 13 total, 8 high |
+| 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **mostly fixed**: 13→3, all remaining ones require a Next.js 15→16 major bump, deliberately deferred |
 | 8 | **Medium** | No security headers (CSP, X-Frame-Options, HSTS, etc.) on the app |
 | 9 | **Medium** | CSV export is vulnerable to formula/CSV injection and mishandles embedded quotes |
 | 10 | **Low** | Auth rate limiting is per-instance in-memory; not shared across the 2 k8s replicas |
@@ -162,7 +162,23 @@ The domain-restriction `before` hook only triggers `if (ctx.path !== "/sign-up/e
 
 **Recommendation:** Either set `MICROSOFT_TENANT_ID` to the actual Hendy tenant GUID (not `"common"`) and/or add a post-sign-in hook that checks the resulting user's email domain and rejects/deletes accounts that don't match, mirroring the email/password hook.
 
-## 7. High — Known-vulnerable dependencies
+## 7. High — Known-vulnerable dependencies — ⚠️ MOSTLY REMEDIATED (2026-08-11)
+
+**Fix applied:** `npm audit fix` (no `--force`) resolved 10 of the 13 findings entirely within the existing `package.json` semver ranges — `package.json` itself didn't need to change, only `package-lock.json`. Notably this bumped `better-auth` to `1.6.26` (past the `1.6.22` fix line) and `next` to `15.5.23`, a security-backport release on the 15.x line that turned out to already fix every *direct* Next.js CVE originally listed here (the Server Actions DoS/SSRF, cache confusion, and Server Function disclosure advisories) — none of those needed a major-version bump after all.
+
+**Verified live post-upgrade:** rebuilt the Docker image (production `next build`, not just local install) and confirmed via `curl`: login page still renders, self-signup is still correctly disabled (Finding 2's fix intact), the `/api/data` proxy still requires a session (Finding 1's fix intact), the data API still requires its shared secret, and a real existing user's password (not a throwaway test account) still correctly validates against its stored hash — i.e. the `better-auth` bump didn't change credential-checking behavior.
+
+`npx tsc`/`eslint` report a handful of pre-existing errors, all in files untouched by this fix (`Dashboard.jsx`, `Messages.tsx`, `AuditHistoryModal.jsx`, `ClaimNotesModal.jsx`) — unrelated, and already ignored at build time by `next.config.js` (`typescript.ignoreBuildErrors` / `eslint.ignoreDuringBuilds`).
+
+**Remaining, deliberately deferred:** 3 findings (`postcss` XSS/path-traversal, `sharp`'s inherited `libvips` CVEs) are both *nested inside Next.js's own dependency tree* — Next bundles its own copies, so they can only be fixed by bumping `next` itself to `16.3.0`, a major version. Decided against forcing that now:
+- The app doesn't use `next/image` anywhere in its own code, narrowing (though not eliminating — the platform-level `/_next/image` route still exists by default) the practical exposure to the `sharp`/libvips CVEs.
+- The `postcss` advisories (unescaped `</style>` XSS, arbitrary file read via `sourceMappingURL`) are primarily build/dev-time concerns — they require processing attacker-controlled CSS/source-map input, which isn't part of this app's runtime request path.
+- A Next.js major bump is a meaningfully different, riskier change than a dependency patch — this app has real surface area that could break (custom `middleware.ts`, `output: 'standalone'`, Pages Router, Turbopack dev script) and deserves its own dedicated upgrade-and-test pass rather than being rushed through as the tail end of a patching task.
+
+**Recommendation:** Track the Next.js 16 upgrade as its own piece of work — budget time to test routing, middleware, the standalone Docker build, and the admin/auth flows end-to-end before shipping it, rather than folding it into routine dependency maintenance.
+
+<details>
+<summary>Original finding (pre-fix), preserved for reference</summary>
 
 `npm audit` reports 13 vulnerabilities (8 high, 5 moderate):
 
@@ -173,6 +189,8 @@ The domain-restriction `before` hook only triggers `if (ctx.path !== "/sign-up/e
 - **`valibot`**, **`@hono/node-server`**, **`brace-expansion`** — moderate, transitive via Prisma's dev tooling.
 
 **Recommendation:** Run `npm audit fix` (most have a fix available per the audit output) and bump `better-auth` past 1.6.22 explicitly; re-run `npm audit` after to confirm the Next.js line also lands on a patched minor.
+
+</details>
 
 ## 8. Medium — No security headers
 
@@ -230,7 +248,7 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 1. ~~Put real authentication on the data API (Finding 1)~~ — **done, pass 1.** Row-level authorization (site/brand/role scoping enforced server-side, not just in React) is the natural pass 2 for this same finding.
 2. ~~Fix signup verification (Finding 2) and the invite default password (Finding 3)~~ — **done.**
 3. Wire up real password-reset email delivery (Finding 4) — also needed to properly close the `requireEmailVerification` gap noted in Finding 2's fix.
-4. Patch dependencies (Finding 7) — cheap, mostly automatic via `npm audit fix`.
+4. ~~Patch dependencies (Finding 7)~~ — **done** for everything except the Next.js 15→16 major bump, tracked separately.
 5. Add security headers (Finding 8) and fix CSV export escaping (Finding 9) — low effort, meaningful defense-in-depth.
 6. Decide whether Microsoft SSO will actually be turned on; if yes, fix the tenant restriction before flipping the flag (Finding 6).
 
@@ -238,3 +256,4 @@ However, `k8s/deployment.yaml` runs `replicas: 2` with no shared rate-limit stor
 
 - **2026-08-11 — Finding 1, pass 1:** Added `src/pages/api/data/[...path].ts` (session-checked proxy) in this repo and a shared-secret check in `warrantyRepairData/src/middleware.ts`. `databaseClient.js` now calls `/api/data` instead of `NEXT_PUBLIC_API_URL`. New env vars `DATA_API_URL`/`DATA_API_KEY` (server-only) replace the old client-exposed `NEXT_PUBLIC_API_URL` across `.env`, `docker-compose.yaml`, `Dockerfile`, `k8s/*`, and `.github/workflows/deploy.yml`. Verified live via curl and in-browser (network log shows every collection loading through `/api/data/...`, direct `:5001` access now returns `401`). Row-level authorization deliberately deferred — see Finding 1's "what this pass did NOT fix."
 - **2026-08-11 — Findings 2 & 3:** Self-signup now only works while the user table is empty (`src/lib/auth.ts`). Invite now generates a real random password, sets `mustChangePassword: true`, and `Layout.jsx` actually enforces it with a non-dismissable forced-change dialog blocking the app. Found and fixed a pre-existing bug in the same code path: `/admin/create-user`'s extra fields need to be nested under `data`, not top-level — role/site/brand assignments on invite were silently no-ops before this fix. Verified live end-to-end (invite → temp password → forced dialog → change → unblocked → old password rejected, new one works).
+- **2026-08-11 — Finding 7:** `npm audit fix` (no `--force`) took 13 vulnerabilities down to 3 — `better-auth` → `1.6.26`, `next` → `15.5.23` (a security backport that already fixes every direct Next.js CVE originally listed), plus `postcss`/`nanoid`/`js-yaml`/`valibot`/`hono` transitively. No `package.json` changes needed — everything resolved within existing semver ranges. Remaining 3 (nested `postcss`/`sharp` inside Next's own tree) require a Next 15→16 major bump; decided with the user to defer that as its own dedicated upgrade rather than force it here — low practical exposure (no `next/image` usage, `postcss` issues are build-time-oriented) versus real risk of breaking this app's custom middleware/standalone build. Verified live post-upgrade: production Docker build succeeds, login/signup/data-proxy/data-API auth all still behave correctly, and a real (non-test) user's password still validates against its existing hash.
