@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import React, { useState, useRef, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Filter, X, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { databaseClients } from "@/api/databaseClient"
+import { useBrands } from "@/hooks/useBrands"
 
 function MultiSelect({ label, options, selected, onChange, placeholder }) {
   const [open, setOpen] = useState(false);
@@ -117,10 +116,7 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
     : availableSites;
 
 
-  const { data: completeAllBrands = [] } = useQuery({
-    queryKey: ['completeAllBrands'],
-    queryFn: () => databaseClients.Brand.get()
-  })
+  const { data: completeAllBrands = [] } = useBrands();
 
   const allBrandIdsInClaims = allBrands.map(b => b.id).filter(Boolean);
   const allBrandsInClaims = allBrandIdsInClaims.map(id => completeAllBrands.find(b => b.id === id));
@@ -155,16 +151,6 @@ export default function DashboardFilters({ claims, filters, onFilterChange, allU
   const userEmails = [...new Set(claims.map(c => c.submitted_for || c.created_by).filter(Boolean))];
   const claimedByEmails = [...new Set(claims.map(c => c.claimed_by).filter(Boolean))];
   const resolutions = [...new Set(claims.map(c => c.alert_resolution).filter(Boolean))];
-
-  const getUserName = (email) => {
-    if (!email) return email;
-    const user = allUsers.find(u => u.email === email);
-    if (!user) return email;
-    if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`;
-    if (user.first_name) return user.first_name;
-    if (user.full_name) return user.full_name;
-    return email;
-  };
 
   const DEFAULT_STATUSES = ['in_progress', 'awaiting_review', 'rejected'];
 

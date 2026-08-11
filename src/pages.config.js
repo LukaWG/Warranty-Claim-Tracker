@@ -46,7 +46,6 @@
  */
 import ClaimForm from './pages/ClaimForm';
 import Dashboard from './pages/Dashboard';
-import Home from './pages/Home';
 import Messages from './pages/Messages';
 import Configuration from './pages/Configuration';
 import Approvals from './pages/Approvals'
@@ -56,7 +55,6 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "ClaimForm": ClaimForm,
     "Dashboard": Dashboard,
-    "Home": Home,
     "Messages": Messages,
     "Configuration": Configuration,
     "Approvals": Approvals,

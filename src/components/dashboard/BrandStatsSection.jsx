@@ -2,47 +2,27 @@ import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { ArrowLeft } from 'lucide-react';
-import { databaseClients } from '@/api/databaseClient';
-import { useQuery } from '@tanstack/react-query';
+import { useSites } from '@/hooks/useSites';
+import { useBrands } from '@/hooks/useBrands';
+import { getDaysRemaining, getDeadlineStatus } from '@/lib/getDeadlineStatus';
 
 export default function BrandStatsSection({ claims, allClaims, brands, onBrandTileClick, activeBrandFilter, onDeadlineStatusFilter, onSiteFilter, onResetFilters, onStatusFilter }) {
 
   const [brandsLoading, setBrandsLoading] = useState(false);
 
-  const {data: allBrands = [] } = useQuery({
-    queryKey: ['allBrands'],
-    queryFn: () => databaseClients.Brand.get()
-  })
+  const { data: allBrands = [] } = useBrands();
 
-  const { data: allSites = [] } = useQuery({
-    queryKey: ['allSites'],
-    queryFn: () => databaseClients.Site.get()
-  })
+  const { data: allSites = [] } = useSites();
 
   const getColorCounts = (brand, claimsForBrand) => {
-    const now = new Date();
     let redCount = 0, amberCount = 0, greenCount = 0;
 
     claimsForBrand.forEach(claim => {
       if (!claim.manufacturer_deadline) return;
-      const daysRemaining = Math.ceil((new Date(claim.manufacturer_deadline) - now) / (1000 * 60 * 60 * 24));
-
-      if (daysRemaining < 1) {
-        redCount++;
-      } else if (brand.green_max_days != null && daysRemaining > brand.green_max_days) {
-        greenCount++;
-      } else {
-        const inGreenRange = brand.green_min_days != null && brand.green_max_days != null && 
-          daysRemaining >= brand.green_min_days && daysRemaining <= brand.green_max_days;
-        const inAmberRange = brand.amber_min_days != null && brand.amber_max_days != null && 
-          daysRemaining >= brand.amber_min_days && daysRemaining <= brand.amber_max_days;
-        const inRedRange = brand.red_min_days != null && brand.red_max_days != null && 
-          daysRemaining >= brand.red_min_days && daysRemaining <= brand.red_max_days;
-
-        if (inGreenRange) greenCount++;
-        else if (inAmberRange) amberCount++;
-        else if (inRedRange) redCount++;
-      }
+      const status = getDeadlineStatus(brand, getDaysRemaining(claim.manufacturer_deadline));
+      if (status === 'red') redCount++;
+      else if (status === 'amber') amberCount++;
+      else if (status === 'green') greenCount++;
     });
 
     return { redCount, amberCount, greenCount };
