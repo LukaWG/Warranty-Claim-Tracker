@@ -12,8 +12,7 @@ if (!fs.existsSync(stubPath)) {
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// No external scripts/fonts/images are loaded anywhere in this app (see
-// SECURITY_AUDIT.md Finding 8), so this can stay 'self'-only. style-src needs
+// No external scripts/fonts/images are loaded anywhere in this app, so this can stay 'self'-only. style-src needs
 // 'unsafe-inline' because the app renders inline `<style>` blocks and inline
 // `style={{...}}` attributes extensively (Layout.jsx, login/signup pages) —
 // switching to nonces would need those threaded through every component.
@@ -36,9 +35,6 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  // Harmless to send over plain HTTP today (browsers only honor it once a
-  // connection is already HTTPS) — future-proofs for when TLS termination
-  // is added in front of the app.
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
   { key: 'Content-Security-Policy', value: csp },
 ];
@@ -46,6 +42,7 @@ const securityHeaders = [
 const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
+  poweredByHeader: false,
   allowedDevOrigins: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
   // allowedHosts: ['192.168.0.182', '192.168.1.144', 'lukas-mbp.local', 'localhost'],
   eslint: {

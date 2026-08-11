@@ -22,7 +22,7 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 8 | **Medium** | ~~No security headers~~ — **fixed**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS all added |
 | 9 | **Medium** | ~~CSV export vulnerable to formula/CSV injection~~ — **fixed**: proper RFC 4180 quoting + formula-prefix neutralization |
 | 10 | **Low** | ~~Auth rate limiting not shared across replicas~~ — **fixed**: now backed by Postgres via `rateLimit.storage: "database"` |
-| 11 | **Informational** | `X-Powered-By: Next.js` discloses framework |
+| 11 | **Informational** | ~~`X-Powered-By: Next.js` discloses framework~~ — **fixed**: `poweredByHeader: false` |
 | — | **Positive controls observed** | See end of report |
 
 ---
@@ -216,9 +216,16 @@ object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
 **Verified live:** ran 5 rapid bad-password attempts against `/api/auth/sign-in/email` (got `401,401,401,429,429`, confirming the limit still triggers), then confirmed a row for that key actually landed in the new `rateLimit` Postgres table with `count = 3` — proving the counter now lives in the shared database, not a per-process map.
 
-## 11. Informational — Framework fingerprinting
+## 11. Informational — Framework fingerprinting — ✅ REMEDIATED (2026-08-11)
+
+**Fix applied:** Set `poweredByHeader: false` in `next.config.js`. Verified live: `curl -i http://192.168.1.144:3000/login` no longer returns an `X-Powered-By` header, while the Finding 8 security headers and every other fix (signup still blocked, data proxy/data-API auth still gated) remain intact after the rebuild.
+
+<details>
+<summary>Original finding (pre-fix), preserved for reference</summary>
 
 `X-Powered-By: Next.js` is sent on every response (default Next.js behavior; not disabled via `poweredByHeader: false` in `next.config.js`). Minor; mostly useful to an attacker for targeting known Next.js CVEs (see Finding 7).
+
+</details>
 
 ---
 
@@ -248,3 +255,4 @@ object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 - **2026-08-11 — Findings 2 & 3:** Self-signup now only works while the user table is empty (`src/lib/auth.ts`). Invite now generates a real random password, sets `mustChangePassword: true`, and `Layout.jsx` actually enforces it with a non-dismissable forced-change dialog blocking the app. Found and fixed a pre-existing bug in the same code path: `/admin/create-user`'s extra fields need to be nested under `data`, not top-level — role/site/brand assignments on invite were silently no-ops before this fix. Verified live end-to-end (invite → temp password → forced dialog → change → unblocked → old password rejected, new one works).
 - **2026-08-11 — Finding 7:** `npm audit fix` (no `--force`) took 13 vulnerabilities down to 3 — `better-auth` → `1.6.26`, `next` → `15.5.23` (a security backport that already fixes every direct Next.js CVE originally listed), plus `postcss`/`nanoid`/`js-yaml`/`valibot`/`hono` transitively. No `package.json` changes needed — everything resolved within existing semver ranges. Remaining 3 (nested `postcss`/`sharp` inside Next's own tree) require a Next 15→16 major bump; decided with the user to defer that as its own dedicated upgrade rather than force it here — low practical exposure (no `next/image` usage, `postcss` issues are build-time-oriented) versus real risk of breaking this app's custom middleware/standalone build. Verified live post-upgrade: production Docker build succeeds, login/signup/data-proxy/data-API auth all still behave correctly, and a real (non-test) user's password still validates against its existing hash.
 - **2026-08-11 — Findings 8, 9, 10:** Added security headers (CSP + X-Frame-Options + X-Content-Type-Options + Referrer-Policy + HSTS) to `next.config.js`; verified zero CSP violations against the real app (Dashboard, Radix portal dropdowns, dialogs). Fixed CSV export's formula/quote injection in `ExportButton.jsx`. Moved Better Auth's rate limiter to `storage: "database"`, adding a `rateLimit` Prisma model/migration so every k8s replica shares one Postgres-backed counter instead of its own in-memory one — verified a real row landed in the table after triggering the limit.
+- **2026-08-11 — Finding 11:** Set `poweredByHeader: false` in `next.config.js`. Verified `X-Powered-By` is gone from responses and every other fix still works post-rebuild.
