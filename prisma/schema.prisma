@@ -79,7 +79,7 @@ model verification {
 
 // Backs rateLimit.storage: "database" in src/lib/auth.ts — shares rate-limit
 // counters across every app replica instead of each one keeping its own
-// in-memory count (SECURITY_AUDIT.md Finding 10).
+// in-memory count.
 model rateLimit {
   id          String @id
   key         String

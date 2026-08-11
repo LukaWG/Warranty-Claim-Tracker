@@ -1,7 +1,7 @@
 import { currentUser } from './currentUser';
 
 // Routed through our own session-checked proxy (src/pages/api/data/[...path].ts)
-// rather than the data API directly — see SECURITY_AUDIT.md Finding 1.
+// rather than the data API directly.
 const API_BASE = '/api/data';
 const DEFAULT_TIMEOUT_MS = 15000;
 
