@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function HendyLogo({ size = 36, variant = 'full' }) {
-  const logoUrl = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6942a96650c5da106024b0dd/9d30dbdcc_logo2.png';
+  const logoUrl = '/HendyLogo.png';
   
   if (variant === 'icon') {
     // Icon variant - just the car illustration part
