@@ -35,3 +35,5 @@ jobs:
             lukawg/warranty-claim-tracker:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://192.168.1.144' }}
+            NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_ENABLE_MICROSOFT_SSO || 'false' }}
+            NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO || 'false' }}
