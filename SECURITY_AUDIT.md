@@ -15,8 +15,8 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 1 | **Critical** | ~~Data API has no authentication~~ — **fixed (pass 1)**: session-checked proxy + shared-secret now required; row-level scoping is a follow-up pass |
 | 2 | **Critical** | ~~Self-signup accepts unverified email domain match~~ — **fixed**: self-signup now only works while the user table is empty (first Owner only); everyone else must be invited |
 | 3 | **High** | ~~Invited users get a hardcoded default password~~ — **fixed**: invite now generates a real random password and forces a change on first login |
-| 4 | **High** | Password reset is non-functional in production (logs to console instead of emailing) |
-| 5 | **High** | All authorization/business rules (RBAC, site/brand scoping, approval workflow) enforced client-side only |
+| 4 | **High** | Password reset non-functional — **on hold**: plan is to go SSO-only and remove credential login entirely, making this moot |
+| 5 | **High** | RBAC/site/brand scoping enforced client-side only — **on hold**: `databaseClient.js` is expected to be rewritten against a different data source first |
 | 6 | **High** | ~~Microsoft SSO has no domain restriction~~ — **partially fixed**: app-level domain check now backstops every account-creation path; `tenantId` itself is still `"common"` (needs your Azure tenant GUID) |
 | 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **mostly fixed**: 13→3, all remaining ones require a Next.js 15→16 major bump, deliberately deferred |
 | 8 | **Medium** | ~~No security headers~~ — **fixed**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS all added |
@@ -137,7 +137,11 @@ No email is actually sent. In production this means "Forgot password" silently d
 
 **Recommendation:** Wire this to a real transactional email provider before relying on self-service reset. Until then, don't advertise "Forgot password" as if it works, and treat container/application logs as sensitive (they now carry live password-reset tokens).
 
+**Status (2026-08-11):** Decided with the user to resolve this differently than originally recommended — the plan is to make auth SSO-only and remove the email/password credential login path entirely, which makes password reset (and this finding) moot rather than something to fix. Not yet implemented; noted here so the next pass on this doesn't waste time re-deriving an email-provider integration that's about to become unnecessary.
+
 ## 5. High — Authorization and business rules are enforced only in the browser
+
+**Status (2026-08-11):** Left as-is for now, by the user's call — `databaseClient.js` is expected to be rewritten against a different data source, so scoping/authorization work against the current one would likely be thrown away.
 
 Every one of these is real code but has zero server-side backing, because of Finding 1:
 
