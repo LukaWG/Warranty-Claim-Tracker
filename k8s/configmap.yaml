@@ -10,3 +10,6 @@ data:
   # Public URL users reach the app on (scheme + host). Better Auth uses this
   # for cookies/redirects; it must match the ingress host.
   better-auth-url: "http://192.168.1.144"
+  # Server-only: the warranty data API's URL. The browser never sees this —
+  # only the app's own /api/data proxy calls it (see SECURITY_AUDIT.md Finding 1).
+  data-api-url: "http://192.168.1.144:5001"

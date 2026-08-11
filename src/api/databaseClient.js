@@ -1,6 +1,8 @@
 import { currentUser } from './currentUser';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5001';
+// Routed through our own session-checked proxy (src/pages/api/data/[...path].ts)
+// rather than the data API directly — see SECURITY_AUDIT.md Finding 1.
+const API_BASE = '/api/data';
 const DEFAULT_TIMEOUT_MS = 15000;
 
 // Internal fetch helper

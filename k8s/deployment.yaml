@@ -68,6 +68,16 @@ spec:
               name: warranty-claim-tracker-secrets
               key: microsoft-tenant-id
               optional: true
+        - name: DATA_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: warranty-claim-tracker-config
+              key: data-api-url
+        - name: DATA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: warranty-claim-tracker-secrets
+              key: data-api-key
         livenessProbe:
           httpGet:
             path: /login
