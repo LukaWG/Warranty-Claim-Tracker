@@ -29,14 +29,20 @@ export const auth = betterAuth({
         "http://172.16.*:*",
         "http://lukas-mbp.local:*",
       ]
-    : [process.env.BETTER_AUTH_URL ?? "http://localhost:3000"],
+    : [
+        // Must stay localhost:3000 to match the redirect URI registered in
+        // the Microsoft app registration for MICROSOFT_CLIENT_ID.
+        process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+        // Other devices on the LAN reach the app via this IP, not localhost.
+        "http://192.168.1.144:3000",
+      ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
   // Store rate-limit counters in Postgres (shared by every app instance)
   // instead of the default in-memory store, which is per-process and would
   // let each of the k8s deployment's replicas grant its own separate attempt
-  // budget (SECURITY_AUDIT.md Finding 10).
+  // budget.
   rateLimit: {
     storage: "database",
   },
@@ -67,8 +73,7 @@ export const auth = betterAuth({
       // (Owner) user on a fresh deployment — see the isFirstUser hook below.
       // Once that user exists, everyone else must be invited by an admin;
       // otherwise anyone could register as an unverified @hendy-group.com
-      // address before its real owner ever signs up (SECURITY_AUDIT.md
-      // Finding 2).
+      // address before its real owner ever signs up.
       const hasExistingUser = (await prisma.user.count()) > 0;
       if (hasExistingUser) {
         throw new APIError("BAD_REQUEST", {
@@ -81,6 +86,20 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
+          // Applies to every path that can create a user — email/password
+          // signup (already domain-checked above, so this is a no-op there)
+          // and, importantly, first-time Microsoft SSO sign-in. The social
+          // login below has no domain restriction of its own beyond
+          // MICROSOFT_TENANT_ID, so this is the backstop that stops any
+          // successfully-authenticated non-hendy-group.com Microsoft account
+          // (a misconfigured tenant, a guest/B2B account, etc.) from getting
+          // an account auto-provisioned.
+          if (!user.email?.endsWith("@hendy-group.com")) {
+            throw new APIError("BAD_REQUEST", {
+              message: "Only @hendy-group.com accounts may sign in.",
+            });
+          }
+
           const isFirstUser = (await prisma.user.count()) === 0
           if (!isFirstUser) return
 
@@ -99,6 +118,12 @@ export const auth = betterAuth({
     microsoft: {
       clientId: process.env.MICROSOFT_CLIENT_ID || "placeholder_client_id",
       clientSecret: process.env.MICROSOFT_CLIENT_SECRET || "placeholder_secret",
+      // Restricting this to "common" lets ANY Microsoft account — personal
+      // Outlook/Hotmail or any other organization's tenant — complete SSO.
+      // Set this to Hendy Group's actual Entra ID tenant ID/GUID (Azure
+      // Portal → Microsoft Entra ID → Overview → Tenant ID) so only accounts
+      // in that tenant can even reach the sign-in step. The domain check
+      // above is a second layer, not a substitute for this.
       tenantId: process.env.MICROSOFT_TENANT_ID || "common",
       prompt: "select_account"
     }

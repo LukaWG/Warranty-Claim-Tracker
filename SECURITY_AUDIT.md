@@ -17,7 +17,7 @@ A second critical, independently exploitable issue: self-signup accepts any emai
 | 3 | **High** | ~~Invited users get a hardcoded default password~~ — **fixed**: invite now generates a real random password and forces a change on first login |
 | 4 | **High** | Password reset is non-functional in production (logs to console instead of emailing) |
 | 5 | **High** | All authorization/business rules (RBAC, site/brand scoping, approval workflow) enforced client-side only |
-| 6 | **High** | Microsoft SSO configured for `tenantId: "common"` with no domain restriction on the social sign-in path |
+| 6 | **High** | ~~Microsoft SSO has no domain restriction~~ — **partially fixed**: app-level domain check now backstops every account-creation path; `tenantId` itself is still `"common"` (needs your Azure tenant GUID) |
 | 7 | **High** | ~~Known vulnerabilities in dependencies~~ — **mostly fixed**: 13→3, all remaining ones require a Next.js 15→16 major bump, deliberately deferred |
 | 8 | **Medium** | ~~No security headers~~ — **fixed**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS all added |
 | 9 | **Medium** | ~~CSV export vulnerable to formula/CSV injection~~ — **fixed**: proper RFC 4180 quoting + formula-prefix neutralization |
@@ -148,17 +148,13 @@ Every one of these is real code but has zero server-side backing, because of Fin
 
 **Recommendation:** Once Finding 1 is fixed by putting real authorization at the data-API layer, re-derive all of the above as *server-side* filters/validators, not client conveniences. The client-side logic can stay for UX, but must not be the only gate.
 
-## 6. High — Microsoft SSO has no domain restriction and trusts `tenantId: "common"`
+## 6. High — Microsoft SSO has no domain restriction and trusts `tenantId: "common"` — ⚠️ PARTIALLY REMEDIATED (2026-08-11)
 
-**Where:** `src/lib/auth.ts`:
-```js
-socialProviders: {
-  microsoft: { clientId, clientSecret, tenantId: process.env.MICROSOFT_TENANT_ID || "common" }
-}
-```
-The domain-restriction `before` hook only triggers `if (ctx.path !== "/sign-up/email") return;` — the Microsoft OAuth callback path is different, so it's never checked. `tenantId: "common"` means Microsoft will authenticate *any* Microsoft account — personal Outlook/Hotmail accounts or any organization's tenant — not just `hendy-group.com`'s Entra ID tenant.
+**Fix applied:** `src/lib/auth.ts`'s `databaseHooks.user.create.before` (already used for the first-user-becomes-Owner logic) now also rejects any new user whose email doesn't end in `@hendy-group.com`, with `APIError("BAD_REQUEST", ...)`. Unlike the original `hooks.before` middleware (which only ever checked `ctx.path === "/sign-up/email"`), this hook runs for *every* path that can create a `user` row — including first-time Microsoft SSO sign-in, which has no domain check of its own. This is the backstop: even if `MICROSOFT_TENANT_ID` is ever misconfigured back to `"common"`, or a guest/B2B account with a different email domain exists inside the correct tenant, no local account gets auto-provisioned for it.
 
-**Current risk:** Low today, because `NEXT_PUBLIC_ENABLE_MICROSOFT_SSO` is `"false"` in `.env`, so the login button isn't shown. But `NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO` and the SSO code path both exist and work if the flag flips, and there is no enforcement hook waiting for that day.
+**Verified live:** signed in as a throwaway admin and called `/api/auth/admin/create-user` (which funnels through the same hook) with a valid `@hendy-group.com` address — succeeded normally — then with `attacker@evil.com` — rejected with `{"message":"Only @hendy-group.com accounts may sign in."}`. Confirmed no regressions to signup-disabled (Finding 2) or normal sign-in. Couldn't test the actual Microsoft OAuth callback end-to-end — `MICROSOFT_CLIENT_ID`/`MICROSOFT_CLIENT_SECRET` aren't populated with real values yet — but OAuth sign-in creates a `user` row through the exact same `internalAdapter.createUser` → `databaseHooks.user.create.before` path this test exercised directly, so the same rejection applies once real credentials are configured.
+
+**Not fixed by this change — still your action item:** `tenantId` is still `"common"` by default. The code comment now spells out where to find the real value (Azure Portal → Microsoft Entra ID → Overview → Tenant ID) — set `MICROSOFT_TENANT_ID` to that GUID so Microsoft itself refuses the sign-in attempt for any account outside Hendy Group's tenant, rather than relying solely on this app-level domain check as the only gate.
 
 **Recommendation:** Either set `MICROSOFT_TENANT_ID` to the actual Hendy tenant GUID (not `"common"`) and/or add a post-sign-in hook that checks the resulting user's email domain and rejects/deletes accounts that don't match, mirroring the email/password hook.
 
@@ -247,7 +243,7 @@ object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 3. Wire up real password-reset email delivery (Finding 4) — also needed to properly close the `requireEmailVerification` gap noted in Finding 2's fix.
 4. ~~Patch dependencies (Finding 7)~~ — **done** for everything except the Next.js 15→16 major bump, tracked separately.
 5. ~~Add security headers (Finding 8) and fix CSV export escaping (Finding 9)~~ — **done**, along with Finding 10 (rate-limit sharing) in the same pass.
-6. Decide whether Microsoft SSO will actually be turned on; if yes, fix the tenant restriction before flipping the flag (Finding 6).
+6. ~~Decide whether Microsoft SSO will actually be turned on; if yes, fix the tenant restriction~~ — SSO is being turned on now. App-level domain check is done; **still need `MICROSOFT_TENANT_ID` set to the real tenant GUID** before treating this as closed.
 
 ## Remediation log
 
@@ -256,3 +252,4 @@ object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 - **2026-08-11 — Finding 7:** `npm audit fix` (no `--force`) took 13 vulnerabilities down to 3 — `better-auth` → `1.6.26`, `next` → `15.5.23` (a security backport that already fixes every direct Next.js CVE originally listed), plus `postcss`/`nanoid`/`js-yaml`/`valibot`/`hono` transitively. No `package.json` changes needed — everything resolved within existing semver ranges. Remaining 3 (nested `postcss`/`sharp` inside Next's own tree) require a Next 15→16 major bump; decided with the user to defer that as its own dedicated upgrade rather than force it here — low practical exposure (no `next/image` usage, `postcss` issues are build-time-oriented) versus real risk of breaking this app's custom middleware/standalone build. Verified live post-upgrade: production Docker build succeeds, login/signup/data-proxy/data-API auth all still behave correctly, and a real (non-test) user's password still validates against its existing hash.
 - **2026-08-11 — Findings 8, 9, 10:** Added security headers (CSP + X-Frame-Options + X-Content-Type-Options + Referrer-Policy + HSTS) to `next.config.js`; verified zero CSP violations against the real app (Dashboard, Radix portal dropdowns, dialogs). Fixed CSV export's formula/quote injection in `ExportButton.jsx`. Moved Better Auth's rate limiter to `storage: "database"`, adding a `rateLimit` Prisma model/migration so every k8s replica shares one Postgres-backed counter instead of its own in-memory one — verified a real row landed in the table after triggering the limit.
 - **2026-08-11 — Finding 11:** Set `poweredByHeader: false` in `next.config.js`. Verified `X-Powered-By` is gone from responses and every other fix still works post-rebuild.
+- **2026-08-11 — Finding 6:** Added a domain check to `databaseHooks.user.create.before` in `src/lib/auth.ts` so every account-creation path — not just `/sign-up/email` — rejects non-`@hendy-group.com` emails; this is what actually backstops Microsoft SSO, which had no domain gate of its own. Verified via `/api/auth/admin/create-user` (same underlying hook): valid domain succeeds, `attacker@evil.com` gets rejected. `tenantId` itself is still `"common"` — that's on the user to set to Hendy Group's real Entra ID tenant GUID; the code comment now says where to find it. Couldn't test the live Microsoft OAuth callback — real `MICROSOFT_CLIENT_ID`/`SECRET` aren't configured yet.
