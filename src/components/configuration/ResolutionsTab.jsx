@@ -7,12 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 import { toast } from '@/components/ui/use-toast';
 
 export default function ResolutionsTab() {
 	const queryClient = useQueryClient();
 	const [newResolution, setNewResolution] = useState({ name: '' });
+	const [deletingResolution, setDeletingResolution] = useState(null);
 
 	const { data: resolutions = [], isLoading: resolutionsLoading } = useQuery({
 	  queryKey: ['resolutions'],
@@ -128,11 +131,7 @@ export default function ResolutionsTab() {
 							<Button
 							variant="ghost"
 							size="icon"
-							onClick={() => {
-								if (window.confirm(`Delete resolution "${resolution.name}"?`)) {
-								deleteResolutionMutation.mutate(resolution.id);
-								}
-							}}
+							onClick={() => setDeletingResolution(resolution)}
 							disabled={deleteResolutionMutation.isPending && deleteResolutionMutation.variables === resolution.id}
 							className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 							>
@@ -147,6 +146,29 @@ export default function ResolutionsTab() {
 			</CardContent>
 			</Card>
 		</motion.div>
+
+		<AlertDialog open={!!deletingResolution} onOpenChange={(open) => !open && setDeletingResolution(null)}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete Resolution</AlertDialogTitle>
+					<AlertDialogDescription>
+						Delete resolution "{deletingResolution?.name}"?
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "destructive" })}
+						onClick={() => {
+							deleteResolutionMutation.mutate(deletingResolution.id);
+							setDeletingResolution(null);
+						}}
+					>
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	</>
 	);
 }

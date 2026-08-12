@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Trash2, Tag, Pencil } from 'lucide-react';
 import { motion } from 'framer-motion';
 import EditBrandModal from '@/components/configuration/EditBrandModal';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 import { useBrands } from '@/hooks/useBrands';
 import { toast } from '@/components/ui/use-toast';
@@ -18,6 +20,7 @@ export default function BrandsTab() {
 	const [editingBrandDeadlines, setEditingBrandDeadlines] = useState({});
 	const [editingBrandThresholds, setEditingBrandThresholds] = useState({});
 	const [editingBrand, setEditingBrand] = useState(null);
+	const [deletingBrand, setDeletingBrand] = useState(null);
 
 	const { data: brands = [], isLoading: brandsLoading } = useBrands();
 
@@ -451,11 +454,7 @@ export default function BrandsTab() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => {
-								if (window.confirm(`Delete brand "${brand.name}"?`)) {
-									deleteBrandMutation.mutate(brand.id);
-								}
-								}}
+								onClick={() => setDeletingBrand(brand)}
 								disabled={deleteBrandMutation.isPending && deleteBrandMutation.variables === brand.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 							>
@@ -495,6 +494,29 @@ export default function BrandsTab() {
 			}}
 			isPending={updateBrandMutation.isPending}
 		/>
+
+		<AlertDialog open={!!deletingBrand} onOpenChange={(open) => !open && setDeletingBrand(null)}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete Brand</AlertDialogTitle>
+					<AlertDialogDescription>
+						Delete brand "{deletingBrand?.name}"?
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "destructive" })}
+						onClick={() => {
+							deleteBrandMutation.mutate(deletingBrand.id);
+							setDeletingBrand(null);
+						}}
+					>
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	</>
 	);
 }
