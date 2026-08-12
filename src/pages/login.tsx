@@ -62,10 +62,20 @@ export default function LoginPage() {
 
   async function handleMicrosoftLogin() {
     setLoading(true)
-    await signIn.social({
+    setError("")
+
+    const { error } = await signIn.social({
       provider: "microsoft",
       callbackURL: callbackUrl,
     })
+
+    // On success the redirect plugin navigates the browser away before this
+    // matters. On failure, nothing navigates us away — reset state so the
+    // form isn't stuck disabled until a manual refresh.
+    if (error) {
+      setError("Microsoft sign-in failed. Please try again.")
+      setLoading(false)
+    }
   }
 
   return (
