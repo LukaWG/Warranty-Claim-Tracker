@@ -113,7 +113,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
   });
 
   const unreadApprovalClaimIds = useMemo(() => {
-    if (!!currentUser?.email) return new Set();
+    if (!currentUser?.email) return new Set();
     const claimIds = new Set();
     approvalMessages.forEach(m => {
       if (!m.read) claimIds.add(m.claim_id);
