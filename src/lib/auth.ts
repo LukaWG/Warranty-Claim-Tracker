@@ -19,6 +19,9 @@ export const auth = betterAuth({
         ],
         protocol: "http",
       }
+    // This becomes the OAuth redirect_uri sent to Microsoft
+    // (${baseURL}/api/auth/callback/microsoft) — it must match the redirect
+    // URI registered in the Microsoft app registration for MICROSOFT_CLIENT_ID.
     : (process.env.BETTER_AUTH_URL ?? "http://localhost:3000"),
   trustedOrigins: isDev
     ? [
@@ -30,11 +33,12 @@ export const auth = betterAuth({
         "http://lukas-mbp.local:*",
       ]
     : [
-        // Must stay localhost:3000 to match the redirect URI registered in
-        // the Microsoft app registration for MICROSOFT_CLIENT_ID.
-        process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+        process.env.BETTER_AUTH_URL ?? "http://localhost",
         // Other devices on the LAN reach the app via this IP, not localhost.
-        "http://192.168.1.144:3000",
+        "http://192.168.1.144",
+        // BETTER_AUTH_URL is set in production, so the fallback above never
+        // applies — list localhost explicitly for port-forwarded/local access.
+        "http://localhost",
       ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
