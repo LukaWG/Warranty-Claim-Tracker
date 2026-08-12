@@ -30,6 +30,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return { redirect: { destination: "/login", permanent: false } }
   }
 
+  // Only Owner and Group Manager may access Approvals (matches PAGE_ROLES.Approvals
+  // in src/Layout.jsx, and the API-level check in src/lib/dataAccessPolicy.ts).
+  if (!["Owner", "Group Manager"].includes((session.user as { customRole?: string }).customRole ?? "")) {
+    return { redirect: { destination: "/", permanent: false } }
+  }
+
   return { props: {} }
 }
 
