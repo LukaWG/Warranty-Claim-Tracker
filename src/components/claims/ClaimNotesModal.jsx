@@ -306,7 +306,10 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     let imageUrl = null;
     if (attachedImage?.file) {
       setIsUploading(true);
-      alert('Image upload is not implemented. The note will be added without the image.'); // Placeholder alert
+      toast({
+        title: 'Image upload not implemented',
+        description: 'The note will be added without the image.',
+      });
       const result = { file_url: undefined }; // Replace with actual upload logic
       imageUrl = result.file_url;
       setIsUploading(false);

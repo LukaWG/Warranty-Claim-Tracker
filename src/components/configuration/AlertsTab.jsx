@@ -7,12 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 import { toast } from '@/components/ui/use-toast';
 
 export default function AlertsTab() {
 	const queryClient = useQueryClient();
 	const [newAlert, setNewAlert] = useState({ name: '' });
+	const [deletingAlert, setDeletingAlert] = useState(null);
 
 	const { data: alerts = [], isLoading: alertsLoading } = useQuery({
 	  queryKey: ['alerts'],
@@ -128,11 +131,7 @@ export default function AlertsTab() {
 							<Button
 							variant="ghost"
 							size="icon"
-							onClick={() => {
-								if (window.confirm(`Delete alert "${alert.name}"?`)) {
-								deleteAlertMutation.mutate(alert.id);
-								}
-							}}
+							onClick={() => setDeletingAlert(alert)}
 							disabled={deleteAlertMutation.isPending && deleteAlertMutation.variables === alert.id}
 							className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 							>
@@ -147,6 +146,29 @@ export default function AlertsTab() {
 			</CardContent>
 			</Card>
 		</motion.div>
+
+		<AlertDialog open={!!deletingAlert} onOpenChange={(open) => !open && setDeletingAlert(null)}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete Alert</AlertDialogTitle>
+					<AlertDialogDescription>
+						Delete alert "{deletingAlert?.name}"?
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "destructive" })}
+						onClick={() => {
+							deleteAlertMutation.mutate(deletingAlert.id);
+							setDeletingAlert(null);
+						}}
+					>
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	</>
 	);
 }

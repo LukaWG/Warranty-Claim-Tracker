@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Trash2, MapPin, Pencil } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 import { useSites } from '@/hooks/useSites';
 import { useBrands } from '@/hooks/useBrands';
@@ -17,6 +19,7 @@ export default function SitesTab() {
 	const queryClient = useQueryClient();
 	const [newSite, setNewSite] = useState({ name: '', code: '' });
 	const [editingSite, setEditingSite] = useState(null);
+	const [deletingSite, setDeletingSite] = useState(null);
 
 	const { data: sites = [], isLoading: sitesLoading } = useSites();
 	const { data: brands = [] } = useBrands();
@@ -173,11 +176,7 @@ export default function SitesTab() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => {
-								if (window.confirm(`Delete location "${site.name}"?`)) {
-									deleteSiteMutation.mutate(site.id);
-								}
-								}}
+								onClick={() => setDeletingSite(site)}
 								disabled={deleteSiteMutation.isPending && deleteSiteMutation.variables === site.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 							>
@@ -352,6 +351,29 @@ export default function SitesTab() {
 			)}
 			</DialogContent>
 		</Dialog>
+
+		<AlertDialog open={!!deletingSite} onOpenChange={(open) => !open && setDeletingSite(null)}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Delete Location</AlertDialogTitle>
+					<AlertDialogDescription>
+						Delete location "{deletingSite?.name}"?
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={buttonVariants({ variant: "destructive" })}
+						onClick={() => {
+							deleteSiteMutation.mutate(deletingSite.id);
+							setDeletingSite(null);
+						}}
+					>
+						Delete
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	</>
 	);
 }

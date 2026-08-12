@@ -8,7 +8,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Trash2, Users, Pencil, Clock, Key } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { buttonVariants } from "@/components/ui/button";
 import { databaseClients } from '@/api/databaseClient';
 import { useSites } from '@/hooks/useSites';
 import { useBrands } from '@/hooks/useBrands';
@@ -45,6 +47,7 @@ export default function UsersTab() {
 	const [editingUser, setEditingUser] = useState(null);
 	const [tempPassword, setTempPassword] = useState(null);
 	const [showTempPasswordDialog, setShowTempPasswordDialog] = useState(false);
+	const [confirmDialog, setConfirmDialog] = useState(null); // { title, description, destructive, onConfirm }
 
 	const { data: sites = [] } = useSites();
 	const { data: brands = [] } = useBrands();
@@ -92,7 +95,7 @@ export default function UsersTab() {
 		setTempPassword(result.temporaryPassword);
 		setShowTempPasswordDialog(true);
 	},
-	onError: (error) => alert(`Failed to add user: ${error.message}`),
+	onError: (error) => toast({ variant: 'destructive', title: 'Failed to add user', description: error?.message || 'Please try again.' }),
 	});
 
 	const updateUserRoleMutation = useMutation({
@@ -101,7 +104,7 @@ export default function UsersTab() {
 		return authUsers.update(id, { custom_role: role, role: platformRole, ...roleFieldsFor(role, user) });
 	},
 	onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
-	onError: () => alert("Failed to update role. Please try again."),
+	onError: () => toast({ variant: 'destructive', title: 'Failed to update role', description: 'Please try again.' }),
 	});
 
 	const updateUserMutation = useMutation({
@@ -118,7 +121,7 @@ export default function UsersTab() {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 		setEditingUser(null);
 	},
-	onError: () => alert("Failed to update user. Please try again."),
+	onError: () => toast({ variant: 'destructive', title: 'Failed to update user', description: 'Please try again.' }),
 	});
 
 	const deleteUserMutation = useMutation({
@@ -141,7 +144,7 @@ export default function UsersTab() {
 		queryClient.invalidateQueries({ queryKey: ["users"] });
 	},
 	onError: (error) => {
-		alert(`Failed to reset password: ${error.message || "Unknown error"}`);
+		toast({ variant: 'destructive', title: 'Failed to reset password', description: error?.message || 'Unknown error' });
 	}
 	});
 
@@ -242,13 +245,15 @@ export default function UsersTab() {
 							value={user.custom_role || user.role || 'Location'}
 							onChange={(e) => {
 								const newRole = e.target.value;
-								if (window.confirm(`Change ${user.email}'s role to ${newRole}?`)) {
-								updateUserRoleMutation.mutate({
-									id: user.id,
-									role: newRole,
-									user
+								setConfirmDialog({
+									title: 'Change Role',
+									description: `Change ${user.email}'s role to ${newRole}?`,
+									onConfirm: () => updateUserRoleMutation.mutate({
+										id: user.id,
+										role: newRole,
+										user
+									})
 								});
-								}
 							}}
 							disabled={updateUserRoleMutation.isPending}
 							className="h-8 px-2 rounded border border-input bg-background text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -281,11 +286,12 @@ export default function UsersTab() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => {
-								if (window.confirm(`Delete user "${user.email}"?`)) {
-									deleteUserMutation.mutate(user.id);
-								}
-								}}
+								onClick={() => setConfirmDialog({
+								title: 'Delete User',
+								description: `Delete user "${user.email}"?`,
+								destructive: true,
+								onConfirm: () => deleteUserMutation.mutate(user.id)
+							})}
 								disabled={deleteUserMutation.isPending && deleteUserMutation.variables === user.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 							>
@@ -295,11 +301,11 @@ export default function UsersTab() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => {
-									if (window.confirm(`Reset password for user "${user.email}"?`)) {
-										resetUserPasswordMutation.mutate({ id: user.id });
-									}
-								}}
+								onClick={() => setConfirmDialog({
+									title: 'Reset Password',
+									description: `Reset password for user "${user.email}"?`,
+									onConfirm: () => resetUserPasswordMutation.mutate({ id: user.id })
+								})}
 								disabled={resetUserPasswordMutation.isPending}
 								className="h-8 w-8 text-slate-400 hover:text-blue-600 hover:bg-blue-50"
 								title="Reset Password"
@@ -338,11 +344,12 @@ export default function UsersTab() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => {
-								if (window.confirm(`Cancel invite for "${invite.email}"?`)) {
-									deletePendingInviteMutation.mutate(invite.id);
-								}
-								}}
+								onClick={() => setConfirmDialog({
+								title: 'Cancel Invite',
+								description: `Cancel invite for "${invite.email}"?`,
+								destructive: true,
+								onConfirm: () => deletePendingInviteMutation.mutate(invite.id)
+							})}
 								disabled={deletePendingInviteMutation.isPending && deletePendingInviteMutation.variables === invite.id}
 								className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
 								title="Cancel invite"
@@ -811,7 +818,7 @@ export default function UsersTab() {
 						style={{ backgroundColor: 'var(--hendy-blue)' }}
 						onClick={() => {
 							navigator.clipboard.writeText(tempPassword || '');
-							alert('Password copied to clipboard!');
+							toast({ title: 'Password copied to clipboard!' });
 						}}
 					>
 						Copy
@@ -825,6 +832,27 @@ export default function UsersTab() {
 			</DialogFooter>
 			</DialogContent>
 		</Dialog>
+
+		<AlertDialog open={!!confirmDialog} onOpenChange={(open) => !open && setConfirmDialog(null)}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>{confirmDialog?.title}</AlertDialogTitle>
+					<AlertDialogDescription>{confirmDialog?.description}</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction
+						className={confirmDialog?.destructive ? buttonVariants({ variant: "destructive" }) : undefined}
+						onClick={() => {
+							confirmDialog?.onConfirm();
+							setConfirmDialog(null);
+						}}
+					>
+						Confirm
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	</>
 	);
 }
