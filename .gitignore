@@ -39,3 +39,8 @@ TODO
 
 # Real k8s secret (copy of k8s/secret.example.yaml with real values)
 k8s/secret.yaml
+
+# graphify local artifacts (regeneratable cache / machine-specific path)
+graphify-out/cache/
+graphify-out/.graphify_python
+graphify-out/20*/
