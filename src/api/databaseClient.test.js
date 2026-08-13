@@ -102,35 +102,41 @@ describe("DatabaseClient#get / #list / #query / #update / #delete", () => {
     expect(result).toEqual([{ id: 1 }, { id: 2 }])
   })
 
-  it("list() sorts ascending by the given field, nulls last", async () => {
-    global.fetch.mockResolvedValue(
-      fakeResponse({ body: [{ name: "C" }, { name: null }, { name: "A" }] })
-    )
+  it("list() pushes order_by down as a server-side query param", async () => {
+    global.fetch.mockResolvedValue(fakeResponse({ body: [{ name: "A" }, { name: "C" }] }))
 
     const result = await databaseClients.Brand.list("name")
 
-    expect(result.map((r) => r.name)).toEqual(["A", "C", null])
+    const [url] = global.fetch.mock.calls[0]
+    expect(url).toBe("/api/data/Brand?order_by=name")
+    expect(result).toEqual([{ name: "A" }, { name: "C" }])
   })
 
-  it("list() sorts descending when the field is prefixed with '-'", async () => {
-    global.fetch.mockResolvedValue(
-      fakeResponse({ body: [{ created_date: "2026-01-01" }, { created_date: "2026-03-01" }] })
-    )
+  it("list() passes a '-' prefixed field straight through for descending order", async () => {
+    global.fetch.mockResolvedValue(fakeResponse({ body: [] }))
 
-    const result = await databaseClients.WarrantyClaim.list("-created_date")
+    await databaseClients.WarrantyClaim.list("-created_date")
 
-    expect(result.map((r) => r.created_date)).toEqual(["2026-03-01", "2026-01-01"])
+    const [url] = global.fetch.mock.calls[0]
+    expect(url).toBe("/api/data/WarrantyClaim?order_by=-created_date")
   })
 
-  it("list() applies limit only when it's a positive integer", async () => {
-    global.fetch.mockResolvedValue(fakeResponse({ body: [{ id: 1 }, { id: 2 }, { id: 3 }] }))
+  it("list() sends limit as a query param only when it's a positive integer", async () => {
+    global.fetch.mockResolvedValue(fakeResponse({ body: [] }))
+    await databaseClients.Message.list("", 2)
+    expect(global.fetch.mock.calls[0][0]).toBe("/api/data/Message?limit=2")
 
-    const limited = await databaseClients.Message.list("", 2)
-    expect(limited).toHaveLength(2)
+    global.fetch.mockResolvedValue(fakeResponse({ body: [] }))
+    await databaseClients.Message.list("", 0)
+    expect(global.fetch.mock.calls[1][0]).toBe("/api/data/Message")
+  })
 
-    global.fetch.mockResolvedValue(fakeResponse({ body: [{ id: 1 }, { id: 2 }, { id: 3 }] }))
-    const unlimited = await databaseClients.Message.list("", 0)
-    expect(unlimited).toHaveLength(3)
+  it("list() with no args issues a plain GET, unchanged", async () => {
+    global.fetch.mockResolvedValue(fakeResponse({ body: [] }))
+
+    await databaseClients.Message.list()
+
+    expect(global.fetch.mock.calls[0][0]).toBe("/api/data/Message")
   })
 
   it("query() omits the select param for '*' and includes where when given", async () => {

@@ -44,6 +44,17 @@ const APPROVAL_STATUS_LABELS = {
 // animations out several seconds.
 const ROW_STAGGER_CAP = 0.5;
 
+// Beyond this many rows, skip the Framer Motion entrance animation entirely
+// (plain <tr>, no per-row animation controller) — the effect is only ever
+// seen for the first screenful anyway, and mounting an animated component
+// per row is real overhead once a site accumulates hundreds of claims.
+const ANIMATED_ROW_LIMIT = 30;
+
+// content-visibility lets the browser skip layout/paint for rows currently
+// scrolled out of view, without changing the DOM/table structure — a no-op
+// (safe fallback to fully rendering) in browsers that don't support it.
+const OFFSCREEN_SKIP_STYLE = { contentVisibility: 'auto', containIntrinsicSize: '52px' };
+
 export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onResolutionChange, onDelete, deletingClaimId, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
@@ -338,12 +349,21 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
         </TableRow>
       </TableHeader>
       <TableBody>
-        {sortedClaims.map((claim, index) => (
+        {sortedClaims.map((claim, index) => {
+          const animated = index < ANIMATED_ROW_LIMIT;
+          const RowTag = animated ? motion.tr : 'tr';
+          const motionProps = animated
+            ? {
+                initial: { opacity: 0, x: -10 },
+                animate: { opacity: 1, x: 0 },
+                transition: { delay: Math.min(index * 0.05, ROW_STAGGER_CAP) },
+              }
+            : {};
+          return (
           <React.Fragment key={claim.id}>
-          <motion.tr
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: Math.min(index * 0.05, ROW_STAGGER_CAP) }}
+          <RowTag
+            {...motionProps}
+            style={OFFSCREEN_SKIP_STYLE}
             className="group hover:bg-slate-50/50 transition-colors cursor-pointer"
             onClick={() => onToggleRow(claim.id)}
           >
@@ -579,7 +599,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
                 )}
                 </div>
                 </TableCell>
-                </motion.tr>
+                </RowTag>
                 {expandedRowsSet.has(claim.id) && (
                   <MiniTimeline
                     claimId={claim.id}
@@ -587,7 +607,8 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
                   />
                 )}
                 </React.Fragment>
-                ))}
+          );
+        })}
       </TableBody>
     </Table>
   );
