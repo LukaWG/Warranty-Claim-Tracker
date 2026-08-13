@@ -26,11 +26,10 @@ export default function ApprovalChat({ claim, currentUser }) {
   // Mark messages from the other party as read when loaded
   useEffect(() => {
     if (!claim?.id || !currentUser?.email || messages.length === 0) return;
-    const hasUnreadFromOther = messages.some(m => !m.read && m.sender_email !== currentUser.email);
-    if (!hasUnreadFromOther) return;
-    databaseClients.ApprovalMessage.updateMany(
-      { claim_id: claim.id, read: false, sender_email: { $ne: currentUser.email } },
-      { $set: { read: true } }
+    const unreadFromOther = messages.filter(m => !m.read && m.sender_email !== currentUser.email);
+    if (unreadFromOther.length === 0) return;
+    Promise.all(
+      unreadFromOther.map(m => databaseClients.ApprovalMessage.update(m.id, { read: true }))
     ).then(() => queryClient.invalidateQueries({ queryKey: ['approvalMessages', claim.id] }));
   }, [messages, claim?.id, currentUser?.email]);
 
