@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { Clock, FileText, MapPin, Trash2, Pencil, MessageSquare, Maximize2, X, ArrowUp, ArrowDown, ArrowUpDown, GitCommitHorizontal, CreditCard, Mail, AlertCircle } from "lucide-react";
@@ -63,6 +65,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [roleDefaultApplied, setRoleDefaultApplied] = useState(false);
+  const [deletingConfirmClaim, setDeletingConfirmClaim] = useState(null);
 
   const router = useRouter();
 
@@ -568,7 +571,7 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => onDelete(claim.id)}
+                    onClick={() => setDeletingConfirmClaim(claim)}
                     disabled={deletingClaimId === claim.id}
                     className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                     title="Delete claim"
@@ -708,6 +711,29 @@ export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onR
             onClose={() => setTimelineClaim(null)}
           />
         )}
+
+        <AlertDialog open={!!deletingConfirmClaim} onOpenChange={(open) => !open && setDeletingConfirmClaim(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Claim</AlertDialogTitle>
+              <AlertDialogDescription>
+                Delete claim {deletingConfirmClaim?.wip_number ? `for WIP #${deletingConfirmClaim.wip_number}` : ''}? This cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className={buttonVariants({ variant: "destructive" })}
+                onClick={() => {
+                  onDelete(deletingConfirmClaim.id);
+                  setDeletingConfirmClaim(null);
+                }}
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         </motion.div>
         );
         }
