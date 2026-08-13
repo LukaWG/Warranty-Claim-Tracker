@@ -20,8 +20,23 @@ spec:
       labels:
         app: warranty-claim-tracker
     spec:
+      securityContext:
+        runAsNonRoot: true
       containers:
       - name: warranty-claim-tracker
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault
+        # Deploys pin a specific version live via:
+        #   kubectl set image deployment/warranty-claim-tracker warranty-claim-tracker=lukawg/warranty-claim-tracker@<digest-or-sha> -n warranty-claim-tracker
+        # That only patches the running Deployment — it does NOT update this
+        # file. Re-running `kubectl apply -k k8s/` (e.g. after a ConfigMap/
+        # Secret change) resets the image back to whatever's written here,
+        # silently undoing the pinned version. Bump this line to match
+        # whenever you `set image`, or re-apply it right after.
         image: lukawg/warranty-claim-tracker:latest
         imagePullPolicy: Always
         ports:

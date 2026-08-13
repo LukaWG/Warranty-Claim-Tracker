@@ -1,0 +1,12 @@
+# Keeps at least one pod serving traffic if a node drain/eviction would
+# otherwise take down both replicas of the Deployment at once.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: warranty-claim-tracker
+  namespace: warranty-claim-tracker
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: warranty-claim-tracker
