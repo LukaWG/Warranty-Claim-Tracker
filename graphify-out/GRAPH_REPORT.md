@@ -1,23 +1,23 @@
 # Graph Report - Warranty-Claim-Tracker  (2026-08-14)
 
 ## Corpus Check
-- 110 files · ~57,051 words
+- 109 files · ~57,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 635 nodes · 1459 edges · 80 communities (37 shown, 43 thin omitted)
+- 633 nodes · 1458 edges · 79 communities (38 shown, 41 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4f4c63f7`
+- Built from commit: `7ad574d8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
+- Layout.jsx
 - cn
-- ClaimsTable.jsx
-- dataAccessPolicy.ts
+- Configuration.jsx
 - compilerOptions
 - Dashboard.jsx
 - databaseClient.js
@@ -31,7 +31,7 @@
 - package.json
 - scripts
 - DatabaseClient
-- auth-client.ts
+- use-toast.jsx
 - Warranty Claims App — Test Plan
 - Section J — Cross-Cutting Edge Cases
 - dependencies
@@ -48,7 +48,7 @@
 - better-auth
 - CLAUDE.md
 - clsx
-- date-fns
+- class-variance-authority
 - eslint
 - eslint-plugin-react-hooks
 - MiniTimeline.jsx
@@ -83,9 +83,8 @@
 - @types/react-dom
 - typescript
 - vitest
-- TODO.md
+- eslint-plugin-react-refresh
 - { signIn, signUp, signOut, useSession }
-- baseline-browser-mapping
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 90 edges
@@ -100,45 +99,45 @@
 10. `Input` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Layout()` --calls--> `createPageUrl()`  [EXTRACTED]
-  src/Layout.jsx → src/utils/index.ts
-- `ClaimFormCard()` --calls--> `cn()`  [EXTRACTED]
-  src/components/claims/ClaimFormCard.jsx → src/lib/utils.js
-- `EditClaimModal()` --calls--> `cn()`  [EXTRACTED]
-  src/components/claims/EditClaimModal.jsx → src/lib/utils.js
-- `AlertsTab()` --calls--> `buttonVariants`  [EXTRACTED]
-  src/components/configuration/AlertsTab.jsx → src/components/ui/button.jsx
-- `BrandsTab()` --calls--> `buttonVariants`  [EXTRACTED]
-  src/components/configuration/BrandsTab.jsx → src/components/ui/button.jsx
+- `DialogOverlay` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/dialog.jsx → src/lib/utils.js
+- `DropdownMenuSubTrigger` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
+- `DropdownMenuSubContent` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
+- `DropdownMenuCheckboxItem` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
+- `DropdownMenuRadioItem` --calls--> `cn()`  [EXTRACTED]
+  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (80 total, 43 thin omitted)
+## Communities (79 total, 41 thin omitted)
 
-### Community 0 - "cn"
+### Community 0 - "Layout.jsx"
 Cohesion: 0.07
-Nodes (38): MultiSelect(), HendyLogo(), UnreadBadge(), AlertDialogOverlay, CardFooter, DialogDescription, DialogOverlay, DropdownMenuCheckboxItem (+30 more)
+Nodes (26): HendyLogo(), SearchModal(), UnreadBadge(), DialogDescription, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel (+18 more)
 
-### Community 1 - "ClaimsTable.jsx"
-Cohesion: 0.17
-Nodes (38): availableBrandIdsFor(), roleFieldsFor(), APPROVAL_STATUS_LABELS, OFFSCREEN_SKIP_STYLE, statusConfig, COLUMN_LABELS, ColumnVisibilityPicker(), DEFAULT_COLUMNS (+30 more)
+### Community 1 - "cn"
+Cohesion: 0.15
+Nodes (45): EditBrandModal(), APPROVAL_STATUS_LABELS, OFFSCREEN_SKIP_STYLE, statusConfig, COLUMN_LABELS, ColumnVisibilityPicker(), DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS (+37 more)
 
-### Community 2 - "dataAccessPolicy.ts"
-Cohesion: 0.09
-Nodes (19): auth, AccessCheckInput, AccessVerdict, checkAccess(), COLLECTION_RULES, CollectionRules, CustomRole, HttpMethod (+11 more)
+### Community 2 - "Configuration.jsx"
+Cohesion: 0.07
+Nodes (24): AlertsTab(), ResolutionsTab(), TabsContent, TabsList, TabsTrigger, auth, AccessCheckInput, AccessVerdict (+16 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): dom.iterable, **/*.mts, next-env.d.ts, **/*.ts, **/*.tsx, compilerOptions, allowJs, baseUrl (+18 more)
 
 ### Community 4 - "Dashboard.jsx"
-Cohesion: 0.07
-Nodes (48): RFC-4180, AuditHistoryModal(), ClaimFormCard(), ClaimNotesModal(), CreditOptionsModal(), EditClaimModal(), AlertsTab(), BrandsTab() (+40 more)
+Cohesion: 0.16
+Nodes (26): RFC-4180, ClaimFormCard(), ClaimNotesModal(), CreditOptionsModal(), EditClaimModal(), BrandsTab(), SitesTab(), availableBrandIdsFor() (+18 more)
 
 ### Community 5 - "databaseClient.js"
-Cohesion: 0.12
-Nodes (24): currentUser, DatabaseClients, ADMIN_ROLES, ApprovalChat(), ADMIN_ROLES, ClaimTimeline(), getEventConfig(), statusLabels (+16 more)
+Cohesion: 0.11
+Nodes (28): currentUser, DatabaseClients, ADMIN_ROLES, ApprovalChat(), AuditHistoryModal(), ADMIN_ROLES, ClaimTimeline(), getEventConfig() (+20 more)
 
 ### Community 6 - "compilerOptions"
 Cohesion: 0.08
@@ -150,7 +149,7 @@ Nodes (18): 1.1 Critical — No server-side authorization on `/api/data/*`, only
 
 ### Community 8 - "Deployment Guide"
 Cohesion: 0.11
-Nodes (18): Access, Accessing the cluster from another device, Architecture, ⚠️ Before deploying: revert the local-dev mocks, Build the image, Cleanup, Deployment Guide, Environment variables (+10 more)
+Nodes (18): Access, Accessing the cluster from another device, Architecture, Build the image, Cleanup, Deployment Guide, Environment variables, First-time setup (+10 more)
 
 ### Community 9 - "components.json"
 Cohesion: 0.11
@@ -162,7 +161,7 @@ Nodes (15): A10. Voluntary change-password modal, A11. Change-password menu item
 
 ### Community 11 - "devDependencies"
 Cohesion: 0.15
-Nodes (13): autoprefixer, @eslint/js, eslint-plugin-react, eslint-plugin-react-refresh, globals, devDependencies, autoprefixer, @eslint/js (+5 more)
+Nodes (13): autoprefixer, baseline-browser-mapping, @eslint/js, eslint-plugin-react, globals, devDependencies, autoprefixer, baseline-browser-mapping (+5 more)
 
 ### Community 12 - "Section D — Claim Creation (ClaimForm)"
 Cohesion: 0.18
@@ -176,6 +175,10 @@ Nodes (9): engines, node, name, overrides, @types/react, @types/react-dom, priva
 Cohesion: 0.20
 Nodes (10): scripts, build, build:pages, dev, lint, lint:fix, start, test (+2 more)
 
+### Community 16 - "use-toast.jsx"
+Cohesion: 0.12
+Nodes (19): Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, toastVariants, ToastViewport (+11 more)
+
 ### Community 17 - "Warranty Claims App — Test Plan"
 Cohesion: 0.20
 Nodes (9): Appendix — Known Issues Found During Code Review, Environment prerequisites, F1. Approve/reject happy path, F2. Approved/rejected claim leaves the pending list ⚠ Flagged issue, F3. No server-side role check on Approvals, How to use this document, Section F — Approvals, Test accounts / fixtures needed (+1 more)
@@ -186,7 +189,7 @@ Nodes (10): J1. API unreachable — reads render as empty, not an error ⚠ Flag
 
 ### Community 19 - "dependencies"
 Cohesion: 0.22
-Nodes (9): class-variance-authority, dependencies, class-variance-authority, react-day-picker, react-dom, tailwindcss-animate, react-day-picker, react-dom (+1 more)
+Nodes (9): date-fns, dependencies, date-fns, react-day-picker, react-dom, tailwindcss-animate, react-day-picker, react-dom (+1 more)
 
 ### Community 20 - "authClient.js"
 Cohesion: 0.28
@@ -229,24 +232,24 @@ Cohesion: 0.40
 Nodes (5): getEventConfig(), MiniTimeline(), RELEVANT_FIELDS, RELEVANT_TYPES, statusLabels
 
 ## Knowledge Gaps
-- **270 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+265 more)
+- **269 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+264 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **41 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `cn()` connect `cn` to `ClaimsTable.jsx`, `Dashboard.jsx`, `databaseClient.js`?**
+- **Why does `cn()` connect `cn` to `Layout.jsx`, `Configuration.jsx`, `Dashboard.jsx`, `databaseClient.js`, `use-toast.jsx`?**
   _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `package.json`, `better-auth`, `clsx`, `date-fns`, `framer-motion`, `lucide-react`, `next`, `pg`, `prisma`, `@prisma/adapter-pg`, `@prisma/client`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-label`, `@radix-ui/react-popover`, `@radix-ui/react-select`, `@radix-ui/react-slot`, `@radix-ui/react-tabs`, `@radix-ui/react-toast`, `@radix-ui/react-tooltip`, `react`, `tailwind-merge`, `@tanstack/react-query`, `zod`?**
+- **Why does `dependencies` connect `dependencies` to `package.json`, `better-auth`, `clsx`, `class-variance-authority`, `framer-motion`, `lucide-react`, `next`, `pg`, `prisma`, `@prisma/adapter-pg`, `@prisma/client`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-label`, `@radix-ui/react-popover`, `@radix-ui/react-select`, `@radix-ui/react-slot`, `@radix-ui/react-tabs`, `@radix-ui/react-toast`, `@radix-ui/react-tooltip`, `react`, `tailwind-merge`, `@tanstack/react-query`, `zod`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `Warranty Claims App — Test Plan` connect `Warranty Claims App — Test Plan` to `Section A — Auth & Session`, `Section D — Claim Creation (ClaimForm)`, `Section J — Cross-Cutting Edge Cases`, `Section B — Roles & Permissions`, `Section C — Routing & Navigation`, `Section E — Claim Lifecycle / Dashboard`, `Section G — Configuration (Sites / Brands / Alerts / Users)`, `Section H — Messages`, `Section I — Reporting & Export`?**
   _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `rsc` to the rest of the system?**
-  _270 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `cn` be split into smaller, more focused modules?**
-  _Cohesion score 0.07493061979648474 - nodes in this community are weakly interconnected._
-- **Should `dataAccessPolicy.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
+  _269 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Layout.jsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.06767676767676768 - nodes in this community are weakly interconnected._
+- **Should `Configuration.jsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.07317073170731707 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._

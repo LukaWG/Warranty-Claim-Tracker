@@ -1,7 +1,7 @@
 {
-  "0": "cn",
-  "1": "ClaimsTable.jsx",
-  "2": "dataAccessPolicy.ts",
+  "0": "Layout.jsx",
+  "1": "cn",
+  "2": "Configuration.jsx",
   "3": "compilerOptions",
   "4": "Dashboard.jsx",
   "5": "databaseClient.js",
@@ -15,7 +15,7 @@
   "13": "package.json",
   "14": "scripts",
   "15": "DatabaseClient",
-  "16": "auth-client.ts",
+  "16": "use-toast.jsx",
   "17": "Warranty Claims App — Test Plan",
   "18": "Section J — Cross-Cutting Edge Cases",
   "19": "dependencies",
@@ -32,7 +32,7 @@
   "30": "better-auth",
   "31": "CLAUDE.md",
   "32": "clsx",
-  "33": "date-fns",
+  "33": "class-variance-authority",
   "34": "eslint",
   "35": "eslint-plugin-react-hooks",
   "36": "MiniTimeline.jsx",
@@ -68,7 +68,7 @@
   "66": "typescript",
   "67": "vitest",
   "68": "use-mobile.jsx",
-  "69": "TODO.md",
+  "69": "eslint-plugin-react-refresh",
   "70": "turbopack-stub.js",
   "71": "eslint.config.js",
   "72": "NOTES.md",
@@ -77,6 +77,5 @@
   "75": "{ signIn, signUp, signOut, useSession }",
   "76": "tailwind.config.js",
   "77": "tailwindcss",
-  "78": "vitest.config.ts",
-  "79": "baseline-browser-mapping"
+  "78": "vitest.config.ts"
 }

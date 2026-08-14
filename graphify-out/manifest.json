@@ -85,12 +85,12 @@
     "semantic_hash": ""
   },
   "src/components/claims/ClaimNotesModal.jsx": {
-    "mtime": 1786697751.4027622,
+    "mtime": 1786704951.6697938,
     "ast_hash": "223829ed59febcc11fb2fde8c1cfce1c",
     "semantic_hash": ""
   },
   "src/components/claims/ClaimTimeline.jsx": {
-    "mtime": 1786697600.5745718,
+    "mtime": 1786704951.6702514,
     "ast_hash": "eabc69996e31b96f82f9891753b05348",
     "semantic_hash": ""
   },
@@ -100,12 +100,12 @@
     "semantic_hash": ""
   },
   "src/components/claims/EditClaimModal.jsx": {
-    "mtime": 1786697568.6843712,
+    "mtime": 1786704951.6709404,
     "ast_hash": "86de6e1e283eb523ac93f6a1e03570a2",
     "semantic_hash": ""
   },
   "src/components/claims/MiniTimeline.jsx": {
-    "mtime": 1786697594.7324944,
+    "mtime": 1786704951.671518,
     "ast_hash": "3d084f6df9353f6c2fe967c023317aa7",
     "semantic_hash": ""
   },
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "src/lib/auth.ts": {
-    "mtime": 1786611404.3033707,
-    "ast_hash": "d391b2b2c1bb38089e6022c528f3c2ce",
+    "mtime": 1786704951.6726077,
+    "ast_hash": "69d7372252000fc5d202a58a855483b7",
     "semantic_hash": ""
   },
   "src/lib/dataAccessPolicy.test.ts": {
@@ -405,7 +405,7 @@
     "semantic_hash": ""
   },
   "src/pages/Dashboard.jsx": {
-    "mtime": 1786697587.0105803,
+    "mtime": 1786704951.673229,
     "ast_hash": "f85f69bde22efbf807a327277c746b27",
     "semantic_hash": ""
   },
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "DEPLOYMENT.md": {
-    "mtime": 1785844229.0973437,
-    "ast_hash": "8762b3190ce4151793307c9724936550",
+    "mtime": 1786704992.2823968,
+    "ast_hash": "f85aff8603f4fa70c6bebca5f02c1298",
     "semantic_hash": ""
   },
   "NOTES.md": {
@@ -527,11 +527,6 @@
   "TEST_PLAN.md": {
     "mtime": 1785844229.097507,
     "ast_hash": "e7106cf9097e260de65e51d613342c71",
-    "semantic_hash": ""
-  },
-  "TODO.md": {
-    "mtime": 1785844229.097822,
-    "ast_hash": "6c3891c62c5cbfd5297f83c7afe0c6db",
     "semantic_hash": ""
   },
   "docker-compose.yaml": {

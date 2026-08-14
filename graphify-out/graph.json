@@ -26,7 +26,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_accesscheckinput",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "accesscheckinput"
     },
     {
@@ -39,7 +39,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_accessverdict",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "accessverdict"
     },
     {
@@ -52,7 +52,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_collectionrules",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "collectionrules"
     },
     {
@@ -65,7 +65,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_customrole",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "customrole"
     },
     {
@@ -78,7 +78,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_httpmethod",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "httpmethod"
     },
     {
@@ -91,7 +91,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_rolerule",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "rolerule"
     },
     {
@@ -121,18 +121,6 @@
       "norm_label": "databaseclients"
     },
     {
-      "label": "MultiSelect()",
-      "file_type": "code",
-      "source_file": "src/components/dashboard/DashboardFilters.jsx",
-      "source_location": "L10",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_dashboard_dashboardfilters_multiselect",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "multiselect()"
-    },
-    {
       "label": "HendyLogo()",
       "file_type": "code",
       "source_file": "src/components/layout/HendyLogo.jsx",
@@ -141,8 +129,20 @@
       "_origin": "ast",
       "id": "src_components_layout_hendylogo_hendylogo",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "hendylogo()"
+    },
+    {
+      "label": "SearchModal()",
+      "file_type": "code",
+      "source_file": "src/components/layout/SearchModal.jsx",
+      "source_location": "L18",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_layout_searchmodal_searchmodal",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "searchmodal()"
     },
     {
       "label": "UnreadBadge()",
@@ -153,7 +153,7 @@
       "_origin": "ast",
       "id": "src_components_messages_unreadbadge_unreadbadge",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "unreadbadge()"
     },
     {
@@ -165,7 +165,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenushortcut",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenushortcut()"
     },
     {
@@ -177,7 +177,7 @@
       "_origin": "ast",
       "id": "src_layout_layout",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "layout()"
     },
     {
@@ -189,44 +189,152 @@
       "_origin": "ast",
       "id": "src_lib_accessdenied_accessdenied",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "accessdenied()"
     },
     {
-      "label": "cn()",
+      "label": "ApprovalMessages()",
       "file_type": "code",
-      "source_file": "src/lib/utils.js",
-      "source_location": "L4",
+      "source_file": "src/pages/ApprovalMessages.jsx",
+      "source_location": "L18",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_lib_utils_cn",
+      "id": "src_pages_approvalmessages_approvalmessages",
       "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "approvalmessages()"
+    },
+    {
+      "label": "ClaimForm()",
+      "file_type": "code",
+      "source_file": "src/pages/ClaimForm.jsx",
+      "source_location": "L26",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_claimform_claimform",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "claimform()"
+    },
+    {
+      "label": "getServerSideProps()",
+      "file_type": "code",
+      "source_file": "src/pages/ClaimForm.jsx",
+      "source_location": "L14",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_claimform_getserversideprops",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "getserversideprops()"
+    },
+    {
+      "label": "Configuration()",
+      "file_type": "code",
+      "source_file": "src/pages/Configuration.jsx",
+      "source_location": "L30",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_configuration_configuration",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "configuration()"
+    },
+    {
+      "label": "ForgotPasswordPage()",
+      "file_type": "code",
+      "source_file": "src/pages/forgot-password.tsx",
+      "source_location": "L5",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_forgot_password_forgotpasswordpage",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "forgotpasswordpage()"
+    },
+    {
+      "label": "HomeRedirect()",
+      "file_type": "code",
+      "source_file": "src/pages/index.jsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_index_homeredirect",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "homeredirect()"
+    },
+    {
+      "label": "LoginPage()",
+      "file_type": "code",
+      "source_file": "src/pages/login.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_login_loginpage",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "loginpage()"
+    },
+    {
+      "label": "Messages()",
+      "file_type": "code",
+      "source_file": "src/pages/Messages.tsx",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_messages_messages",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "messages()"
+    },
+    {
+      "label": "ResetPasswordPage()",
+      "file_type": "code",
+      "source_file": "src/pages/reset-password.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_reset_password_resetpasswordpage",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "resetpasswordpage()"
+    },
+    {
+      "label": "SignUpPage()",
+      "file_type": "code",
+      "source_file": "src/pages/signup.tsx",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_signup_signuppage",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "signuppage()"
+    },
+    {
+      "label": "createPageUrl()",
+      "file_type": "code",
+      "source_file": "src/utils/index.ts",
+      "source_location": "L3",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_utils_index_createpageurl",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "createpageurl()"
+    },
+    {
+      "label": "EditBrandModal()",
+      "file_type": "code",
+      "source_file": "src/components/configuration/EditBrandModal.jsx",
+      "source_location": "L7",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_configuration_editbrandmodal_editbrandmodal",
+      "community": 1,
       "community_name": "cn",
-      "norm_label": "cn()"
-    },
-    {
-      "label": "availableBrandIdsFor()",
-      "file_type": "code",
-      "source_file": "src/components/configuration/UsersTab.jsx",
-      "source_location": "L23",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_configuration_userstab_availablebrandidsfor",
-      "community": 1,
-      "community_name": "ClaimsTable.jsx",
-      "norm_label": "availablebrandidsfor()"
-    },
-    {
-      "label": "roleFieldsFor()",
-      "file_type": "code",
-      "source_file": "src/components/configuration/UsersTab.jsx",
-      "source_location": "L33",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_configuration_userstab_rolefieldsfor",
-      "community": 1,
-      "community_name": "ClaimsTable.jsx",
-      "norm_label": "rolefieldsfor()"
+      "norm_label": "editbrandmodal()"
     },
     {
       "label": "ColumnVisibilityPicker()",
@@ -237,8 +345,20 @@
       "_origin": "ast",
       "id": "src_components_dashboard_columnvisibilitypicker_columnvisibilitypicker",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "columnvisibilitypicker()"
+    },
+    {
+      "label": "MultiSelect()",
+      "file_type": "code",
+      "source_file": "src/components/dashboard/DashboardFilters.jsx",
+      "source_location": "L10",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_dashboard_dashboardfilters_multiselect",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "multiselect()"
     },
     {
       "label": "AlertDialogFooter()",
@@ -249,7 +369,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogfooter",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogfooter()"
     },
     {
@@ -261,7 +381,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogheader",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogheader()"
     },
     {
@@ -273,8 +393,32 @@
       "_origin": "ast",
       "id": "src_components_ui_calendar_calendar",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "calendar()"
+    },
+    {
+      "label": "DialogFooter()",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.jsx",
+      "source_location": "L59",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ui_dialog_dialogfooter",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "dialogfooter()"
+    },
+    {
+      "label": "cn()",
+      "file_type": "code",
+      "source_file": "src/lib/utils.js",
+      "source_location": "L4",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_lib_utils_cn",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "cn()"
     },
     {
       "label": "apiFetch()",
@@ -385,52 +529,124 @@
       "norm_label": ".update()"
     },
     {
-      "label": "ForgotPasswordPage()",
+      "label": "Toaster()",
       "file_type": "code",
-      "source_file": "src/pages/forgot-password.tsx",
-      "source_location": "L5",
+      "source_file": "src/components/ui/toaster.jsx",
+      "source_location": "L11",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_pages_forgot_password_forgotpasswordpage",
+      "id": "src_components_ui_toaster_toaster",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "forgotpasswordpage()"
+      "community_name": "use-toast.jsx",
+      "norm_label": "toaster()"
     },
     {
-      "label": "LoginPage()",
+      "label": "addToRemoveQueue()",
       "file_type": "code",
-      "source_file": "src/pages/login.tsx",
-      "source_location": "L6",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L24",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_pages_login_loginpage",
+      "id": "src_components_ui_use_toast_addtoremovequeue",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "loginpage()"
+      "community_name": "use-toast.jsx",
+      "norm_label": "addtoremovequeue()"
     },
     {
-      "label": "ResetPasswordPage()",
+      "label": "_clearFromRemoveQueue()",
       "file_type": "code",
-      "source_file": "src/pages/reset-password.tsx",
-      "source_location": "L6",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L40",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_pages_reset_password_resetpasswordpage",
+      "id": "src_components_ui_use_toast_clearfromremovequeue",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "resetpasswordpage()"
+      "community_name": "use-toast.jsx",
+      "norm_label": "_clearfromremovequeue()"
     },
     {
-      "label": "SignUpPage()",
+      "label": "dispatch()",
       "file_type": "code",
-      "source_file": "src/pages/signup.tsx",
-      "source_location": "L6",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L105",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_pages_signup_signuppage",
+      "id": "src_components_ui_use_toast_dispatch",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "signuppage()"
+      "community_name": "use-toast.jsx",
+      "norm_label": "dispatch()"
+    },
+    {
+      "label": "genId()",
+      "file_type": "code",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_genid",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "genid()"
+    },
+    {
+      "label": "reducer()",
+      "file_type": "code",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L48",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_reducer",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "reducer()"
+    },
+    {
+      "label": "useToast()",
+      "file_type": "code",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L145",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_usetoast",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "usetoast()"
+    },
+    {
+      "label": "MyApp()",
+      "file_type": "code",
+      "source_file": "src/pages/_app.jsx",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_app_myapp",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "myapp()"
+    },
+    {
+      "label": "AlertsTab()",
+      "file_type": "code",
+      "source_file": "src/components/configuration/AlertsTab.jsx",
+      "source_location": "L15",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_configuration_alertstab_alertstab",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "alertstab()"
+    },
+    {
+      "label": "ResolutionsTab()",
+      "file_type": "code",
+      "source_file": "src/components/configuration/ResolutionsTab.jsx",
+      "source_location": "L15",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_configuration_resolutionstab_resolutionstab",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "resolutionstab()"
     },
     {
       "label": "checkAccess()",
@@ -441,7 +657,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_checkaccess",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "checkaccess()"
     },
     {
@@ -453,7 +669,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_isknowncollection",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "isknowncollection()"
     },
     {
@@ -465,7 +681,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_ismanagerrole",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "ismanagerrole()"
     },
     {
@@ -477,7 +693,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_roleallowed",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "roleallowed()"
     },
     {
@@ -489,7 +705,7 @@
       "_origin": "ast",
       "id": "src_lib_pagenotfound_pagenotfound",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "pagenotfound()"
     },
     {
@@ -501,7 +717,7 @@
       "_origin": "ast",
       "id": "src_lib_prisma_makeprismaclient",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "makeprismaclient()"
     },
     {
@@ -513,7 +729,7 @@
       "_origin": "ast",
       "id": "src_pages_404_custom404",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "custom404()"
     },
     {
@@ -525,7 +741,7 @@
       "_origin": "ast",
       "id": "src_pages_api_auth_all_authhandler",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "authhandler()"
     },
     {
@@ -537,8 +753,20 @@
       "_origin": "ast",
       "id": "src_pages_api_data_path_dataproxyhandler",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "dataproxyhandler()"
+    },
+    {
+      "label": "getServerSideProps()",
+      "file_type": "code",
+      "source_file": "src/pages/Configuration.jsx",
+      "source_location": "L13",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_pages_configuration_getserversideprops",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "getserversideprops()"
     },
     {
       "label": "DynamicPage()",
@@ -549,7 +777,7 @@
       "_origin": "ast",
       "id": "src_pages_page_dynamicpage",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "dynamicpage()"
     },
     {
@@ -561,7 +789,7 @@
       "_origin": "ast",
       "id": "src_pages_page_getserversideprops",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "getserversideprops()"
     },
     {
@@ -649,18 +877,6 @@
       "norm_label": "minitimeline()"
     },
     {
-      "label": "AuditHistoryModal()",
-      "file_type": "code",
-      "source_file": "src/components/claims/AuditHistoryModal.jsx",
-      "source_location": "L9",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_claims_audithistorymodal_audithistorymodal",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "audithistorymodal()"
-    },
-    {
       "label": "ClaimFormCard()",
       "file_type": "code",
       "source_file": "src/components/claims/ClaimFormCard.jsx",
@@ -709,18 +925,6 @@
       "norm_label": "editclaimmodal()"
     },
     {
-      "label": "AlertsTab()",
-      "file_type": "code",
-      "source_file": "src/components/configuration/AlertsTab.jsx",
-      "source_location": "L15",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_configuration_alertstab_alertstab",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "alertstab()"
-    },
-    {
       "label": "BrandsTab()",
       "file_type": "code",
       "source_file": "src/components/configuration/BrandsTab.jsx",
@@ -733,18 +937,6 @@
       "norm_label": "brandstab()"
     },
     {
-      "label": "ResolutionsTab()",
-      "file_type": "code",
-      "source_file": "src/components/configuration/ResolutionsTab.jsx",
-      "source_location": "L15",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_configuration_resolutionstab_resolutionstab",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "resolutionstab()"
-    },
-    {
       "label": "SitesTab()",
       "file_type": "code",
       "source_file": "src/components/configuration/SitesTab.jsx",
@@ -755,6 +947,30 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "sitestab()"
+    },
+    {
+      "label": "availableBrandIdsFor()",
+      "file_type": "code",
+      "source_file": "src/components/configuration/UsersTab.jsx",
+      "source_location": "L23",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_configuration_userstab_availablebrandidsfor",
+      "community": 4,
+      "community_name": "Dashboard.jsx",
+      "norm_label": "availablebrandidsfor()"
+    },
+    {
+      "label": "roleFieldsFor()",
+      "file_type": "code",
+      "source_file": "src/components/configuration/UsersTab.jsx",
+      "source_location": "L33",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_configuration_userstab_rolefieldsfor",
+      "community": 4,
+      "community_name": "Dashboard.jsx",
+      "norm_label": "rolefieldsfor()"
     },
     {
       "label": "UsersTab()",
@@ -829,18 +1045,6 @@
       "norm_label": "exportbutton()"
     },
     {
-      "label": "SearchModal()",
-      "file_type": "code",
-      "source_file": "src/components/layout/SearchModal.jsx",
-      "source_location": "L18",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_layout_searchmodal_searchmodal",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "searchmodal()"
-    },
-    {
       "label": "ComposeMessageModal()",
       "file_type": "code",
       "source_file": "src/components/messages/ComposeMessageModal.jsx",
@@ -851,18 +1055,6 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "composemessagemodal()"
-    },
-    {
-      "label": "MessageBubble()",
-      "file_type": "code",
-      "source_file": "src/components/messages/MessageThread.jsx",
-      "source_location": "L14",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_messages_messagethread_messagebubble",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "messagebubble()"
     },
     {
       "label": "MessageThread()",
@@ -877,78 +1069,6 @@
       "norm_label": "messagethread()"
     },
     {
-      "label": "Toaster()",
-      "file_type": "code",
-      "source_file": "src/components/ui/toaster.jsx",
-      "source_location": "L11",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_toaster_toaster",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "toaster()"
-    },
-    {
-      "label": "addToRemoveQueue()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L24",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_addtoremovequeue",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "addtoremovequeue()"
-    },
-    {
-      "label": "_clearFromRemoveQueue()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L40",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_clearfromremovequeue",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "_clearfromremovequeue()"
-    },
-    {
-      "label": "dispatch()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L105",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_dispatch",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "dispatch()"
-    },
-    {
-      "label": "genId()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_genid",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "genid()"
-    },
-    {
-      "label": "reducer()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L48",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_reducer",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "reducer()"
-    },
-    {
       "label": "toast()",
       "file_type": "code",
       "source_file": "src/components/ui/use-toast.jsx",
@@ -959,18 +1079,6 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "toast()"
-    },
-    {
-      "label": "useToast()",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L145",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_usetoast",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "usetoast()"
     },
     {
       "label": "useAllUsers()",
@@ -1045,30 +1153,6 @@
       "norm_label": "getdeadlinestatus()"
     },
     {
-      "label": "MyApp()",
-      "file_type": "code",
-      "source_file": "src/pages/_app.jsx",
-      "source_location": "L11",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_app_myapp",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "myapp()"
-    },
-    {
-      "label": "ApprovalMessages()",
-      "file_type": "code",
-      "source_file": "src/pages/ApprovalMessages.jsx",
-      "source_location": "L18",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_approvalmessages_approvalmessages",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "approvalmessages()"
-    },
-    {
       "label": "Approvals()",
       "file_type": "code",
       "source_file": "src/pages/Approvals.tsx",
@@ -1079,42 +1163,6 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "approvals()"
-    },
-    {
-      "label": "ClaimForm()",
-      "file_type": "code",
-      "source_file": "src/pages/ClaimForm.jsx",
-      "source_location": "L26",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_claimform_claimform",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "claimform()"
-    },
-    {
-      "label": "Configuration()",
-      "file_type": "code",
-      "source_file": "src/pages/Configuration.jsx",
-      "source_location": "L30",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_configuration_configuration",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "configuration()"
-    },
-    {
-      "label": "getServerSideProps()",
-      "file_type": "code",
-      "source_file": "src/pages/Configuration.jsx",
-      "source_location": "L13",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_configuration_getserversideprops",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "getserversideprops()"
     },
     {
       "label": "Dashboard()",
@@ -1139,42 +1187,6 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "getserversideprops()"
-    },
-    {
-      "label": "HomeRedirect()",
-      "file_type": "code",
-      "source_file": "src/pages/index.jsx",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_index_homeredirect",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "homeredirect()"
-    },
-    {
-      "label": "Messages()",
-      "file_type": "code",
-      "source_file": "src/pages/Messages.tsx",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_messages_messages",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "messages()"
-    },
-    {
-      "label": "createPageUrl()",
-      "file_type": "code",
-      "source_file": "src/utils/index.ts",
-      "source_location": "L3",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_utils_index_createpageurl",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "createpageurl()"
     },
     {
       "label": ".constructor()",
@@ -1213,6 +1225,18 @@
       "norm_label": "approvalchat()"
     },
     {
+      "label": "AuditHistoryModal()",
+      "file_type": "code",
+      "source_file": "src/components/claims/AuditHistoryModal.jsx",
+      "source_location": "L9",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_components_claims_audithistorymodal_audithistorymodal",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "audithistorymodal()"
+    },
+    {
       "label": "ClaimTimeline()",
       "file_type": "code",
       "source_file": "src/components/claims/ClaimTimeline.jsx",
@@ -1249,16 +1273,16 @@
       "norm_label": "timelineitem()"
     },
     {
-      "label": "EditBrandModal()",
+      "label": "MessageBubble()",
       "file_type": "code",
-      "source_file": "src/components/configuration/EditBrandModal.jsx",
-      "source_location": "L7",
+      "source_file": "src/components/messages/MessageThread.jsx",
+      "source_location": "L14",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_components_configuration_editbrandmodal_editbrandmodal",
+      "id": "src_components_messages_messagethread_messagebubble",
       "community": 5,
       "community_name": "databaseClient.js",
-      "norm_label": "editbrandmodal()"
+      "norm_label": "messagebubble()"
     },
     {
       "label": "Badge()",
@@ -1271,18 +1295,6 @@
       "community": 5,
       "community_name": "databaseClient.js",
       "norm_label": "badge()"
-    },
-    {
-      "label": "DialogFooter()",
-      "file_type": "code",
-      "source_file": "src/components/ui/dialog.jsx",
-      "source_location": "L59",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_components_ui_dialog_dialogfooter",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "dialogfooter()"
     },
     {
       "label": "DialogHeader()",
@@ -1321,18 +1333,6 @@
       "norm_label": "getserversideprops()"
     },
     {
-      "label": "getServerSideProps()",
-      "file_type": "code",
-      "source_file": "src/pages/ClaimForm.jsx",
-      "source_location": "L14",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_pages_claimform_getserversideprops",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "getserversideprops()"
-    },
-    {
       "label": "useIsMobile()",
       "file_type": "code",
       "source_file": "src/hooks/use-mobile.jsx",
@@ -1364,7 +1364,7 @@
       "_origin": "ast",
       "id": "src_components_layout_hendylogo",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "hendylogo.jsx"
     },
     {
@@ -1375,30 +1375,8 @@
       "_origin": "ast",
       "id": "src_components_messages_unreadbadge",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "unreadbadge.jsx"
-    },
-    {
-      "label": "AlertDialogOverlay",
-      "file_type": "code",
-      "source_file": "src/components/ui/alert-dialog.jsx",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "src_components_ui_alert_dialog_alertdialogoverlay",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "alertdialogoverlay"
-    },
-    {
-      "label": "CardFooter",
-      "file_type": "code",
-      "source_file": "src/components/ui/card.jsx",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "src_components_ui_card_cardfooter",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "cardfooter"
     },
     {
       "label": "DialogDescription",
@@ -1408,19 +1386,8 @@
       "_origin": "ast",
       "id": "src_components_ui_dialog_dialogdescription",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dialogdescription"
-    },
-    {
-      "label": "DialogOverlay",
-      "file_type": "code",
-      "source_file": "src/components/ui/dialog.jsx",
-      "source_location": "L17",
-      "_origin": "ast",
-      "id": "src_components_ui_dialog_dialogoverlay",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "dialogoverlay"
     },
     {
       "label": "dropdown-menu.jsx",
@@ -1430,7 +1397,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdown-menu.jsx"
     },
     {
@@ -1441,7 +1408,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenucheckboxitem",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenucheckboxitem"
     },
     {
@@ -1452,7 +1419,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenucontent",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenucontent"
     },
     {
@@ -1463,7 +1430,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuitem",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenuitem"
     },
     {
@@ -1474,7 +1441,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenulabel",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenulabel"
     },
     {
@@ -1485,7 +1452,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuradioitem",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenuradioitem"
     },
     {
@@ -1496,7 +1463,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenuseparator",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenuseparator"
     },
     {
@@ -1507,7 +1474,7 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubcontent",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenusubcontent"
     },
     {
@@ -1518,250 +1485,8 @@
       "_origin": "ast",
       "id": "src_components_ui_dropdown_menu_dropdownmenusubtrigger",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "dropdownmenusubtrigger"
-    },
-    {
-      "label": "SelectLabel",
-      "file_type": "code",
-      "source_file": "src/components/ui/select.jsx",
-      "source_location": "L76",
-      "_origin": "ast",
-      "id": "src_components_ui_select_selectlabel",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "selectlabel"
-    },
-    {
-      "label": "SelectScrollDownButton",
-      "file_type": "code",
-      "source_file": "src/components/ui/select.jsx",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "src_components_ui_select_selectscrolldownbutton",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "selectscrolldownbutton"
-    },
-    {
-      "label": "SelectScrollUpButton",
-      "file_type": "code",
-      "source_file": "src/components/ui/select.jsx",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "src_components_ui_select_selectscrollupbutton",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "selectscrollupbutton"
-    },
-    {
-      "label": "SelectSeparator",
-      "file_type": "code",
-      "source_file": "src/components/ui/select.jsx",
-      "source_location": "L102",
-      "_origin": "ast",
-      "id": "src_components_ui_select_selectseparator",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "selectseparator"
-    },
-    {
-      "label": "TableCaption",
-      "file_type": "code",
-      "source_file": "src/components/ui/table.jsx",
-      "source_location": "L69",
-      "_origin": "ast",
-      "id": "src_components_ui_table_tablecaption",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tablecaption"
-    },
-    {
-      "label": "TableFooter",
-      "file_type": "code",
-      "source_file": "src/components/ui/table.jsx",
-      "source_location": "L28",
-      "_origin": "ast",
-      "id": "src_components_ui_table_tablefooter",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tablefooter"
-    },
-    {
-      "label": "tabs.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/tabs.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_tabs",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tabs.jsx"
-    },
-    {
-      "label": "TabsContent",
-      "file_type": "code",
-      "source_file": "src/components/ui/tabs.jsx",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "src_components_ui_tabs_tabscontent",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tabscontent"
-    },
-    {
-      "label": "TabsList",
-      "file_type": "code",
-      "source_file": "src/components/ui/tabs.jsx",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "src_components_ui_tabs_tabslist",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tabslist"
-    },
-    {
-      "label": "TabsTrigger",
-      "file_type": "code",
-      "source_file": "src/components/ui/tabs.jsx",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "src_components_ui_tabs_tabstrigger",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tabstrigger"
-    },
-    {
-      "label": "toast.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_toast",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toast.jsx"
-    },
-    {
-      "label": "Toast",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toast",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toast"
-    },
-    {
-      "label": "ToastAction",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L51",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastaction",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastaction"
-    },
-    {
-      "label": "ToastClose",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastclose",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastclose"
-    },
-    {
-      "label": "ToastDescription",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L87",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastdescription",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastdescription"
-    },
-    {
-      "label": "ToastProvider",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastprovider",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastprovider"
-    },
-    {
-      "label": "ToastTitle",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L78",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toasttitle",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toasttitle"
-    },
-    {
-      "label": "toastVariants",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastvariants",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastvariants"
-    },
-    {
-      "label": "ToastViewport",
-      "file_type": "code",
-      "source_file": "src/components/ui/toast.jsx",
-      "source_location": "L15",
-      "_origin": "ast",
-      "id": "src_components_ui_toast_toastviewport",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toastviewport"
-    },
-    {
-      "label": "toaster.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/toaster.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_toaster",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "toaster.jsx"
-    },
-    {
-      "label": "tooltip.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/tooltip.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_tooltip",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tooltip.jsx"
-    },
-    {
-      "label": "TooltipContent",
-      "file_type": "code",
-      "source_file": "src/components/ui/tooltip.jsx",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "src_components_ui_tooltip_tooltipcontent",
-      "community": 0,
-      "community_name": "cn",
-      "norm_label": "tooltipcontent"
     },
     {
       "label": "Layout.jsx",
@@ -1771,7 +1496,7 @@
       "_origin": "ast",
       "id": "src_layout",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "layout.jsx"
     },
     {
@@ -1782,7 +1507,7 @@
       "_origin": "ast",
       "id": "src_layout_page_roles",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "page_roles"
     },
     {
@@ -1793,8 +1518,151 @@
       "_origin": "ast",
       "id": "src_lib_accessdenied",
       "community": 0,
-      "community_name": "cn",
+      "community_name": "Layout.jsx",
       "norm_label": "accessdenied.jsx"
+    },
+    {
+      "label": "auth-client.ts",
+      "file_type": "code",
+      "source_file": "src/lib/auth-client.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_lib_auth_client",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "auth-client.ts"
+    },
+    {
+      "label": "authClient",
+      "file_type": "code",
+      "source_file": "src/lib/auth-client.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_lib_auth_client_authclient",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "authclient"
+    },
+    {
+      "label": "ClaimForm.jsx",
+      "file_type": "code",
+      "source_file": "src/pages/ClaimForm.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_claimform",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "claimform.jsx"
+    },
+    {
+      "label": "pages.config.js",
+      "file_type": "code",
+      "source_file": "src/pages.config.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_config",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "pages.config.js"
+    },
+    {
+      "label": "PAGES",
+      "file_type": "code",
+      "source_file": "src/pages.config.js",
+      "source_location": "L55",
+      "_origin": "ast",
+      "id": "src_pages_config_pages",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "pages"
+    },
+    {
+      "label": "pagesConfig",
+      "file_type": "code",
+      "source_file": "src/pages.config.js",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "src_pages_config_pagesconfig",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "pagesconfig"
+    },
+    {
+      "label": "forgot-password.tsx",
+      "file_type": "code",
+      "source_file": "src/pages/forgot-password.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_forgot_password",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "forgot-password.tsx"
+    },
+    {
+      "label": "index.jsx",
+      "file_type": "code",
+      "source_file": "src/pages/index.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_index",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "index.jsx"
+    },
+    {
+      "label": "login.tsx",
+      "file_type": "code",
+      "source_file": "src/pages/login.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_login",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "login.tsx"
+    },
+    {
+      "label": "reset-password.tsx",
+      "file_type": "code",
+      "source_file": "src/pages/reset-password.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_reset_password",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "reset-password.tsx"
+    },
+    {
+      "label": "signup.tsx",
+      "file_type": "code",
+      "source_file": "src/pages/signup.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_signup",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "signup.tsx"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "src/utils/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_utils_index",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "index.ts"
+    },
+    {
+      "label": "BASE_PATH",
+      "file_type": "code",
+      "source_file": "src/utils/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_utils_index_base_path",
+      "community": 0,
+      "community_name": "Layout.jsx",
+      "norm_label": "base_path"
     },
     {
       "label": "ClaimFormCard.jsx",
@@ -1804,8 +1672,19 @@
       "_origin": "ast",
       "id": "src_components_claims_claimformcard",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "claimformcard.jsx"
+    },
+    {
+      "label": "EditClaimModal.jsx",
+      "file_type": "code",
+      "source_file": "src/components/claims/EditClaimModal.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_claims_editclaimmodal",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "editclaimmodal.jsx"
     },
     {
       "label": "AlertsTab.jsx",
@@ -1815,7 +1694,7 @@
       "_origin": "ast",
       "id": "src_components_configuration_alertstab",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertstab.jsx"
     },
     {
@@ -1826,8 +1705,19 @@
       "_origin": "ast",
       "id": "src_components_configuration_brandstab",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "brandstab.jsx"
+    },
+    {
+      "label": "EditBrandModal.jsx",
+      "file_type": "code",
+      "source_file": "src/components/configuration/EditBrandModal.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_configuration_editbrandmodal",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "editbrandmodal.jsx"
     },
     {
       "label": "ResolutionsTab.jsx",
@@ -1837,7 +1727,7 @@
       "_origin": "ast",
       "id": "src_components_configuration_resolutionstab",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "resolutionstab.jsx"
     },
     {
@@ -1848,7 +1738,7 @@
       "_origin": "ast",
       "id": "src_components_configuration_sitestab",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "sitestab.jsx"
     },
     {
@@ -1859,7 +1749,7 @@
       "_origin": "ast",
       "id": "src_components_configuration_userstab",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "userstab.jsx"
     },
     {
@@ -1870,7 +1760,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_claimstable",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "claimstable.jsx"
     },
     {
@@ -1881,7 +1771,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_claimstable_approval_status_labels",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "approval_status_labels"
     },
     {
@@ -1892,7 +1782,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_claimstable_offscreen_skip_style",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "offscreen_skip_style"
     },
     {
@@ -1903,7 +1793,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_claimstable_statusconfig",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "statusconfig"
     },
     {
@@ -1914,7 +1804,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_columnvisibilitypicker",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "columnvisibilitypicker.jsx"
     },
     {
@@ -1925,7 +1815,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_columnvisibilitypicker_column_labels",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "column_labels"
     },
     {
@@ -1936,7 +1826,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_columnvisibilitypicker_default_columns",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "default_columns"
     },
     {
@@ -1947,7 +1837,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_columnvisibilitypicker_site_default_columns",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "site_default_columns"
     },
     {
@@ -1958,7 +1848,7 @@
       "_origin": "ast",
       "id": "src_components_dashboard_dashboardfilters",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "dashboardfilters.jsx"
     },
     {
@@ -1969,30 +1859,8 @@
       "_origin": "ast",
       "id": "src_components_dashboard_dashboardfilters_status_options",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "status_options"
-    },
-    {
-      "label": "SearchModal.jsx",
-      "file_type": "code",
-      "source_file": "src/components/layout/SearchModal.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_layout_searchmodal",
-      "community": 1,
-      "community_name": "ClaimsTable.jsx",
-      "norm_label": "searchmodal.jsx"
-    },
-    {
-      "label": "statusConfig",
-      "file_type": "code",
-      "source_file": "src/components/layout/SearchModal.jsx",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "src_components_layout_searchmodal_statusconfig",
-      "community": 1,
-      "community_name": "ClaimsTable.jsx",
-      "norm_label": "statusconfig"
     },
     {
       "label": "alert-dialog.jsx",
@@ -2002,7 +1870,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alert-dialog.jsx"
     },
     {
@@ -2013,7 +1881,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogaction",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogaction"
     },
     {
@@ -2024,7 +1892,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogcancel",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogcancel"
     },
     {
@@ -2035,7 +1903,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogcontent",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogcontent"
     },
     {
@@ -2046,8 +1914,19 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogdescription",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogdescription"
+    },
+    {
+      "label": "AlertDialogOverlay",
+      "file_type": "code",
+      "source_file": "src/components/ui/alert-dialog.jsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_components_ui_alert_dialog_alertdialogoverlay",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "alertdialogoverlay"
     },
     {
       "label": "AlertDialogTitle",
@@ -2057,7 +1936,7 @@
       "_origin": "ast",
       "id": "src_components_ui_alert_dialog_alertdialogtitle",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "alertdialogtitle"
     },
     {
@@ -2068,7 +1947,7 @@
       "_origin": "ast",
       "id": "src_components_ui_button",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "button.jsx"
     },
     {
@@ -2079,7 +1958,7 @@
       "_origin": "ast",
       "id": "src_components_ui_button_button",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "button"
     },
     {
@@ -2090,7 +1969,7 @@
       "_origin": "ast",
       "id": "src_components_ui_button_buttonvariants",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "buttonvariants"
     },
     {
@@ -2101,7 +1980,7 @@
       "_origin": "ast",
       "id": "src_components_ui_calendar",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "calendar.jsx"
     },
     {
@@ -2112,7 +1991,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "card.jsx"
     },
     {
@@ -2123,7 +2002,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_card",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "card"
     },
     {
@@ -2134,7 +2013,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardcontent",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "cardcontent"
     },
     {
@@ -2145,8 +2024,19 @@
       "_origin": "ast",
       "id": "src_components_ui_card_carddescription",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "carddescription"
+    },
+    {
+      "label": "CardFooter",
+      "file_type": "code",
+      "source_file": "src/components/ui/card.jsx",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "src_components_ui_card_cardfooter",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "cardfooter"
     },
     {
       "label": "CardHeader",
@@ -2156,7 +2046,7 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardheader",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "cardheader"
     },
     {
@@ -2167,8 +2057,30 @@
       "_origin": "ast",
       "id": "src_components_ui_card_cardtitle",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "cardtitle"
+    },
+    {
+      "label": "checkbox.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/checkbox.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_ui_checkbox",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "checkbox.jsx"
+    },
+    {
+      "label": "Checkbox",
+      "file_type": "code",
+      "source_file": "src/components/ui/checkbox.jsx",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "src_components_ui_checkbox_checkbox",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "checkbox"
     },
     {
       "label": "input.jsx",
@@ -2178,7 +2090,7 @@
       "_origin": "ast",
       "id": "src_components_ui_input",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "input.jsx"
     },
     {
@@ -2189,7 +2101,7 @@
       "_origin": "ast",
       "id": "src_components_ui_input_input",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "input"
     },
     {
@@ -2200,7 +2112,7 @@
       "_origin": "ast",
       "id": "src_components_ui_label",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "label.jsx"
     },
     {
@@ -2211,7 +2123,7 @@
       "_origin": "ast",
       "id": "src_components_ui_label_label",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "label"
     },
     {
@@ -2222,7 +2134,7 @@
       "_origin": "ast",
       "id": "src_components_ui_label_labelvariants",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "labelvariants"
     },
     {
@@ -2233,7 +2145,7 @@
       "_origin": "ast",
       "id": "src_components_ui_popover",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "popover.jsx"
     },
     {
@@ -2244,7 +2156,7 @@
       "_origin": "ast",
       "id": "src_components_ui_popover_popovercontent",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "popovercontent"
     },
     {
@@ -2255,7 +2167,7 @@
       "_origin": "ast",
       "id": "src_components_ui_table",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "table.jsx"
     },
     {
@@ -2266,7 +2178,7 @@
       "_origin": "ast",
       "id": "src_components_ui_table_table",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "table"
     },
     {
@@ -2277,8 +2189,19 @@
       "_origin": "ast",
       "id": "src_components_ui_table_tablebody",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "tablebody"
+    },
+    {
+      "label": "TableCaption",
+      "file_type": "code",
+      "source_file": "src/components/ui/table.jsx",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "src_components_ui_table_tablecaption",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "tablecaption"
     },
     {
       "label": "TableCell",
@@ -2288,8 +2211,19 @@
       "_origin": "ast",
       "id": "src_components_ui_table_tablecell",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "tablecell"
+    },
+    {
+      "label": "TableFooter",
+      "file_type": "code",
+      "source_file": "src/components/ui/table.jsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "src_components_ui_table_tablefooter",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "tablefooter"
     },
     {
       "label": "TableHead",
@@ -2299,7 +2233,7 @@
       "_origin": "ast",
       "id": "src_components_ui_table_tablehead",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "tablehead"
     },
     {
@@ -2310,7 +2244,7 @@
       "_origin": "ast",
       "id": "src_components_ui_table_tableheader",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "tableheader"
     },
     {
@@ -2321,8 +2255,30 @@
       "_origin": "ast",
       "id": "src_components_ui_table_tablerow",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "tablerow"
+    },
+    {
+      "label": "tooltip.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_ui_tooltip",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "tooltip.jsx"
+    },
+    {
+      "label": "TooltipContent",
+      "file_type": "code",
+      "source_file": "src/components/ui/tooltip.jsx",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "src_components_ui_tooltip_tooltipcontent",
+      "community": 1,
+      "community_name": "cn",
+      "norm_label": "tooltipcontent"
     },
     {
       "label": "useBrands.js",
@@ -2332,7 +2288,7 @@
       "_origin": "ast",
       "id": "src_hooks_usebrands",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "usebrands.js"
     },
     {
@@ -2343,7 +2299,7 @@
       "_origin": "ast",
       "id": "src_lib_getdeadlinestatus_deadline_status_colors",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "deadline_status_colors"
     },
     {
@@ -2354,7 +2310,7 @@
       "_origin": "ast",
       "id": "src_lib_getdeadlinestatus_default_deadline_status_colors",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "default_deadline_status_colors"
     },
     {
@@ -2365,7 +2321,7 @@
       "_origin": "ast",
       "id": "src_lib_utils",
       "community": 1,
-      "community_name": "ClaimsTable.jsx",
+      "community_name": "cn",
       "norm_label": "utils.js"
     },
     {
@@ -2556,6 +2512,17 @@
       "norm_label": "autoprefixer"
     },
     {
+      "label": "baseline-browser-mapping",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "package_devdependencies_baseline_browser_mapping",
+      "community": 11,
+      "community_name": "devDependencies",
+      "norm_label": "baseline-browser-mapping"
+    },
+    {
       "label": "@eslint/js",
       "file_type": "code",
       "source_file": "package.json",
@@ -2576,17 +2543,6 @@
       "community": 11,
       "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react"
-    },
-    {
-      "label": "eslint-plugin-react-refresh",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "package_devdependencies_eslint_plugin_react_refresh",
-      "community": 11,
-      "community_name": "devDependencies",
-      "norm_label": "eslint-plugin-react-refresh"
     },
     {
       "label": "globals",
@@ -2622,6 +2578,17 @@
       "norm_label": "autoprefixer"
     },
     {
+      "label": "baseline-browser-mapping",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "baseline_browser_mapping",
+      "community": 11,
+      "community_name": "devDependencies",
+      "norm_label": "baseline-browser-mapping"
+    },
+    {
       "label": "@eslint/js",
       "file_type": "concept",
       "source_file": "package.json",
@@ -2642,17 +2609,6 @@
       "community": 11,
       "community_name": "devDependencies",
       "norm_label": "eslint-plugin-react"
-    },
-    {
-      "label": "eslint-plugin-react-refresh",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "eslint_plugin_react_refresh",
-      "community": 11,
-      "community_name": "devDependencies",
-      "norm_label": "eslint-plugin-react-refresh"
     },
     {
       "label": "globals",
@@ -3018,70 +2974,202 @@
       "norm_label": "typecheck"
     },
     {
-      "label": "auth-client.ts",
+      "label": "toast.jsx",
       "file_type": "code",
-      "source_file": "src/lib/auth-client.ts",
+      "source_file": "src/components/ui/toast.jsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_lib_auth_client",
+      "id": "src_components_ui_toast",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "auth-client.ts"
+      "community_name": "use-toast.jsx",
+      "norm_label": "toast.jsx"
     },
     {
-      "label": "authClient",
+      "label": "Toast",
       "file_type": "code",
-      "source_file": "src/lib/auth-client.ts",
-      "source_location": "L3",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L40",
       "_origin": "ast",
-      "id": "src_lib_auth_client_authclient",
+      "id": "src_components_ui_toast_toast",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "authclient"
+      "community_name": "use-toast.jsx",
+      "norm_label": "toast"
     },
     {
-      "label": "forgot-password.tsx",
+      "label": "ToastAction",
       "file_type": "code",
-      "source_file": "src/pages/forgot-password.tsx",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastaction",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastaction"
+    },
+    {
+      "label": "ToastClose",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastclose",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastclose"
+    },
+    {
+      "label": "ToastDescription",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastdescription",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastdescription"
+    },
+    {
+      "label": "ToastProvider",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastprovider",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastprovider"
+    },
+    {
+      "label": "ToastTitle",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L78",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toasttitle",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toasttitle"
+    },
+    {
+      "label": "toastVariants",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastvariants",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastvariants"
+    },
+    {
+      "label": "ToastViewport",
+      "file_type": "code",
+      "source_file": "src/components/ui/toast.jsx",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "src_components_ui_toast_toastviewport",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toastviewport"
+    },
+    {
+      "label": "toaster.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/toaster.jsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_forgot_password",
+      "id": "src_components_ui_toaster",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "forgot-password.tsx"
+      "community_name": "use-toast.jsx",
+      "norm_label": "toaster.jsx"
     },
     {
-      "label": "login.tsx",
+      "label": "use-toast.jsx",
       "file_type": "code",
-      "source_file": "src/pages/login.tsx",
+      "source_file": "src/components/ui/use-toast.jsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_login",
+      "id": "src_components_ui_use_toast",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "login.tsx"
+      "community_name": "use-toast.jsx",
+      "norm_label": "use-toast.jsx"
     },
     {
-      "label": "reset-password.tsx",
+      "label": "actionTypes",
       "file_type": "code",
-      "source_file": "src/pages/reset-password.tsx",
-      "source_location": "L1",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L8",
       "_origin": "ast",
-      "id": "src_pages_reset_password",
+      "id": "src_components_ui_use_toast_actiontypes",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "reset-password.tsx"
+      "community_name": "use-toast.jsx",
+      "norm_label": "actiontypes"
     },
     {
-      "label": "signup.tsx",
+      "label": "listeners",
       "file_type": "code",
-      "source_file": "src/pages/signup.tsx",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L101",
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_listeners",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "listeners"
+    },
+    {
+      "label": "memoryState",
+      "file_type": "code",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L103",
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_memorystate",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "memorystate"
+    },
+    {
+      "label": "toastTimeouts",
+      "file_type": "code",
+      "source_file": "src/components/ui/use-toast.jsx",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "src_components_ui_use_toast_toasttimeouts",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "toasttimeouts"
+    },
+    {
+      "label": "query-client.js",
+      "file_type": "code",
+      "source_file": "src/lib/query-client.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_pages_signup",
+      "id": "src_lib_query_client",
       "community": 16,
-      "community_name": "auth-client.ts",
-      "norm_label": "signup.tsx"
+      "community_name": "use-toast.jsx",
+      "norm_label": "query-client.js"
+    },
+    {
+      "label": "queryClientInstance",
+      "file_type": "code",
+      "source_file": "src/lib/query-client.js",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "src_lib_query_client_queryclientinstance",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "queryclientinstance"
+    },
+    {
+      "label": "_app.jsx",
+      "file_type": "code",
+      "source_file": "src/pages/_app.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_app",
+      "community": 16,
+      "community_name": "use-toast.jsx",
+      "norm_label": "_app.jsx"
     },
     {
       "label": "TEST_PLAN.md",
@@ -3315,15 +3403,15 @@
       "norm_label": "dependencies"
     },
     {
-      "label": "class-variance-authority",
+      "label": "date-fns",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
-      "id": "package_dependencies_class_variance_authority",
+      "id": "package_dependencies_date_fns",
       "community": 19,
       "community_name": "dependencies",
-      "norm_label": "class-variance-authority"
+      "norm_label": "date-fns"
     },
     {
       "label": "react-day-picker",
@@ -3359,15 +3447,15 @@
       "norm_label": "tailwindcss-animate"
     },
     {
-      "label": "class-variance-authority",
+      "label": "date-fns",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
-      "id": "class_variance_authority",
+      "id": "date_fns",
       "community": 19,
       "community_name": "dependencies",
-      "norm_label": "class-variance-authority"
+      "norm_label": "date-fns"
     },
     {
       "label": "react-day-picker",
@@ -3403,6 +3491,50 @@
       "norm_label": "tailwindcss-animate"
     },
     {
+      "label": "tabs.jsx",
+      "file_type": "code",
+      "source_file": "src/components/ui/tabs.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_ui_tabs",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "tabs.jsx"
+    },
+    {
+      "label": "TabsContent",
+      "file_type": "code",
+      "source_file": "src/components/ui/tabs.jsx",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "src_components_ui_tabs_tabscontent",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "tabscontent"
+    },
+    {
+      "label": "TabsList",
+      "file_type": "code",
+      "source_file": "src/components/ui/tabs.jsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "src_components_ui_tabs_tabslist",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "tabslist"
+    },
+    {
+      "label": "TabsTrigger",
+      "file_type": "code",
+      "source_file": "src/components/ui/tabs.jsx",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "src_components_ui_tabs_tabstrigger",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "tabstrigger"
+    },
+    {
       "label": "auth.ts",
       "file_type": "code",
       "source_file": "src/lib/auth.ts",
@@ -3410,7 +3542,7 @@
       "_origin": "ast",
       "id": "src_lib_auth",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "auth.ts"
     },
     {
@@ -3421,7 +3553,7 @@
       "_origin": "ast",
       "id": "src_lib_auth_auth",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "auth"
     },
     {
@@ -3432,7 +3564,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "dataaccesspolicy.ts"
     },
     {
@@ -3443,7 +3575,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_collection_rules",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "collection_rules"
     },
     {
@@ -3454,7 +3586,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_identity_fields",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "identity_fields"
     },
     {
@@ -3465,7 +3597,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_manager_only_claim_fields",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "manager_only_claim_fields"
     },
     {
@@ -3476,7 +3608,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_manager_roles",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "manager_roles"
     },
     {
@@ -3487,7 +3619,7 @@
       "_origin": "ast",
       "id": "src_lib_dataaccesspolicy_test",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "dataaccesspolicy.test.ts"
     },
     {
@@ -3498,7 +3630,7 @@
       "_origin": "ast",
       "id": "src_lib_pagenotfound",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "pagenotfound.jsx"
     },
     {
@@ -3509,7 +3641,7 @@
       "_origin": "ast",
       "id": "src_lib_prisma",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "prisma.ts"
     },
     {
@@ -3520,7 +3652,7 @@
       "_origin": "ast",
       "id": "src_lib_prisma_globalforprisma",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "globalforprisma"
     },
     {
@@ -3531,7 +3663,7 @@
       "_origin": "ast",
       "id": "src_lib_prisma_prisma",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "prisma"
     },
     {
@@ -3542,7 +3674,7 @@
       "_origin": "ast",
       "id": "src_pages_404",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "404.jsx"
     },
     {
@@ -3553,7 +3685,7 @@
       "_origin": "ast",
       "id": "src_pages_api_auth_all",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "[...all].ts"
     },
     {
@@ -3564,8 +3696,19 @@
       "_origin": "ast",
       "id": "src_pages_api_data_path",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "[...path].ts"
+    },
+    {
+      "label": "Configuration.jsx",
+      "file_type": "code",
+      "source_file": "src/pages/Configuration.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_pages_configuration",
+      "community": 2,
+      "community_name": "Configuration.jsx",
+      "norm_label": "configuration.jsx"
     },
     {
       "label": "[...page].jsx",
@@ -3575,7 +3718,7 @@
       "_origin": "ast",
       "id": "src_pages_page",
       "community": 2,
-      "community_name": "dataAccessPolicy.ts",
+      "community_name": "Configuration.jsx",
       "norm_label": "[...page].jsx"
     },
     {
@@ -4613,26 +4756,26 @@
       "norm_label": "clsx"
     },
     {
-      "label": "date-fns",
+      "label": "class-variance-authority",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "package_dependencies_date_fns",
+      "id": "package_dependencies_class_variance_authority",
       "community": 33,
-      "community_name": "date-fns",
-      "norm_label": "date-fns"
+      "community_name": "class-variance-authority",
+      "norm_label": "class-variance-authority"
     },
     {
-      "label": "date-fns",
+      "label": "class-variance-authority",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "date_fns",
+      "id": "class_variance_authority",
       "community": 33,
-      "community_name": "date-fns",
-      "norm_label": "date-fns"
+      "community_name": "class-variance-authority",
+      "norm_label": "class-variance-authority"
     },
     {
       "label": "eslint",
@@ -4811,70 +4954,15 @@
       "norm_label": "exportbutton.jsx"
     },
     {
-      "label": "MessageThread.jsx",
+      "label": "useClaims.js",
       "file_type": "code",
-      "source_file": "src/components/messages/MessageThread.jsx",
+      "source_file": "src/hooks/useClaims.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_messages_messagethread",
+      "id": "src_hooks_useclaims",
       "community": 4,
       "community_name": "Dashboard.jsx",
-      "norm_label": "messagethread.jsx"
-    },
-    {
-      "label": "use-toast.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "use-toast.jsx"
-    },
-    {
-      "label": "actionTypes",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_actiontypes",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "actiontypes"
-    },
-    {
-      "label": "listeners",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L101",
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_listeners",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "listeners"
-    },
-    {
-      "label": "memoryState",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L103",
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_memorystate",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "memorystate"
-    },
-    {
-      "label": "toastTimeouts",
-      "file_type": "code",
-      "source_file": "src/components/ui/use-toast.jsx",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "src_components_ui_use_toast_toasttimeouts",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "toasttimeouts"
+      "norm_label": "useclaims.js"
     },
     {
       "label": "getDeadlineStatus.js",
@@ -4888,83 +4976,6 @@
       "norm_label": "getdeadlinestatus.js"
     },
     {
-      "label": "query-client.js",
-      "file_type": "code",
-      "source_file": "src/lib/query-client.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_lib_query_client",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "query-client.js"
-    },
-    {
-      "label": "queryClientInstance",
-      "file_type": "code",
-      "source_file": "src/lib/query-client.js",
-      "source_location": "L4",
-      "_origin": "ast",
-      "id": "src_lib_query_client_queryclientinstance",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "queryclientinstance"
-    },
-    {
-      "label": "_app.jsx",
-      "file_type": "code",
-      "source_file": "src/pages/_app.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_app",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "_app.jsx"
-    },
-    {
-      "label": "pages.config.js",
-      "file_type": "code",
-      "source_file": "src/pages.config.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_config",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "pages.config.js"
-    },
-    {
-      "label": "PAGES",
-      "file_type": "code",
-      "source_file": "src/pages.config.js",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "src_pages_config_pages",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "pages"
-    },
-    {
-      "label": "pagesConfig",
-      "file_type": "code",
-      "source_file": "src/pages.config.js",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "src_pages_config_pagesconfig",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "pagesconfig"
-    },
-    {
-      "label": "Configuration.jsx",
-      "file_type": "code",
-      "source_file": "src/pages/Configuration.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_configuration",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "configuration.jsx"
-    },
-    {
       "label": "Dashboard.jsx",
       "file_type": "code",
       "source_file": "src/pages/Dashboard.jsx",
@@ -4974,39 +4985,6 @@
       "community": 4,
       "community_name": "Dashboard.jsx",
       "norm_label": "dashboard.jsx"
-    },
-    {
-      "label": "index.jsx",
-      "file_type": "code",
-      "source_file": "src/pages/index.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_index",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "index.jsx"
-    },
-    {
-      "label": "index.ts",
-      "file_type": "code",
-      "source_file": "src/utils/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_utils_index",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "index.ts"
-    },
-    {
-      "label": "BASE_PATH",
-      "file_type": "code",
-      "source_file": "src/utils/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_utils_index_base_path",
-      "community": 4,
-      "community_name": "Dashboard.jsx",
-      "norm_label": "base_path"
     },
     {
       "label": "RFC-4180",
@@ -5372,26 +5350,26 @@
       "norm_label": "creditoptionsmodal.jsx"
     },
     {
-      "label": "EditClaimModal.jsx",
+      "label": "SearchModal.jsx",
       "file_type": "code",
-      "source_file": "src/components/claims/EditClaimModal.jsx",
+      "source_file": "src/components/layout/SearchModal.jsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_components_claims_editclaimmodal",
+      "id": "src_components_layout_searchmodal",
       "community": 5,
       "community_name": "databaseClient.js",
-      "norm_label": "editclaimmodal.jsx"
+      "norm_label": "searchmodal.jsx"
     },
     {
-      "label": "EditBrandModal.jsx",
+      "label": "statusConfig",
       "file_type": "code",
-      "source_file": "src/components/configuration/EditBrandModal.jsx",
-      "source_location": "L1",
+      "source_file": "src/components/layout/SearchModal.jsx",
+      "source_location": "L12",
       "_origin": "ast",
-      "id": "src_components_configuration_editbrandmodal",
+      "id": "src_components_layout_searchmodal_statusconfig",
       "community": 5,
       "community_name": "databaseClient.js",
-      "norm_label": "editbrandmodal.jsx"
+      "norm_label": "statusconfig"
     },
     {
       "label": "ComposeMessageModal.jsx",
@@ -5403,6 +5381,17 @@
       "community": 5,
       "community_name": "databaseClient.js",
       "norm_label": "composemessagemodal.jsx"
+    },
+    {
+      "label": "MessageThread.jsx",
+      "file_type": "code",
+      "source_file": "src/components/messages/MessageThread.jsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_components_messages_messagethread",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "messagethread.jsx"
     },
     {
       "label": "badge.jsx",
@@ -5427,28 +5416,6 @@
       "norm_label": "badgevariants"
     },
     {
-      "label": "checkbox.jsx",
-      "file_type": "code",
-      "source_file": "src/components/ui/checkbox.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_components_ui_checkbox",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "checkbox.jsx"
-    },
-    {
-      "label": "Checkbox",
-      "file_type": "code",
-      "source_file": "src/components/ui/checkbox.jsx",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "src_components_ui_checkbox_checkbox",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "checkbox"
-    },
-    {
       "label": "dialog.jsx",
       "file_type": "code",
       "source_file": "src/components/ui/dialog.jsx",
@@ -5469,6 +5436,17 @@
       "community": 5,
       "community_name": "databaseClient.js",
       "norm_label": "dialogcontent"
+    },
+    {
+      "label": "DialogOverlay",
+      "file_type": "code",
+      "source_file": "src/components/ui/dialog.jsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "src_components_ui_dialog_dialogoverlay",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "dialogoverlay"
     },
     {
       "label": "DialogTitle",
@@ -5515,6 +5493,50 @@
       "norm_label": "selectitem"
     },
     {
+      "label": "SelectLabel",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.jsx",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "src_components_ui_select_selectlabel",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "selectlabel"
+    },
+    {
+      "label": "SelectScrollDownButton",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.jsx",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "src_components_ui_select_selectscrolldownbutton",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "selectscrolldownbutton"
+    },
+    {
+      "label": "SelectScrollUpButton",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.jsx",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "src_components_ui_select_selectscrollupbutton",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "selectscrollupbutton"
+    },
+    {
+      "label": "SelectSeparator",
+      "file_type": "code",
+      "source_file": "src/components/ui/select.jsx",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "src_components_ui_select_selectseparator",
+      "community": 5,
+      "community_name": "databaseClient.js",
+      "norm_label": "selectseparator"
+    },
+    {
       "label": "SelectTrigger",
       "file_type": "code",
       "source_file": "src/components/ui/select.jsx",
@@ -5557,17 +5579,6 @@
       "community": 5,
       "community_name": "databaseClient.js",
       "norm_label": "useallusers.js"
-    },
-    {
-      "label": "useClaims.js",
-      "file_type": "code",
-      "source_file": "src/hooks/useClaims.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_hooks_useclaims",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "useclaims.js"
     },
     {
       "label": "useSites.js",
@@ -5623,17 +5634,6 @@
       "community": 5,
       "community_name": "databaseClient.js",
       "norm_label": "approvals.tsx"
-    },
-    {
-      "label": "ClaimForm.jsx",
-      "file_type": "code",
-      "source_file": "src/pages/ClaimForm.jsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_pages_claimform",
-      "community": 5,
-      "community_name": "databaseClient.js",
-      "norm_label": "claimform.jsx"
     },
     {
       "label": "Messages.tsx",
@@ -6351,26 +6351,26 @@
       "norm_label": "use-mobile.jsx"
     },
     {
-      "label": "TODO.md",
-      "file_type": "document",
-      "source_file": "TODO.md",
-      "source_location": "L1",
+      "label": "eslint-plugin-react-refresh",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L62",
       "_origin": "ast",
-      "id": "todo",
+      "id": "package_devdependencies_eslint_plugin_react_refresh",
       "community": 69,
-      "community_name": "TODO.md",
-      "norm_label": "todo.md"
+      "community_name": "eslint-plugin-react-refresh",
+      "norm_label": "eslint-plugin-react-refresh"
     },
     {
-      "label": "TODO",
-      "file_type": "document",
-      "source_file": "TODO.md",
-      "source_location": "L1",
+      "label": "eslint-plugin-react-refresh",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L62",
       "_origin": "ast",
-      "id": "todo_todo",
+      "id": "eslint_plugin_react_refresh",
       "community": 69,
-      "community_name": "TODO.md",
-      "norm_label": "todo"
+      "community_name": "eslint-plugin-react-refresh",
+      "norm_label": "eslint-plugin-react-refresh"
     },
     {
       "label": "AUDIT.md",
@@ -6681,28 +6681,6 @@
       "norm_label": "vitest.config.ts"
     },
     {
-      "label": "baseline-browser-mapping",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L58",
-      "_origin": "ast",
-      "id": "package_devdependencies_baseline_browser_mapping",
-      "community": 79,
-      "community_name": "baseline-browser-mapping",
-      "norm_label": "baseline-browser-mapping"
-    },
-    {
-      "label": "baseline-browser-mapping",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L58",
-      "_origin": "ast",
-      "id": "baseline_browser_mapping",
-      "community": 79,
-      "community_name": "baseline-browser-mapping",
-      "norm_label": "baseline-browser-mapping"
-    },
-    {
       "label": "DEPLOYMENT.md",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
@@ -6717,7 +6695,7 @@
       "label": "Access",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L138",
+      "source_location": "L142",
       "_origin": "ast",
       "id": "deployment_access",
       "community": 8,
@@ -6728,7 +6706,7 @@
       "label": "Accessing the cluster from another device",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L238",
+      "source_location": "L242",
       "_origin": "ast",
       "id": "deployment_accessing_the_cluster_from_another_device",
       "community": 8,
@@ -6747,21 +6725,10 @@
       "norm_label": "architecture"
     },
     {
-      "label": "\u26a0\ufe0f Before deploying: revert the local-dev mocks",
-      "file_type": "document",
-      "source_file": "DEPLOYMENT.md",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "deployment_before_deploying_revert_the_local_dev_mocks",
-      "community": 8,
-      "community_name": "Deployment Guide",
-      "norm_label": "\u26a0\ufe0f before deploying: revert the local-dev mocks"
-    },
-    {
       "label": "Build the image",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L58",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "deployment_build_the_image",
       "community": 8,
@@ -6772,7 +6739,7 @@
       "label": "Cleanup",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L335",
+      "source_location": "L339",
       "_origin": "ast",
       "id": "deployment_cleanup",
       "community": 8,
@@ -6794,7 +6761,7 @@
       "label": "Environment variables",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L37",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "deployment_environment_variables",
       "community": 8,
@@ -6805,7 +6772,7 @@
       "label": "First-time setup",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L107",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "deployment_first_time_setup",
       "community": 8,
@@ -6816,7 +6783,7 @@
       "label": "K3s notes (single local server)",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L192",
+      "source_location": "L196",
       "_origin": "ast",
       "id": "deployment_k3s_notes_single_local_server",
       "community": 8,
@@ -6827,7 +6794,7 @@
       "label": "Managing Docker Desktop from the terminal",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L285",
+      "source_location": "L289",
       "_origin": "ast",
       "id": "deployment_managing_docker_desktop_from_the_terminal",
       "community": 8,
@@ -6838,7 +6805,7 @@
       "label": "Option A \u2014 Docker Compose (single host)",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L74",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "deployment_option_a_docker_compose_single_host",
       "community": 8,
@@ -6849,7 +6816,7 @@
       "label": "Option B \u2014 Kubernetes",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L94",
+      "source_location": "L98",
       "_origin": "ast",
       "id": "deployment_option_b_kubernetes",
       "community": 8,
@@ -6857,10 +6824,21 @@
       "norm_label": "option b \u2014 kubernetes"
     },
     {
+      "label": "Pre-deployment notes",
+      "file_type": "document",
+      "source_file": "DEPLOYMENT.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "deployment_pre_deployment_notes",
+      "community": 8,
+      "community_name": "Deployment Guide",
+      "norm_label": "pre-deployment notes"
+    },
+    {
       "label": "Running on Docker Desktop Kubernetes (Mac) instead of K3s",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L206",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "deployment_running_on_docker_desktop_kubernetes_mac_instead_of_k3s",
       "community": 8,
@@ -6871,7 +6849,7 @@
       "label": "Scaling",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L186",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "deployment_scaling",
       "community": 8,
@@ -6882,7 +6860,7 @@
       "label": "Troubleshooting",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L317",
+      "source_location": "L321",
       "_origin": "ast",
       "id": "deployment_troubleshooting",
       "community": 8,
@@ -6893,7 +6871,7 @@
       "label": "Updating configuration",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L179",
+      "source_location": "L183",
       "_origin": "ast",
       "id": "deployment_updating_configuration",
       "community": 8,
@@ -6904,7 +6882,7 @@
       "label": "Updating the app",
       "file_type": "document",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L148",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "deployment_updating_the_app",
       "community": 8,
@@ -19329,18 +19307,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
-      "target": "deployment_before_deploying_revert_the_local_dev_mocks",
+      "target": "deployment_pre_deployment_notes",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L317",
+      "source_location": "L321",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19351,7 +19329,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L335",
+      "source_location": "L339",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19362,7 +19340,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L37",
+      "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19373,7 +19351,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L58",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19395,7 +19373,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L74",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19406,7 +19384,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L94",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_deployment_guide",
@@ -19417,7 +19395,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L107",
+      "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19428,7 +19406,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L138",
+      "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19439,7 +19417,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L148",
+      "source_location": "L152",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19450,7 +19428,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L179",
+      "source_location": "L183",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19461,7 +19439,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19472,7 +19450,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L192",
+      "source_location": "L196",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19483,7 +19461,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L206",
+      "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_option_b_kubernetes",
@@ -19494,7 +19472,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L238",
+      "source_location": "L242",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_running_on_docker_desktop_kubernetes_mac_instead_of_k3s",
@@ -19505,7 +19483,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "DEPLOYMENT.md",
-      "source_location": "L285",
+      "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
       "source": "deployment_running_on_docker_desktop_kubernetes_mac_instead_of_k3s",
@@ -23684,17 +23662,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "TODO.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "todo",
-      "target": "todo_todo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "tsconfig.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -24149,5 +24116,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4f4c63f712419651b3c0879c8d5b37216faa1c4a"
+  "built_at_commit": "7ad574d81b23ab06e89bbf565b668616072d8aeb"
 }

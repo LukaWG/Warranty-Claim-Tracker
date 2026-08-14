@@ -9,30 +9,34 @@ for a single local server).
 ```text
 Browser ──> Ingress / host port ──> Next.js app (port 3000, this repo)
                                       ├─> PostgreSQL (Better Auth users/sessions, Prisma)
-                                      └─(browser fetches directly)─> Data API (port 5001, separate service)
+                                      └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
 ```
 
 Two external dependencies:
 
 - **PostgreSQL** — stores Better Auth users/sessions. Included in both the
   compose file and the k8s manifests.
-- **Data API (`NEXT_PUBLIC_API_URL`, port 5001)** — the claims/sites/brands
-  backend that `src/api/databaseClient.js` calls. It is **not in this repo**
-  and is called **directly from the user's browser**, so its URL must be
-  reachable from user machines, not just from inside the cluster.
+- **Data API (`DATA_API_URL`, port 5001)** — the claims/sites/brands
+  backend. It is **not in this repo**. All calls to it go through this app's
+  own session- and role-checked proxy (`src/pages/api/data/[...path].ts`),
+  which forwards server-side using `DATA_API_KEY`. The browser never talks
+  to the Data API directly, so its URL only needs to be reachable from
+  inside the cluster/host running this app, not from user machines.
 
-## ⚠️ Before deploying: revert the local-dev mocks
+## Pre-deployment notes
 
-This repo carries local-only modifications (see `CLAUDE.md`). For a real
-deployment, restore production behaviour:
+The local-dev mocks this repo used to carry (mocked auth, a mocked data
+client, a disabled `AuthProvider`) have all been removed from the codebase —
+there's nothing left to revert. Two real pre-production items worth a
+decision before going live, though:
 
-1. `middleware.ts` — restore the commented-out cookie check (currently allows
-   all requests unauthenticated).
-2. `src/lib/auth.ts` — make sure the real Better Auth config is active (it
-   currently is; the mock is commented out at the bottom).
-3. `src/api/databaseClient.js` — confirm the right data layer is active
-   (`databaseClientNew.js` is the Prisma-backed version).
-4. `src/pages/_app.jsx` — re-enable the commented-out `AuthProvider` wrapper.
+1. `sendResetPassword` in `src/lib/auth.ts` only logs the password-reset
+   link instead of emailing it — password reset won't actually reach real
+   users until this is wired to an email sender.
+2. `MICROSOFT_TENANT_ID` defaults to `"common"`, which lets any Microsoft
+   tenant attempt sign-in (backstopped only by the `@hendy-group.com` email
+   check). Fine while SSO is disabled; set it to Hendy's real Entra tenant
+   GUID before turning `NEXT_PUBLIC_ENABLE_MICROSOFT_SSO` on.
 
 ## Environment variables
 
@@ -41,7 +45,6 @@ deployment, restore production behaviour:
 | Variable | Purpose | Example |
 |---|---|---|
 | `NEXT_PUBLIC_BASE_PATH` | Base path for internal navigation | `/` |
-| `NEXT_PUBLIC_API_URL` | Data API URL, **as reachable from user browsers** | `http://192.168.1.144:5001` |
 | `NEXT_PUBLIC_APP_URL` | Public URL of the app itself | `http://warranty.local` |
 | `NEXT_PUBLIC_ENABLE_MICROSOFT_SSO` | Show the SSO login button | `false` |
 | `NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO` | Skip login form, go straight to SSO | `false` |
@@ -53,13 +56,14 @@ deployment, restore production behaviour:
 | `AUTH_DATABASE_URL` | Postgres connection string for Better Auth/Prisma |
 | `BETTER_AUTH_SECRET` | Session signing secret — generate with `openssl rand -base64 32` |
 | `BETTER_AUTH_URL` | Public URL users reach the app on (must match ingress host) |
+| `DATA_API_URL` | Data API URL, as reachable from inside the cluster/host (not from user browsers) |
+| `DATA_API_KEY` | Must match the Data API's `INTERNAL_API_KEY` |
 | `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` / `MICROSOFT_TENANT_ID` | Only if SSO is enabled |
 
 ## Build the image
 
 ```bash
 docker build \
-  --build-arg NEXT_PUBLIC_API_URL=http://192.168.1.144:5001 \
   --build-arg NEXT_PUBLIC_APP_URL=http://warranty.local \
   -t lukawg/warranty-claim-tracker:latest .
 
