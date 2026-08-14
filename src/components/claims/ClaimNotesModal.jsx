@@ -105,7 +105,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
         const result = {file_url: ''} // TODO implement file upload
         imageUrl = result.file_url;
       }
-      await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn', site_responded: true });
+      await databaseClients.WarrantyClaim.update(claim.id, { status: 'withdrawn', site_responded: true, pre_withdrawal_status: claim.status || 'in_progress' });
       await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawn] ${newNote}`, ...(imageUrl ? { image_url: imageUrl } : {}) });
       await databaseClients.ClaimAudit.create({
         claim_id: claim.id,
@@ -137,14 +137,15 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
     if (!newNote.trim()) return;
     setIsUndoingWithdrawal(true);
     try {
-      await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress' });
+      const restoredStatus = claim.pre_withdrawal_status || 'in_progress';
+      await databaseClients.WarrantyClaim.update(claim.id, { status: restoredStatus, pre_withdrawal_status: null });
       await databaseClients.ClaimNote.create({ claim_id: claim.id, content: `[Withdrawal Undone] ${newNote}` });
       await databaseClients.ClaimAudit.create({
         claim_id: claim.id,
         wip_number: claim.wip_number,
         field_changed: 'status',
         old_value: 'withdrawn',
-        new_value: 'in_progress',
+        new_value: restoredStatus,
         change_type: 'status_changed'
       });
       queryClient.invalidateQueries({ queryKey: ['claimNotes', claim.id] });
