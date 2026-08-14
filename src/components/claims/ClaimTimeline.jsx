@@ -67,11 +67,12 @@ function getEventConfig(audit) {
     };
   }
   if (audit.field_changed === 'claimed') {
+    const isClaimed = audit.new_value === 'true' || audit.new_value === true;
     return {
       icon: CheckCircle2,
       color: 'bg-teal-100 text-teal-700',
       dot: 'bg-teal-500',
-      label: 'Marked as Claimed',
+      label: isClaimed ? 'Marked as Claimed' : 'Claim Undone',
       detail: null,
     };
   }

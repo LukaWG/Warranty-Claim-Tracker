@@ -288,8 +288,10 @@ export default function Dashboard() {
 
       const claim = editingClaim;
       const changes = [];
+      const AUDIT_EXCLUDED_FIELDS = new Set(['pre_claim_status']);
 
       Object.keys(data).forEach(key => {
+        if (AUDIT_EXCLUDED_FIELDS.has(key)) return;
         if (data[key] != claim[key] && (!(!claim[key] && !data[key]))) {
           changes.push({ field: key, oldValue: claim[key], newValue: data[key] });
         }

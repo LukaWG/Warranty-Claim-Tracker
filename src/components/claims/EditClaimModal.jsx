@@ -65,6 +65,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
     manufacturer_deadline: claim?.manufacturer_deadline ? new Date(claim.manufacturer_deadline) : null,
     status: claim?.status || 'in_progress',
     claimed: claim?.claimed || false,
+    pre_claim_status: claim?.pre_claim_status || null,
     approval_status: claim?.approval_status || null,
     claimed_date: claim?.claimed_date || null,
     claimed_by: claim?.claimed_by || '',
@@ -96,8 +97,13 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
 
     // Status is independent of credit approval — preserve it
     let newStatus;
-    if (formData.claimed || claim?.claimed) {
+    let newPreClaimStatus = claim?.pre_claim_status ?? null;
+    if (formData.claimed) {
       newStatus = 'completed';
+    } else if (claim?.claimed) {
+      // Was claimed, now undone — restore the status it had before claiming
+      newStatus = claim?.pre_claim_status || 'in_progress';
+      newPreClaimStatus = null;
     } else {
       newStatus = rest.status;
     }
@@ -105,6 +111,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
     onSave({
       ...rest,
       status: newStatus,
+      pre_claim_status: newPreClaimStatus,
       claim_number: claimNumberParts.join(' & '),
       expected_hours: parseFloat(formData.expected_hours),
       actual_hours: formData.actual_hours ? parseFloat(formData.actual_hours) : null,
@@ -521,14 +528,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
                     const needsApproval = creditVal >= 100;
                     const creditChangedAfterApproval = updatedData.approval_status === 'approved' && creditVal !== originalCreditVal && creditVal >= 100;
                     const effectiveApprovalStatus = creditChangedAfterApproval ? 'pending_approval' : (needsApproval ? (updatedData.approval_status || 'pending_approval') : null);
-                    
-                    let newStatus;
-                    if (formData.claimed || claim?.claimed) {
-                      newStatus = 'completed';
-                    } else {
-                      newStatus = rest.status;
-                    }
-                    
+
                     onSave({
                       ...rest,
                       status: 'completed',
@@ -554,6 +554,7 @@ export default function EditClaimModal({ claim, open, onClose, onSave, isSaving 
                       })(),
                       manufacturer_deadline: updatedData.manufacturer_deadline ? format(updatedData.manufacturer_deadline, 'yyyy-MM-dd') : null,
                       claimed: true,
+                      pre_claim_status: claim?.status ?? rest.status,
                       claimed_date: updatedData.claimed_date || new Date().toISOString(),
                       claimed_by: currentUser ? currentUser.email : '',
                       alert: updatedData.alert || '',
