@@ -62,6 +62,7 @@ export const auth = betterAuth({
       // console.log(`========================================\n`);
     }
   },
+  secret: import.meta.env.BETTER_AUTH_SECRET,
   plugins: [
     admin(),
   ],
