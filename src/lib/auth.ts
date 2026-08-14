@@ -54,12 +54,12 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
     sendResetPassword: async ({ user, url, token }, request) => { 
-      console.log(`\n========================================`);
-      console.log(`PASSWORD RESET REQUEST`);
-      console.log(`User: ${user.email}`);
-      console.log(`Reset URL: ${url}`);
-      console.log(`Token: ${token}`);
-      console.log(`========================================\n`);
+      // console.log(`\n========================================`);
+      // console.log(`PASSWORD RESET REQUEST`);
+      // console.log(`User: ${user.email}`);
+      // console.log(`Reset URL: ${url}`);
+      // console.log(`Token: ${token}`);
+      // console.log(`========================================\n`);
     }
   },
   plugins: [
@@ -90,20 +90,6 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          // Applies to every path that can create a user — email/password
-          // signup (already domain-checked above, so this is a no-op there)
-          // and, importantly, first-time Microsoft SSO sign-in. The social
-          // login below has no domain restriction of its own beyond
-          // MICROSOFT_TENANT_ID, so this is the backstop that stops any
-          // successfully-authenticated non-hendy-group.com Microsoft account
-          // (a misconfigured tenant, a guest/B2B account, etc.) from getting
-          // an account auto-provisioned.
-          if (!user.email?.endsWith("@hendy-group.com")) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Only @hendy-group.com accounts may sign in.",
-            });
-          }
-
           const isFirstUser = (await prisma.user.count()) === 0
           if (!isFirstUser) return
 
@@ -126,8 +112,7 @@ export const auth = betterAuth({
       // Outlook/Hotmail or any other organization's tenant — complete SSO.
       // Set this to Hendy Group's actual Entra ID tenant ID/GUID (Azure
       // Portal → Microsoft Entra ID → Overview → Tenant ID) so only accounts
-      // in that tenant can even reach the sign-in step. The domain check
-      // above is a second layer, not a substitute for this.
+      // in that tenant can even reach the sign-in step.
       tenantId: process.env.MICROSOFT_TENANT_ID || "common",
       prompt: "select_account"
     }
