@@ -33,12 +33,12 @@ export const auth = betterAuth({
         "http://lukas-mbp.local:*",
       ]
     : [
-        process.env.BETTER_AUTH_URL ?? "https://localhost",
+        process.env.BETTER_AUTH_URL ?? "http://localhost",
         // Other devices on the LAN reach the app via this IP, not localhost.
-        "https://192.168.1.144",
+        "http://192.168.1.144",
         // BETTER_AUTH_URL is set in production, so the fallback above never
         // applies — list localhost explicitly for port-forwarded/local access.
-        "https://localhost",
+        "http://localhost",
       ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -79,7 +79,7 @@ export const auth = betterAuth({
       // Once that user exists, everyone else must be invited by an admin;
       // otherwise anyone could register as an unverified @hendy-group.com
       // address before its real owner ever signs up.
-      
+
       // const hasExistingUser = (await prisma.user.count()) > 0;
       // if (hasExistingUser) {
       //   throw new APIError("BAD_REQUEST", {
