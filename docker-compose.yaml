@@ -11,11 +11,10 @@ services:
   auth:
     image: postgres:16
     container_name: auth
-    # Defaults to "Password" (matching the app image's baked-in
-    # AUTH_DATABASE_URL — see Dockerfile) so this works with no .env entry.
-    # If you override BETTER_AUTHPW in .env, the app image must be
-    # rebuilt with a matching --build-arg AUTH_DATABASE_URL or it won't be
-    # able to connect — the two are not linked automatically.
+    # Defaults to "Password" so this works with no .env entry. The app
+    # service below derives its own AUTH_DATABASE_URL from this same
+    # BETTER_AUTHPW value, so overriding it here doesn't require rebuilding
+    # the app image.
     environment:
       POSTGRES_USER: adminuser
       POSTGRES_PASSWORD: ${BETTER_AUTHPW:-Password}
@@ -49,10 +48,14 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      # AUTH_DATABASE_URL is intentionally NOT set here — the app image
-      # already has it baked in at build time (see Dockerfile), matching the
-      # auth service's credentials above. Setting it here would just override
-      # that with the same value; omitted so this works with no .env entry.
+      # Overrides whatever AUTH_DATABASE_URL is baked into the image at build
+      # time. Without this, a BETTER_AUTHPW override in .env only reaches the
+      # `auth` Postgres service above — not the app, unless the image was
+      # separately rebuilt with a matching --build-arg — so the two silently
+      # drift out of sync (e.g. a CI-built image using the Dockerfile's
+      # default password) and the app fails to authenticate. Setting it here
+      # keeps both services derived from the same BETTER_AUTHPW value always.
+      AUTH_DATABASE_URL: postgresql://adminuser:${BETTER_AUTHPW:-Password}@auth:5432/warranty_claim_tracker
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
       DATA_API_URL: ${DATA_API_URL:-http://localhost:5001}
