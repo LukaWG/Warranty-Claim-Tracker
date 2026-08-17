@@ -24,7 +24,7 @@ COPY . .
 # overridden at runtime. Pass real values with `docker build --build-arg`.
 ARG NEXT_PUBLIC_BASE_PATH=/
 ARG NEXT_PUBLIC_API_TIMEOUT=30000
-ARG NEXT_PUBLIC_APP_URL=http://localhost:3000
+ARG NEXT_PUBLIC_APP_URL=http://localhost
 ARG NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=false
 ARG NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=false
 ENV NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH \
@@ -33,10 +33,16 @@ ENV NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH \
     NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=$NEXT_PUBLIC_ENABLE_MICROSOFT_SSO \
     NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=$NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO
 
-# Build-time placeholders only — the real values are injected at runtime via
-# container environment variables.
-ARG AUTH_DATABASE_URL=postgresql://build:build@localhost/build
+# AUTH_DATABASE_URL is baked into the final image below (see the runner
+# stage) so the container works with no runtime env var at all. This default
+# matches docker-compose.yaml's stock `auth` service out of the box — pass
+# --build-arg AUTH_DATABASE_URL=... to point at a different Postgres.
+ARG AUTH_DATABASE_URL=postgresql://adminuser:Password@auth:5432/warranty_claim_tracker
 ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
+
+# Build-time placeholder only — the real value is injected at runtime via
+# container environment variables (this one stays a per-deployment secret,
+# unlike AUTH_DATABASE_URL above).
 ARG BETTER_AUTH_SECRET=build-time-placeholder
 ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
 ARG DATA_API_URL=http://localhost:5001
@@ -52,6 +58,18 @@ RUN npm run build
 # ---------------------------------------------------------------------------
 FROM base AS runner
 ENV NODE_ENV=production
+
+# Prisma's query engine binary is dynamically linked against OpenSSL, and
+# this stage runs `npx prisma db push`/generate at container runtime (see
+# COPY comment below), not just at build time — so it needs openssl too.
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+# Re-declared here because Docker doesn't carry ARG/ENV across the FROM
+# boundary from the builder stage — this is what actually reaches the
+# running container. Same default/override rules as the builder stage's
+# ARG above; the two are set to the same value by a single --build-arg.
+ARG AUTH_DATABASE_URL=postgresql://adminuser:Password@auth:5432/warranty_claim_tracker
+ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
 
 RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nodejs nextjs
 

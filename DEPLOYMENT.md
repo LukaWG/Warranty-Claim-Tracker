@@ -7,9 +7,9 @@ for a single local server).
 ## Architecture
 
 ```text
-Browser ──> Ingress / host port ──> Next.js app (port 3000, this repo)
-                                      ├─> PostgreSQL (Better Auth users/sessions, Prisma)
-                                      └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
+Browser ──https──> nginx proxy (self-signed cert, ports 80/443) ──http──> Next.js app (port 3000, this repo)
+                                                                             ├─> PostgreSQL (Better Auth users/sessions, Prisma)
+                                                                             └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
 ```
 
 Two external dependencies:
@@ -59,6 +59,7 @@ decision before going live, though:
 | `DATA_API_URL` | Data API URL, as reachable from inside the cluster/host (not from user browsers) |
 | `DATA_API_KEY` | Must match the Data API's `INTERNAL_API_KEY` |
 | `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` / `MICROSOFT_TENANT_ID` | Only if SSO is enabled |
+| `SSL_CERT_HOSTS` | Docker Compose only — comma-separated hostnames/IPs the `proxy` service's self-signed cert covers |
 
 ## Build the image
 
@@ -77,17 +78,25 @@ Docker Hub credentials as **secrets** in GitHub.
 
 ## Option A — Docker Compose (single host)
 
-`docker-compose.yaml` runs Postgres + the app. Secrets are read from `.env`
-(`BETTER_AUTH_SECRET` is required, `POSTGRES_PASSWORD` defaults to `Password`).
+`docker-compose.yaml` runs Postgres + the app + an nginx `proxy` that
+terminates HTTPS in front of it. Secrets are read from `.env`
+(`BETTER_AUTH_SECRET` is required, `BETTER_AUTHPW` defaults to `Password`).
+
+The app is fronted by the `proxy` service, which serves a **self-signed
+certificate** on port 443 and redirects plain HTTP (port 80) to it. Browsers
+will show a certificate-trust warning on first visit — this is expected;
+accept it to continue. The cert's hostnames/IPs come from `SSL_CERT_HOSTS` in
+`.env` (defaults to `localhost,127.0.0.1,192.168.1.144,lukas-mbp.local`); add
+an entry there for any other hostname/IP you'll browse to, then remove the
+`proxy_certs` volume to force regeneration (the cert is only generated once,
+on first boot).
 
 ```bash
-# 1. Start everything (builds the image locally)
+# 1. Start everything (builds the app image and the proxy image locally)
 docker compose up -d --build
 
-# 2. Create the auth tables (first run, and after any prisma/schema.prisma change)
-docker compose --profile setup run --rm db-push
-
-# App: http://<host>:3000   Postgres: <host>:51214
+# App: https://<host>   (self-signed cert warning is expected)
+# Postgres: <host>:51214
 ```
 
 **To update:** pull the latest code and `docker compose up -d --build`.

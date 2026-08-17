@@ -11,9 +11,14 @@ services:
   auth:
     image: postgres:16
     container_name: auth
+    # Defaults to "Password" (matching the app image's baked-in
+    # AUTH_DATABASE_URL — see Dockerfile) so this works with no .env entry.
+    # If you override BETTER_AUTHPW in .env, the app image must be
+    # rebuilt with a matching --build-arg AUTH_DATABASE_URL or it won't be
+    # able to connect — the two are not linked automatically.
     environment:
       POSTGRES_USER: adminuser
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Password}
+      POSTGRES_PASSWORD: ${BETTER_AUTHPW:-Password}
       POSTGRES_DB: warranty_claim_tracker
     ports:
       - "51214:5432"
@@ -37,16 +42,17 @@ services:
     # container instead of a separate one-shot service — nothing extra to
     # see in `docker ps` / Docker Desktop, and nothing left over to clean up.
     command: ["sh", "-c", "npx prisma db push && node server.js"]
-    ports:
-      - "80:3000"
     depends_on:
       auth:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      AUTH_DATABASE_URL: postgresql://adminuser:${POSTGRES_PASSWORD:-Password}@auth:5432/warranty_claim_tracker
+      # AUTH_DATABASE_URL is intentionally NOT set here — the app image
+      # already has it baked in at build time (see Dockerfile), matching the
+      # auth service's credentials above. Setting it here would just override
+      # that with the same value; omitted so this works with no .env entry.
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://localhost}
       DATA_API_URL: ${DATA_API_URL:-http://localhost:5001}
       DATA_API_KEY: ${DATA_API_KEY:?set DATA_API_KEY in .env}
       MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
@@ -54,5 +60,26 @@ services:
       MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
     restart: unless-stopped
 
+  # Terminates HTTPS with a self-signed cert and forwards to the app over the
+  # internal network — the app itself is never exposed to the host directly.
+  # The cert is generated on first boot into the proxy_certs volume (not
+  # baked into the image, since this image gets built locally, never
+  # published) so it persists across restarts and its hostnames can be
+  # changed via SSL_CERT_HOSTS without a rebuild.
+  proxy:
+    build: ./nginx
+    container_name: warranty-claim-tracker-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - proxy_certs:/etc/nginx/certs
+    environment:
+      SSL_CERT_HOSTS: ${SSL_CERT_HOSTS:-localhost,127.0.0.1,192.168.1.144,lukas-mbp.local}
+    depends_on:
+      - app
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  proxy_certs:
