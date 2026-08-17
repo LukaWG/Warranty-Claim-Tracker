@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
+import { useQueryClient } from "@tanstack/react-query"
 import { signIn, useSession } from "@/lib/auth-client"
 import Link from "next/link"
 
 export default function LoginPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { data: session, isPending } = useSession()
 
   let callbackUrl = (router.query.callbackUrl as string) ?? "/"
@@ -56,6 +58,12 @@ export default function LoginPage() {
       setError("Invalid email or password.")
       setLoading(false)
     } else {
+      // Layout.jsx's `currentUser` query stays mounted across this client-side
+      // navigation and won't refetch until it goes stale on its own — without
+      // this it keeps serving the pre-login "no session" result, so the
+      // destination page briefly thinks we're unauthenticated and bounces
+      // back to /login.
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       router.push(callbackUrl)
     }
   }

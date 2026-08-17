@@ -34,7 +34,7 @@ ENV NEXT_PUBLIC_BASE_PATH=$NEXT_PUBLIC_BASE_PATH \
     NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=$NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO
 
 # Build-time placeholders only — the real values are injected at runtime via
-# container environment variables (compose `environment:` / k8s Secret).
+# container environment variables.
 ARG AUTH_DATABASE_URL=postgresql://build:build@localhost/build
 ENV AUTH_DATABASE_URL=$AUTH_DATABASE_URL
 ARG BETTER_AUTH_SECRET=build-time-placeholder

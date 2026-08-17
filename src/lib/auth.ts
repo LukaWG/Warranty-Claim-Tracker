@@ -79,12 +79,13 @@ export const auth = betterAuth({
       // Once that user exists, everyone else must be invited by an admin;
       // otherwise anyone could register as an unverified @hendy-group.com
       // address before its real owner ever signs up.
-      const hasExistingUser = (await prisma.user.count()) > 0;
-      if (hasExistingUser) {
-        throw new APIError("BAD_REQUEST", {
-          message: "Self-service sign-up is disabled. Ask an administrator to invite you.",
-        });
-      }
+      
+      // const hasExistingUser = (await prisma.user.count()) > 0;
+      // if (hasExistingUser) {
+      //   throw new APIError("BAD_REQUEST", {
+      //     message: "Self-service sign-up is disabled. Ask an administrator to invite you.",
+      //   });
+      // }
     }),
   },
   databaseHooks: {

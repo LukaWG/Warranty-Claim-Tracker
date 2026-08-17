@@ -1,16 +1,16 @@
 # Single-host Docker deployment: Postgres + the Next.js app.
 #
-# First run:   docker compose up -d --build
-# Create the auth tables (once, and after any schema change):
-#              docker compose --profile setup run --rm db-push
-# Update:      docker compose up -d --build   (or pull a new image, see below)
+# First run:   docker compose up -d
+#              (the app container runs `prisma db push` itself on every
+#              start, before launching the server — see app's command below)
+# Update:      docker compose pull && docker compose up -d
 #
 # Secrets/urls are interpolated from the .env file in this directory.
 
 services:
-  db:
+  auth:
     image: postgres:16
-    container_name: warranty-claim-tracker-db
+    container_name: auth
     environment:
       POSTGRES_USER: adminuser
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Password}
@@ -27,25 +27,24 @@ services:
     restart: unless-stopped
 
   app:
-    build:
-      context: .
-      args:
-        # Baked into the client bundle at build time — rebuild to change.
-        NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH:-/}
-        NEXT_PUBLIC_API_TIMEOUT: ${NEXT_PUBLIC_API_TIMEOUT:-30000}
-        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
-        NEXT_PUBLIC_ENABLE_MICROSOFT_SSO: ${NEXT_PUBLIC_ENABLE_MICROSOFT_SSO:-false}
-        NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO: ${NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO:-false}
+    # Pulled from Docker Hub — NEXT_PUBLIC_* values were baked in at build
+    # time when this image was built/pushed (see Dockerfile). To change them,
+    # rebuild and push a new image rather than editing this file.
     image: lukawg/warranty-claim-tracker:latest
     container_name: warranty-claim-tracker-app
+    # Reconciles the Better Auth tables against prisma/schema.prisma on every
+    # start, then hands off to the standalone server. Runs in the app's own
+    # container instead of a separate one-shot service — nothing extra to
+    # see in `docker ps` / Docker Desktop, and nothing left over to clean up.
+    command: ["sh", "-c", "npx prisma db push && node server.js"]
     ports:
       - "80:3000"
     depends_on:
-      db:
+      auth:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      AUTH_DATABASE_URL: postgresql://adminuser:${POSTGRES_PASSWORD:-Password}@db:5432/warranty_claim_tracker
+      AUTH_DATABASE_URL: postgresql://adminuser:${POSTGRES_PASSWORD:-Password}@auth:5432/warranty_claim_tracker
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
       DATA_API_URL: ${DATA_API_URL:-http://localhost:5001}
@@ -54,18 +53,6 @@ services:
       MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
       MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
     restart: unless-stopped
-
-  # One-shot helper that creates/updates the Better Auth tables in Postgres.
-  # Run with: docker compose --profile setup run --rm db-push
-  db-push:
-    profiles: ["setup"]
-    image: lukawg/warranty-claim-tracker:latest
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      AUTH_DATABASE_URL: postgresql://adminuser:${POSTGRES_PASSWORD:-Password}@db:5432/warranty_claim_tracker
-    command: ["npx", "prisma", "db", "push"]
 
 volumes:
   postgres_data:

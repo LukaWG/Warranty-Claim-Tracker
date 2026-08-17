@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { signUp, useSession } from "@/lib/auth-client"
+import { useQueryClient } from "@tanstack/react-query"
+import { signIn, signUp, useSession } from "@/lib/auth-client"
 import Link from "next/link"
 
 export default function SignUpPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { data: session, isPending } = useSession()
 
   const [firstName, setFirstName] = useState("")
@@ -46,15 +48,30 @@ export default function SignUpPage() {
       setError(error.message ?? "Something went wrong.")
       setLoading(false)
     } else {
+      // See login.tsx — Layout.jsx's `currentUser` query stays mounted across
+      // this client-side navigation and won't refetch on its own, so without
+      // this it keeps reporting "no session" and Layout bounces us straight
+      // back here, forever.
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       router.push("/")
     }
   }
   async function handleMicrosoftLogin() {
     setLoading(true)
-    await signIn.social({
+    setError("")
+
+    const { error } = await signIn.social({
       provider: "microsoft",
       callbackURL: "/",
     })
+
+    // On success the redirect plugin navigates the browser away before this
+    // matters. On failure, nothing navigates us away — reset state so the
+    // form isn't stuck disabled until a manual refresh.
+    if (error) {
+      setError("Microsoft sign-in failed. Please try again.")
+      setLoading(false)
+    }
   }
 
   return (
