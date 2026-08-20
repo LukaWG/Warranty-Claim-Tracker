@@ -7,9 +7,11 @@ for a single local server).
 ## Architecture
 
 ```text
-Browser ──> Ingress / host port ──> Next.js app (port 3000, this repo)
-                                      ├─> PostgreSQL (Better Auth users/sessions, Prisma)
-                                      └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
+Browser ──https──> Next.js app container (port 3000, this repo)
+                      ├─ tls-proxy.js terminates HTTPS (self-signed cert) on 443, forwards to the
+                      │  plain-HTTP Next.js server on 3000 — no separate proxy container
+                      ├─> PostgreSQL (Better Auth users/sessions, Prisma)
+                      └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
 ```
 
 Two external dependencies:
@@ -59,6 +61,7 @@ decision before going live, though:
 | `DATA_API_URL` | Data API URL, as reachable from inside the cluster/host (not from user browsers) |
 | `DATA_API_KEY` | Must match the Data API's `INTERNAL_API_KEY` |
 | `MICROSOFT_CLIENT_ID` / `MICROSOFT_CLIENT_SECRET` / `MICROSOFT_TENANT_ID` | Only if SSO is enabled |
+| `SSL_CERT_HOSTS` | Docker Compose only — comma-separated hostnames/IPs the in-container self-signed cert covers |
 
 ## Build the image
 
@@ -83,11 +86,22 @@ from Docker Hub — nothing is built on this machine. Copy
 (`BETTER_AUTH_SECRET` and `DATA_API_KEY` are required; everything else has a
 default).
 
+The app container serves HTTPS on port 443, terminated by `tls-proxy.js`
+running alongside the Next.js server inside the same container (see
+`Dockerfile`'s `CMD`) — there's no separate proxy container to run or
+manage. It uses a **self-signed certificate**, generated once on first boot
+into the `ssl_certs` volume. Browsers will show a certificate-trust warning
+on first visit — this is expected; accept it to continue. The cert's
+hostnames/IPs come from `SSL_CERT_HOSTS` in `.env` (defaults to
+`localhost,127.0.0.1,192.168.1.144,lukas-mbp.local`); add an entry there for
+any other hostname/IP you'll browse to, then remove the `ssl_certs` volume
+to force regeneration.
+
 ```bash
 docker compose pull
 docker compose up -d
 
-# App: http://<host>
+# App: https://<host>   (self-signed cert warning is expected)
 ```
 
 The app container runs `prisma db push` itself before starting, so there's

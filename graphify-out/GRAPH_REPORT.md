@@ -1,26 +1,26 @@
-# Graph Report - Warranty-Claim-Tracker  (2026-08-14)
+# Graph Report - Warranty-Claim-Tracker  (2026-08-20)
 
 ## Corpus Check
-- 109 files · ~57,000 words
+- 111 files · ~57,554 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 633 nodes · 1458 edges · 79 communities (38 shown, 41 thin omitted)
+- 640 nodes · 1463 edges · 82 communities (39 shown, 43 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7ad574d8`
+- Built from commit: `9b69ca9d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Layout.jsx
 - cn
-- Configuration.jsx
+- ClaimsTable.jsx
+- dataAccessPolicy.ts
 - compilerOptions
+- pages.config.js
 - Dashboard.jsx
-- databaseClient.js
 - compilerOptions
 - 1. Security
 - Deployment Guide
@@ -31,7 +31,7 @@
 - package.json
 - scripts
 - DatabaseClient
-- use-toast.jsx
+- toast
 - Warranty Claims App — Test Plan
 - Section J — Cross-Cutting Edge Cases
 - dependencies
@@ -45,7 +45,7 @@
 - Section I — Reporting & Export
 - proxy.ts
 - Warranty Claim Tracker
-- better-auth
+- auth-client.ts
 - CLAUDE.md
 - clsx
 - class-variance-authority
@@ -85,6 +85,9 @@
 - vitest
 - eslint-plugin-react-refresh
 - { signIn, signUp, signOut, useSession }
+- tls-proxy.js
+- date-fns
+- gen-self-signed-cert.sh
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 90 edges
@@ -99,45 +102,45 @@
 10. `Input` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `DialogOverlay` --calls--> `cn()`  [EXTRACTED]
-  src/components/ui/dialog.jsx → src/lib/utils.js
-- `DropdownMenuSubTrigger` --calls--> `cn()`  [EXTRACTED]
-  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
-- `DropdownMenuSubContent` --calls--> `cn()`  [EXTRACTED]
-  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
-- `DropdownMenuCheckboxItem` --calls--> `cn()`  [EXTRACTED]
-  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
-- `DropdownMenuRadioItem` --calls--> `cn()`  [EXTRACTED]
-  src/components/ui/dropdown-menu.jsx → src/lib/utils.js
+- `Layout()` --calls--> `createPageUrl()`  [EXTRACTED]
+  src/Layout.jsx → src/utils/index.ts
+- `ClaimFormCard()` --calls--> `toast()`  [EXTRACTED]
+  src/components/claims/ClaimFormCard.jsx → src/components/ui/use-toast.jsx
+- `ClaimFormCard()` --calls--> `cn()`  [EXTRACTED]
+  src/components/claims/ClaimFormCard.jsx → src/lib/utils.js
+- `EditClaimModal()` --calls--> `cn()`  [EXTRACTED]
+  src/components/claims/EditClaimModal.jsx → src/lib/utils.js
+- `AlertsTab()` --calls--> `buttonVariants`  [EXTRACTED]
+  src/components/configuration/AlertsTab.jsx → src/components/ui/button.jsx
 
 ## Import Cycles
 - None detected.
 
-## Communities (79 total, 41 thin omitted)
+## Communities (82 total, 43 thin omitted)
 
-### Community 0 - "Layout.jsx"
-Cohesion: 0.07
-Nodes (26): HendyLogo(), SearchModal(), UnreadBadge(), DialogDescription, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel (+18 more)
+### Community 0 - "cn"
+Cohesion: 0.08
+Nodes (35): MultiSelect(), HendyLogo(), UnreadBadge(), AlertDialogOverlay, CardFooter, DialogDescription, DialogOverlay, DropdownMenuCheckboxItem (+27 more)
 
-### Community 1 - "cn"
-Cohesion: 0.15
-Nodes (45): EditBrandModal(), APPROVAL_STATUS_LABELS, OFFSCREEN_SKIP_STYLE, statusConfig, COLUMN_LABELS, ColumnVisibilityPicker(), DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS (+37 more)
+### Community 1 - "ClaimsTable.jsx"
+Cohesion: 0.17
+Nodes (37): APPROVAL_STATUS_LABELS, OFFSCREEN_SKIP_STYLE, statusConfig, COLUMN_LABELS, ColumnVisibilityPicker(), DEFAULT_COLUMNS, SITE_DEFAULT_COLUMNS, STATUS_OPTIONS (+29 more)
 
-### Community 2 - "Configuration.jsx"
-Cohesion: 0.07
-Nodes (24): AlertsTab(), ResolutionsTab(), TabsContent, TabsList, TabsTrigger, auth, AccessCheckInput, AccessVerdict (+16 more)
+### Community 2 - "dataAccessPolicy.ts"
+Cohesion: 0.12
+Nodes (18): auth, AccessCheckInput, AccessVerdict, checkAccess(), COLLECTION_RULES, CollectionRules, CustomRole, HttpMethod (+10 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.07
 Nodes (26): dom.iterable, **/*.mts, next-env.d.ts, **/*.ts, **/*.tsx, compilerOptions, allowJs, baseUrl (+18 more)
 
-### Community 4 - "Dashboard.jsx"
-Cohesion: 0.16
-Nodes (26): RFC-4180, ClaimFormCard(), ClaimNotesModal(), CreditOptionsModal(), EditClaimModal(), BrandsTab(), SitesTab(), availableBrandIdsFor() (+18 more)
-
-### Community 5 - "databaseClient.js"
+### Community 4 - "pages.config.js"
 Cohesion: 0.11
-Nodes (28): currentUser, DatabaseClients, ADMIN_ROLES, ApprovalChat(), AuditHistoryModal(), ADMIN_ROLES, ClaimTimeline(), getEventConfig() (+20 more)
+Nodes (13): SearchModal(), Toaster(), PageNotFound(), queryClientInstance, ApprovalMessages(), ClaimForm(), PAGES, pagesConfig (+5 more)
+
+### Community 5 - "Dashboard.jsx"
+Cohesion: 0.09
+Nodes (43): RFC-4180, currentUser, DatabaseClients, ADMIN_ROLES, ApprovalChat(), AuditHistoryModal(), ClaimFormCard(), ADMIN_ROLES (+35 more)
 
 ### Community 6 - "compilerOptions"
 Cohesion: 0.08
@@ -175,9 +178,9 @@ Nodes (9): engines, node, name, overrides, @types/react, @types/react-dom, priva
 Cohesion: 0.20
 Nodes (10): scripts, build, build:pages, dev, lint, lint:fix, start, test (+2 more)
 
-### Community 16 - "use-toast.jsx"
+### Community 16 - "toast"
 Cohesion: 0.12
-Nodes (19): Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, toastVariants, ToastViewport (+11 more)
+Nodes (21): ClaimNotesModal(), AlertsTab(), BrandsTab(), ResolutionsTab(), SitesTab(), availableBrandIdsFor(), roleFieldsFor(), UsersTab() (+13 more)
 
 ### Community 17 - "Warranty Claims App — Test Plan"
 Cohesion: 0.20
@@ -189,7 +192,7 @@ Nodes (10): J1. API unreachable — reads render as empty, not an error ⚠ Flag
 
 ### Community 19 - "dependencies"
 Cohesion: 0.22
-Nodes (9): date-fns, dependencies, date-fns, react-day-picker, react-dom, tailwindcss-animate, react-day-picker, react-dom (+1 more)
+Nodes (9): better-auth, dependencies, better-auth, react-day-picker, react-dom, tailwindcss-animate, react-day-picker, react-dom (+1 more)
 
 ### Community 20 - "authClient.js"
 Cohesion: 0.28
@@ -231,25 +234,29 @@ Nodes (3): Getting help, Warranty Claim Tracker, What it does
 Cohesion: 0.40
 Nodes (5): getEventConfig(), MiniTimeline(), RELEVANT_FIELDS, RELEVANT_TYPES, statusLabels
 
+### Community 79 - "tls-proxy.js"
+Cohesion: 0.40
+Nodes (4): backendPort, listenPort, options, server
+
 ## Knowledge Gaps
-- **269 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+264 more)
+- **274 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+269 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **41 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `cn()` connect `cn` to `Layout.jsx`, `Configuration.jsx`, `Dashboard.jsx`, `databaseClient.js`, `use-toast.jsx`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `package.json`, `better-auth`, `clsx`, `class-variance-authority`, `framer-motion`, `lucide-react`, `next`, `pg`, `prisma`, `@prisma/adapter-pg`, `@prisma/client`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-label`, `@radix-ui/react-popover`, `@radix-ui/react-select`, `@radix-ui/react-slot`, `@radix-ui/react-tabs`, `@radix-ui/react-toast`, `@radix-ui/react-tooltip`, `react`, `tailwind-merge`, `@tanstack/react-query`, `zod`?**
+- **Why does `cn()` connect `cn` to `toast`, `ClaimsTable.jsx`, `Dashboard.jsx`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `package.json`, `clsx`, `class-variance-authority`, `framer-motion`, `lucide-react`, `next`, `pg`, `prisma`, `@prisma/adapter-pg`, `@prisma/client`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-checkbox`, `@radix-ui/react-dialog`, `@radix-ui/react-dropdown-menu`, `@radix-ui/react-label`, `@radix-ui/react-popover`, `@radix-ui/react-select`, `@radix-ui/react-slot`, `@radix-ui/react-tabs`, `@radix-ui/react-toast`, `@radix-ui/react-tooltip`, `react`, `tailwind-merge`, `@tanstack/react-query`, `zod`, `date-fns`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `Warranty Claims App — Test Plan` connect `Warranty Claims App — Test Plan` to `Section A — Auth & Session`, `Section D — Claim Creation (ClaimForm)`, `Section J — Cross-Cutting Edge Cases`, `Section B — Roles & Permissions`, `Section C — Routing & Navigation`, `Section E — Claim Lifecycle / Dashboard`, `Section G — Configuration (Sites / Brands / Alerts / Users)`, `Section H — Messages`, `Section I — Reporting & Export`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **What connects `$schema`, `style`, `rsc` to the rest of the system?**
-  _269 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Layout.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06767676767676768 - nodes in this community are weakly interconnected._
-- **Should `Configuration.jsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07317073170731707 - nodes in this community are weakly interconnected._
+  _274 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `cn` be split into smaller, more focused modules?**
+  _Cohesion score 0.08194905869324474 - nodes in this community are weakly interconnected._
+- **Should `dataAccessPolicy.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.11692307692307692 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._

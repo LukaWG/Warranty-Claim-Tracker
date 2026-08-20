@@ -1,10 +1,10 @@
 {
-  "0": "Layout.jsx",
-  "1": "cn",
-  "2": "Configuration.jsx",
+  "0": "cn",
+  "1": "ClaimsTable.jsx",
+  "2": "dataAccessPolicy.ts",
   "3": "compilerOptions",
-  "4": "Dashboard.jsx",
-  "5": "databaseClient.js",
+  "4": "pages.config.js",
+  "5": "Dashboard.jsx",
   "6": "compilerOptions",
   "7": "1. Security",
   "8": "Deployment Guide",
@@ -15,7 +15,7 @@
   "13": "package.json",
   "14": "scripts",
   "15": "DatabaseClient",
-  "16": "use-toast.jsx",
+  "16": "toast",
   "17": "Warranty Claims App — Test Plan",
   "18": "Section J — Cross-Cutting Edge Cases",
   "19": "dependencies",
@@ -29,7 +29,7 @@
   "27": "Section I — Reporting & Export",
   "28": "proxy.ts",
   "29": "Warranty Claim Tracker",
-  "30": "better-auth",
+  "30": "auth-client.ts",
   "31": "CLAUDE.md",
   "32": "clsx",
   "33": "class-variance-authority",
@@ -77,5 +77,8 @@
   "75": "{ signIn, signUp, signOut, useSession }",
   "76": "tailwind.config.js",
   "77": "tailwindcss",
-  "78": "vitest.config.ts"
+  "78": "vitest.config.ts",
+  "79": "tls-proxy.js",
+  "80": "date-fns",
+  "81": "gen-self-signed-cert.sh"
 }

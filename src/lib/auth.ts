@@ -33,12 +33,12 @@ export const auth = betterAuth({
         "http://lukas-mbp.local:*",
       ]
     : [
-        process.env.BETTER_AUTH_URL ?? "http://localhost",
+        process.env.BETTER_AUTH_URL ?? "https://localhost",
         // Other devices on the LAN reach the app via this IP, not localhost.
-        "http://192.168.1.144",
+        "https://192.168.1.144",
         // BETTER_AUTH_URL is set in production, so the fallback above never
         // applies — list localhost explicitly for port-forwarded/local access.
-        "http://localhost",
+        "https://localhost",
       ],
   database: prismaAdapter(prisma, {
     provider: "postgresql",

@@ -320,13 +320,13 @@
     "semantic_hash": ""
   },
   "src/lib/auth-client.ts": {
-    "mtime": 1779806503.0523722,
+    "mtime": 1786980533.1638093,
     "ast_hash": "354fe86428ec1acc12859d3bbb3018aa",
     "semantic_hash": ""
   },
   "src/lib/auth.ts": {
-    "mtime": 1786704951.6726077,
-    "ast_hash": "69d7372252000fc5d202a58a855483b7",
+    "mtime": 1787223094.1240156,
+    "ast_hash": "6ac03e7e21f27e4b06be10c03c2dcce8",
     "semantic_hash": ""
   },
   "src/lib/dataAccessPolicy.test.ts": {
@@ -430,7 +430,7 @@
     "semantic_hash": ""
   },
   "src/pages/api/data/[...path].ts": {
-    "mtime": 1786607837.4961956,
+    "mtime": 1786980534.2540083,
     "ast_hash": "ea6e71cfbce53fc4f498592c2c500826",
     "semantic_hash": ""
   },
@@ -445,8 +445,8 @@
     "semantic_hash": ""
   },
   "src/pages/login.tsx": {
-    "mtime": 1786545601.5262144,
-    "ast_hash": "7d4350f0f03d538bd23f5057380b641e",
+    "mtime": 1786980535.9075212,
+    "ast_hash": "fb725664703914951fbac8688e460116",
     "semantic_hash": ""
   },
   "src/pages/reset-password.tsx": {
@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "src/pages/signup.tsx": {
-    "mtime": 1779805533.2254035,
-    "ast_hash": "a9fd8c22331c592ba6a4c639c2592224",
+    "mtime": 1786980536.8578367,
+    "ast_hash": "83ba4e27238fdb23c93ab28d8b3e4940",
     "semantic_hash": ""
   },
   "src/utils/index.ts": {
@@ -495,7 +495,7 @@
     "semantic_hash": ""
   },
   ".github/workflows/deploy.yml": {
-    "mtime": 1786520990.8627548,
+    "mtime": 1786980527.8719676,
     "ast_hash": "c80e5044190b339967e9c1e2cd3aec82",
     "semantic_hash": ""
   },
@@ -510,8 +510,8 @@
     "semantic_hash": ""
   },
   "DEPLOYMENT.md": {
-    "mtime": 1786704992.2823968,
-    "ast_hash": "f85aff8603f4fa70c6bebca5f02c1298",
+    "mtime": 1787223119.3875473,
+    "ast_hash": "2fa0199123ee8234a905ba2350477160",
     "semantic_hash": ""
   },
   "NOTES.md": {
@@ -530,12 +530,12 @@
     "semantic_hash": ""
   },
   "docker-compose.yaml": {
-    "mtime": 1786448049.4029121,
-    "ast_hash": "158c18ac9bfbb8fde10a80b6afe621ea",
+    "mtime": 1787223088.611459,
+    "ast_hash": "ba7250c9bdeaaecb5d9db73c673207ef",
     "semantic_hash": ""
   },
   "k8s/configmap.yaml": {
-    "mtime": 1786456520.9730196,
+    "mtime": 1786980532.052403,
     "ast_hash": "a56a1b5cfbebc81f91d3a5c510b4218f",
     "semantic_hash": ""
   },
@@ -587,6 +587,16 @@
   "public/HendyLogo.png": {
     "mtime": 1786437207.069588,
     "ast_hash": "a83af53bb2028c509df2ba4624e57a99",
+    "semantic_hash": ""
+  },
+  "scripts/gen-self-signed-cert.sh": {
+    "mtime": 1787223015.6870325,
+    "ast_hash": "1fe0f43146344f29d4864c20c4b177b6",
+    "semantic_hash": ""
+  },
+  "tls-proxy.js": {
+    "mtime": 1787223001.949925,
+    "ast_hash": "a10dbfa686c7040389f9e929e34d2d8c",
     "semantic_hash": ""
   }
 }

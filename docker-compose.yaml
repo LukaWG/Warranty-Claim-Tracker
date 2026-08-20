@@ -22,10 +22,14 @@ services:
   app:
     image: lukawg/warranty-claim-tracker:latest
     container_name: warranty-claim-tracker-app
-    # Reconciles the Better Auth tables, then starts the server.
-    command: ["sh", "-c", "npx prisma db push && node server.js"]
+    # Reconciles the Better Auth tables, then starts the plain-HTTP Next.js
+    # server and the in-container TLS proxy (tls-proxy.js) side by side —
+    # HTTPS is terminated here, not by a separate proxy container.
+    command: ["bash", "-c", "npx prisma db push && ./scripts/gen-self-signed-cert.sh && (node server.js & node tls-proxy.js & wait -n)"]
     ports:
-      - "80:3000"
+      - "443:443"
+    volumes:
+      - ssl_certs:/app/certs
     depends_on:
       auth:
         condition: service_healthy
@@ -33,7 +37,11 @@ services:
       NODE_ENV: production
       AUTH_DATABASE_URL: postgresql://adminuser:${BETTER_AUTHPW:-Password}@auth:5432/warranty_claim_tracker
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://localhost}
+      # Comma-separated hostnames/IPs the self-signed cert covers (subject
+      # alternative names). Remove the ssl_certs volume after changing this
+      # to force the cert to regenerate.
+      SSL_CERT_HOSTS: ${SSL_CERT_HOSTS:-localhost,127.0.0.1,192.168.1.144,lukas-mbp.local}
       DATA_API_URL: ${DATA_API_URL:-http://localhost:5001}
       DATA_API_KEY: ${DATA_API_KEY:?set DATA_API_KEY in .env}
       MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
@@ -43,3 +51,4 @@ services:
 
 volumes:
   postgres_data:
+  ssl_certs:
