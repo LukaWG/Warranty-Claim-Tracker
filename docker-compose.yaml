@@ -1,26 +1,15 @@
-# Single-host Docker deployment: Postgres + the Next.js app.
-#
-# First run:   docker compose up -d
-#              (the app container runs `prisma db push` itself on every
-#              start, before launching the server — see app's command below)
-# Update:      docker compose pull && docker compose up -d
-#
-# Secrets/urls are interpolated from the .env file in this directory.
+# Docker Compose deployment: Postgres + the Next.js app image from Docker Hub.
+# First run / after a new image is pushed:  docker compose pull && docker compose up -d
+# Secrets/urls come from .env in this directory — see .env.deploy.example.
 
 services:
   auth:
     image: postgres:16
     container_name: auth
-    # Defaults to "Password" so this works with no .env entry. The app
-    # service below derives its own AUTH_DATABASE_URL from this same
-    # BETTER_AUTHPW value, so overriding it here doesn't require rebuilding
-    # the app image.
     environment:
       POSTGRES_USER: adminuser
       POSTGRES_PASSWORD: ${BETTER_AUTHPW:-Password}
       POSTGRES_DB: warranty_claim_tracker
-    ports:
-      - "51214:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -31,15 +20,9 @@ services:
     restart: unless-stopped
 
   app:
-    # Pulled from Docker Hub — NEXT_PUBLIC_* values were baked in at build
-    # time when this image was built/pushed (see Dockerfile). To change them,
-    # rebuild and push a new image rather than editing this file.
     image: lukawg/warranty-claim-tracker:latest
     container_name: warranty-claim-tracker-app
-    # Reconciles the Better Auth tables against prisma/schema.prisma on every
-    # start, then hands off to the standalone server. Runs in the app's own
-    # container instead of a separate one-shot service — nothing extra to
-    # see in `docker ps` / Docker Desktop, and nothing left over to clean up.
+    # Reconciles the Better Auth tables, then starts the server.
     command: ["sh", "-c", "npx prisma db push && node server.js"]
     ports:
       - "80:3000"
@@ -48,13 +31,6 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      # Overrides whatever AUTH_DATABASE_URL is baked into the image at build
-      # time. Without this, a BETTER_AUTHPW override in .env only reaches the
-      # `auth` Postgres service above — not the app, unless the image was
-      # separately rebuilt with a matching --build-arg — so the two silently
-      # drift out of sync (e.g. a CI-built image using the Dockerfile's
-      # default password) and the app fails to authenticate. Setting it here
-      # keeps both services derived from the same BETTER_AUTHPW value always.
       AUTH_DATABASE_URL: postgresql://adminuser:${BETTER_AUTHPW:-Password}@auth:5432/warranty_claim_tracker
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}

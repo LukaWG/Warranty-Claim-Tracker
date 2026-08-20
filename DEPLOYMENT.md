@@ -77,23 +77,24 @@ Docker Hub credentials as **secrets** in GitHub.
 
 ## Option A — Docker Compose (single host)
 
-`docker-compose.yaml` runs Postgres + the app. Secrets are read from `.env`
-(`BETTER_AUTH_SECRET` is required, `BETTER_AUTHPW` defaults to `Password`).
+`docker-compose.yaml` runs Postgres + the app, pulling the pre-built image
+from Docker Hub — nothing is built on this machine. Copy
+`.env.deploy.example` to `.env` next to it and fill in real values
+(`BETTER_AUTH_SECRET` and `DATA_API_KEY` are required; everything else has a
+default).
 
 ```bash
-# 1. Start everything (builds the image locally)
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 
-# 2. Create the auth tables (first run, and after any prisma/schema.prisma change)
-docker compose --profile setup run --rm db-push
-
-# App: http://<host>:3000   Postgres: <host>:51214
+# App: http://<host>
 ```
 
-**To update:** pull the latest code and `docker compose up -d --build`.
-If instead you deploy pre-built images from Docker Hub, uncomment the
-`watchtower` service — it polls the registry and auto-restarts the app when a
-new `latest` image is pushed.
+The app container runs `prisma db push` itself before starting, so there's
+no separate migration step. Postgres is not exposed on the host — only the
+app container can reach it.
+
+**To update:** after a new image is pushed, `docker compose pull && docker compose up -d`.
 
 ## Option B — Kubernetes
 

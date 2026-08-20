@@ -3,6 +3,7 @@
 .env.*
 .dockerenv
 !.env.example
+!.env.deploy.example
 
 # Logs
 logs
