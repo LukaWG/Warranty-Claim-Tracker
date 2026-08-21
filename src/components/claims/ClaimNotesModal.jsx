@@ -190,6 +190,10 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       const freshClaim = freshClaims?.[0] || claim;
       const currentStatus = freshClaim.status || claim.status;
       const currentAlert = freshClaim.alert || claim.alert;
+      // Tracks whether the admin-alert branch below already wrote a new status
+      // in this same mutation call, so the reactive blocks further down don't
+      // clobber it using the now-stale `currentStatus` captured above.
+      let alertBranchChangedStatus = false;
 
       // Update alert on the claim if admin user selected one
       if (isAdminUser && alert != undefined) {
@@ -206,6 +210,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             new_value: 'rejected',
             change_type: 'status_changed'
           });
+          alertBranchChangedStatus = true;
         }
 
         if (newAlert !== (currentAlert || '')) {
@@ -214,6 +219,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
             (freshClaim.claimed ? 'completed' : (newAlert ? 'rejected' : 'in_progress'));
 
           await databaseClients.WarrantyClaim.update(claim.id, { alert: newAlert, status: newStatus, site_responded: false });
+          alertBranchChangedStatus = true;
           await databaseClients.ClaimAudit.create({
             claim_id: claim.id,
             wip_number: claim.wip_number,
@@ -245,7 +251,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
 
       // Move back to in_progress with site_responded flat if claim is queried (rejected) OR awaiting_review and user is a Location
       const userRole = currentUser?.custom_role || currentUser?.role;
-      if (currentStatus === 'rejected' || currentStatus === 'awaiting_review' && (userRole === 'Location')) {
+      if (!alertBranchChangedStatus && (currentStatus === 'rejected' || currentStatus === 'awaiting_review') && userRole === 'Location') {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'in_progress', site_responded: true });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
@@ -258,7 +264,7 @@ export default function ClaimNotesModal({ claim, open, onClose, onStatusUpdate, 
       }
 
       // Move to claimed_info_received if claim is claimed_info_requested and user is a Location
-      if (currentStatus === 'claimed_info_requested' && (userRole === 'Location')) {
+      if (!alertBranchChangedStatus && currentStatus === 'claimed_info_requested' && userRole === 'Location') {
         await databaseClients.WarrantyClaim.update(claim.id, { status: 'claimed_info_received' });
         await databaseClients.ClaimAudit.create({
           claim_id: claim.id,
