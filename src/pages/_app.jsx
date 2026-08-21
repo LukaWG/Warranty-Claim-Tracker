@@ -1,5 +1,4 @@
 import '@/index.css';
-import '@/App.css';
 import { useMemo } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';

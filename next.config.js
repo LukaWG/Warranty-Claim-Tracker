@@ -61,6 +61,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-
-    // config.resolve.alias['@'] = new URL('./src', import.meta.url).pathname

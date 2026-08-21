@@ -44,3 +44,6 @@ k8s/secret.yaml
 
 # graphify local artifacts (fully regeneratable via `graphify update .`)
 graphify-out/
+
+# Regenerated automatically by next.config.js if missing
+turbopack-stub.js
