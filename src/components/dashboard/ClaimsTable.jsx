@@ -57,7 +57,7 @@ const ANIMATED_ROW_LIMIT = 30;
 // (safe fallback to fully rendering) in browsers that don't support it.
 const OFFSCREEN_SKIP_STYLE = { contentVisibility: 'auto', containIntrinsicSize: '52px' };
 
-export default function ClaimsTable({ claims, onStatusChange, onAlertChange, onResolutionChange, onDelete, deletingClaimId, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
+export default function ClaimsTable({ claims, onDelete, deletingClaimId, onEdit, onViewHistory, onCreditOptions, onViewNotes, isLoading }) {
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState(DEFAULT_COLUMNS);
   const [mounted, setMounted] = useState(false);

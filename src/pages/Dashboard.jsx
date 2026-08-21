@@ -220,65 +220,6 @@ export default function Dashboard() {
     }
   });
 
-  const handleStatusChange = async (id, status) => {
-    const claim = allClaims.find(c => c.id === id);
-    if (claim?.claimed) return; // locked if claimed
-    try {
-      if (claim) {
-        await createAuditLog(id, claim.wip_number, 'status', claim.status, status, 'status_changed');
-      }
-      updateMutation.mutate({ id, data: { status } });
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Failed to update status', description: error?.message || 'Please try again.' });
-    }
-  };
-
-  const handleAlertChange = async (id, alert) => {
-    const claim = allClaims.find(c => c.id === id);
-    try {
-      if (claim) {
-        await createAuditLog(id, claim.wip_number, 'alert', claim.alert, alert, 'updated');
-        const newStatus = claim.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
-        if (claim.status !== newStatus) {
-          await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
-        }
-      }
-      const alertNewStatus = claim?.claimed ? 'completed' : (alert ? 'rejected' : 'in_progress');
-      updateMutation.mutate({
-        id,
-        data: {
-          alert,
-          status: alertNewStatus
-        }
-      });
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Failed to update alert', description: error?.message || 'Please try again.' });
-    }
-  };
-
-  const handleResolutionChange = async (id, alert_resolution) => {
-    const claim = allClaims.find(c => c.id === id);
-    try {
-      if (claim) {
-        await createAuditLog(id, claim.wip_number, 'alert_resolution', claim.alert_resolution, alert_resolution, 'updated');
-        const newStatus = claim.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim.alert ? 'rejected' : claim.status)));
-        if (claim.status !== newStatus) {
-          await createAuditLog(id, claim.wip_number, 'status', claim.status, newStatus, 'status_changed');
-        }
-      }
-      const newStatus = claim?.claimed ? 'completed' : (alert_resolution === 'Non-actionable' ? 'completed' : (alert_resolution ? 'in_progress' : (claim?.alert ? 'rejected' : claim?.status)));
-      updateMutation.mutate({
-        id,
-        data: {
-          alert_resolution,
-          status: newStatus
-        }
-      });
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Failed to update resolution', description: error?.message || 'Please try again.' });
-    }
-  };
-
   const handleEditSave = async (data) => {
       const userRole = currentUser?.custom_role || currentUser?.role;
       if (userRole === 'Location') {
@@ -473,9 +414,6 @@ export default function Dashboard() {
         {/* Claims Table */}
         <ClaimsTable
           claims={claims}
-          onStatusChange={handleStatusChange}
-          onAlertChange={handleAlertChange}
-          onResolutionChange={handleResolutionChange}
           onDelete={handleDelete}
           deletingClaimId={deleteMutation.isPending ? deleteMutation.variables : null}
           onEdit={setEditingClaim}
