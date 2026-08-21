@@ -31,7 +31,7 @@ const statusConfig = {
   completed: { label: "Claimed", className: "bg-teal-50 border-teal-200", style: { color: '#56C4B7' } },
   rejected: { label: "Queried", className: "bg-red-100 text-red-700 border-red-200" },
   claimed_info_requested: { label: "Queried", className: "bg-purple-50 border-purple-200 text-purple-700" },
-  claimed_info_received: { label: "Awaiting Review", className: "bg-orange-50 border-orange-200 text-orange-700" },
+  claimed_info_received: { label: "Awaiting Review", className: "bg-indigo-50 border-indigo-200 text-indigo-700" },
   withdrawn: { label: "Withdrawn", className: "bg-orange-50 border-orange-200 text-orange-700" ,}
 };
 
