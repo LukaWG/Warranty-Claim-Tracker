@@ -7,11 +7,12 @@ for a single local server).
 ## Architecture
 
 ```text
-Browser ──https──> Next.js app container (port 3000, this repo)
-                      ├─ tls-proxy.js terminates HTTPS (self-signed cert) on 443, forwards to the
-                      │  plain-HTTP Next.js server on 3000 — no separate proxy container
-                      ├─> PostgreSQL (Better Auth users/sessions, Prisma)
-                      └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
+Browser ──http(80)/https(443)──> Next.js app container (port 3000, this repo)
+                                    ├─ http-redirect.js sends plain HTTP on 80 to https://
+                                    ├─ tls-proxy.js terminates HTTPS (self-signed cert) on 443, forwards to the
+                                    │  plain-HTTP Next.js server on 3000 — no separate proxy container
+                                    ├─> PostgreSQL (Better Auth users/sessions, Prisma)
+                                    └─(server-side)─> /api/data proxy ──> Data API (port 5001, separate service)
 ```
 
 Two external dependencies:
@@ -95,7 +96,8 @@ on first visit — this is expected; accept it to continue. The cert's
 hostnames/IPs come from `SSL_CERT_HOSTS` in `.env` (defaults to
 `localhost,127.0.0.1,192.168.1.144,lukas-mbp.local`); add an entry there for
 any other hostname/IP you'll browse to, then remove the `ssl_certs` volume
-to force regeneration.
+to force regeneration. Plain HTTP on port 80 (`http-redirect.js`) just
+redirects to HTTPS, so visiting `http://<host>` still lands on the app.
 
 ```bash
 docker compose pull

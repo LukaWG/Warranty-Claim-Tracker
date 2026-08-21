@@ -23,10 +23,12 @@ services:
     image: lukawg/warranty-claim-tracker:latest
     container_name: warranty-claim-tracker-app
     # Reconciles the Better Auth tables, then starts the plain-HTTP Next.js
-    # server and the in-container TLS proxy (tls-proxy.js) side by side —
-    # HTTPS is terminated here, not by a separate proxy container.
-    command: ["bash", "-c", "npx prisma db push && ./scripts/gen-self-signed-cert.sh && (node server.js & node tls-proxy.js & wait -n)"]
+    # server, the in-container TLS proxy (tls-proxy.js), and a plain-HTTP ->
+    # HTTPS redirect (http-redirect.js) side by side — all termination and
+    # redirection happens here, not via a separate proxy container.
+    command: ["bash", "-c", "npx prisma db push && ./scripts/gen-self-signed-cert.sh && (node server.js & node tls-proxy.js & node http-redirect.js & wait -n)"]
     ports:
+      - "80:80"
       - "443:443"
     volumes:
       - ssl_certs:/app/certs

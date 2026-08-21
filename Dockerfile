@@ -85,21 +85,23 @@ COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 # TLS termination lives inside this container (no separate proxy service) —
 # see tls-proxy.js for why a raw TCP proxy instead of an HTTP-level one.
+# http-redirect.js just bounces plain HTTP on 80 to https:// on 443.
 COPY tls-proxy.js ./tls-proxy.js
+COPY http-redirect.js ./http-redirect.js
 COPY scripts/gen-self-signed-cert.sh ./scripts/gen-self-signed-cert.sh
 RUN chmod +x ./scripts/gen-self-signed-cert.sh \
     && mkdir -p /app/certs && chown nextjs:nodejs /app/certs
 
 USER nextjs
 
-EXPOSE 3000 443
+EXPOSE 3000 80 443
 
 # The standalone server reads PORT and HOSTNAME from the environment.
 ENV PORT=3000 \
     HOSTNAME=0.0.0.0
 
 # bash (not sh/dash) for `wait -n`, so the container exits — and gets
-# restarted by `restart: unless-stopped` — if either process dies. The cert
+# restarted by `restart: unless-stopped` — if any process dies. The cert
 # script must finish (it's synchronous, outside the subshell) before either
 # node process starts, since tls-proxy.js reads the cert file on boot.
-CMD ["bash", "-c", "./scripts/gen-self-signed-cert.sh && (node server.js & node tls-proxy.js & wait -n)"]
+CMD ["bash", "-c", "./scripts/gen-self-signed-cert.sh && (node server.js & node tls-proxy.js & node http-redirect.js & wait -n)"]
