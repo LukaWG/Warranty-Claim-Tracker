@@ -42,3 +42,5 @@ jobs:
             NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL || 'http://192.168.1.144' }}
             NEXT_PUBLIC_ENABLE_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_ENABLE_MICROSOFT_SSO || 'false' }}
             NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO=${{ vars.NEXT_PUBLIC_AUTO_LOGIN_MICROSOFT_SSO || 'false' }}
+            AUTH_DATABASE_URL=${{ secrets.AUTH_DATABASE_URL || '' }}
+            BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET || '' }}
