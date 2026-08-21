@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useQuery } from '@tanstack/react-query';
 import { databaseClients } from '@/api/databaseClient';
 import { format } from "date-fns";
-import { History, User, Calendar, DollarSign } from "lucide-react";
+import { History, User, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function AuditHistoryModal({ claim, open, onClose }) {

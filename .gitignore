@@ -39,9 +39,6 @@ TODO
 /src/generated/prisma
 .antigravitycli/
 
-# Real k8s secret (copy of k8s/secret.example.yaml with real values)
-k8s/secret.yaml
-
 # graphify local artifacts (fully regeneratable via `graphify update .`)
 graphify-out/
 
